@@ -39,10 +39,11 @@ router.get('/stats', async (req, res) => {
         'event_id', 
         [sequelize.fn('COUNT', '*'), 'count']
       ],
-      group: ['event_id'],
+      group: ['event_id', 'Event.id', 'Event.title', 'Event.date'],
       include: [{
         model: Event,
-        attributes: ['title', 'date']
+        attributes: ['title', 'date'],
+        required: false
       }]
     });
     res.json(stats);
