@@ -15,7 +15,7 @@ deploymentTarget = "autoscale"
 ignorePorts = false
 
 [workflows]
-runButton = "穩定啟動"
+runButton = "安全啟動"
 
 [[workflows.workflow]]
 name = "Run TypeScript Server"
@@ -246,6 +246,19 @@ args = "pkill -f \"ts-node src/index.ts\" || true"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "sleep 2"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npx ts-node src/index.ts"
+
+[[workflows.workflow]]
+name = "安全啟動"
+author = 44484841
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm run init-db"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"

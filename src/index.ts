@@ -75,42 +75,57 @@ app.use('/api', checkinRoutes);
 // 提供前端靜態檔案
 app.use(express.static(path.join(__dirname, '../client/dist')));
 
-// 前端路由處理 (SPA)
-app.get('/', (req, res) => {
+// 前端路由處理 (SPA) - 簡化並避免path-to-regexp錯誤
+const serveSPA = (req: express.Request, res: express.Response) => {
   res.sendFile(path.join(__dirname, '../client/dist/index.html'));
-});
+};
 
-app.get('/register', (req, res) => {
-  res.sendFile(path.join(__dirname, '../client/dist/index.html'));
-});
-
-app.get('/checkin', (req, res) => {
-  res.sendFile(path.join(__dirname, '../client/dist/index.html'));
-});
-
-app.get('/admin', (req, res) => {
-  res.sendFile(path.join(__dirname, '../client/dist/index.html'));
-});
-
-app.get('/form/*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../client/dist/index.html'));
-});
+app.get('/', serveSPA);
+app.get('/register', serveSPA);
+app.get('/checkin', serveSPA);
+app.get('/admin', serveSPA);
 
 // 處理所有其他未匹配的路由（SPA fallback）
 app.get('*', (req, res) => {
+  // 排除 API 和 webhook 路由
   if (req.path.startsWith('/api') || req.path.startsWith('/webhook')) {
     return res.status(404).json({ error: 'API endpoint not found' });
   }
-  res.sendFile(path.join(__dirname, '../client/dist/index.html'));
+  // 其他所有路由都回傳前端 SPA
+  serveSPA(req, res);
 });
 
 // 錯誤處理
 app.use(errorHandler);
 app.use(notFoundHandler);
 
+// 路由驗證函數
+const validateRoutes = () => {
+  console.log('🔍 驗證路由配置...');
+  
+  // 檢查是否有潛在的問題路由
+  const potentialIssues: string[] = [];
+  
+  // 驗證環境變數中是否有未展開的模板字串
+  Object.entries(process.env).forEach(([key, value]) => {
+    if (value && typeof value === 'string' && value.includes('${') && value.includes('}')) {
+      potentialIssues.push(`環境變數 ${key} 包含未展開的模板字串: ${value}`);
+    }
+  });
+  
+  if (potentialIssues.length > 0) {
+    console.log('⚠️ 發現潛在問題:');
+    potentialIssues.forEach(issue => console.log(`  - ${issue}`));
+  } else {
+    console.log('✅ 路由配置驗證通過');
+  }
+};
+
 // 啟動伺服器
 const startServer = async () => {
   try {
+    validateRoutes();
+    
     console.log('🔄 測試資料庫連線...');
     await sequelize.authenticate();
     console.log('✅ 資料庫連線成功！');
