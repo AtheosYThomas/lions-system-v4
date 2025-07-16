@@ -8,7 +8,7 @@ const client = new Client(config);
 // Middleware 若失敗也不中斷系統
 try {
   router.use(middleware({
-    channelSecret: config.channelSecret
+    channelSecret: config.channelSecret as string
   }));
 } catch (err) {
   console.error("❌ Middleware 初始化錯誤（不影響回應 200）:", err);
