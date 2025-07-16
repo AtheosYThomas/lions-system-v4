@@ -15,7 +15,7 @@ deploymentTarget = "autoscale"
 ignorePorts = false
 
 [workflows]
-runButton = "Start Server"
+runButton = "Development Server"
 
 [[workflows.workflow]]
 name = "Run TypeScript Server"
@@ -59,7 +59,11 @@ mode = "sequential"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "npx ts-node src/index.ts"
+args = "npm run init-db"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm run dev"
 
 [[workflows.workflow]]
 name = "Production Test"

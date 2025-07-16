@@ -3,7 +3,10 @@ import { Request, Response } from 'express';
 import { WebhookEvent, Client } from '@line/bot-sdk';
 import { config } from '../config/config';
 
-const client = new Client(config);
+const client = new Client({
+  channelAccessToken: config.line.accessToken,
+  channelSecret: config.line.channelSecret
+});
 
 const lineHandler = async (req: Request, res: Response) => {
   try {
