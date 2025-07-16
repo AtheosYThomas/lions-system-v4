@@ -11,7 +11,14 @@ interface CheckinAttributes {
   created_at: Date;
 }
 
-class Checkin extends Model<CheckinAttributes> implements CheckinAttributes {
+interface CheckinCreationAttributes {
+  member_id: string;
+  event_id: string;
+  checkin_time?: Date;
+  device_info?: string;
+}
+
+class Checkin extends Model<CheckinAttributes, CheckinCreationAttributes> implements CheckinAttributes {
   public id!: string;
   public member_id!: string;
   public event_id!: string;
