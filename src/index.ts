@@ -49,11 +49,12 @@ app.get('/health', async (req, res) => {
       }
     });
   } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     res.status(500).json({
       status: 'ERROR',
       timestamp: new Date().toISOString(),
       database: 'disconnected',
-      error: error.message
+      error: errorMessage
     });
   }
 });
