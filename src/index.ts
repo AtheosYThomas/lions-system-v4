@@ -15,6 +15,14 @@ import pushRoutes from './line/push';
 import { sequelize } from './config/database';
 import { errorHandler, notFoundHandler } from './middleware/errorHandler';
 
+// 檢查必要的環境變數
+const requiredEnvVars = ['DATABASE_URL', 'LINE_CHANNEL_ACCESS_TOKEN', 'LINE_CHANNEL_SECRET'];
+const missingEnvVars = requiredEnvVars.filter(envVar => !process.env[envVar]);
+
+if (missingEnvVars.length > 0) {
+  console.warn('⚠️  Missing environment variables:', missingEnvVars.join(', '));
+}
+
 const app = express();
 app.use(bodyParser.json());
 // Health check 端點
@@ -60,7 +68,7 @@ app.use(errorHandler);
 
 sequelize.sync().then(() => {
   console.log('Database synced');
-  app.listen(3000, () => {
-    console.log('Server running on http://localhost:3000');
+  app.listen(3000, '0.0.0.0', () => {
+    console.log('Server running on http://0.0.0.0:3000');
   });
 });
