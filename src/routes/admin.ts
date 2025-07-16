@@ -76,21 +76,6 @@ router.get('/member-stats', async (req, res) => {
   }
 });
 
-// Route handling for register, checkin, admin, and form
-router.get('/register', (req, res) => {
-  res.sendFile(path.join(__dirname, '../client/dist/index.html'));
-});
-
-router.get('/checkin', (req, res) => {
-  res.sendFile(path.join(__dirname, '../client/dist/index.html'));
-});
-
-router.get('/admin', (req, res) => {
-  res.sendFile(path.join(__dirname, '../client/dist/index.html'));
-});
-
-router.get('/form/*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../client/dist/index.html'));
-});
+// 移除不當的路由定義，這些應該在主應用程式中處理
 
 export default router;
