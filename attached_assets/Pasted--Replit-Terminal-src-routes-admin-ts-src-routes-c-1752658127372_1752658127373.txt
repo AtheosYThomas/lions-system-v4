@@ -1,0 +1,89 @@
+以下是您可以在 Replit Terminal 輸入的 自動建立路由檔案指令（含程式碼），會幫你建立：
+
+/src/routes/admin.ts → 系統總覽與統計圖表
+
+/src/routes/checkin.ts → 簽到 API
+
+✅ Step 1：建立 admin.ts 路由檔
+bash
+複製
+編輯
+echo "import express from 'express';
+import { Member, Registration, Announcement } from '../models';
+
+const router = express.Router();
+
+// 系統總覽
+router.get('/summary', async (req, res) => {
+  try {
+    const memberCount = await Member.count();
+    const activeMembers = await Member.count({ where: { status: 'active' } });
+    const registrationCount = await Registration.count();
+    const announcementCount = await Announcement.count();
+    res.json({ memberCount, activeMembers, registrationCount, announcementCount });
+  } catch (err) {
+    res.status(500).json({ error: 'Summary failed', details: err });
+  }
+});
+
+// 報名統計
+router.get('/stats', async (req, res) => {
+  try {
+    const stats = await Registration.findAll({
+      attributes: ['eventId', [Registration.sequelize.fn('COUNT', '*'), 'count']],
+      group: ['eventId'],
+    });
+    res.json(stats);
+  } catch (err) {
+    res.status(500).json({ error: 'Stats failed', details: err });
+  }
+});
+
+export default router;" > src/routes/admin.ts
+✅ Step 2：建立 checkin.ts 路由檔
+bash
+複製
+編輯
+echo "import express from 'express';
+import { Member, Checkin } from '../models';
+
+const router = express.Router();
+
+router.post('/checkin/:eventId', async (req, res) => {
+  const lineUserId = req.body.lineUserId;
+  const eventId = req.params.eventId;
+
+  try {
+    const member = await Member.findOne({ where: { lineUserId } });
+    if (!member) return res.status(404).json({ error: 'Member not found' });
+
+    const [checkin, created] = await Checkin.findOrCreate({
+      where: { memberId: member.id, eventId },
+      defaults: { timestamp: new Date() },
+    });
+
+    res.json({ success: true, created, checkin });
+  } catch (err) {
+    res.status(500).json({ error: 'Check-in failed', details: err });
+  }
+});
+
+export default router;" > src/routes/checkin.ts
+✅ Step 3：在 src/index.ts 中引入路由
+請在 src/index.ts 加上以下兩行：
+
+ts
+複製
+編輯
+import adminRoutes from './routes/admin';
+import checkinRoutes from './routes/checkin';
+
+app.use('/admin', adminRoutes);
+app.use('/form', checkinRoutes);
+完成這三步後，系統就會支援：
+
+GET /admin/summary
+
+GET /admin/stats
+
+POST /form/checkin/:eventId
