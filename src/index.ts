@@ -18,6 +18,8 @@ const PORT: number = parseInt(process.env.PORT || '5000', 10);
 // 中介軟體
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// 靜態文件服務
 app.use(express.static(path.join(__dirname, '../client/dist')));
 
 // 健康檢查路由
@@ -91,12 +93,12 @@ const startServer = async () => {
 
     app.listen(PORT, '0.0.0.0', () => {
       console.log(`🚀 伺服器啟動成功！埠號: ${PORT}`);
-      console.log(`📍 Health Check: https://27c8d8g6-5000.asse.devtunnels.ms/health`);
-      console.log(`📱 LINE Webhook: https://27c8d8g6-5000.asse.devtunnels.ms/webhook`);
-      console.log(`🌐 前端頁面: https://27c8d8g6-5000.asse.devtunnels.ms`);
-      console.log(`📋 會員註冊: https://27c8d8g6-5000.asse.devtunnels.ms/form/register`);
-      console.log(`📝 活動簽到: https://27c8d8g6-5000.asse.devtunnels.ms/form/checkin/1`);
-      console.log(`⚙️  管理後台: https://27c8d8g6-5000.asse.devtunnels.ms/admin`);
+      console.log(`📍 Health Check: http://localhost:${PORT}/health`);
+      console.log(`📱 LINE Webhook: http://localhost:${PORT}/webhook`);
+      console.log(`🌐 前端頁面: http://localhost:${PORT}`);
+      console.log(`📋 會員註冊: http://localhost:${PORT}/form/register`);
+      console.log(`📝 活動簽到: http://localhost:${PORT}/form/checkin/1`);
+      console.log(`⚙️  管理後台: http://localhost:${PORT}/admin`);
     });
   } catch (error) {
     console.error('❌ 伺服器啟動失敗:', error);
