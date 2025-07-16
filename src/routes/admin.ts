@@ -5,7 +5,7 @@ import Event from '../models/event';
 import sequelize from '../config/database';
 import path from 'path'; // Import path module
 
-const router = express.Router();
+const router = express.Router({ strict: true, caseSensitive: true });
 
 // 系統總覽
 router.get('/summary', async (req, res) => {

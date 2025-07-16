@@ -2,7 +2,7 @@
 import express from 'express';
 import Event from '../models/event';
 
-const router = express.Router();
+const router = express.Router({ strict: true, caseSensitive: true });
 
 // 取得所有活動
 router.get('/events', async (req, res) => {

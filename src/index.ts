@@ -12,6 +12,7 @@ import { errorHandler, notFoundHandler } from './middleware/errorHandler';
 import { validateEnvironment } from './utils/envValidation';
 import { healthCheck } from './utils/healthCheck';
 import { routeSafetyCheck, cleanProblemEnvVars } from './utils/routeSafetyCheck';
+import { createSafeRouter, validateNumericParam, routeErrorHandler } from './utils/routerSafety';
 
 const app = express();
 const rawPort = process.env.PORT;
@@ -64,39 +65,81 @@ app.get('/api/system/status', (req, res) => {
   });
 });
 
-// LINE Bot Webhook
-app.post('/webhook', lineHandler);
+// 建立安全的路由器
+const mainRouter = createSafeRouter();
+const apiRouter = createSafeRouter();
+const spaRouter = createSafeRouter();
 
-// 路由設定
-app.use('/api/admin', adminRoutes);
-app.use('/api', eventsRoutes);
-app.use('/api', membersRoutes);
-app.use('/api', checkinRoutes);
+// LINE Bot Webhook - 使用專用路由器
+const webhookRouter = express.Router();
+webhookRouter.post('/', lineHandler);
+app.use('/webhook', webhookRouter);
+
+// API 路由集中管理
+apiRouter.use('/admin', adminRoutes);
+apiRouter.use('/', eventsRoutes);
+apiRouter.use('/', membersRoutes);
+apiRouter.use('/', checkinRoutes);
+app.use('/api', apiRouter);
 
 // 提供前端靜態檔案
 app.use(express.static(path.join(__dirname, '../client/dist')));
 
-// 前端路由處理 (SPA) - 簡化並避免path-to-regexp錯誤
+// SPA 路由處理 - 使用嚴謹的路由器
 const serveSPA = (req: express.Request, res: express.Response) => {
-  res.sendFile(path.join(__dirname, '../client/dist/index.html'));
+  const indexPath = path.join(__dirname, '../client/dist/index.html');
+  res.sendFile(indexPath, (err) => {
+    if (err) {
+      console.error('❌ 無法載入 SPA 檔案:', err);
+      res.status(404).send('Frontend not found');
+    }
+  });
 };
 
-app.get('/', serveSPA);
-app.get('/register', serveSPA);
-app.get('/checkin', serveSPA);
-app.get('/admin', serveSPA);
+// 明確定義的 SPA 路由
+spaRouter.get('/', serveSPA);
+spaRouter.get('/register', serveSPA);
+spaRouter.get('/checkin', serveSPA);
+spaRouter.get('/admin', serveSPA);
 
-// 處理所有其他未匹配的路由（SPA fallback）
-app.get('*', (req, res) => {
-  // 排除 API 和 webhook 路由
-  if (req.path.startsWith('/api') || req.path.startsWith('/webhook')) {
-    return res.status(404).json({ error: 'API endpoint not found' });
+// 表單路由支援
+spaRouter.get('/form/register', serveSPA);
+spaRouter.get('/form/checkin/:eventId', (req, res) => {
+  // 驗證 eventId 是數字
+  const { eventId } = req.params;
+  if (!/^\d+$/.test(eventId)) {
+    return res.status(400).send('Invalid event ID');
   }
+  serveSPA(req, res);
+});
+
+app.use('/', spaRouter);
+
+// 最終的 fallback 處理器 - 更安全的路由匹配
+app.use('*', (req, res) => {
+  const requestPath = req.originalUrl || req.url;
+  
+  // 明確排除 API 和 webhook 路由
+  if (requestPath.startsWith('/api/') || requestPath.startsWith('/webhook/')) {
+    return res.status(404).json({ 
+      error: 'API endpoint not found',
+      path: requestPath 
+    });
+  }
+  
+  // 檢查是否為靜態資源請求
+  if (requestPath.includes('.') && !requestPath.endsWith('.html')) {
+    return res.status(404).send('Static resource not found');
+  }
+  
   // 其他所有路由都回傳前端 SPA
   serveSPA(req, res);
 });
 
-// 錯誤處理
+// 路由特定錯誤處理
+app.use(routeErrorHandler);
+
+// 一般錯誤處理
 app.use(errorHandler);
 app.use(notFoundHandler);
 

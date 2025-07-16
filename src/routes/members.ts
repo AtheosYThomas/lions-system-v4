@@ -2,7 +2,7 @@
 import express from 'express';
 import Member from '../models/member';
 
-const router = express.Router();
+const router = express.Router({ strict: true, caseSensitive: true });
 
 router.get('/members', async (req, res) => {
   try {

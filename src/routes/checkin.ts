@@ -4,7 +4,7 @@ import Member from '../models/member';
 import Checkin from '../models/checkin';
 import Event from '../models/event';
 
-const router = express.Router();
+const router = express.Router({ strict: true, caseSensitive: true });
 
 // 活動簽到
 router.post('/checkin/:eventId', async (req, res) => {
