@@ -1,6 +1,6 @@
 
 import express from 'express';
-import config from '../config';
+import { config } from '../config/config';
 import { Client } from '@line/bot-sdk';
 
 const router = express.Router();
