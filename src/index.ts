@@ -28,6 +28,25 @@ app.get('/health', (_req, res) => res.status(200).json({
   version: '4.0'
 }));
 
+// ✅ 系統狀態監控
+app.get('/api/system/status', (_req, res) => {
+  const memoryUsage = process.memoryUsage();
+  const uptime = process.uptime();
+  
+  res.json({
+    system: {
+      uptime: `${Math.floor(uptime / 60)} 分鐘`,
+      memory: {
+        used: `${Math.round(memoryUsage.heapUsed / 1024 / 1024)} MB`,
+        total: `${Math.round(memoryUsage.heapTotal / 1024 / 1024)} MB`
+      },
+      nodeVersion: process.version,
+      platform: process.platform
+    },
+    timestamp: new Date().toISOString()
+  });
+});
+
 // ✅ API 路由
 app.use('/api', membersRouter);
 app.use('/api', pushRouter);
