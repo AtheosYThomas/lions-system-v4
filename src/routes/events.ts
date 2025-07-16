@@ -23,7 +23,8 @@ router.get('/events', async (req, res) => {
 // 取得單一活動
 router.get('/events/:id', async (req, res) => {
   try {
-    const event = await Event.findByPk(req.params.id);
+    const { id } = req.params;
+    const event = await Event.findByPk(id);
     if (!event) {
       return res.status(404).json({ error: '活動不存在' });
     }
