@@ -1,0 +1,130 @@
+// 📦 React + Vite 前端起手包 with Tailwind CSS + Shadcn UI
+
+// ✅ package.json
+{
+  "name": "peida-client",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "axios": "^1.6.8",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.23.0",
+    "tailwindcss": "^3.4.1",
+    "clsx": "^2.1.0",
+    "@radix-ui/react-slot": "^1.0.2",
+    "@shadcn/ui": "^0.1.0"
+  },
+  "devDependencies": {
+    "vite": "^5.0.0",
+    "typescript": "^5.3.3",
+    "@vitejs/plugin-react": "^4.1.0",
+    "postcss": "^8.4.21",
+    "autoprefixer": "^10.4.13"
+  }
+}
+
+// ✅ tailwind.config.js
+module.exports = {
+  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+  theme: {
+    extend: {}
+  },
+  plugins: []
+};
+
+// ✅ postcss.config.js
+module.exports = {
+  plugins: {
+    tailwindcss: {},
+    autoprefixer: {}
+  }
+};
+
+// ✅ src/index.css
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+// ✅ src/main.tsx
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import App from './App';
+import './index.css';
+
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
+
+// ✅ src/App.tsx
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import MemberForm from './pages/MemberForm';
+import CheckinPage from './pages/CheckinPage';
+import AdminDashboard from './pages/AdminDashboard';
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/form/register" element={<MemberForm />} />
+        <Route path="/form/checkin/:eventId" element={<CheckinPage />} />
+        <Route path="/admin" element={<AdminDashboard />} />
+      </Routes>
+    </BrowserRouter>
+  );
+}
+
+export default App;
+
+// ✅ src/api/axios.ts
+import axios from 'axios';
+
+const instance = axios.create({
+  baseURL: '/api',
+  timeout: 5000
+});
+
+export default instance;
+
+// ✅ src/pages/MemberForm.tsx
+import { Input } from "@shadcn/ui/input";
+import { Button } from "@shadcn/ui/button";
+
+export default function MemberForm() {
+  return (
+    <div className="max-w-md mx-auto mt-10 p-4 border rounded-xl shadow-xl">
+      <h2 className="text-xl font-bold mb-4">活動報名表單</h2>
+      <form className="space-y-4">
+        <div>
+          <label className="block text-sm font-medium">姓名</label>
+          <Input type="text" placeholder="請輸入您的姓名" />
+        </div>
+        <div>
+          <label className="block text-sm font-medium">電話</label>
+          <Input type="tel" placeholder="請輸入電話" />
+        </div>
+        <div>
+          <label className="block text-sm font-medium">Email</label>
+          <Input type="email" placeholder="請輸入 Email" />
+        </div>
+        <Button type="submit">提交報名</Button>
+      </form>
+    </div>
+  );
+}
+
+// 📄 src/pages/CheckinPage.tsx
+export default function CheckinPage() {
+  return <div className="text-center mt-10">簽到頁面（建置中）</div>;
+}
+
+// 📄 src/pages/AdminDashboard.tsx
+export default function AdminDashboard() {
+  return <div className="text-center mt-10">管理後台總覽頁（建置中）</div>;
+}
