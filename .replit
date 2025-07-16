@@ -387,23 +387,15 @@ mode = "sequential"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "echo \"🚨 執行 path-to-regexp 終極修復...\""
+args = "echo \"🔧 執行 path-to-regexp 專用修復...\""
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "unset DEBUG_URL WEBPACK_DEV_SERVER_URL WEBPACK_DEV_SERVER HMR_HOST HMR_PORT VITE_DEV_SERVER_URL"
+args = "npx ts-node src/path-to-regexp-fix.ts"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "export NODE_ENV=development"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "export PORT=5000"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "echo \"✅ 環境變數預清理完成\""
+args = "echo \"🛡️ 啟動終極安全模式...\""
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
