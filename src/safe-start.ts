@@ -95,6 +95,31 @@ const startSafeServer = async () => {
 
       // 清理所有可能的問題模組快取
       Object.keys(require.cache).forEach(key => {
+        if (key.includes('path-to-regexp') || key.includes('express') || 
+            key.includes('router') || key.includes('route')) {
+          delete require.cache[key];
+        }
+      });
+
+      // 最後一次環境清理
+      Object.keys(process.env).forEach(key => {
+        const value = process.env[key];
+        if (value && (value.includes('${') || value.includes('Missing') || value.includes(':('))) {
+          delete process.env[key];
+          console.log(`🗑️ 緊急清理: ${key}`);
+        }
+      });
+
+      console.log('🔄 重新嘗試啟動...');
+      process.exit(1); // 重啟程序
+    }
+
+    process.exit(1);
+  }
+};
+
+// 立即執行安全啟動
+startSafeServer();(require.cache).forEach(key => {
         if (key.includes('path-to-regexp') || key.includes('express')) {
           delete require.cache[key];
         }

@@ -497,6 +497,35 @@ args = "echo \"🛡️ 啟動安全模式...\""
 task = "shell.exec"
 args = "npx ts-node src/safe-start.ts"
 
+[[workflows.workflow]]
+name = "完整修復路徑"
+author = 44484841
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "echo \"🔧 執行完整 path-to-regexp 修復...\""
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npx ts-node src/path-to-regexp-fix.ts"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "echo \"🔍 執行系統診斷...\""
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npx ts-node src/system-diagnosis-report.ts"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "echo \"🛡️ 啟動安全模式...\""
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npx ts-node src/safe-start.ts"
+
 [[ports]]
 localPort = 5000
 externalPort = 80
