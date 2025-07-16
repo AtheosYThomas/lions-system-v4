@@ -15,7 +15,3 @@ export const checkRequiredEnvVars = () => {
     console.log('✅ 所有必要的環境變數都已設定');
   }
 };
-  }
-  
-  console.log('✅ 所有必要環境變數已設定');
-};

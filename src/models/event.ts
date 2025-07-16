@@ -55,4 +55,11 @@ Event.init({
   timestamps: false
 });
 
+// 設定關聯
+import Checkin from './checkin';
+import Registration from './registration';
+
+Event.hasMany(Checkin, { foreignKey: 'event_id' });
+Event.hasMany(Registration, { foreignKey: 'event_id' });
+
 export default Event;

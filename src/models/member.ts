@@ -64,4 +64,11 @@ Member.init({
   timestamps: false
 });
 
+// 設定關聯
+import Checkin from './checkin';
+import Registration from './registration';
+
+Member.hasMany(Checkin, { foreignKey: 'member_id' });
+Member.hasMany(Registration, { foreignKey: 'member_id' });
+
 export default Member;
