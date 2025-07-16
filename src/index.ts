@@ -13,6 +13,86 @@ import { validateEnvironment } from './utils/envValidation';
 import { healthCheck } from './utils/healthCheck';
 
 const app = express();
+const PORT = process.env.PORT || 5000;
+
+// 環境變數驗證
+if (!validateEnvironment()) {
+  process.exit(1);
+}
+
+// 中間件設定
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// CORS 設定
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  if (req.method === 'OPTIONS') {
+    res.sendStatus(200);
+  } else {
+    next();
+  }
+});
+
+// 健康檢查路由
+app.get('/health', async (req, res) => {
+  try {
+    const health = await healthCheck();
+    res.status(health.status === 'healthy' ? 200 : 500).json(health);
+  } catch (error) {
+    res.status(500).json({
+      status: 'unhealthy',
+      error: error instanceof Error ? error.message : '未知錯誤',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// API 路由
+app.use('/api/admin', adminRoutes);
+app.use('/api', checkinRoutes);
+app.use('/api', membersRoutes);
+app.use('/api', eventsRoutes);
+
+// LINE Bot Webhook
+app.post('/webhook', lineHandler);
+
+// 提供前端靜態檔案
+app.use(express.static(path.join(__dirname, '../client/dist')));
+
+// 前端路由處理 (SPA)
+app.get('*', (req, res) => {
+  if (req.path.startsWith('/api') || req.path.startsWith('/webhook')) {
+    return notFoundHandler(req, res, () => {});
+  }
+  res.sendFile(path.join(__dirname, '../client/dist/index.html'));
+});
+
+// 錯誤處理
+app.use(errorHandler);
+app.use(notFoundHandler);
+
+// 啟動伺服器
+const startServer = async () => {
+  try {
+    // 測試資料庫連線
+    await sequelize.authenticate();
+    console.log('✅ 資料庫連線成功');
+    
+    app.listen(PORT, '0.0.0.0', () => {
+      console.log(`🚀 伺服器運行在 http://0.0.0.0:${PORT}`);
+      console.log(`📊 健康檢查: http://0.0.0.0:${PORT}/health`);
+      console.log(`🤖 LINE Webhook: http://0.0.0.0:${PORT}/webhook`);
+    });
+  } catch (error) {
+    console.error('❌ 伺服器啟動失敗:', error);
+    process.exit(1);
+  }
+};
+
+startServer(); = express();
 const PORT: number = parseInt(process.env.PORT || '5000', 10);
 
 // 中介軟體
