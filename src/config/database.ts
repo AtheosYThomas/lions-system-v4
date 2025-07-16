@@ -1,10 +1,10 @@
 
 import { Sequelize } from 'sequelize';
-import { config } from './config';
 
-export const sequelize = new Sequelize(config.database.url, {
+const sequelize = new Sequelize(process.env.DATABASE_URL || '', {
   dialect: 'postgres',
-  logging: console.log, // 開啟日誌以便調試
+  protocol: 'postgres',
+  logging: false,
   dialectOptions: {
     ssl: process.env.NODE_ENV === 'production' ? {
       require: true,
