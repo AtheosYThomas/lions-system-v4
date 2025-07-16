@@ -1,7 +1,7 @@
 
 import { Request, Response } from 'express';
 import { WebhookEvent, Client } from '@line/bot-sdk';
-import config from '../config';
+import { config } from '../config/config';
 
 const client = new Client(config);
 

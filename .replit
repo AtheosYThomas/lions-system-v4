@@ -15,7 +15,7 @@ deploymentTarget = "autoscale"
 ignorePorts = false
 
 [workflows]
-runButton = "Development Server Fixed"
+runButton = "Start Server"
 
 [[workflows.workflow]]
 name = "Run TypeScript Server"
@@ -72,6 +72,32 @@ args = "npx tsc && node dist/index.js"
 
 [[workflows.workflow]]
 name = "Development Server Fixed"
+author = 44484841
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npx tsx src/init.ts"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npx ts-node src/index.ts"
+
+[[workflows.workflow]]
+name = "Start Server"
+author = 44484841
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npx tsx src/init.ts"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npx ts-node src/index.ts"
+
+[[workflows.workflow]]
+name = "Start Server"
 author = 44484841
 mode = "sequential"
 
