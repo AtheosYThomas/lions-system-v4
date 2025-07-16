@@ -1,8 +1,26 @@
 
-import { DataTypes } from 'sequelize';
+import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '../config/database';
 
-const Member = sequelize.define('Member', {
+interface MemberAttributes {
+  id: string;
+  name: string;
+  email: string;
+  lineUserId?: string;
+  status: string;
+  created_at: Date;
+}
+
+class Member extends Model<MemberAttributes> implements MemberAttributes {
+  public id!: string;
+  public name!: string;
+  public email!: string;
+  public lineUserId?: string;
+  public status!: string;
+  public created_at!: Date;
+}
+
+Member.init({
   id: { 
     type: DataTypes.UUID, 
     primaryKey: true,
@@ -30,6 +48,7 @@ const Member = sequelize.define('Member', {
     defaultValue: DataTypes.NOW
   }
 }, {
+  sequelize,
   tableName: 'members',
   timestamps: false
 });

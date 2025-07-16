@@ -1,8 +1,30 @@
 
-import { DataTypes } from 'sequelize';
+import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '../config/database';
 
-const Event = sequelize.define('Event', {
+interface EventAttributes {
+  id: string;
+  title: string;
+  description?: string;
+  date: Date;
+  location?: string;
+  max_attendees?: number;
+  status: string;
+  created_at: Date;
+}
+
+class Event extends Model<EventAttributes> implements EventAttributes {
+  public id!: string;
+  public title!: string;
+  public description?: string;
+  public date!: Date;
+  public location?: string;
+  public max_attendees?: number;
+  public status!: string;
+  public created_at!: Date;
+}
+
+Event.init({
   id: { 
     type: DataTypes.UUID, 
     primaryKey: true,
@@ -13,18 +35,24 @@ const Event = sequelize.define('Event', {
     allowNull: false
   },
   description: DataTypes.TEXT,
-  date: DataTypes.DATEONLY,
+  date: {
+    type: DataTypes.DATE,
+    allowNull: false
+  },
   location: DataTypes.STRING,
-  status: DataTypes.STRING,
-  created_by: DataTypes.UUID,
-  approved_by: DataTypes.UUID,
-  approved_at: DataTypes.DATE,
+  max_attendees: DataTypes.INTEGER,
+  status: {
+    type: DataTypes.STRING,
+    defaultValue: 'active'
+  },
   created_at: {
     type: DataTypes.DATE,
     defaultValue: DataTypes.NOW
   }
 }, {
-  tableName: 'events'
+  sequelize,
+  tableName: 'events',
+  timestamps: false
 });
 
 export default Event;

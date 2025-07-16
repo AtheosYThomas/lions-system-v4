@@ -1,8 +1,26 @@
 
-import { DataTypes } from 'sequelize';
+import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '../config/database';
 
-const Registration = sequelize.define('Registration', {
+interface RegistrationAttributes {
+  id: string;
+  event_id: string;
+  member_id: string;
+  registration_date: Date;
+  status: string;
+  created_at: Date;
+}
+
+class Registration extends Model<RegistrationAttributes> implements RegistrationAttributes {
+  public id!: string;
+  public event_id!: string;
+  public member_id!: string;
+  public registration_date!: Date;
+  public status!: string;
+  public created_at!: Date;
+}
+
+Registration.init({
   id: { 
     type: DataTypes.UUID, 
     primaryKey: true,
@@ -29,6 +47,7 @@ const Registration = sequelize.define('Registration', {
     defaultValue: DataTypes.NOW
   }
 }, {
+  sequelize,
   tableName: 'registrations',
   timestamps: false
 });
