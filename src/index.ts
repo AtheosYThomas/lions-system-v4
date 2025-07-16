@@ -30,8 +30,10 @@ app.use('/api', pushRouter);
 // ✅ LINE Webhook：必須使用 raw parser
 app.use('/webhook', express.raw({ type: 'application/json' }), lineWebhook);
 
-// ✅ 錯誤處理中間件
+// ✅ 404 處理必須在所有路由之後
 app.use(notFoundHandler);
+
+// ✅ 錯誤處理中間件必須在最後
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 3000;

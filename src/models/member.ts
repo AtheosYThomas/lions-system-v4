@@ -1,36 +1,5 @@
-
-import { DataTypes } from 'sequelize';
-import { sequelize } from '../config/database';
-
-const Member = sequelize.define('Member', {
-  id: { 
-    type: DataTypes.UUID, 
-    primaryKey: true,
-    defaultValue: DataTypes.UUIDV4
-  },
-  name: {
-    type: DataTypes.STRING,
-    allowNull: false
-  },
-  phone: DataTypes.STRING,
-  email: DataTypes.STRING,
-  line_uid: { 
-    type: DataTypes.STRING, 
-    unique: true 
-  },
-  role: DataTypes.STRING,
-  status: DataTypes.STRING,
-  created_at: {
-    type: DataTypes.DATE,
-    defaultValue: DataTypes.NOW
-  }
-}, {
-  tableName: 'members'
-});
-
-export default Member;
-// 簡單的 Member 模型 - 實際應用中應該使用 Sequelize 或其他 ORM
-export default class Member {
+// 簡單的 Member 模型 - 暫時使用類別實作，待後續整合 Sequelize
+class Member {
   constructor(
     public id: string,
     public name: string,
@@ -51,3 +20,5 @@ export default class Member {
     return members.find(member => member.id === id) || null;
   }
 }
+
+export default Member;
