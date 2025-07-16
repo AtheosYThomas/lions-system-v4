@@ -15,7 +15,7 @@ deploymentTarget = "autoscale"
 ignorePorts = false
 
 [workflows]
-runButton = "完整 Checkpoint 1 驗證"
+runButton = "啟動增強系統"
 
 [[workflows.workflow]]
 name = "Run TypeScript Server"
@@ -692,6 +692,19 @@ args = "npx ts-node src/path-to-regexp-checkpoint.ts"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "echo \"📋 Checkpoint 1 驗證完成\""
+
+[[workflows.workflow]]
+name = "啟動增強系統"
+author = 44484841
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "echo \"🛡️ 啟動增強 Router fallback 系統...\""
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npx ts-node src/index.ts"
 
 [[ports]]
 localPort = 5000

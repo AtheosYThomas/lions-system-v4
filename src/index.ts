@@ -115,15 +115,23 @@ spaRouter.get('/form/checkin/:eventId', (req, res) => {
 
 app.use('/', spaRouter);
 
-// 最終的 fallback 處理器 - 更安全的路由匹配
+// 🛡️ Router fallback 與預防機制
+import { apiNotFound, fallbackPage } from './middleware/errorHandler';
+
+// API 路由 fallback - 必須在所有 API 路由之後
+app.use('/api', apiNotFound);
+
+// 🛡️ 全域 fallback（前端或其他未處理的路徑）
 app.use('*', (req, res) => {
   const requestPath = req.originalUrl || req.url;
   
   // 明確排除 API 和 webhook 路由
   if (requestPath.startsWith('/api/') || requestPath.startsWith('/webhook/')) {
     return res.status(404).json({ 
+      success: false,
       error: 'API endpoint not found',
-      path: requestPath 
+      path: requestPath,
+      timestamp: new Date().toISOString()
     });
   }
   
@@ -134,6 +142,26 @@ app.use('*', (req, res) => {
   
   // 其他所有路由都回傳前端 SPA
   serveSPA(req, res);
+});
+
+// 🚨 全域錯誤攔截器 - 統一處理所有錯誤
+app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+  console.error('🚨 系統錯誤:', err);
+  
+  // 特別處理 path-to-regexp 錯誤
+  if (err.message && err.message.includes('Missing parameter name')) {
+    return res.status(500).json({
+      success: false,
+      message: '路由配置錯誤，系統已啟動保護機制',
+      error: 'path-to-regexp configuration error'
+    });
+  }
+  
+  res.status(500).json({
+    success: false,
+    message: '伺服器內部錯誤',
+    error: err.message
+  });
 });
 
 // 路由特定錯誤處理
