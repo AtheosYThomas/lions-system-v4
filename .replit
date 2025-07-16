@@ -424,7 +424,7 @@ args = "npx ts-node src/system-diagnosis-report.ts"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "echo \"📋 診斷完成，請檢查 system-diagnosis-report.json\""
+args = "echo \"📋 診斷完成，請檢查報告結果\""
 
 [[ports]]
 localPort = 5000
