@@ -1,9 +1,9 @@
-
 import express from 'express';
 import Member from '../models/member';
 import Registration from '../models/registration';
 import Event from '../models/event';
 import sequelize from '../config/database';
+import path from 'path'; // Import path module
 
 const router = express.Router();
 
@@ -14,7 +14,7 @@ router.get('/summary', async (req, res) => {
     const activeMembers = await Member.count({ where: { status: 'active' } });
     const registrationCount = await Registration.count();
     const eventCount = await Event.count();
-    
+
     res.json({ 
       memberCount, 
       activeMembers, 
@@ -74,6 +74,23 @@ router.get('/member-stats', async (req, res) => {
       details: err instanceof Error ? err.message : '未知錯誤'
     });
   }
+});
+
+// Route handling for register, checkin, admin, and form
+router.get('/register', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/dist/index.html'));
+});
+
+router.get('/checkin', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/dist/index.html'));
+});
+
+router.get('/admin', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/dist/index.html'));
+});
+
+router.get('/form/*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/dist/index.html'));
 });
 
 export default router;
