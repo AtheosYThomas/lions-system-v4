@@ -89,3 +89,11 @@ if (remainingIssues.length === 0) {
   });
   console.log('🧹 已強制清理所有殘留問題');
 }
+
+// 8. 輸出最終狀態報告
+console.log('\n📋 修復完成狀態報告:');
+console.log(`- 清理前環境變數數量: ${beforeCleanup}`);
+console.log(`- 清理後環境變數數量: ${afterCleanup}`);
+console.log(`- NODE_ENV: ${process.env.NODE_ENV}`);
+console.log(`- PORT: ${process.env.PORT}`);
+console.log('🏁 path-to-regexp 修復程序結束');
