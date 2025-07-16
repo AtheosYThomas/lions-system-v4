@@ -15,7 +15,7 @@ deploymentTarget = "autoscale"
 ignorePorts = false
 
 [workflows]
-runButton = "完整啟動系統"
+runButton = "Simple Start"
 
 [[workflows.workflow]]
 name = "Run TypeScript Server"
@@ -216,6 +216,19 @@ args = "npm run init-db"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "cd client && npm install && npm run build && cd .."
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npx ts-node src/index.ts"
+
+[[workflows.workflow]]
+name = "Simple Start"
+author = 44484841
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npx tsx src/quick-start.ts"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
