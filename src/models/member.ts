@@ -6,7 +6,9 @@ interface MemberAttributes {
   id: string;
   name: string;
   email: string;
-  lineUserId?: string;
+  line_uid?: string;
+  role?: string;
+  phone?: string;
   status: string;
   created_at: Date;
 }
@@ -15,7 +17,9 @@ class Member extends Model<MemberAttributes> implements MemberAttributes {
   public id!: string;
   public name!: string;
   public email!: string;
-  public lineUserId?: string;
+  public line_uid?: string;
+  public role?: string;
+  public phone?: string;
   public status!: string;
   public created_at!: Date;
 }
@@ -35,9 +39,16 @@ Member.init({
     allowNull: false,
     unique: true
   },
-  lineUserId: {
+  line_uid: {
     type: DataTypes.STRING,
     field: 'line_user_id'
+  },
+  role: {
+    type: DataTypes.STRING,
+    defaultValue: 'member'
+  },
+  phone: {
+    type: DataTypes.STRING
   },
   status: {
     type: DataTypes.STRING,
