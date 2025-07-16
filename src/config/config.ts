@@ -5,8 +5,19 @@ dotenv.config();
 
 // 驗證關鍵環境變數是否正確載入，避免未展開的模板字串
 const validateEnvVars = () => {
+  // 預防性清理可能導致 path-to-regexp 錯誤的變數
+  const dangerousVars = ['DEBUG_URL', 'WEBPACK_DEV_SERVER_URL', 'VITE_DEV_SERVER_URL'];
+  dangerousVars.forEach(varName => {
+    if (process.env[varName] && (
+      process.env[varName]!.includes('${') || 
+      process.env[varName]!.includes('Missing parameter')
+    )) {
+      console.log(`🚨 清理危險環境變數: ${varName}=${process.env[varName]}`);
+      delete process.env[varName];
+    }
+  });
+
   const requiredVars = ['LINE_CHANNEL_SECRET', 'LINE_CHANNEL_ACCESS_TOKEN'];
-  const optionalVars = ['DEBUG_URL', 'NODE_ENV'];
   const warnings: string[] = [];
   const errors: string[] = [];
 
@@ -19,12 +30,14 @@ const validateEnvVars = () => {
       errors.push(`❌ 環境變數 ${varName} 包含未展開的模板字串: ${value}`);
       // 自動清理問題變數
       delete process.env[varName];
+      errors.push(`🧹 已自動清理問題變數: ${varName}`);
     } else if (value === 'undefined' || value === 'null' || value.trim() === '') {
       errors.push(`❌ 環境變數 ${varName} 值無效: ${value}`);
     }
   }
 
   // 檢查可選變數
+  const optionalVars = ['DEBUG_URL', 'NODE_ENV'];
   for (const varName of optionalVars) {
     const value = process.env[varName];
     if (value && (value.includes('${') && value.includes('}'))) {

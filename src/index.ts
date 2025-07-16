@@ -160,6 +160,25 @@ const validateRoutes = () => {
 // 啟動伺服器
 const startServer = async () => {
   try {
+    console.log('🚨 預防 path-to-regexp 錯誤...');
+    
+    // 強制清理可能導致 path-to-regexp 錯誤的環境變數
+    const problematicEnvVars = [
+      'DEBUG_URL', 'WEBPACK_DEV_SERVER_URL', 'WEBPACK_DEV_SERVER',
+      'HMR_HOST', 'HMR_PORT', 'VITE_DEV_SERVER_URL'
+    ];
+    
+    problematicEnvVars.forEach(varName => {
+      if (process.env[varName]) {
+        console.log(`🧹 清理環境變數: ${varName}=${process.env[varName]}`);
+        delete process.env[varName];
+      }
+    });
+    
+    // 設置安全的環境變數
+    process.env.NODE_ENV = 'development';
+    process.env.PORT = process.env.PORT || '5000';
+    
     // 預先清理可能的問題環境變數
     cleanProblemEnvVars();
     
