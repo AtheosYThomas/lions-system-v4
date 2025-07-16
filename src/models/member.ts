@@ -1,3 +1,4 @@
+
 // 簡單的 Member 模型 - 暫時使用類別實作，待後續整合 Sequelize
 class Member {
   constructor(
