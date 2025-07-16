@@ -5,5 +5,3 @@ export const sequelize = new Sequelize(config.database.url, {
   dialect: 'postgres',
   logging: false
 });
-
-export { sequelize };
