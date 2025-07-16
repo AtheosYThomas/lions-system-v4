@@ -13,15 +13,8 @@ const lineHandler = async (req: Request, res: Response) => {
     const events: WebhookEvent[] = req.body.events || [];
     console.log("📩 收到事件數量:", events.length);
 
-    if (events.length === 0) {
-      console.log("ℹ️ 沒有事件需要處理");
-      if (!res.headersSent) {
-        res.status(200).send('OK');
-      }
-      return;
-    }
-
-    for (const event of events) {
+    // 處理事件
+    const promises = events.map(async (event) => {
       try {
         console.log("🔍 處理事件類型:", event.type);
         
@@ -40,15 +33,20 @@ const lineHandler = async (req: Request, res: Response) => {
         }
       } catch (eventErr) {
         console.error("⚠️ 單一事件處理錯誤：", eventErr);
-        // 繼續處理其他事件，不中斷
+        // 不拋出錯誤，繼續處理其他事件
       }
-    }
+    });
 
+    // 等待所有事件處理完成
+    await Promise.all(promises);
+
+    // 確保回傳 200 狀態碼
     if (!res.headersSent) {
       res.status(200).send('OK');
     }
   } catch (err) {
     console.error("🔥 webhook 總錯誤：", err);
+    // LINE webhook 必須回傳 200，否則會重試
     if (!res.headersSent) {
       res.status(200).send('OK');
     }
