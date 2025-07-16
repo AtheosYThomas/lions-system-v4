@@ -1,71 +1,97 @@
 
 import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Register from './pages/Register';
-import Checkin from './pages/Checkin';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import MemberForm from './pages/MemberForm';
 import CheckinPage from './pages/CheckinPage';
 import AdminDashboard from './pages/AdminDashboard';
+import Register from './pages/Register';
+import Checkin from './pages/Checkin';
 
-// 錯誤邊界組件
-class ErrorBoundary extends React.Component<
-  { children: React.ReactNode },
-  { hasError: boolean; error?: Error }
-> {
-  constructor(props: { children: React.ReactNode }) {
-    super(props);
-    this.state = { hasError: false };
-  }
-
-  static getDerivedStateFromError(error: Error) {
-    return { hasError: true, error };
-  }
-
-  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    console.error('前端錯誤:', error, errorInfo);
-  }
-
-  render() {
-    if (this.state.hasError) {
-      return (
-        <div style={{ padding: '20px', textAlign: 'center' }}>
-          <h2>🚨 應用程式發生錯誤</h2>
-          <p>請重新載入頁面或聯絡系統管理員</p>
-          <button onClick={() => window.location.reload()}>
-            重新載入
-          </button>
+function HomePage() {
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
+      <div className="max-w-4xl mx-auto">
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">
+            🦁 北大獅子會系統
+          </h1>
+          <p className="text-lg text-gray-600">
+            會員管理、活動簽到、系統管理一站式服務
+          </p>
         </div>
-      );
-    }
 
-    return this.props.children;
-  }
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <Link
+            to="/form/register"
+            className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow"
+          >
+            <div className="text-3xl mb-4">📝</div>
+            <h3 className="text-xl font-semibold mb-2">會員註冊</h3>
+            <p className="text-gray-600">新會員報名表單</p>
+          </Link>
+
+          <Link
+            to="/form/checkin/1"
+            className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow"
+          >
+            <div className="text-3xl mb-4">✅</div>
+            <h3 className="text-xl font-semibold mb-2">活動簽到</h3>
+            <p className="text-gray-600">活動出席簽到</p>
+          </Link>
+
+          <Link
+            to="/admin"
+            className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow"
+          >
+            <div className="text-3xl mb-4">⚙️</div>
+            <h3 className="text-xl font-semibold mb-2">管理後台</h3>
+            <p className="text-gray-600">系統統計與管理</p>
+          </Link>
+
+          <Link
+            to="/register"
+            className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow"
+          >
+            <div className="text-3xl mb-4">📱</div>
+            <h3 className="text-xl font-semibold mb-2">LINE 註冊</h3>
+            <p className="text-gray-600">透過 LINE 快速註冊</p>
+          </Link>
+
+          <Link
+            to="/checkin"
+            className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow"
+          >
+            <div className="text-3xl mb-4">📲</div>
+            <h3 className="text-xl font-semibold mb-2">LINE 簽到</h3>
+            <p className="text-gray-600">透過 LINE 快速簽到</p>
+          </Link>
+
+          <a
+            href="/health"
+            className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow"
+          >
+            <div className="text-3xl mb-4">🔍</div>
+            <h3 className="text-xl font-semibold mb-2">系統狀態</h3>
+            <p className="text-gray-600">檢查系統健康狀態</p>
+          </a>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 function App() {
   return (
-    <ErrorBoundary>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/register" element={<Register />} />
-          <Route path="/checkin" element={<Checkin />} />
-          <Route path="/form/register" element={<MemberForm />} />
-          <Route path="/form/checkin/:eventId" element={<CheckinPage />} />
-          <Route path="/admin" element={<AdminDashboard />} />
-          <Route path="/" element={
-            <div style={{ padding: '20px', textAlign: 'center' }}>
-              <h1>🦁 北大獅子會系統</h1>
-              <p>歡迎使用會員服務系統</p>
-              <nav style={{ marginTop: '20px' }}>
-                <a href="/register" style={{ margin: '0 10px' }}>會員註冊</a>
-                <a href="/checkin" style={{ margin: '0 10px' }}>活動簽到</a>
-                <a href="/admin" style={{ margin: '0 10px' }}>管理後台</a>
-              </nav>
-            </div>
-          } />
-        </Routes>
-      </BrowserRouter>
-    </ErrorBoundary>
+    <Router>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/form/register" element={<MemberForm />} />
+        <Route path="/form/checkin/:eventId" element={<CheckinPage />} />
+        <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/checkin" element={<Checkin />} />
+      </Routes>
+    </Router>
   );
 }
 

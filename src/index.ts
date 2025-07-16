@@ -85,24 +85,18 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
 // 啟動伺服器
 const startServer = async () => {
   try {
-    console.log('🔍 驗證環境變數...');
-    if (!validateEnvironment()) {
-      console.error('❌ 環境變數驗證失敗');
-      process.exit(1);
-    }
-
     console.log('🔄 測試資料庫連線...');
     await sequelize.authenticate();
     console.log('✅ 資料庫連線成功！');
 
     app.listen(PORT, '0.0.0.0', () => {
       console.log(`🚀 伺服器啟動成功！埠號: ${PORT}`);
-      console.log(`📍 Health Check: https://YOUR_REPL_URL/health`);
-      console.log(`📱 LINE Webhook: https://YOUR_REPL_URL/webhook`);
-      console.log(`🌐 前端頁面: https://YOUR_REPL_URL`);
-      console.log(`📋 會員註冊: https://YOUR_REPL_URL/form/register`);
-      console.log(`📝 活動簽到: https://YOUR_REPL_URL/form/checkin/1`);
-      console.log(`⚙️  管理後台: https://YOUR_REPL_URL/admin`);
+      console.log(`📍 Health Check: https://27c8d8g6-5000.asse.devtunnels.ms/health`);
+      console.log(`📱 LINE Webhook: https://27c8d8g6-5000.asse.devtunnels.ms/webhook`);
+      console.log(`🌐 前端頁面: https://27c8d8g6-5000.asse.devtunnels.ms`);
+      console.log(`📋 會員註冊: https://27c8d8g6-5000.asse.devtunnels.ms/form/register`);
+      console.log(`📝 活動簽到: https://27c8d8g6-5000.asse.devtunnels.ms/form/checkin/1`);
+      console.log(`⚙️  管理後台: https://27c8d8g6-5000.asse.devtunnels.ms/admin`);
     });
   } catch (error) {
     console.error('❌ 伺服器啟動失敗:', error);
