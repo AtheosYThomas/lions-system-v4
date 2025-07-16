@@ -395,3 +395,348 @@ if (require.main === module) {
     process.exit(1);
   });
 }
+import fs from 'fs';
+import path from 'path';
+
+interface DiagnosisReport {
+  timestamp: string;
+  sections: {
+    routes: {
+      status: 'ok' | 'warning' | 'error';
+      errors: string[];
+      warnings: string[];
+    };
+    environment: {
+      status: 'ok' | 'warning' | 'error';
+      errors: string[];
+      warnings: string[];
+    };
+    frontend: {
+      status: 'ok' | 'warning' | 'error';
+      errors: string[];
+      warnings: string[];
+    };
+    healthCheck: {
+      status: 'ok' | 'warning' | 'error';
+      errors: string[];
+      warnings: string[];
+    };
+  };
+  fixes: string[];
+  recommendations: string[];
+}
+
+const findDuplicateEnvVars = (envContent: string): string[] => {
+  const lines = envContent.split('\n');
+  const vars: { [key: string]: number } = {};
+  const duplicates: string[] = [];
+
+  lines.forEach(line => {
+    const match = line.match(/^([A-Z_]+)=/);
+    if (match) {
+      const varName = match[1];
+      vars[varName] = (vars[varName] || 0) + 1;
+      if (vars[varName] > 1 && !duplicates.includes(varName)) {
+        duplicates.push(varName);
+      }
+    }
+  });
+
+  return duplicates;
+};
+
+export const generateSystemDiagnosisReport = async (): Promise<DiagnosisReport> => {
+  const report: DiagnosisReport = {
+    timestamp: new Date().toISOString(),
+    sections: {
+      routes: { status: 'ok', errors: [], warnings: [] },
+      environment: { status: 'ok', errors: [], warnings: [] },
+      frontend: { status: 'ok', errors: [], warnings: [] },
+      healthCheck: { status: 'ok', errors: [], warnings: [] }
+    },
+    fixes: [],
+    recommendations: []
+  };
+
+  console.log('🔍 開始系統全面診斷...');
+  console.log(`📅 報告時間: ${report.timestamp}\n`);
+
+  // 1. 掃描路由、控制器、中間件錯誤
+  console.log('1️⃣ 掃描 /src 目錄下所有 route、controller、middleware...');
+  
+  try {
+    const srcDir = path.join(__dirname);
+    
+    // 檢查路由檔案
+    const routesDir = path.join(srcDir, 'routes');
+    if (fs.existsSync(routesDir)) {
+      const routeFiles = fs.readdirSync(routesDir).filter(f => f.endsWith('.ts'));
+      console.log(`📁 找到 ${routeFiles.length} 個路由檔案: ${routeFiles.join(', ')}`);
+      
+      for (const file of routeFiles) {
+        try {
+          require(`./routes/${file.replace('.ts', '')}`);
+          console.log(`✅ ${file} - 載入正常`);
+        } catch (error) {
+          const errorMsg = `❌ ${file} - 載入失敗: ${error}`;
+          console.log(errorMsg);
+          report.sections.routes.errors.push(errorMsg);
+        }
+      }
+    } else {
+      const errorMsg = '❌ routes 目錄不存在';
+      console.log(errorMsg);
+      report.sections.routes.errors.push(errorMsg);
+    }
+
+    // 檢查中間件
+    const middlewareDir = path.join(srcDir, 'middleware');
+    if (fs.existsSync(middlewareDir)) {
+      const middlewareFiles = fs.readdirSync(middlewareDir).filter(f => f.endsWith('.ts'));
+      console.log(`📁 找到 ${middlewareFiles.length} 個中間件檔案: ${middlewareFiles.join(', ')}`);
+      
+      for (const file of middlewareFiles) {
+        try {
+          require(`./middleware/${file.replace('.ts', '')}`);
+          console.log(`✅ middleware/${file} - 載入正常`);
+        } catch (error) {
+          const errorMsg = `❌ middleware/${file} - 載入失敗: ${error}`;
+          console.log(errorMsg);
+          report.sections.routes.errors.push(errorMsg);
+        }
+      }
+    }
+
+    // 檢查 LINE 處理器
+    try {
+      require('./line/handler');
+      console.log('✅ line/handler.ts - 載入正常');
+    } catch (error) {
+      const errorMsg = `❌ line/handler.ts - 載入失敗: ${error}`;
+      console.log(errorMsg);
+      report.sections.routes.errors.push(errorMsg);
+    }
+
+    report.sections.routes.status = report.sections.routes.errors.length === 0 ? 'ok' : 'error';
+    
+  } catch (error) {
+    const errorMsg = `❌ 路由掃描過程發生錯誤: ${error}`;
+    console.log(errorMsg);
+    report.sections.routes.errors.push(errorMsg);
+    report.sections.routes.status = 'error';
+  }
+
+  console.log('');
+
+  // 2. 比對 .env 檔與實際程式使用的變數
+  console.log('2️⃣ 比對 .env 檔與實際程式使用的變數...');
+  
+  const requiredVars = [
+    'LINE_CHANNEL_ACCESS_TOKEN',
+    'LINE_CHANNEL_SECRET', 
+    'DATABASE_URL',
+    'PORT'
+  ];
+
+  const optionalVars = [
+    'NODE_ENV',
+    'DEBUG_URL'
+  ];
+
+  // 檢查必要變數
+  const missingRequired = requiredVars.filter(v => !process.env[v]);
+  const missingOptional = optionalVars.filter(v => !process.env[v]);
+
+  if (missingRequired.length > 0) {
+    const errorMsg = `❌ 缺少必要環境變數: ${missingRequired.join(', ')}`;
+    console.log(errorMsg);
+    report.sections.environment.errors.push(errorMsg);
+  } else {
+    console.log('✅ 所有必要環境變數已設定');
+  }
+
+  if (missingOptional.length > 0) {
+    const warningMsg = `⚠️ 缺少可選環境變數: ${missingOptional.join(', ')}`;
+    console.log(warningMsg);
+    report.sections.environment.warnings.push(warningMsg);
+  }
+
+  // 檢查 .env 檔案重複設定
+  try {
+    const envPath = path.join(process.cwd(), '.env');
+    if (fs.existsSync(envPath)) {
+      const envContent = fs.readFileSync(envPath, 'utf-8');
+      const duplicates = findDuplicateEnvVars(envContent);
+      
+      if (duplicates.length > 0) {
+        const warningMsg = `⚠️ .env 檔案中有重複設定: ${duplicates.join(', ')}`;
+        console.log(warningMsg);
+        report.sections.environment.warnings.push(warningMsg);
+        report.sections.environment.status = 'warning';
+      }
+
+      // 檢查遞迴展開問題
+      const recursiveVars = envContent.match(/^([A-Z_]+)=\$\{\1\}/gm);
+      if (recursiveVars && recursiveVars.length > 0) {
+        const errorMsg = `❌ 發現遞迴展開變數: ${recursiveVars.join(', ')}`;
+        console.log(errorMsg);
+        report.sections.environment.errors.push(errorMsg);
+        report.fixes.push('修正 .env 檔案中的遞迴展開變數');
+      }
+    } else {
+      const warningMsg = '⚠️ .env 檔案不存在';
+      console.log(warningMsg);
+      report.sections.environment.warnings.push(warningMsg);
+    }
+  } catch (error) {
+    const errorMsg = `❌ 無法讀取 .env 檔案: ${error}`;
+    console.log(errorMsg);
+    report.sections.environment.errors.push(errorMsg);
+  }
+
+  report.sections.environment.status = report.sections.environment.errors.length > 0 ? 'error' : 
+    (report.sections.environment.warnings.length > 0 ? 'warning' : 'ok');
+
+  console.log('');
+
+  // 3. 檢查前端是否能載入
+  console.log('3️⃣ 檢查前端狀態...');
+  
+  try {
+    const clientDir = path.join(process.cwd(), 'client');
+    const publicDir = path.join(process.cwd(), 'public');
+    
+    if (fs.existsSync(clientDir)) {
+      console.log('✅ client 目錄存在');
+      
+      // 檢查 package.json
+      const clientPackagePath = path.join(clientDir, 'package.json');
+      if (fs.existsSync(clientPackagePath)) {
+        console.log('✅ client/package.json 存在');
+      } else {
+        const warningMsg = '⚠️ client/package.json 不存在';
+        console.log(warningMsg);
+        report.sections.frontend.warnings.push(warningMsg);
+      }
+
+      // 檢查 src 目錄
+      const clientSrcDir = path.join(clientDir, 'src');
+      if (fs.existsSync(clientSrcDir)) {
+        console.log('✅ client/src 目錄存在');
+      } else {
+        const errorMsg = '❌ client/src 目錄不存在';
+        console.log(errorMsg);
+        report.sections.frontend.errors.push(errorMsg);
+      }
+    } else if (fs.existsSync(publicDir)) {
+      console.log('✅ public 目錄存在');
+    } else {
+      const errorMsg = '❌ 未找到前端目錄 (client 或 public)';
+      console.log(errorMsg);
+      report.sections.frontend.errors.push(errorMsg);
+    }
+
+    report.sections.frontend.status = report.sections.frontend.errors.length > 0 ? 'error' : 
+      (report.sections.frontend.warnings.length > 0 ? 'warning' : 'ok');
+      
+  } catch (error) {
+    const errorMsg = `❌ 前端檢查過程發生錯誤: ${error}`;
+    console.log(errorMsg);
+    report.sections.frontend.errors.push(errorMsg);
+    report.sections.frontend.status = 'error';
+  }
+
+  console.log('');
+
+  // 4. 執行健康檢查
+  console.log('4️⃣ 執行 health check 測試...');
+  
+  try {
+    // 檢查是否能載入 healthCheck 模組
+    const { performHealthCheck } = require('./utils/healthCheck');
+    const healthResult = await performHealthCheck();
+    
+    if (healthResult.status === 'healthy') {
+      console.log('✅ 系統健康檢查通過');
+      report.sections.healthCheck.status = 'ok';
+    } else {
+      const warningMsg = `⚠️ 健康檢查警告: ${healthResult.message || '部分功能異常'}`;
+      console.log(warningMsg);
+      report.sections.healthCheck.warnings.push(warningMsg);
+      report.sections.healthCheck.status = 'warning';
+      
+      if (healthResult.issues) {
+        healthResult.issues.forEach(issue => {
+          report.sections.healthCheck.warnings.push(issue);
+        });
+      }
+      
+      if (!healthResult.database) {
+        report.recommendations.push('執行 npm run init-db 初始化資料庫');
+      }
+    }
+  } catch (error) {
+    const errorMsg = `❌ 健康檢查執行失敗: ${error}`;
+    console.log(errorMsg);
+    report.sections.healthCheck.errors.push(errorMsg);
+    report.sections.healthCheck.status = 'error';
+  }
+
+  console.log('');
+
+  // 5. 彙整所有錯誤訊息
+  console.log('📋 5. 診斷報告總結');
+  console.log('='.repeat(50));
+  
+  if (report.sections.routes.errors.length === 0 && 
+      report.sections.environment.errors.length === 0 && 
+      report.sections.frontend.errors.length === 0 && 
+      report.sections.healthCheck.errors.length === 0) {
+    console.log('🎉 系統狀態良好，未發現嚴重問題！');
+  } else {
+    console.log('🚨 發現以下問題需要修正:');
+    
+    if (report.sections.routes.errors.length > 0) {
+      console.log('\n📁 路由/中間件問題:');
+      report.sections.routes.errors.forEach(error => console.log(`  ${error}`));
+    }
+    
+    if (report.sections.environment.errors.length > 0) {
+      console.log('\n🔧 環境變數問題:');
+      report.sections.environment.errors.forEach(error => console.log(`  ${error}`));
+    }
+    
+    if (report.sections.frontend.errors.length > 0) {
+      console.log('\n🎨 前端問題:');
+      report.sections.frontend.errors.forEach(error => console.log(`  ${error}`));
+    }
+    
+    if (report.sections.healthCheck.errors.length > 0) {
+      console.log('\n❤️ 健康檢查問題:');
+      report.sections.healthCheck.errors.forEach(error => console.log(`  ${error}`));
+    }
+  }
+
+  // 顯示建議修正方式
+  if (report.fixes.length > 0 || report.recommendations.length > 0) {
+    console.log('\n💡 建議修正方式:');
+    [...report.fixes, ...report.recommendations].forEach(fix => {
+      console.log(`  • ${fix}`);
+    });
+  }
+
+  // 儲存報告到檔案
+  try {
+    fs.writeFileSync('system-diagnosis-report.json', JSON.stringify(report, null, 2));
+    console.log('\n📄 完整報告已儲存至 system-diagnosis-report.json');
+  } catch (error) {
+    console.log(`\n⚠️ 無法儲存報告檔案: ${error}`);
+  }
+
+  return report;
+};
+
+// 如果直接執行此檔案
+if (require.main === module) {
+  generateSystemDiagnosisReport().catch(console.error);
+}

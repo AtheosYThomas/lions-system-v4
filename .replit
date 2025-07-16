@@ -409,6 +409,23 @@ args = "echo \"✅ 環境變數預清理完成\""
 task = "shell.exec"
 args = "npx ts-node src/safe-start.ts"
 
+[[workflows.workflow]]
+name = "系統診斷報告"
+author = 44484841
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "echo \"🔍 開始執行完整系統診斷...\""
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npx ts-node src/system-diagnosis-report.ts"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "echo \"📋 診斷完成，請檢查 system-diagnosis-report.json\""
+
 [[ports]]
 localPort = 5000
 externalPort = 80
