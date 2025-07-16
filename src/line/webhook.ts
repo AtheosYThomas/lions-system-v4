@@ -1,13 +1,17 @@
 
 import express from 'express';
-import { middleware, WebhookEvent, Client } from '@line/bot-sdk';
+import { middleware, WebhookEvent, Client, MiddlewareConfig } from '@line/bot-sdk';
 import config from '../config';
 
 const router = express.Router();
 const client = new Client(config);
 
 // middleware 設定，處理 LINE 傳入資料
-router.use(middleware(config));
+const middlewareConfig: MiddlewareConfig = {
+  channelSecret: config.channelSecret || ''
+};
+
+router.use(middleware(middlewareConfig));
 
 // webhook 路由處理 POST /webhook
 router.post('/', async (req, res) => {
