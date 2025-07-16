@@ -17,7 +17,9 @@ try {
 }
 
 try {
-  router.use(middleware(config));
+  router.use(middleware({
+    channelSecret: config.channelSecret || ''
+  }));
 } catch (err) {
   console.error("❌ LINE Middleware 設定錯誤，請檢查 config.ts 與環境變數：", err);
 }
