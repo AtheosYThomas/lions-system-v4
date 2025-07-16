@@ -92,7 +92,7 @@ app.get('/admin', (req, res) => {
   res.sendFile(path.join(__dirname, '../client/dist/index.html'));
 });
 
-app.get('/form/:path(*)', (req, res) => {
+app.get('/form/*', (req, res) => {
   res.sendFile(path.join(__dirname, '../client/dist/index.html'));
 });
 
