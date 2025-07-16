@@ -13,7 +13,8 @@ import { validateEnvironment } from './utils/envValidation';
 import { healthCheck } from './utils/healthCheck';
 
 const app = express();
-const PORT = Number(process.env.PORT) || 5000;
+const rawPort = process.env.PORT;
+const PORT = rawPort && !isNaN(parseInt(rawPort)) ? parseInt(rawPort) : 5000;
 
 // 環境變數驗證
 if (!validateEnvironment()) {
