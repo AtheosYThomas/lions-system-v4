@@ -15,7 +15,7 @@ deploymentTarget = "autoscale"
 ignorePorts = false
 
 [workflows]
-runButton = "Fixed Development Server"
+runButton = "Development"
 
 [[workflows.workflow]]
 name = "Run TypeScript Server"
@@ -115,6 +115,19 @@ args = "npx ts-node src/index.ts"
 
 [[workflows.workflow]]
 name = "Fixed Development Server"
+author = 44484841
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm run init-db"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm run dev"
+
+[[workflows.workflow]]
+name = "Development"
 author = 44484841
 mode = "sequential"
 
