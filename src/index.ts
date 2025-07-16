@@ -13,7 +13,7 @@ import { validateEnvironment } from './utils/envValidation';
 import { healthCheck } from './utils/healthCheck';
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = Number(process.env.PORT) || 5000;
 
 // 環境變數驗證
 if (!validateEnvironment()) {
