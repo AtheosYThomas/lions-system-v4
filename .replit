@@ -15,7 +15,7 @@ deploymentTarget = "autoscale"
 ignorePorts = false
 
 [workflows]
-runButton = "Start System"
+runButton = "Development"
 
 [[workflows.workflow]]
 name = "Run TypeScript Server"
@@ -163,11 +163,7 @@ mode = "sequential"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "npm run init-db"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "npm run dev"
+args = "npx ts-node src/index.ts"
 
 [[workflows.workflow]]
 name = "Full Build and Start"
@@ -194,6 +190,19 @@ mode = "sequential"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "npx ts-node src/index.ts"
+
+[[workflows.workflow]]
+name = "Production"
+author = 44484841
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm run build:all"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "node dist/index.js"
 
 [[ports]]
 localPort = 5000
