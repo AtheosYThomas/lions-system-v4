@@ -15,7 +15,7 @@ deploymentTarget = "autoscale"
 ignorePorts = false
 
 [workflows]
-runButton = "智能重啟"
+runButton = "Checkpoint 1 檢查"
 
 [[workflows.workflow]]
 name = "Run TypeScript Server"
@@ -554,6 +554,23 @@ args = "echo \"🚀 啟動系統...\""
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "npx ts-node src/index.ts"
+
+[[workflows.workflow]]
+name = "Checkpoint 1 檢查"
+author = 44484841
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "echo \"🔍 執行 Checkpoint 1 狀態檢查...\""
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npx ts-node src/path-to-regexp-checkpoint.ts"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "echo \"📋 檢查完成，分析結果...\""
 
 [[ports]]
 localPort = 5000
