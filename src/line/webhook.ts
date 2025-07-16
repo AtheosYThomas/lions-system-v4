@@ -5,6 +5,7 @@ import { Client, middleware, validateSignature } from '@line/bot-sdk';
 import crypto from 'crypto';
 import { v4 as uuidv4 } from 'uuid';
 import { sequelize } from '../config/database';
+import MessageLog from '../models/messageLog';
 
 const router = express.Router();
 
@@ -25,12 +26,15 @@ router.post('/webhook', express.raw({ type: 'application/json' }), async (req, r
   const events = JSON.parse(body.toString()).events;
   for (const event of events) {
     if (event.type === 'message' && event.message.type === 'text') {
-      await sequelize.query(
-        'INSERT INTO message_logs (id, user_id, timestamp, message_type, message_content) VALUES (?, ?, NOW(), ?, ?)',
-        {
-          replacements: [uuidv4(), event.source.userId, 'text', event.message.text],
-        }
-      );
+      try {
+        await MessageLog.create({
+          user_id: event.source.userId,
+          message_type: 'text',
+          message_content: event.message.text
+        });
+      } catch (error) {
+        console.error('Error saving message log:', error);
+      }
     }
   }
 

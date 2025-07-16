@@ -5,6 +5,7 @@ import Event from './models/event';
 import Registration from './models/registration';
 import Payment from './models/payment';
 import Checkin from './models/checkin';
+import MessageLog from './models/messageLog';
 
 import express from 'express';
 import bodyParser from 'body-parser';
