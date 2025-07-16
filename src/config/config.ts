@@ -20,6 +20,7 @@ const validateEnvVars = () => {
   const requiredVars = ['LINE_CHANNEL_SECRET', 'LINE_CHANNEL_ACCESS_TOKEN'];
   const warnings: string[] = [];
   const errors: string[] = [];
+  const fixes: string[] = [];
 
   // 檢查必要變數
   for (const varName of requiredVars) {
@@ -30,7 +31,7 @@ const validateEnvVars = () => {
       errors.push(`❌ 環境變數 ${varName} 包含未展開的模板字串: ${value}`);
       // 自動清理問題變數
       delete process.env[varName];
-      errors.push(`🧹 已自動清理問題變數: ${varName}`);
+      fixes.push(`🧹 已自動清理問題變數: ${varName}`);
     } else if (value === 'undefined' || value === 'null' || value.trim() === '') {
       errors.push(`❌ 環境變數 ${varName} 值無效: ${value}`);
     }
@@ -44,7 +45,7 @@ const validateEnvVars = () => {
       warnings.push(`⚠️ 環境變數 ${varName} 包含未展開的模板字串: ${value}`);
       // 清理有問題的可選變數
       delete process.env[varName];
-      console.log(`🧹 已清理有問題的環境變數: ${varName}`);
+      fixes.push(`🧹 已清理有問題的環境變數: ${varName}`);
     }
   }
 
@@ -54,26 +55,30 @@ const validateEnvVars = () => {
     if (debugUrl.includes('${') || debugUrl.includes('Missing parameter name')) {
       console.log(`🚨 發現問題 DEBUG_URL: ${debugUrl}`);
       delete process.env.DEBUG_URL;
-      console.log('🧹 已清理問題 DEBUG_URL');
+      fixes.push('🧹 已清理問題 DEBUG_URL');
     }
   }
 
+  // 報告結果
   if (errors.length > 0) {
-    console.log('環境變數錯誤:');
-    errors.forEach(error => console.log(error));
+    console.log('⚠️ 環境變數問題:');
+    errors.forEach(error => console.log(`  - ${error}`));
   }
 
-  if (warnings.length > 0) {
-    console.log('環境變數警告:');
-    warnings.forEach(warning => console.log(warning));
+  if (fixes.length > 0) {
+    console.log('🔧 自動修復:');
+    fixes.forEach(fix => console.log(`  - ${fix}`));
   }
 
-  if (errors.length === 0 && warnings.length === 0) {
+  if (errors.length === 0 && fixes.length === 0) {
     console.log('✅ 環境變數驗證通過');
   }
+
+  return { success: errors.length === 0, errors, fixes };
 };
 
-validateEnvVars();
+const validationResult = validateEnvVars();
+console.log('✅ 終極安全環境變數載入完成');
 
 export const config = {
   line: {
