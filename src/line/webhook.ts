@@ -1,3 +1,4 @@
+
 import express from 'express';
 import { middleware, WebhookEvent, Client } from '@line/bot-sdk';
 import config from '../config';
@@ -5,10 +6,19 @@ import config from '../config';
 const router = express.Router();
 const client = new Client(config);
 
-// ✅ middleware 放最前面
+// 🔧 開發模式：強制加上假簽章 (⚠️ 僅限開發除錯使用)
+router.use((req, res, next) => {
+  if (!req.headers['x-line-signature']) {
+    console.log('🛠️ 開發模式：跳過簽名驗證');
+    req.headers['x-line-signature'] = 'skip-signature-for-dev';
+  }
+  next();
+});
+
+// ✅ LINE middleware 驗證
 router.use(middleware(config));
 
-// ✅ 保底式處理，永遠回 200
+// ✅ 處理 webhook 事件
 router.post('/', async (req, res) => {
   try {
     const events: WebhookEvent[] = req.body.events || [];
