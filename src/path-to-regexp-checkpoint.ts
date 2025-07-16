@@ -208,7 +208,7 @@ const checkpoint4 = (): CheckpointResult => {
     details.push(`❌ Express 應用程式建立失敗: ${error}`);
     
     // 檢查是否為 path-to-regexp 相關錯誤
-    if (error.message && error.message.includes('Missing parameter name')) {
+    if (error instanceof Error && error.message && error.message.includes('Missing parameter name')) {
       details.push('🚨 確認為 path-to-regexp 錯誤！');
       details.push(`錯誤詳情: ${error.message}`);
     }
