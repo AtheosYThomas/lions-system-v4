@@ -38,6 +38,19 @@ args = "npx tsc"
 task = "shell.exec"
 args = "node dist/index.js"
 
+[[workflows.workflow]]
+name = "Build and Run Production"
+author = 44484841
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm run build:all"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "node dist/index.js"
+
 [[ports]]
 localPort = 3000
 externalPort = 80
