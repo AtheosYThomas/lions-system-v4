@@ -92,12 +92,12 @@ app.get('/admin', (req, res) => {
   res.sendFile(path.join(__dirname, '../client/dist/index.html'));
 });
 
-app.get('/form/*', (req, res) => {
+app.get('/form/:path(*)', (req, res) => {
   res.sendFile(path.join(__dirname, '../client/dist/index.html'));
 });
 
 // 處理所有其他未匹配的路由（SPA fallback）
-app.get('*', (req, res) => {
+app.get('/:path(*)', (req, res) => {
   if (req.path.startsWith('/api') || req.path.startsWith('/webhook')) {
     return res.status(404).json({ error: 'API endpoint not found' });
   }
