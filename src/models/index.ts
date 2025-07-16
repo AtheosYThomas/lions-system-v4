@@ -17,4 +17,4 @@ Checkin.belongsTo(Event, { foreignKey: 'event_id' });
 Registration.belongsTo(Member, { foreignKey: 'member_id' });
 Registration.belongsTo(Event, { foreignKey: 'event_id' });
 
-export { Member, Event, Checkin, Registration };
+export { Member, Event, Checkin, Registration };r, Event, Checkin, Registration };
