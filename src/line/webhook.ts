@@ -1,40 +1,60 @@
+
 import express from 'express';
 import { middleware, WebhookEvent, Client } from '@line/bot-sdk';
 import config from '../config';
 
 const router = express.Router();
-const client = new Client(config);
 
-// Middleware 若失敗也不中斷系統
+// 防呆 log
+console.log("🛠 webhook.ts 已載入");
+console.log("🔐 config.channelAccessToken:", typeof config.channelAccessToken, config.channelAccessToken?.slice(0, 10));
+console.log("🔐 config.channelSecret:", typeof config.channelSecret, config.channelSecret?.slice(0, 10));
+
+let client: Client;
+
 try {
-  router.use(middleware({
-    channelSecret: config.channelSecret as string
-  }));
-} catch (err) {
-  console.error("❌ Middleware 初始化錯誤（不影響回應 200）:", err);
+  client = new Client(config);
+} catch (e) {
+  console.error("❌ LINE Client 初始化失敗：", e);
 }
 
-// 主處理函數：不管什麼錯都回 200，避免 webhook 驗證失敗
+try {
+  router.use(middleware(config));
+} catch (err) {
+  console.error("❌ middleware 初始化失敗：", err);
+}
+
 router.post('/', async (req, res) => {
   try {
-    const events: WebhookEvent[] = req.body.events;
-    console.log('📥 收到事件：', JSON.stringify(events, null, 2));
+    const events: WebhookEvent[] = req.body?.events || [];
+    console.log("📨 收到事件數量:", events.length);
 
+    // ✅ LINE 規定：一定要先回應 200，否則會失敗
+    res.status(200).end();
+
+    // 處理每個事件
     for (const event of events) {
-      // 範例：僅回覆文字訊息
-      if (event.type === 'message' && event.message.type === 'text') {
-        const userText = event.message.text;
-        await client.replyMessage(event.replyToken, {
-          type: 'text',
-          text: `你說：「${userText}」`,
-        });
+      try {
+        console.log("➡️ 處理事件類型:", event.type);
+
+        if (event.type === 'message' && event.message.type === 'text') {
+          const msg = event.message.text;
+          console.log("💬 使用者傳來：", msg);
+
+          await client.replyMessage(event.replyToken, {
+            type: 'text',
+            text: `你說的是：「${msg}」`,
+          });
+        }
+      } catch (inner) {
+        console.error("⚠️ 單一事件處理錯誤：", inner);
       }
     }
 
-    res.status(200).end(); // ✅ 一律回傳 200
   } catch (err) {
-    console.error("🔥 webhook 處理錯誤（但仍回 200）:", err);
-    res.status(200).end(); // ✅ 即使有錯也不回 500
+    console.error("🔥 webhook handler 錯誤（外層）:", err);
+    // ✅ 永遠回 200
+    res.status(200).end();
   }
 });
 
