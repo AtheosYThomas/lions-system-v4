@@ -21,7 +21,7 @@ router.get('/events', async (req, res) => {
 });
 
 // 取得單一活動
-router.get('/events/:id', async (req, res) => {
+router.get('/events/:id([0-9]+)', async (req, res) => {
   try {
     const { id } = req.params;
     const event = await Event.findByPk(id);

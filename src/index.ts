@@ -66,11 +66,11 @@ app.get('/api/system/status', (req, res) => {
 // LINE Bot Webhook
 app.post('/webhook', lineHandler);
 
-// API 路由
+// 路由設定
 app.use('/api/admin', adminRoutes);
-app.use('/api', checkinRoutes);
-app.use('/api', membersRoutes);
 app.use('/api', eventsRoutes);
+app.use('/api', membersRoutes);
+app.use('/api', checkinRoutes);
 
 // 提供前端靜態檔案
 app.use(express.static(path.join(__dirname, '../client/dist')));

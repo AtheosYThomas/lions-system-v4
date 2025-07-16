@@ -7,7 +7,7 @@ import Event from '../models/event';
 const router = express.Router();
 
 // 活動簽到
-router.post('/checkin/:eventId', async (req, res) => {
+router.post('/checkin/:eventId([0-9]+)', async (req, res) => {
   const { lineUserId, deviceInfo } = req.body;
   const { eventId } = req.params;
 
@@ -66,7 +66,7 @@ router.post('/checkin/:eventId', async (req, res) => {
 });
 
 // 查詢活動簽到列表
-router.get('/checkin/:eventId', async (req, res) => {
+router.get('/checkin/:eventId([0-9]+)', async (req, res) => {
   const { eventId } = req.params;
 
   try {
