@@ -36,7 +36,7 @@ app.use(notFoundHandler);
 // ✅ 錯誤處理中間件必須在最後
 app.use(errorHandler);
 
-const PORT = process.env.PORT || 3000;
+const PORT = parseInt(process.env.PORT || '3000', 10);
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`✅ Server running on 0.0.0.0:${PORT}`);
 });
