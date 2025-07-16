@@ -7,6 +7,7 @@ import lineHandler from './line/handler';
 import adminRoutes from './routes/admin';
 import memberRoutes from './routes/members';
 import checkinRoutes from './routes/checkin';
+import { validateEnvironment } from './utils/envValidation';
 
 const app = express();
 const PORT: number = parseInt(process.env.PORT || '3000', 10);
@@ -63,7 +64,16 @@ app.use('/api/members', memberRoutes);
 app.use('/api/checkin', checkinRoutes);
 
 // 前端路由（提供 React 應用）
-app.get('*', (req, res) => {
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/dist/index.html'));
+});
+
+// 其他靜態路由
+app.get('/register', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/dist/index.html'));
+});
+
+app.get('/checkin', (req, res) => {
   res.sendFile(path.join(__dirname, '../client/dist/index.html'));
 });
 
@@ -76,6 +86,12 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
 // 啟動伺服器
 const startServer = async () => {
   try {
+    console.log('🔍 驗證環境變數...');
+    if (!validateEnvironment()) {
+      console.error('❌ 環境變數驗證失敗');
+      process.exit(1);
+    }
+    
     console.log('🔄 測試資料庫連線...');
     await sequelize.authenticate();
     console.log('✅ 資料庫連線成功！');

@@ -4,10 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "npx tsx src/index.ts",
-    "init-db": "npx tsx src/init.ts",
+    "dev": "tsx src/index.ts",
+    "init-db": "tsx src/init.ts",
+    "build:all": "cd client && npm run build && cd .. && npm run build",
     "lint": "eslint . --ext .ts",
-    "build": "npx tsc"
+    "build": "tsc",
+    "start": "node dist/index.js"
   },
   "keywords": [],
   "author": "",

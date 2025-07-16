@@ -6,7 +6,7 @@ import lineHandler from './handler';
 const router = express.Router();
 
 // LINE webhook POST 事件處理
-router.post('/', middleware({ channelSecret: config.channelSecret }), async (req, res) => {
+router.post('/', middleware({ channelSecret: config.line.channelSecret }), async (req, res) => {
   try {
     console.log('📨 收到 LINE webhook 請求');
     await lineHandler(req, res);
