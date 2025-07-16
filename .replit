@@ -15,7 +15,7 @@ deploymentTarget = "autoscale"
 ignorePorts = false
 
 [workflows]
-runButton = "終極修復啟動"
+runButton = "終極安全啟動"
 
 [[workflows.workflow]]
 name = "Run TypeScript Server"
@@ -353,6 +353,35 @@ args = "npx ts-node src/safe-start.ts"
 
 [[workflows.workflow]]
 name = "終極修復啟動"
+author = 44484841
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "echo \"🚨 執行 path-to-regexp 終極修復...\""
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "unset DEBUG_URL WEBPACK_DEV_SERVER_URL WEBPACK_DEV_SERVER HMR_HOST HMR_PORT VITE_DEV_SERVER_URL"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "export NODE_ENV=development"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "export PORT=5000"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "echo \"✅ 環境變數預清理完成\""
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npx ts-node src/safe-start.ts"
+
+[[workflows.workflow]]
+name = "終極安全啟動"
 author = 44484841
 mode = "sequential"
 
