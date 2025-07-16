@@ -1,6 +1,6 @@
 
 import { DataTypes, Model } from 'sequelize';
-import { sequelize } from '../config/database';
+import sequelize from '../config/database';
 
 interface MemberAttributes {
   id: string;
