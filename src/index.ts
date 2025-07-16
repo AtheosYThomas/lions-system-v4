@@ -60,12 +60,19 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../client/dist/index.html'));
 });
 
-// 其他靜態路由
-app.get('/register', (req, res) => {
+// 所有前端路由都導向 React 應用
+app.get(['/register', '/checkin', '/admin', '/form/*'], (req, res) => {
   res.sendFile(path.join(__dirname, '../client/dist/index.html'));
 });
 
-app.get('/checkin', (req, res) => {
+// 處理所有其他未匹配的路由（SPA fallback）
+app.get('*', (req, res) => {
+  // 如果請求是 API 路由，返回 404
+  if (req.path.startsWith('/api/')) {
+    res.status(404).json({ error: 'API endpoint not found' });
+    return;
+  }
+  // 否則返回前端應用
   res.sendFile(path.join(__dirname, '../client/dist/index.html'));
 });
 

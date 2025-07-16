@@ -15,7 +15,7 @@ deploymentTarget = "autoscale"
 ignorePorts = false
 
 [workflows]
-runButton = "Complete Build and Run"
+runButton = "Quick Start"
 
 [[workflows.workflow]]
 name = "Run TypeScript Server"
@@ -156,6 +156,19 @@ args = "cd client && npm install && npm run build && cd .."
 task = "shell.exec"
 args = "npm run dev"
 
+[[workflows.workflow]]
+name = "Quick Start"
+author = 44484841
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm run init-db"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm run dev"
+
 [[ports]]
-localPort = 3000
+localPort = 5000
 externalPort = 80
