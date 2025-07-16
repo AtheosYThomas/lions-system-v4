@@ -21,9 +21,15 @@ router.get('/events', async (req, res) => {
 });
 
 // 取得單一活動
-router.get('/events/:id(\\d+)', async (req, res) => {
+router.get('/events/:id', async (req, res) => {
   try {
     const { id } = req.params;
+    
+    // 驗證 ID 是否為數字
+    if (!/^\d+$/.test(id)) {
+      return res.status(400).json({ error: '無效的活動 ID' });
+    }
+    
     const event = await Event.findByPk(id);
     if (!event) {
       return res.status(404).json({ error: '活動不存在' });
