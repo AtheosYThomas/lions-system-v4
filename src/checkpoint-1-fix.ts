@@ -1,10 +1,16 @@
 
 // Checkpoint 1 專用修復腳本 - 避免環境重載問題
 console.log('🔧 開始 Checkpoint 1 專用修復...');
+console.log('⚠️ 注意：此腳本將避免觸發環境重載');
 
 // 0. 立即設置安全環境，避免後續重載
-process.env.NODE_ENV = 'development';
-process.env.PORT = '5000';
+// 使用內存中的環境變數設置，不觸發 .env 更新
+if (!process.env.NODE_ENV || process.env.NODE_ENV.includes('${')) {
+  process.env.NODE_ENV = 'development';
+}
+if (!process.env.PORT || process.env.PORT.includes('${')) {
+  process.env.PORT = '5000';
+}
 
 // 1. 記錄修復前狀態
 const beforeCleanup = Object.keys(process.env).length;
@@ -25,18 +31,26 @@ const forceCleanVars = [
   'HMR_HOST', 'HMR_PORT', 'VITE_DEV_SERVER_URL', 'BASE_URL'
 ];
 
-// 4. 清理問題變數
+// 4. 清理問題變數（避免觸發重載）
 const cleanedVars: string[] = [];
+const keysToDelete: string[] = [];
+
+// 首先收集需要刪除的變數
 Object.entries(process.env).forEach(([key, value]) => {
   if (value && typeof value === 'string') {
     const hasPatternProblem = problematicPatterns.some(pattern => pattern.test(value));
     const isForceClean = forceCleanVars.includes(key);
     
     if (hasPatternProblem || isForceClean || value.trim() === '') {
-      delete process.env[key];
-      cleanedVars.push(key);
+      keysToDelete.push(key);
     }
   }
+});
+
+// 然後一次性刪除，減少環境變數變更次數
+keysToDelete.forEach(key => {
+  delete process.env[key];
+  cleanedVars.push(key);
 });
 
 if (cleanedVars.length > 0) {
@@ -45,18 +59,24 @@ if (cleanedVars.length > 0) {
   console.log('✅ 未發現問題變數');
 }
 
-// 5. 設置安全的預設值
+// 5. 設置安全的預設值（僅在需要時）
 const safeDefaults = {
   NODE_ENV: 'development',
   PORT: '5000'
 };
 
+let defaultsSet = 0;
 Object.entries(safeDefaults).forEach(([key, value]) => {
-  if (!process.env[key]) {
+  if (!process.env[key] || process.env[key].includes('${') || process.env[key] === 'undefined') {
     process.env[key] = value;
     console.log(`🔧 設置預設值: ${key}=${value}`);
+    defaultsSet++;
   }
 });
+
+if (defaultsSet === 0) {
+  console.log('✅ 環境變數預設值已正確設置');
+}
 
 // 6. 清理模組快取
 console.log('🔄 清理模組快取...');
