@@ -264,6 +264,31 @@ args = "npm run init-db"
 task = "shell.exec"
 args = "npx ts-node src/index.ts"
 
+[[workflows.workflow]]
+name = "緊急修復啟動"
+author = 44484841
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "echo \"🚨 緊急修復 path-to-regexp 錯誤...\""
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "unset DEBUG_URL"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "unset WEBPACK_DEV_SERVER_URL"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "export NODE_ENV=development"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npx ts-node src/index.ts"
+
 [[ports]]
 localPort = 5000
 externalPort = 80

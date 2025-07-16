@@ -11,6 +11,7 @@ import eventsRoutes from './routes/events';
 import { errorHandler, notFoundHandler } from './middleware/errorHandler';
 import { validateEnvironment } from './utils/envValidation';
 import { healthCheck } from './utils/healthCheck';
+import { routeSafetyCheck, cleanProblemEnvVars } from './utils/routeSafetyCheck';
 
 const app = express();
 const rawPort = process.env.PORT;
@@ -103,19 +104,54 @@ app.use(notFoundHandler);
 const validateRoutes = () => {
   console.log('🔍 驗證路由配置...');
   
-  // 檢查是否有潛在的問題路由
   const potentialIssues: string[] = [];
   
-  // 驗證環境變數中是否有未展開的模板字串
+  // 1. 驗證環境變數中是否有未展開的模板字串
   Object.entries(process.env).forEach(([key, value]) => {
-    if (value && typeof value === 'string' && value.includes('${') && value.includes('}')) {
-      potentialIssues.push(`環境變數 ${key} 包含未展開的模板字串: ${value}`);
+    if (value && typeof value === 'string') {
+      // 檢查未展開的模板字串 ${...}
+      if (value.includes('${') && value.includes('}')) {
+        potentialIssues.push(`環境變數 ${key} 包含未展開的模板字串: ${value}`);
+      }
+      // 檢查可能的路由參數錯誤格式
+      if (value.includes(':') && (value.includes('(*)') || value.includes('(*)'))) {
+        potentialIssues.push(`環境變數 ${key} 包含非法路由參數格式: ${value}`);
+      }
     }
   });
+  
+  // 2. 檢查關鍵環境變數
+  const requiredVars = ['LINE_CHANNEL_ACCESS_TOKEN', 'LINE_CHANNEL_SECRET'];
+  requiredVars.forEach(varName => {
+    const value = process.env[varName];
+    if (!value) {
+      potentialIssues.push(`缺少必要環境變數: ${varName}`);
+    } else if (value.startsWith('${') || value === 'undefined' || value === 'null') {
+      potentialIssues.push(`環境變數 ${varName} 值異常: ${value}`);
+    }
+  });
+  
+  // 3. 檢查 DEBUG_URL 相關問題（報錯中提到的變數）
+  if (process.env.DEBUG_URL && process.env.DEBUG_URL.includes('${')) {
+    potentialIssues.push(`DEBUG_URL 包含未展開的模板字串: ${process.env.DEBUG_URL}`);
+  }
   
   if (potentialIssues.length > 0) {
     console.log('⚠️ 發現潛在問題:');
     potentialIssues.forEach(issue => console.log(`  - ${issue}`));
+    
+    // 嘗試修復部分問題
+    console.log('🔧 嘗試自動修復...');
+    
+    // 清理有問題的環境變數
+    Object.keys(process.env).forEach(key => {
+      const value = process.env[key];
+      if (value && typeof value === 'string' && value.includes('${') && value.includes('}')) {
+        console.log(`🧹 清理環境變數 ${key}`);
+        delete process.env[key];
+      }
+    });
+    
   } else {
     console.log('✅ 路由配置驗證通過');
   }
@@ -124,6 +160,13 @@ const validateRoutes = () => {
 // 啟動伺服器
 const startServer = async () => {
   try {
+    // 預先清理可能的問題環境變數
+    cleanProblemEnvVars();
+    
+    // 執行路由安全檢查
+    routeSafetyCheck();
+    
+    // 驗證路由配置
     validateRoutes();
     
     console.log('🔄 測試資料庫連線...');

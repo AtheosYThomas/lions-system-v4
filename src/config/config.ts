@@ -6,20 +6,57 @@ dotenv.config();
 // 驗證關鍵環境變數是否正確載入，避免未展開的模板字串
 const validateEnvVars = () => {
   const requiredVars = ['LINE_CHANNEL_SECRET', 'LINE_CHANNEL_ACCESS_TOKEN'];
+  const optionalVars = ['DEBUG_URL', 'NODE_ENV'];
   const warnings: string[] = [];
+  const errors: string[] = [];
 
+  // 檢查必要變數
   for (const varName of requiredVars) {
     const value = process.env[varName];
     if (!value) {
-      warnings.push(`⚠️ 缺少環境變數: ${varName}`);
+      errors.push(`❌ 缺少必要環境變數: ${varName}`);
     } else if (value.includes('${') && value.includes('}')) {
-      warnings.push(`⚠️ 環境變數 ${varName} 包含未展開的模板字串: ${value}`);
+      errors.push(`❌ 環境變數 ${varName} 包含未展開的模板字串: ${value}`);
+      // 自動清理問題變數
+      delete process.env[varName];
+    } else if (value === 'undefined' || value === 'null' || value.trim() === '') {
+      errors.push(`❌ 環境變數 ${varName} 值無效: ${value}`);
     }
+  }
+
+  // 檢查可選變數
+  for (const varName of optionalVars) {
+    const value = process.env[varName];
+    if (value && (value.includes('${') && value.includes('}'))) {
+      warnings.push(`⚠️ 環境變數 ${varName} 包含未展開的模板字串: ${value}`);
+      // 清理有問題的可選變數
+      delete process.env[varName];
+      console.log(`🧹 已清理有問題的環境變數: ${varName}`);
+    }
+  }
+
+  // 特別檢查 DEBUG_URL（報錯中提到的變數）
+  if (process.env.DEBUG_URL) {
+    const debugUrl = process.env.DEBUG_URL;
+    if (debugUrl.includes('${') || debugUrl.includes('Missing parameter name')) {
+      console.log(`🚨 發現問題 DEBUG_URL: ${debugUrl}`);
+      delete process.env.DEBUG_URL;
+      console.log('🧹 已清理問題 DEBUG_URL');
+    }
+  }
+
+  if (errors.length > 0) {
+    console.log('環境變數錯誤:');
+    errors.forEach(error => console.log(error));
   }
 
   if (warnings.length > 0) {
     console.log('環境變數警告:');
     warnings.forEach(warning => console.log(warning));
+  }
+
+  if (errors.length === 0 && warnings.length === 0) {
+    console.log('✅ 環境變數驗證通過');
   }
 };
 
