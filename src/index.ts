@@ -107,7 +107,7 @@ const startServer = async () => {
     await sequelize.sync();
     console.log('✅ 資料表同步完成！');
 
-    app.listen(Number(PORT), '0.0.0.0', () => {
+    app.listen(PORT, '0.0.0.0', () => {
       console.log(`🚀 伺服器啟動成功！埠號: ${PORT}`);
       console.log(`📍 Health Check: http://0.0.0.0:${PORT}/health`);
       console.log(`📱 LINE Webhook: http://0.0.0.0:${PORT}/webhook`);
@@ -120,7 +120,7 @@ const startServer = async () => {
     console.error('❌ 伺服器啟動失敗:', error);
     console.log('⚠️ 嘗試在沒有資料庫連線的情況下啟動伺服器...');
 
-    app.listen(Number(PORT), '0.0.0.0', () => {
+    app.listen(PORT, '0.0.0.0', () => {
       console.log(`🚀 伺服器啟動成功（無資料庫）！埠號: ${PORT}`);
       console.log(`📍 Health Check: http://0.0.0.0:${PORT}/health`);
     });
