@@ -3,7 +3,7 @@ import express from 'express';
 import Member from '../models/member';
 import Registration from '../models/registration';
 import Event from '../models/event';
-import { sequelize } from '../config/database';
+import sequelize from '../config/database';
 
 const router = express.Router();
 

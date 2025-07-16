@@ -1,41 +1,29 @@
-
-// src/init.ts
-import { sequelize } from './config/database';
-import Member from './models/member';
-import Event from './models/event';
-import Registration from './models/registration';
-import Checkin from './models/checkin';
-import MessageLog from './models/messageLog';
-import Payment from './models/payment';
+import sequelize from './config/database';
+import './models/index'; // 載入所有模型關聯
 
 const initDB = async () => {
   try {
-    console.log('🔄 開始資料庫初始化...');
-    
-    // 測試資料庫連接
+    console.log('🔄 開始測試資料庫連線...');
     await sequelize.authenticate();
-    console.log('✅ 資料庫連接成功');
-    
-    // 同步所有模型到資料庫
+    console.log('✅ 資料庫連線成功！');
+
+    console.log('🔄 開始同步資料表...');
     await sequelize.sync({ alter: true });
     console.log('✅ 資料表初始化完成！');
-    
-    // 檢查各表是否建立成功
-    const tableNames = await sequelize.getQueryInterface().showAllTables();
-    console.log('📋 已建立的資料表:', tableNames);
-    
+
+    // 顯示所有已建立的表格
+    const tables = await sequelize.getQueryInterface().showAllTables();
+    console.log('📋 已建立的資料表:', tables);
+
   } catch (error) {
     console.error('❌ 資料庫初始化錯誤:', error);
-    throw error;
+    if (error instanceof Error) {
+      console.error('錯誤詳情:', error.message);
+    }
   } finally {
     await sequelize.close();
-    console.log('🔐 資料庫連接已關閉');
+    console.log('🔒 資料庫連線已關閉');
   }
 };
 
-// 如果直接執行此檔案就初始化資料庫
-if (require.main === module) {
-  initDB().catch(console.error);
-}
-
-export default initDB;
+initDB();
