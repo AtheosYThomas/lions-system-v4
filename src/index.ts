@@ -223,6 +223,29 @@ const startServer = async () => {
                             value.includes('${') ||
                             value.includes('Missing parameter') ||
                             value === 'undefined' ||
+                            value === 'null';
+        
+        if (isDangerous) {
+          delete process.env[key];
+          cleanedCount++;
+          console.log(`🧹 清理危險變數: ${key}`);
+        }
+      }
+    });
+    
+    if (cleanedCount > 0) {
+      console.log(`✅ 清理了 ${cleanedCount} 個危險環境變數`);
+    }
+    
+    // 2. 設置安全預設值
+    process.env.NODE_ENV = process.env.NODE_ENV || 'development';
+    process.env.PORT = process.env.PORT || '5000';
+    
+    console.log('🔍 驗證環境安全性...');
+    
+    // 3. 最終安全檢查
+                            value.includes('Missing parameter') ||
+                            value === 'undefined' ||
                             value === 'null' ||
                             value.trim() === '';
         
