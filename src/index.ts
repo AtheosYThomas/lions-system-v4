@@ -65,7 +65,7 @@ app.get('/health', async (req, res) => {
 
 app.use('/api', memberRoutes);
 app.use('/line', pushRoutes);
-app.use('/line', webhookRoutes);
+app.use('/webhook', webhookRoutes);
 
 // 錯誤處理 middleware（必須放在所有路由之後）
 app.use(notFoundHandler);
