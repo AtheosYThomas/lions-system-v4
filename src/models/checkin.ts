@@ -59,11 +59,6 @@ Checkin.init({
   timestamps: false
 });
 
-// 設定關聯
-import Member from './member';
-import Event from './event';
-
-Checkin.belongsTo(Member, { foreignKey: 'member_id' });
-Checkin.belongsTo(Event, { foreignKey: 'event_id' });
+// 關聯設定將在 src/models/index.ts 中統一處理
 
 export default Checkin;

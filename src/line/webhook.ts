@@ -1,6 +1,6 @@
 import express from 'express';
 import { middleware } from '@line/bot-sdk';
-import config from '../config';
+import config from '../config/config';
 import lineHandler from './handler';
 
 const router = express.Router();
