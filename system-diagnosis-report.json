@@ -1,0 +1,59 @@
+{
+  "timestamp": "2025-07-16T13:42:32.444Z",
+  "summary": {
+    "totalErrors": 0,
+    "totalWarnings": 1,
+    "systemStatus": "issues"
+  },
+  "sections": {
+    "routes": {
+      "status": "ok",
+      "errors": [],
+      "warnings": []
+    },
+    "environment": {
+      "status": "ok",
+      "errors": [],
+      "warnings": [
+        "⚠️ .env 檔案中有重複設定: LINE_CHANNEL_ACCESS_TOKEN, LINE_CHANNEL_SECRET, DATABASE_URL, PORT, NODE_ENV"
+      ],
+      "duplicates": [
+        "LINE_CHANNEL_ACCESS_TOKEN",
+        "LINE_CHANNEL_SECRET",
+        "DATABASE_URL",
+        "PORT",
+        "NODE_ENV"
+      ]
+    },
+    "frontend": {
+      "status": "ok",
+      "errors": [],
+      "warnings": []
+    },
+    "health": {
+      "status": "ok",
+      "errors": [],
+      "details": {
+        "timestamp": "2025-07-16T13:42:33.024Z",
+        "status": "healthy",
+        "checks": {
+          "database": {
+            "status": "ok",
+            "message": "資料庫連線正常"
+          },
+          "environment": {
+            "status": "ok",
+            "missing": []
+          },
+          "models": {
+            "status": "ok",
+            "message": "找到 5 個資料表"
+          }
+        }
+      }
+    },
+    "suggestions": [
+      "清理 .env 檔案中的重複設定"
+    ]
+  }
+}
