@@ -16,14 +16,21 @@ const Registration = sequelize.define('Registration', {
     type: DataTypes.UUID,
     allowNull: false
   },
-  num_attendees: DataTypes.INTEGER,
-  notes: DataTypes.STRING,
+  registration_date: {
+    type: DataTypes.DATE,
+    defaultValue: DataTypes.NOW
+  },
+  status: {
+    type: DataTypes.STRING,
+    defaultValue: 'confirmed'
+  },
   created_at: {
     type: DataTypes.DATE,
     defaultValue: DataTypes.NOW
   }
 }, {
-  tableName: 'registrations'
+  tableName: 'registrations',
+  timestamps: false
 });
 
 export default Registration;
