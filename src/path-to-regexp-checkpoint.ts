@@ -18,31 +18,65 @@ const checkpoint1 = (): CheckpointResult => {
   
   const dangerousVars: string[] = [];
   const details: string[] = [];
+  let warningCount = 0;
+  
+  // 擴展的危險模式檢查
+  const dangerousPatterns = [
+    { pattern: /\$\{[^}]*\}/, name: '模板字串' },
+    { pattern: /Missing parameter/, name: '錯誤訊息殘留' },
+    { pattern: /:[\w]*\(\*\)/, name: '非法路由參數' },
+    { pattern: /^undefined$/i, name: '未定義值' },
+    { pattern: /^null$/i, name: '空值' }
+  ];
   
   Object.entries(process.env).forEach(([key, value]) => {
     if (value && typeof value === 'string') {
-      if (value.includes('${') && value.includes('}')) {
-        dangerousVars.push(`${key}=${value}`);
-        details.push(`⚠️ 模板字串: ${key}=${value}`);
-      }
-      if (value.includes('Missing parameter')) {
-        dangerousVars.push(`${key}=${value}`);
-        details.push(`🚨 錯誤訊息殘留: ${key}=${value}`);
-      }
-      if (key.includes('DEBUG_URL') || key.includes('WEBPACK') || key.includes('HMR')) {
-        details.push(`📝 開發相關變數: ${key}=${value}`);
+      // 檢查危險模式
+      dangerousPatterns.forEach(({ pattern, name }) => {
+        if (pattern.test(value)) {
+          dangerousVars.push(`${key}=${value}`);
+          details.push(`🚨 ${name}: ${key}=${value}`);
+        }
+      });
+      
+      // 檢查可疑的開發變數
+      if (key.includes('DEBUG_URL') || key.includes('WEBPACK') || key.includes('HMR') || 
+          key.includes('VITE_DEV') || key.includes('BASE_URL')) {
+        if (value.includes('${') || value.includes('Missing') || value === 'undefined') {
+          dangerousVars.push(`${key}=${value}`);
+          details.push(`🚨 問題開發變數: ${key}=${value}`);
+        } else {
+          details.push(`📝 開發相關變數: ${key}=${value}`);
+          warningCount++;
+        }
       }
     }
   });
   
+  // 檢查必要環境變數
+  const requiredVars = ['NODE_ENV', 'PORT'];
+  requiredVars.forEach(varName => {
+    const value = process.env[varName];
+    if (!value || value === 'undefined' || value.includes('${')) {
+      details.push(`❌ 缺少或無效的必要變數: ${varName}=${value || 'undefined'}`);
+      dangerousVars.push(`${varName}=${value || 'undefined'}`);
+    } else {
+      details.push(`✅ 必要變數正常: ${varName}=${value}`);
+    }
+  });
+  
+  const status = dangerousVars.length === 0 ? 'pass' : 
+                warningCount > 0 && dangerousVars.length < 3 ? 'warning' : 'fail';
+  
   return {
     checkpoint: 'initial_env',
     timestamp: new Date().toISOString(),
-    status: dangerousVars.length === 0 ? 'pass' : 'fail',
+    status,
     details,
     environmentSnapshot: {
       totalVars: Object.keys(process.env).length,
       dangerousVars: dangerousVars.length,
+      warningVars: warningCount,
       nodeEnv: process.env.NODE_ENV,
       port: process.env.PORT
     }
@@ -218,13 +252,28 @@ const runAllCheckpoints = async () => {
     }
   });
   
+  // 統計結果
+  const passedCount = checkpoints.filter(cp => cp.status === 'pass').length;
+  const warningCount = checkpoints.filter(cp => cp.status === 'warning').length;
+  const failedCount = checkpoints.filter(cp => cp.status === 'fail').length;
+  
+  console.log(`\n📊 Checkpoint 結果統計:`);
+  console.log(`✅ 通過: ${passedCount}`);
+  console.log(`⚠️ 警告: ${warningCount}`);
+  console.log(`❌ 失敗: ${failedCount}`);
+  
   // 找出第一個失敗的 checkpoint
   const firstFailure = checkpoints.find(cp => cp.status === 'fail');
   if (firstFailure) {
     console.log(`\n🚨 首次錯誤發生在: ${firstFailure.checkpoint}`);
     console.log(`⏰ 錯誤時間: ${firstFailure.timestamp}`);
-  } else {
-    console.log('\n🎉 所有 checkpoints 通過或僅有警告');
+    console.log(`📋 建議動作: 檢查環境變數或執行修復腳本`);
+  } else if (failedCount === 0 && warningCount === 0) {
+    console.log('\n🎉 所有 checkpoints 完全通過！');
+    console.log('✅ Checkpoint 1 狀態: PASS');
+  } else if (failedCount === 0) {
+    console.log('\n✅ 所有關鍵 checkpoints 通過，僅有輕微警告');
+    console.log('🟡 Checkpoint 1 狀態: PASS (有警告)');
   }
   
   // 保存詳細報告

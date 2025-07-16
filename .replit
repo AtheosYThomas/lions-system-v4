@@ -15,7 +15,7 @@ deploymentTarget = "autoscale"
 ignorePorts = false
 
 [workflows]
-runButton = "簡化 Checkpoint 1 修復"
+runButton = "完整 Checkpoint 1 驗證"
 
 [[workflows.workflow]]
 name = "Run TypeScript Server"
@@ -667,6 +667,31 @@ args = "npx ts-node src/checkpoint-1-fix.ts"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "npx ts-node src/path-to-regexp-checkpoint.ts"
+
+[[workflows.workflow]]
+name = "完整 Checkpoint 1 驗證"
+author = 44484841
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "echo \"🔧 開始完整 Checkpoint 1 修復和驗證...\""
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npx ts-node src/checkpoint-1-fix.ts"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "echo \"✅ 修復完成，開始驗證...\""
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npx ts-node src/path-to-regexp-checkpoint.ts"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "echo \"📋 Checkpoint 1 驗證完成\""
 
 [[ports]]
 localPort = 5000
