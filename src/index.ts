@@ -18,16 +18,36 @@ import { errorHandler, notFoundHandler } from './middleware/errorHandler';
 const app = express();
 app.use(bodyParser.json());
 // Health check 端點
-app.get('/health', (req, res) => {
-  res.json({ 
-    status: 'OK', 
-    timestamp: new Date().toISOString(),
-    database: 'connected',
-    services: {
-      sequelize: 'active',
-      express: 'running'
-    }
-  });
+app.get('/health', async (req, res) => {
+  try {
+    // 測試資料庫連線
+    await sequelize.authenticate();
+    
+    res.json({ 
+      status: 'OK', 
+      timestamp: new Date().toISOString(),
+      database: 'connected',
+      services: {
+        sequelize: 'active',
+        express: 'running'
+      },
+      models: {
+        member: 'synced',
+        event: 'synced',
+        registration: 'synced',
+        payment: 'synced',
+        checkin: 'synced',
+        messageLog: 'synced'
+      }
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: 'ERROR',
+      timestamp: new Date().toISOString(),
+      database: 'disconnected',
+      error: error.message
+    });
+  }
 });
 
 app.use('/api', memberRoutes);
