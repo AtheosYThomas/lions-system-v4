@@ -1,39 +1,47 @@
 
 export const routeSafetyCheck = () => {
-  console.log('🛡️ 執行路由安全檢查...');
+  console.log('🛡️ 執行增強路由安全檢查...');
   
   const issues: string[] = [];
   const fixes: string[] = [];
 
-  // 1. 檢查環境變數中的路由相關問題
+  // 1. 更徹底的環境變數檢查
   Object.entries(process.env).forEach(([key, value]) => {
     if (value && typeof value === 'string') {
-      // 檢查 path-to-regexp 常見錯誤模式
-      const problematicPatterns = [
-        /\$\{[^}]*\}/g,           // ${...} 未展開的模板字串
-        /:[\w]*\(\*\)/g,         // :param(*) 非法參數
-        /Missing parameter name/g, // 錯誤訊息本身
-        /^\$\{.*\}$/g            // 完全是模板字串的值
+      // 擴展的問題模式檢查
+      const criticalPatterns = [
+        { pattern: /\$\{[^}]*\}/g, name: '未展開的模板字串', critical: true },
+        { pattern: /:[\w]*\(\*\)/g, name: '非法路由參數格式', critical: true },
+        { pattern: /Missing parameter name/gi, name: '錯誤訊息殘留', critical: true },
+        { pattern: /^\$\{.*\}$/g, name: '完整模板字串', critical: true },
+        { pattern: /^undefined$/gi, name: '未定義值', critical: false },
+        { pattern: /^null$/gi, name: '空值', critical: false },
+        { pattern: /^\s*$/g, name: '空白值', critical: false }
       ];
 
-      problematicPatterns.forEach((pattern, index) => {
+      criticalPatterns.forEach(({ pattern, name, critical }) => {
         if (pattern.test(value)) {
-          const patternNames = [
-            '未展開的模板字串',
-            '非法路由參數',
-            '錯誤訊息殘留',
-            '完整模板字串'
-          ];
+          const severity = critical ? '🚨' : '⚠️';
+          issues.push(`${severity} 環境變數 ${key} 包含 ${name}: ${value}`);
           
-          issues.push(`環境變數 ${key} 包含 ${patternNames[index]}: ${value}`);
-          
-          // 自動修復
-          if (key.includes('DEBUG') || key.includes('URL') || key.includes('WEBPACK')) {
+          // 立即清理關鍵問題
+          if (critical || key.includes('DEBUG') || key.includes('URL') || 
+              key.includes('WEBPACK') || key.includes('VITE') || key.includes('HMR')) {
             delete process.env[key];
-            fixes.push(`已清理環境變數: ${key}`);
+            fixes.push(`🧹 已清理問題變數: ${key}`);
           }
         }
       });
+      
+      // 特別檢查包含路由相關關鍵字的變數
+      const routeKeywords = ['route', 'path', 'url', 'endpoint', 'api'];
+      if (routeKeywords.some(keyword => key.toLowerCase().includes(keyword))) {
+        if (value.includes('${') || value.includes(':') && value.includes('(')) {
+          issues.push(`🚨 路由相關變數 ${key} 可能有問題: ${value}`);
+          delete process.env[key];
+          fixes.push(`🛡️ 已清理路由變數: ${key}`);
+        }
+      }
     }
   });
 

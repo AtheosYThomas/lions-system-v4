@@ -15,7 +15,7 @@ deploymentTarget = "autoscale"
 ignorePorts = false
 
 [workflows]
-runButton = "安全啟動"
+runButton = "超安全啟動"
 
 [[workflows.workflow]]
 name = "Run TypeScript Server"
@@ -341,6 +341,15 @@ args = "echo \"🚀 啟動伺服器...\""
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "npx ts-node src/index.ts"
+
+[[workflows.workflow]]
+name = "超安全啟動"
+author = 44484841
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npx ts-node src/safe-start.ts"
 
 [[ports]]
 localPort = 5000

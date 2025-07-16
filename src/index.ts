@@ -160,32 +160,54 @@ const validateRoutes = () => {
 // 啟動伺服器
 const startServer = async () => {
   try {
-    console.log('🚨 預防 path-to-regexp 錯誤...');
+    console.log('🚨 強化預防 path-to-regexp 錯誤...');
     
-    // 強制清理可能導致 path-to-regexp 錯誤的環境變數
-    const problematicEnvVars = [
-      'DEBUG_URL', 'WEBPACK_DEV_SERVER_URL', 'WEBPACK_DEV_SERVER',
-      'HMR_HOST', 'HMR_PORT', 'VITE_DEV_SERVER_URL'
+    // 1. 徹底清理所有可能導致問題的環境變數
+    const dangerousPatterns = [
+      /\$\{.*\}/,           // 任何包含 ${...} 的變數
+      /Missing parameter/i,  // 包含錯誤訊息的變數
+      /:.*\(\*\)/,          // 包含 :param(*) 模式的變數
     ];
     
-    problematicEnvVars.forEach(varName => {
-      if (process.env[varName]) {
-        console.log(`🧹 清理環境變數: ${varName}=${process.env[varName]}`);
-        delete process.env[varName];
+    const allEnvVars = Object.keys(process.env);
+    let cleanedCount = 0;
+    
+    allEnvVars.forEach(key => {
+      const value = process.env[key];
+      if (value && typeof value === 'string') {
+        // 檢查是否匹配危險模式
+        const isDangerous = dangerousPatterns.some(pattern => pattern.test(value)) ||
+                            value.includes('${') ||
+                            value.includes('Missing parameter') ||
+                            value === 'undefined' ||
+                            value === 'null' ||
+                            value.trim() === '';
+        
+        if (isDangerous) {
+          console.log(`🧹 清理危險環境變數: ${key}=${value}`);
+          delete process.env[key];
+          cleanedCount++;
+        }
       }
     });
     
-    // 設置安全的環境變數
-    process.env.NODE_ENV = 'development';
-    process.env.PORT = process.env.PORT || '5000';
+    console.log(`✅ 已清理 ${cleanedCount} 個危險環境變數`);
     
-    // 預先清理可能的問題環境變數
+    // 2. 強制設置安全的核心環境變數
+    const safeDefaults = {
+      NODE_ENV: 'development',
+      PORT: '5000',
+      EXPRESS_ENV: 'development'
+    };
+    
+    Object.entries(safeDefaults).forEach(([key, value]) => {
+      process.env[key] = value;
+      console.log(`🔧 設置安全環境變數: ${key}=${value}`);
+    });
+    
+    // 3. 執行增強的安全檢查
     cleanProblemEnvVars();
-    
-    // 執行路由安全檢查
     routeSafetyCheck();
-    
-    // 驗證路由配置
     validateRoutes();
     
     console.log('🔄 測試資料庫連線...');
