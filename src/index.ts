@@ -1,4 +1,3 @@
-
 import express from 'express';
 import path from 'path';
 import { config } from './config/config';
@@ -18,12 +17,29 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, '../client/dist')));
 
 // Health Check 路由
-app.get('/health', (req, res) => {
-  res.status(200).json({
-    status: 'healthy',
-    timestamp: new Date().toISOString(),
-    version: '4.0'
-  });
+app.get('/health', async (req, res) => {
+  try {
+    // 測試資料庫連線
+    await sequelize.authenticate();
+    res.status(200).json({
+      status: 'healthy',
+      timestamp: new Date().toISOString(),
+      version: '4.0',
+      uptime: process.uptime(),
+      database: 'connected',
+      services: {
+        line: config.line.accessToken ? 'configured' : 'missing_token',
+        routes: ['admin', 'checkin', 'members', 'webhook']
+      }
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: 'error',
+      timestamp: new Date().toISOString(),
+      database: 'failed',
+      error: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
 });
 
 app.get('/healthz', (req, res) => {

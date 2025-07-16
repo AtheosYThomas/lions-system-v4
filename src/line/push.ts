@@ -5,8 +5,8 @@ import { Client } from '@line/bot-sdk';
 
 const router = express.Router();
 const client = new Client({
-  channelAccessToken: config.channelAccessToken,
-  channelSecret: config.channelSecret
+  channelAccessToken: config.line.accessToken,
+  channelSecret: config.line.channelSecret
 });
 
 router.post('/push/:userId', async (req, res) => {

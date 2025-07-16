@@ -4,12 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node dist/index.js",
-    "dev": "npx ts-node src/index.ts",
-    "build": "npx tsc",
-    "build:client": "cd client && npm run build",
-    "build:all": "npm run build && npm run build:client",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "npx tsx src/index.ts",
+    "init-db": "npx tsx src/init.ts",
+    "lint": "eslint . --ext .ts",
+    "build": "npx tsc"
   },
   "keywords": [],
   "author": "",
