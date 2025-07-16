@@ -7,6 +7,7 @@ interface CheckinAttributes {
   member_id: string;
   event_id: string;
   checkin_time: Date;
+  device_info?: string;
   created_at: Date;
 }
 
@@ -15,6 +16,7 @@ class Checkin extends Model<CheckinAttributes> implements CheckinAttributes {
   public member_id!: string;
   public event_id!: string;
   public checkin_time!: Date;
+  public device_info?: string;
   public created_at!: Date;
 }
 
@@ -36,6 +38,10 @@ Checkin.init({
     type: DataTypes.DATE,
     allowNull: false
   },
+  device_info: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
   created_at: {
     type: DataTypes.DATE,
     defaultValue: DataTypes.NOW
@@ -45,5 +51,12 @@ Checkin.init({
   tableName: 'checkins',
   timestamps: false
 });
+
+// 設定關聯
+import Member from './member';
+import Event from './event';
+
+Checkin.belongsTo(Member, { foreignKey: 'member_id' });
+Checkin.belongsTo(Event, { foreignKey: 'event_id' });
 
 export default Checkin;
