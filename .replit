@@ -15,7 +15,7 @@ deploymentTarget = "autoscale"
 ignorePorts = false
 
 [workflows]
-runButton = "終極安全啟動"
+runButton = "緊急重啟"
 
 [[workflows.workflow]]
 name = "Run TypeScript Server"
@@ -434,6 +434,47 @@ args = "npx ts-node src/path-to-regexp-checkpoint.ts"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "echo \"📋 Checkpoint 檢查完成，檢查報告檔案\""
+
+[[workflows.workflow]]
+name = "緊急重啟"
+author = 44484841
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "echo \"🚨 緊急重啟系統...\""
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "pkill -f \"ts-node\" || true"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "sleep 1"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "echo \"🧹 清理環境變數...\""
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "unset DEBUG_URL WEBPACK_DEV_SERVER_URL WEBPACK_DEV_SERVER HMR_HOST HMR_PORT VITE_DEV_SERVER_URL"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "export NODE_ENV=development"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "export PORT=5000"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "echo \"🚀 啟動伺服器...\""
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npx ts-node src/index.ts"
 
 [[ports]]
 localPort = 5000

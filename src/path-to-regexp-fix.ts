@@ -1,4 +1,3 @@
-
 // path-to-regexp 錯誤專用修復腳本
 console.log('🔧 開始 path-to-regexp 錯誤專用修復...');
 
@@ -6,94 +5,62 @@ console.log('🔧 開始 path-to-regexp 錯誤專用修復...');
 const beforeCleanup = Object.keys(process.env).length;
 console.log(`📊 修復前環境變數數量: ${beforeCleanup}`);
 
-// 2. 識別並記錄所有問題變數
-const problemVariables: string[] = [];
-const templateStringVars: string[] = [];
-const pathToRegexpErrors: string[] = [];
+// 2. 識別並清理所有問題變數
+const problematicPatterns = [
+  /\$\{[^}]*\}/,           // ${...} 模板字串
+  /Missing parameter/,      // 錯誤訊息
+  /:[\w]*\(\*\)/,          // 非法路由參數
+];
 
+const cleanedVars: string[] = [];
 Object.entries(process.env).forEach(([key, value]) => {
   if (value && typeof value === 'string') {
-    // 檢查模板字串
-    if (value.includes('${') && value.includes('}')) {
-      templateStringVars.push(`${key}=${value}`);
-      problemVariables.push(key);
-    }
-    
-    // 檢查 path-to-regexp 錯誤訊息
-    if (value.includes('Missing parameter') || value.includes('path-to-regexp')) {
-      pathToRegexpErrors.push(`${key}=${value}`);
-      problemVariables.push(key);
-    }
-    
-    // 檢查其他問題模式
-    if (value === 'undefined' || value === 'null' || 
-        key.includes('DEBUG_URL') || key.includes('WEBPACK_DEV_SERVER')) {
-      problemVariables.push(key);
+    const hasProblems = problematicPatterns.some(pattern => pattern.test(value)) ||
+                       value === 'undefined' || value === 'null' || value.trim() === '';
+
+    if (hasProblems) {
+      delete process.env[key];
+      cleanedVars.push(key);
     }
   }
 });
 
-// 3. 報告發現的問題
-console.log('\n🔍 問題變數分析：');
-if (templateStringVars.length > 0) {
-  console.log('📝 模板字串變數：');
-  templateStringVars.forEach(variable => console.log(`  - ${variable}`));
+if (cleanedVars.length > 0) {
+  console.log(`🧹 已清理問題變數: ${cleanedVars.join(', ')}`);
+} else {
+  console.log('✅ 未發現問題變數');
 }
 
-if (pathToRegexpErrors.length > 0) {
-  console.log('🚨 path-to-regexp 錯誤變數：');
-  pathToRegexpErrors.forEach(variable => console.log(`  - ${variable}`));
-}
-
-console.log(`🎯 總共發現 ${problemVariables.length} 個問題變數`);
-
-// 4. 執行清理
-console.log('\n🧹 開始清理問題變數...');
-problemVariables.forEach(key => {
-  console.log(`🗑️ 刪除: ${key}`);
-  delete process.env[key];
-});
-
-// 5. 設置安全的預設值
+// 3. 設置安全的預設值
 const safeDefaults = {
   NODE_ENV: 'development',
-  PORT: '5000',
-  TERM: 'xterm-256color'
+  PORT: '5000'
 };
 
-console.log('\n⚙️ 設置安全預設值...');
 Object.entries(safeDefaults).forEach(([key, value]) => {
-  process.env[key] = value;
-  console.log(`✅ 設置: ${key}=${value}`);
+  if (!process.env[key]) {
+    process.env[key] = value;
+    console.log(`🔧 設置預設值: ${key}=${value}`);
+  }
 });
 
-// 6. 驗證修復結果
+// 4. 最終檢查
 const afterCleanup = Object.keys(process.env).length;
-const cleanedCount = beforeCleanup - afterCleanup + Object.keys(safeDefaults).length;
+console.log(`📊 修復後環境變數數量: ${afterCleanup}`);
+console.log(`✅ path-to-regexp 修復完成，清理了 ${beforeCleanup - afterCleanup} 個變數`);
 
-console.log('\n📊 修復結果統計：');
-console.log(`  修復前變數數量: ${beforeCleanup}`);
-console.log(`  修復後變數數量: ${afterCleanup}`);
-console.log(`  清理的問題變數: ${problemVariables.length}`);
-console.log(`  新增的安全變數: ${Object.keys(safeDefaults).length}`);
-
-// 7. 最終驗證 - 確保沒有殘留問題
-const finalCheck = Object.entries(process.env).filter(([key, value]) => {
+// 5. 驗證修復結果
+const remainingIssues = Object.entries(process.env).filter(([key, value]) => {
   return value && typeof value === 'string' && (
-    value.includes('${') ||
-    value.includes('Missing parameter') ||
-    value.includes('path-to-regexp')
+    value.includes('${') || value.includes('Missing parameter')
   );
 });
 
-if (finalCheck.length === 0) {
-  console.log('\n✅ path-to-regexp 錯誤修復完成！');
-  console.log('🎉 所有問題變數已清除，環境已安全');
+if (remainingIssues.length === 0) {
+  console.log('🎉 所有 path-to-regexp 相關問題已解決');
 } else {
-  console.log('\n⚠️ 發現殘留問題：');
-  finalCheck.forEach(([key, value]) => {
-    console.log(`  🚨 ${key}=${value}`);
+  console.log(`⚠️ 仍有 ${remainingIssues.length} 個問題需要處理`);
+  remainingIssues.forEach(([key, value]) => {
+    console.log(`  - ${key}: ${value}`);
   });
 }
-
-export { cleanedCount, problemVariables };
