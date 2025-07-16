@@ -13,7 +13,7 @@ import { validateEnvironment } from './utils/envValidation';
 import { healthCheck } from './utils/healthCheck';
 
 const app = express();
-const PORT: number = parseInt(process.env.PORT || '3000', 10);
+const PORT: number = parseInt(process.env.PORT || '5000', 10);
 
 // 中介軟體
 app.use(express.json());
@@ -90,9 +90,12 @@ const startServer = async () => {
 
     app.listen(PORT, '0.0.0.0', () => {
       console.log(`🚀 伺服器啟動成功！埠號: ${PORT}`);
-      console.log(`📍 Health Check: http://0.0.0.0:${PORT}/health`);
-      console.log(`📱 LINE Webhook: http://0.0.0.0:${PORT}/webhook`);
-      console.log(`🌐 前端頁面: http://0.0.0.0:${PORT}`);
+      console.log(`📍 Health Check: https://YOUR_REPL_URL/health`);
+      console.log(`📱 LINE Webhook: https://YOUR_REPL_URL/webhook`);
+      console.log(`🌐 前端頁面: https://YOUR_REPL_URL`);
+      console.log(`📋 會員註冊: https://YOUR_REPL_URL/form/register`);
+      console.log(`📝 活動簽到: https://YOUR_REPL_URL/form/checkin/1`);
+      console.log(`⚙️  管理後台: https://YOUR_REPL_URL/admin`);
     });
   } catch (error) {
     console.error('❌ 伺服器啟動失敗:', error);
