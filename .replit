@@ -37,3 +37,7 @@ args = "npx tsc"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "node dist/index.js"
+
+[[ports]]
+localPort = 3000
+externalPort = 80
