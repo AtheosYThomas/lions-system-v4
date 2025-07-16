@@ -55,11 +55,6 @@ Event.init({
   timestamps: false
 });
 
-// 設定關聯
-import Checkin from './checkin';
-import Registration from './registration';
-
-Event.hasMany(Checkin, { foreignKey: 'event_id' });
-Event.hasMany(Registration, { foreignKey: 'event_id' });
+// 關聯設定將在 src/models/index.ts 中統一處理
 
 export default Event;

@@ -11,6 +11,9 @@ import { checkRequiredEnvVars } from './utils/envCheck';
 // ✅ 檢查環境變數
 checkRequiredEnvVars();
 
+// ✅ 載入模型關聯設定
+import './models/index';
+
 const app = express();
 
 // ✅ 基本中間件
