@@ -2,7 +2,7 @@
 export const checkRequiredEnvVars = () => {
   const required = [
     'LINE_CHANNEL_SECRET',
-    'LINE_ACCESS_TOKEN'
+    'LINE_CHANNEL_ACCESS_TOKEN'
   ];
 
   const missing = required.filter(varName => !process.env[varName]);
