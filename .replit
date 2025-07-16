@@ -15,7 +15,7 @@ deploymentTarget = "autoscale"
 ignorePorts = false
 
 [workflows]
-runButton = "安全修復啟動"
+runButton = "智能重啟"
 
 [[workflows.workflow]]
 name = "Run TypeScript Server"
@@ -525,6 +525,35 @@ args = "echo \"🛡️ 啟動安全模式...\""
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "npx ts-node src/safe-start.ts"
+
+[[workflows.workflow]]
+name = "智能重啟"
+author = 44484841
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "echo \"🔍 執行 checkpoint 檢查...\""
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npx ts-node src/path-to-regexp-checkpoint.ts"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "echo \"🔧 執行專用修復...\""
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npx ts-node src/path-to-regexp-fix.ts"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "echo \"🚀 啟動系統...\""
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npx ts-node src/index.ts"
 
 [[ports]]
 localPort = 5000
