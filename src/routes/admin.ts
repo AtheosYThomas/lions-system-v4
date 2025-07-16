@@ -3,6 +3,7 @@ import express from 'express';
 import Member from '../models/member';
 import Registration from '../models/registration';
 import Event from '../models/event';
+import { sequelize } from '../config/database';
 
 const router = express.Router();
 
@@ -36,7 +37,7 @@ router.get('/stats', async (req, res) => {
     const stats = await Registration.findAll({
       attributes: [
         'event_id', 
-        [Registration.sequelize.fn('COUNT', '*'), 'count']
+        [sequelize.fn('COUNT', '*'), 'count']
       ],
       group: ['event_id'],
       include: [{
@@ -60,7 +61,7 @@ router.get('/member-stats', async (req, res) => {
     const memberStats = await Member.findAll({
       attributes: [
         'status',
-        [Member.sequelize.fn('COUNT', '*'), 'count']
+        [sequelize.fn('COUNT', '*'), 'count']
       ],
       group: ['status']
     });
