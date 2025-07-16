@@ -5,8 +5,9 @@ import sequelize from './config/database';
 import './models/index'; // 載入模型關聯
 import lineHandler from './line/handler';
 import adminRoutes from './routes/admin';
-import memberRoutes from './routes/members';
 import checkinRoutes from './routes/checkin';
+import membersRoutes from './routes/members';
+import eventsRoutes from './routes/events';
 import { errorHandler, notFoundHandler } from './middleware/errorHandler';
 import { validateEnvironment } from './utils/envValidation';
 import { healthCheck } from './utils/healthCheck';
@@ -49,9 +50,10 @@ app.get('/api/system/status', (req, res) => {
 app.post('/webhook', lineHandler);
 
 // 路由設定
-app.use('/api', memberRoutes);
-app.use('/api', checkinRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api', checkinRoutes);
+app.use('/api', membersRoutes);
+app.use('/api', eventsRoutes);
 
 // 前端路由（提供 React 應用）
 app.get('/', (req, res) => {

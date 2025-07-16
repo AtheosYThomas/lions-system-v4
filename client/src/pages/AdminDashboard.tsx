@@ -1,18 +1,10 @@
-
 import React, { useState, useEffect } from 'react';
 import axios from '../api/axios';
-
-interface SystemStats {
-  totalMembers: number;
-  totalEvents: number;
-  totalCheckins: number;
-  recentActivity: any[];
-}
+import { Button } from "../components/ui/button";
 
 export default function AdminDashboard() {
-  const [stats, setStats] = useState<SystemStats | null>(null);
+  const [stats, setStats] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
 
   useEffect(() => {
     const loadStats = async () => {
@@ -20,7 +12,7 @@ export default function AdminDashboard() {
         const response = await axios.get('/admin/summary');
         setStats(response.data);
       } catch (error) {
-        setError('無法載入統計資料');
+        console.error('載入統計資料失敗:', error);
       } finally {
         setLoading(false);
       }
@@ -31,119 +23,44 @@ export default function AdminDashboard() {
 
   if (loading) {
     return (
-      <div style={{ textAlign: 'center', padding: '50px' }}>
-        <p>載入中...</p>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div style={{ textAlign: 'center', padding: '50px' }}>
-        <p>❌ {error}</p>
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="text-lg">載入中...</div>
       </div>
     );
   }
 
   return (
-    <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '20px' }}>
-      <h1>📊 管理後台總覽</h1>
-      
+    <div className="max-w-4xl mx-auto mt-10 p-6">
+      <h1 className="text-3xl font-bold mb-8 text-center text-gray-800">🦁 管理後台總覽</h1>
+
       {stats && (
-        <>
-          <div style={{ 
-            display: 'grid', 
-            gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-            gap: '20px',
-            marginBottom: '30px'
-          }}>
-            <div style={{ 
-              padding: '20px', 
-              backgroundColor: '#f8f9fa', 
-              borderRadius: '8px',
-              textAlign: 'center'
-            }}>
-              <h3>👥 總會員數</h3>
-              <p style={{ fontSize: '2em', color: '#007bff' }}>{stats.totalMembers}</p>
-            </div>
-            
-            <div style={{ 
-              padding: '20px', 
-              backgroundColor: '#f8f9fa', 
-              borderRadius: '8px',
-              textAlign: 'center'
-            }}>
-              <h3>📅 總活動數</h3>
-              <p style={{ fontSize: '2em', color: '#28a745' }}>{stats.totalEvents}</p>
-            </div>
-            
-            <div style={{ 
-              padding: '20px', 
-              backgroundColor: '#f8f9fa', 
-              borderRadius: '8px',
-              textAlign: 'center'
-            }}>
-              <h3>✅ 總簽到數</h3>
-              <p style={{ fontSize: '2em', color: '#ffc107' }}>{stats.totalCheckins}</p>
-            </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <div className="bg-blue-100 p-6 rounded-lg border border-blue-200">
+            <h3 className="text-lg font-semibold text-blue-800 mb-2">總會員數</h3>
+            <p className="text-3xl font-bold text-blue-600">{stats.memberCount}</p>
           </div>
 
-          <div style={{ 
-            padding: '20px', 
-            backgroundColor: '#ffffff', 
-            borderRadius: '8px',
-            border: '1px solid #dee2e6'
-          }}>
-            <h3>📈 最近活動</h3>
-            {stats.recentActivity && stats.recentActivity.length > 0 ? (
-              <ul>
-                {stats.recentActivity.map((activity, index) => (
-                  <li key={index} style={{ marginBottom: '10px' }}>
-                    {activity.description} - {new Date(activity.timestamp).toLocaleString()}
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p>暫無最近活動記錄</p>
-            )}
+          <div className="bg-green-100 p-6 rounded-lg border border-green-200">
+            <h3 className="text-lg font-semibold text-green-800 mb-2">活躍會員</h3>
+            <p className="text-3xl font-bold text-green-600">{stats.activeMembers}</p>
           </div>
-        </>
+
+          <div className="bg-purple-100 p-6 rounded-lg border border-purple-200">
+            <h3 className="text-lg font-semibold text-purple-800 mb-2">報名總數</h3>
+            <p className="text-3xl font-bold text-purple-600">{stats.registrationCount}</p>
+          </div>
+
+          <div className="bg-orange-100 p-6 rounded-lg border border-orange-200">
+            <h3 className="text-lg font-semibold text-orange-800 mb-2">活動總數</h3>
+            <p className="text-3xl font-bold text-orange-600">{stats.eventCount}</p>
+          </div>
+        </div>
       )}
 
-      <div style={{ marginTop: '30px' }}>
-        <h3>🔧 管理功能</h3>
-        <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-          <button style={{ 
-            padding: '10px 20px', 
-            backgroundColor: '#007bff', 
-            color: 'white',
-            border: 'none',
-            borderRadius: '5px',
-            cursor: 'pointer'
-          }}>
-            會員管理
-          </button>
-          <button style={{ 
-            padding: '10px 20px', 
-            backgroundColor: '#28a745', 
-            color: 'white',
-            border: 'none',
-            borderRadius: '5px',
-            cursor: 'pointer'
-          }}>
-            活動管理
-          </button>
-          <button style={{ 
-            padding: '10px 20px', 
-            backgroundColor: '#ffc107', 
-            color: 'white',
-            border: 'none',
-            borderRadius: '5px',
-            cursor: 'pointer'
-          }}>
-            簽到記錄
-          </button>
-        </div>
+      <div className="text-center">
+        <Button variant="outline" size="lg">
+          查看詳細報表
+        </Button>
       </div>
     </div>
   );
