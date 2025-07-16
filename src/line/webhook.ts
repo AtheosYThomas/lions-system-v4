@@ -25,16 +25,29 @@ router.post('/webhook', express.raw({ type: 'application/json' }), async (req, r
 
   const events = JSON.parse(body.toString()).events;
   for (const event of events) {
-    if (event.type === 'message' && event.message.type === 'text') {
-      try {
+    try {
+      // 檢查事件來源
+      if (!event.source?.userId) {
+        console.warn('Event without userId:', event.type);
+        continue;
+      }
+
+      if (event.type === 'message' && event.message.type === 'text') {
         await MessageLog.create({
           user_id: event.source.userId,
           message_type: 'text',
           message_content: event.message.text
         });
-      } catch (error) {
-        console.error('Error saving message log:', error);
+      } else if (event.type === 'message') {
+        // 處理其他類型的訊息
+        await MessageLog.create({
+          user_id: event.source.userId,
+          message_type: event.message.type,
+          message_content: JSON.stringify(event.message)
+        });
       }
+    } catch (error) {
+      console.error('Error processing event:', error, 'Event:', event);
     }
   }
 

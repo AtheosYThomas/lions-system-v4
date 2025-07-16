@@ -25,6 +25,10 @@ if (missingEnvVars.length > 0) {
 
 const app = express();
 app.use(bodyParser.json());
+
+// 靜態檔案服務（前端）
+app.use(express.static('client/dist'));
+
 // Health check 端點
 app.get('/health', async (req, res) => {
   try {
