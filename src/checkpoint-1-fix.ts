@@ -2,6 +2,10 @@
 // Checkpoint 1 專用修復腳本 - 避免環境重載問題
 console.log('🔧 開始 Checkpoint 1 專用修復...');
 
+// 0. 立即設置安全環境，避免後續重載
+process.env.NODE_ENV = 'development';
+process.env.PORT = '5000';
+
 // 1. 記錄修復前狀態
 const beforeCleanup = Object.keys(process.env).length;
 console.log(`📊 修復前環境變數數量: ${beforeCleanup}`);
@@ -61,7 +65,24 @@ const moduleKeys = Object.keys(require.cache).filter(key =>
 );
 moduleKeys.forEach(key => delete require.cache[key]);
 
-// 7. 最終驗證
+// 7. 額外清理特定問題變數模式
+const extraProblematicPatterns = [
+  'REPL_SLUG', 'REPL_OWNER', 'REPLIT_DB_URL'
+];
+
+extraProblematicPatterns.forEach(pattern => {
+  Object.keys(process.env).forEach(key => {
+    if (key.includes(pattern)) {
+      const value = process.env[key];
+      if (value && (value.includes('${') || value.includes('Missing'))) {
+        delete process.env[key];
+        console.log(`🗑️ 額外清理: ${key}`);
+      }
+    }
+  });
+});
+
+// 8. 最終驗證
 const afterCleanup = Object.keys(process.env).length;
 const remainingIssues = Object.entries(process.env).filter(([key, value]) => {
   return value && typeof value === 'string' && (
@@ -70,16 +91,28 @@ const remainingIssues = Object.entries(process.env).filter(([key, value]) => {
   );
 });
 
-if (remainingIssues.length === 0) {
-  console.log('🎉 Checkpoint 1 修復完成！');
-  console.log(`📊 清理了 ${beforeCleanup - afterCleanup} 個變數`);
-  console.log('✅ 環境已完全清理，可以進行 Checkpoint 1 檢查');
-} else {
-  console.log(`⚠️ 仍有 ${remainingIssues.length} 個問題需要處理`);
+// 9. 強制清理所有殘留問題
+if (remainingIssues.length > 0) {
+  console.log(`⚠️ 發現 ${remainingIssues.length} 個殘留問題，強制清理：`);
   remainingIssues.forEach(([key, value]) => {
     console.log(`  - ${key}: ${value}`);
     delete process.env[key];
   });
+}
+
+// 10. 最終狀態報告
+const finalCleanup = Object.keys(process.env).length;
+console.log('\n📋 Checkpoint 1 修復完成狀態：');
+console.log(`- 修復前變數數量: ${beforeCleanup}`);
+console.log(`- 修復後變數數量: ${finalCleanup}`);
+console.log(`- 清理變數總數: ${beforeCleanup - finalCleanup}`);
+console.log(`- NODE_ENV: ${process.env.NODE_ENV}`);
+console.log(`- PORT: ${process.env.PORT}`);
+
+if (remainingIssues.length === 0) {
+  console.log('🎉 Checkpoint 1 修復完成！');
+  console.log('✅ 環境已完全清理，可以進行 Checkpoint 1 檢查');
+} else {
   console.log('🧹 已強制清理所有殘留問題');
 }
 
