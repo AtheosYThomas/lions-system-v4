@@ -15,7 +15,7 @@ deploymentTarget = "autoscale"
 ignorePorts = false
 
 [workflows]
-runButton = "Development"
+runButton = "完整啟動系統"
 
 [[workflows.workflow]]
 name = "Run TypeScript Server"
@@ -203,6 +203,23 @@ args = "npm run build:all"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "node dist/index.js"
+
+[[workflows.workflow]]
+name = "完整啟動系統"
+author = 44484841
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm run init-db"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "cd client && npm install && npm run build && cd .."
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npx ts-node src/index.ts"
 
 [[ports]]
 localPort = 5000
