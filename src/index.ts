@@ -3,6 +3,8 @@ import express from 'express';
 import lineWebhook from './line/webhook';
 import membersRouter from './routes/members';
 import pushRouter from './line/push';
+import adminRouter from './routes/admin';
+import checkinRouter from './routes/checkin';
 import { errorHandler, notFoundHandler } from './middleware/errorHandler';
 import { checkRequiredEnvVars } from './utils/envCheck';
 
@@ -26,6 +28,8 @@ app.get('/health', (_req, res) => res.status(200).json({
 // ✅ API 路由
 app.use('/api', membersRouter);
 app.use('/api', pushRouter);
+app.use('/api/admin', adminRouter);
+app.use('/api', checkinRouter);
 
 // ✅ LINE Webhook：必須使用 raw parser
 app.use('/webhook', express.raw({ type: 'application/json' }), lineWebhook);
