@@ -15,7 +15,7 @@ deploymentTarget = "autoscale"
 ignorePorts = false
 
 [workflows]
-runButton = "Full Build and Start"
+runButton = "Start System"
 
 [[workflows.workflow]]
 name = "Run TypeScript Server"
@@ -185,6 +185,15 @@ args = "cd client && npm install && npm run build && cd .."
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "npm run dev"
+
+[[workflows.workflow]]
+name = "Start System"
+author = 44484841
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npx ts-node src/index.ts"
 
 [[ports]]
 localPort = 5000

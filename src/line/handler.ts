@@ -3,15 +3,28 @@ import { Request, Response } from 'express';
 import { WebhookEvent, Client } from '@line/bot-sdk';
 import { config } from '../config/config';
 
-const client = new Client({
-  channelAccessToken: config.line.accessToken,
-  channelSecret: config.line.channelSecret
-});
+let client: Client | null = null;
+
+// 只有在有正確配置時才初始化 LINE Bot 客戶端
+if (config.line.accessToken && config.line.channelSecret) {
+  client = new Client({
+    channelAccessToken: config.line.accessToken,
+    channelSecret: config.line.channelSecret
+  });
+  console.log('✅ LINE Bot 客戶端已初始化');
+} else {
+  console.log('⚠️ LINE Bot 配置不完整，功能將受限');
+}
 
 const lineHandler = async (req: Request, res: Response) => {
   try {
     console.log('📩 收到 Webhook 請求');
     console.log('📦 Request body =', JSON.stringify(req.body, null, 2));
+
+    if (!client) {
+      console.log('⚠️ LINE Bot 客戶端未初始化，返回成功狀態');
+      return res.status(200).json({ message: 'LINE Bot not configured' });
+    }
 
     const events: WebhookEvent[] = req.body.events || [];
     console.log('📦 收到事件數量 =', events.length);
@@ -24,7 +37,7 @@ const lineHandler = async (req: Request, res: Response) => {
           const userMsg = event.message.text;
           console.log('🗣️ 使用者訊息 =', userMsg);
 
-          await client.replyMessage(event.replyToken, {
+          await client!.replyMessage(event.replyToken, {
             type: 'text',
             text: `你說的是：${userMsg}`,
           });
