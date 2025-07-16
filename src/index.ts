@@ -7,7 +7,9 @@ import lineHandler from './line/handler';
 import adminRoutes from './routes/admin';
 import memberRoutes from './routes/members';
 import checkinRoutes from './routes/checkin';
+import { errorHandler, notFoundHandler } from './middleware/errorHandler';
 import { validateEnvironment } from './utils/envValidation';
+import { healthCheck } from './utils/healthCheck';
 
 const app = express();
 const PORT: number = parseInt(process.env.PORT || '3000', 10);
@@ -17,28 +19,16 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, '../client/dist')));
 
-// Health Check 路由
+// 健康檢查路由
 app.get('/health', async (req, res) => {
   try {
-    // 測試資料庫連線
-    await sequelize.authenticate();
-    res.status(200).json({
-      status: 'healthy',
-      timestamp: new Date().toISOString(),
-      version: '4.0',
-      uptime: process.uptime(),
-      database: 'connected',
-      services: {
-        line: config.line.accessToken ? 'configured' : 'missing_token',
-        routes: ['admin', 'checkin', 'members', 'webhook']
-      }
-    });
+    const report = await healthCheck();
+    res.status(report.status === 'healthy' ? 200 : 503).json(report);
   } catch (error) {
     res.status(500).json({
       status: 'error',
-      timestamp: new Date().toISOString(),
-      database: 'failed',
-      error: error instanceof Error ? error.message : 'Unknown error'
+      message: '健康檢查失敗',
+      error: error instanceof Error ? error.message : '未知錯誤'
     });
   }
 });
@@ -58,10 +48,10 @@ app.get('/api/system/status', (req, res) => {
 // LINE Webhook
 app.post('/webhook', lineHandler);
 
-// API 路由
+// 路由設定
+app.use('/api', memberRoutes);
+app.use('/api', checkinRoutes);
 app.use('/api/admin', adminRoutes);
-app.use('/api/members', memberRoutes);
-app.use('/api/checkin', checkinRoutes);
 
 // 前端路由（提供 React 應用）
 app.get('/', (req, res) => {

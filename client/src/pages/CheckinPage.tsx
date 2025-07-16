@@ -3,6 +3,66 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from '../api/axios';
 
+export default function CheckinPage() {
+  const { eventId } = useParams<{ eventId: string }>();
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState('');
+  const [checkins, setCheckins] = useState([]);
+
+  const handleCheckin = async () => {
+    if (!eventId) return;
+    
+    setLoading(true);
+    try {
+      const response = await axios.post(`/checkin/${eventId}`, {
+        lineUserId: 'test-user-id', // 實際應從 LIFF 取得
+        deviceInfo: navigator.userAgent
+      });
+      
+      setMessage(response.data.message);
+      loadCheckins();
+    } catch (error) {
+      setMessage('簽到失敗: ' + (error as any).response?.data?.error || '未知錯誤');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const loadCheckins = async () => {
+    if (!eventId) return;
+    
+    try {
+      const response = await axios.get(`/checkin/${eventId}`);
+      setCheckins(response.data.checkins);
+    } catch (error) {
+      console.error('載入簽到列表失敗:', error);
+    }
+  };
+
+  useEffect(() => {
+    loadCheckins();
+  }, [eventId]);
+
+  return (
+    <div style={{ padding: '20px' }}>
+      <h1>活動簽到</h1>
+      <button onClick={handleCheckin} disabled={loading}>
+        {loading ? '簽到中...' : '立即簽到'}
+      </button>
+      {message && <p>{message}</p>}
+      
+      <h2>簽到列表</h2>
+      <ul>
+        {checkins.map((checkin: any, index) => (
+          <li key={index}>
+            {checkin.Member?.name} - {new Date(checkin.checkin_time).toLocaleString()}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
 interface CheckinData {
   lineUserId: string;
   deviceInfo?: string;

@@ -74,8 +74,7 @@ router.get('/checkin/:eventId', async (req, res) => {
       where: { event_id: eventId },
       include: [{
         model: Member,
-        attributes: ['name', 'role', 'phone'],
-        required: false
+        attributes: ['name', 'role', 'phone']
       }],
       order: [['checkin_time', 'DESC']]
     });
@@ -108,8 +107,7 @@ router.get('/member/:lineUserId/checkins', async (req, res) => {
       where: { member_id: member.id },
       include: [{
         model: Event,
-        attributes: ['title', 'date', 'location'],
-        required: false
+        attributes: ['title', 'date', 'location']
       }],
       order: [['checkin_time', 'DESC']]
     });

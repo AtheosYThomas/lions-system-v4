@@ -37,14 +37,14 @@ router.get('/stats', async (req, res) => {
     const stats = await Registration.findAll({
       attributes: [
         'event_id', 
-        [sequelize.fn('COUNT', '*'), 'count']
+        [sequelize.fn('COUNT', sequelize.col('Registration.id')), 'count']
       ],
-      group: ['event_id', 'Event.id', 'Event.title', 'Event.date'],
+      group: ['event_id'],
       include: [{
         model: Event,
-        attributes: ['title', 'date'],
-        required: false
-      }]
+        attributes: ['title', 'date']
+      }],
+      raw: true
     });
     res.json(stats);
   } catch (err) {
