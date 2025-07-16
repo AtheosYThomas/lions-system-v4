@@ -1,0 +1,92 @@
+// 📦 React + Vite 前端起手包
+
+// ✅ package.json
+{
+  "name": "peida-client",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "axios": "^1.6.8",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.23.0"
+  },
+  "devDependencies": {
+    "vite": "^5.0.0",
+    "typescript": "^5.3.3",
+    "@vitejs/plugin-react": "^4.1.0"
+  }
+}
+
+// ✅ vite.config.ts
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+
+export default defineConfig({
+  plugins: [react()],
+  server: {
+    port: 5173
+  }
+});
+
+// ✅ src/main.tsx
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import App from './App';
+
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
+
+// ✅ src/App.tsx
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import MemberForm from './pages/MemberForm';
+import CheckinPage from './pages/CheckinPage';
+import AdminDashboard from './pages/AdminDashboard';
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/form/register" element={<MemberForm />} />
+        <Route path="/form/checkin/:eventId" element={<CheckinPage />} />
+        <Route path="/admin" element={<AdminDashboard />} />
+      </Routes>
+    </BrowserRouter>
+  );
+}
+
+export default App;
+
+// ✅ src/api/axios.ts
+import axios from 'axios';
+
+const instance = axios.create({
+  baseURL: '/api',
+  timeout: 5000
+});
+
+export default instance;
+
+// ✅ 預設頁面元件（MemberForm.tsx, CheckinPage.tsx, AdminDashboard.tsx）
+
+// 📄 src/pages/MemberForm.tsx
+export default function MemberForm() {
+  return <div>報名表單頁（建置中）</div>;
+}
+
+// 📄 src/pages/CheckinPage.tsx
+export default function CheckinPage() {
+  return <div>簽到頁面（建置中）</div>;
+}
+
+// 📄 src/pages/AdminDashboard.tsx
+export default function AdminDashboard() {
+  return <div>管理後台總覽頁（建置中）</div>;
+}
