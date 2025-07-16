@@ -418,6 +418,23 @@ args = "npx ts-node src/system-diagnosis-report.ts"
 task = "shell.exec"
 args = "echo \"📋 診斷完成，請檢查報告結果\""
 
+[[workflows.workflow]]
+name = "Path-to-Regexp Checkpoint"
+author = 44484841
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "echo \"🔍 執行 path-to-regexp 錯誤 checkpoint 檢查...\""
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npx ts-node src/path-to-regexp-checkpoint.ts"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "echo \"📋 Checkpoint 檢查完成，檢查報告檔案\""
+
 [[ports]]
 localPort = 5000
 externalPort = 80
