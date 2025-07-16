@@ -24,3 +24,16 @@ mode = "sequential"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "npx ts-node src/index.ts"
+
+[[workflows.workflow]]
+name = "Build and Run"
+author = 44484841
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npx tsc"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "node dist/index.js"
