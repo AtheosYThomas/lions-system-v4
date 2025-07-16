@@ -1,12 +1,12 @@
 
 import express from 'express';
-import { config } from '../config/config';
+import config from '../config';
 import { Client } from '@line/bot-sdk';
 
 const router = express.Router();
 const client = new Client({
-  channelAccessToken: config.line.accessToken,
-  channelSecret: config.line.channelSecret
+  channelAccessToken: config.channelAccessToken,
+  channelSecret: config.channelSecret
 });
 
 router.post('/push/:userId', async (req, res) => {
@@ -20,7 +20,7 @@ router.post('/push/:userId', async (req, res) => {
     });
     res.json({ status: 'success' });
   } catch (err) {
-    console.error(err);
+    console.error('❌ 推播失敗:', err);
     res.status(500).json({ error: '推播失敗' });
   }
 });
