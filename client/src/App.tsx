@@ -3,6 +3,8 @@ import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Register from './pages/Register';
 import Checkin from './pages/Checkin';
+import Profile from './pages/Profile';
+import Admin from './pages/Admin';
 import NotFoundPage from './pages/NotFoundPage';
 
 // 錯誤邊界組件
@@ -45,14 +47,16 @@ function App() {
     <ErrorBoundary>
       <BrowserRouter>
         <Routes>
+          <Route path="/profile" element={<Profile />} />
           <Route path="/register" element={<Register />} />
           <Route path="/checkin" element={<Checkin />} />
+          <Route path="/admin" element={<Admin />} />
           <Route path="/" element={
             <div style={{ padding: '20px', textAlign: 'center' }}>
               <h1>🦁 北大獅子會系統</h1>
               <p>歡迎使用會員服務系統</p>
               <div style={{ marginTop: '2rem' }}>
-                <a href="/register" style={{ 
+                <a href="/profile" style={{ 
                   display: 'inline-block',
                   margin: '0.5rem',
                   padding: '0.75rem 1.5rem',
@@ -61,9 +65,9 @@ function App() {
                   textDecoration: 'none',
                   borderRadius: '0.5rem'
                 }}>
-                  會員註冊
+                  會員資料
                 </a>
-                <a href="/checkin" style={{ 
+                <a href="/register" style={{ 
                   display: 'inline-block',
                   margin: '0.5rem',
                   padding: '0.75rem 1.5rem',
@@ -72,7 +76,18 @@ function App() {
                   textDecoration: 'none',
                   borderRadius: '0.5rem'
                 }}>
-                  簽到系統
+                  活動報名
+                </a>
+                <a href="/admin" style={{ 
+                  display: 'inline-block',
+                  margin: '0.5rem',
+                  padding: '0.75rem 1.5rem',
+                  backgroundColor: '#8b5cf6',
+                  color: 'white',
+                  textDecoration: 'none',
+                  borderRadius: '0.5rem'
+                }}>
+                  管理後台
                 </a>
               </div>
             </div>
