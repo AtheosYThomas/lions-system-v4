@@ -10,7 +10,13 @@ const MessageLog = sequelize.define('MessageLog', {
   },
   user_id: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: false,
+    references: {
+      model: 'members',
+      key: 'line_uid'
+    },
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
   },
   timestamp: {
     type: DataTypes.DATE,

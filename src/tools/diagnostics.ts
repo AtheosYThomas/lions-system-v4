@@ -31,7 +31,7 @@ function scanSourceFiles() {
   
   patterns.forEach(pattern => {
     const files = globSync(pattern);
-    files.forEach(file => {
+    files.forEach((file: string) => {
       try {
         const content = fs.readFileSync(file, 'utf-8');
         
@@ -48,7 +48,7 @@ function scanSourceFiles() {
         
         console.log(chalk.green(`✅ ${file} 語法檢查通過`));
       } catch (err) {
-        console.log(chalk.red(`❌ ${file} 讀取錯誤: ${err.message}`));
+        console.log(chalk.red(`❌ ${file} 讀取錯誤: ${err instanceof Error ? err.message : String(err)}`));
         hasErrors = true;
       }
     });
@@ -92,7 +92,7 @@ function checkEnvVariables() {
     });
     
     // 檢查缺少的環境變數
-    const missingVars = Array.from(usedEnvVars).filter(varName => !envVars[varName]);
+    const missingVars = Array.from(usedEnvVars).filter(varName => !envVars[varName as string]);
     
     if (missingVars.length > 0) {
       console.log(chalk.red(`❌ 程式中使用但 .env 中缺少的變數: ${missingVars.join(', ')}`));

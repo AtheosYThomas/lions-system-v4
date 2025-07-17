@@ -1,4 +1,3 @@
-
 import { DataTypes, Model } from 'sequelize';
 import sequelize from '../config/database';
 
@@ -41,7 +40,8 @@ Member.init({
   },
   line_uid: {
     type: DataTypes.STRING,
-    field: 'line_user_id'
+    field: 'line_user_id',
+    unique: true
   },
   role: {
     type: DataTypes.STRING,
