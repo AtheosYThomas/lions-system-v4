@@ -1,3 +1,30 @@
+// 🚨 最優先 - 強制清理所有問題環境變數
+const dangerousVars = [
+  'DEBUG_URL', 'WEBPACK_DEV_SERVER_URL', 'WEBPACK_DEV_SERVER', 
+  'HMR_HOST', 'HMR_PORT', 'VITE_DEV_SERVER_URL', 'BASE_URL'
+];
+
+dangerousVars.forEach(varName => {
+  if (process.env[varName]) {
+    console.log(`🧹 強制刪除: ${varName}=${process.env[varName]}`);
+    delete process.env[varName];
+  }
+});
+
+// 檢查所有環境變數是否包含問題模式
+Object.keys(process.env).forEach(key => {
+  const value = process.env[key];
+  if (value && typeof value === 'string') {
+    if (value.includes('${') || value.includes('Missing parameter') || 
+        value.includes('pathToRegexpError') || value === 'undefined' || value === 'null') {
+      console.log(`🧹 清理問題變數: ${key}=${value}`);
+      delete process.env[key];
+    }
+  }
+});
+
+console.log('✅ 環境變數預清理完成');
+
 import express, { Request, Response, NextFunction } from 'express';
 import path from 'path';
 import { config } from './config/config';
@@ -15,21 +42,6 @@ import { routeSafetyCheck, cleanProblemEnvVars } from './utils/routeSafetyCheck'
 import { createSafeRouter, validateNumericParam, routeErrorHandler } from './utils/routerSafety';
 
 const app = express();
-
-// 🚨 強制清理 path-to-regexp 問題變數
-if (process.env.DEBUG_URL) {
-  console.log(`🧹 強制清理 DEBUG_URL: ${process.env.DEBUG_URL}`);
-  delete process.env.DEBUG_URL;
-}
-
-// 清理其他可能的問題變數
-const problematicVars = ['WEBPACK_DEV_SERVER_URL', 'WEBPACK_DEV_SERVER', 'HMR_HOST', 'HMR_PORT', 'VITE_DEV_SERVER_URL'];
-problematicVars.forEach(varName => {
-  if (process.env[varName]) {
-    console.log(`🧹 清理: ${varName}`);
-    delete process.env[varName];
-  }
-});
 
 // 環境變數驗證
 if (!validateEnvironment()) {
