@@ -1,98 +1,210 @@
 
+#!/usr/bin/env npx tsx
+
 import fetch from 'node-fetch';
+
+const BASE_URL = 'http://localhost:5000';
 
 const testMessages = [
   '哈囉',
-  '你好',
+  '你好', 
   '查詢活動',
   '會員資訊',
   '簽到',
   '幫助',
-  '測試訊息'
+  '測試訊息',
+  'hello',
+  'help'
 ];
 
-async function testLineBot() {
-  console.log('🤖 開始測試 LINE Bot 功能...\n');
-
-  for (const message of testMessages) {
-    console.log(`📤 測試訊息: "${message}"`);
+async function testHealthCheck() {
+  console.log('🏥 檢查伺服器健康狀態...');
+  
+  try {
+    const response = await fetch(`${BASE_URL}/health`, {
+      timeout: 5000
+    });
     
-    try {
-      const response = await fetch('http://localhost:5000/webhook', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          events: [
-            {
-              type: 'message',
-              replyToken: `test-reply-${Date.now()}`,
-              source: {
-                userId: 'test-user-123',
-                type: 'user'
-              },
-              message: {
-                type: 'text',
-                text: message
-              }
-            }
-          ]
-        })
-      });
-
-      const status = response.ok ? '✅ 成功' : '❌ 失敗';
-      console.log(`📥 回應狀態: ${status} (${response.status})`);
-      
-    } catch (error) {
-      console.log(`❌ 測試失敗: ${error}`);
+    if (response.ok) {
+      const health = await response.json();
+      console.log('✅ 伺服器健康狀態:', health);
+      return true;
+    } else {
+      console.log('❌ 伺服器回應異常:', response.status);
+      return false;
     }
-    
-    console.log('---');
-    
-    // 等待 1 秒再測試下一個訊息
-    await new Promise(resolve => setTimeout(resolve, 1000));
+  } catch (error) {
+    console.log('❌ 無法連接到伺服器:', error.message);
+    return false;
   }
-
-  console.log('✅ LINE Bot 測試完成！');
 }
 
-// 測試加好友事件
+async function testWebhookEndpoint() {
+  console.log('🔍 測試 Webhook 端點可用性...');
+  
+  try {
+    // 測試空的 webhook 請求 (LINE 驗證用)
+    const response = await fetch(`${BASE_URL}/webhook`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Line-Signature': 'test-signature'
+      },
+      body: JSON.stringify({ events: [] })
+    });
+
+    if (response.status === 200) {
+      console.log('✅ Webhook 端點可用');
+      return true;
+    } else {
+      console.log(`❌ Webhook 端點回應異常: ${response.status}`);
+      return false;
+    }
+  } catch (error) {
+    console.log('❌ Webhook 端點測試失敗:', error.message);
+    return false;
+  }
+}
+
+async function sendTestMessage(message: string, delay = 1000) {
+  console.log(`\n📤 測試訊息: "${message}"`);
+  
+  try {
+    const testEvent = {
+      events: [
+        {
+          type: 'message',
+          replyToken: `test-reply-${Date.now()}`,
+          source: {
+            userId: 'test-user-123',
+            type: 'user'
+          },
+          message: {
+            type: 'text',
+            text: message
+          },
+          timestamp: Date.now()
+        }
+      ]
+    };
+
+    const response = await fetch(`${BASE_URL}/webhook`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Line-Signature': 'test-signature'
+      },
+      body: JSON.stringify(testEvent),
+      timeout: 10000
+    });
+
+    const status = response.ok ? '✅ 成功' : '❌ 失敗';
+    console.log(`📥 回應狀態: ${status} (${response.status})`);
+    
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.log('錯誤詳情:', errorText);
+    }
+    
+  } catch (error) {
+    console.log(`❌ 測試失敗: ${error.message}`);
+  }
+  
+  console.log('---');
+  
+  // 等待指定時間再測試下一個訊息
+  if (delay > 0) {
+    await new Promise(resolve => setTimeout(resolve, delay));
+  }
+}
+
 async function testFollowEvent() {
   console.log('\n👋 測試加好友事件...');
   
   try {
-    const response = await fetch('http://localhost:5000/webhook', {
+    const followEvent = {
+      events: [
+        {
+          type: 'follow',
+          replyToken: `test-follow-${Date.now()}`,
+          source: {
+            userId: 'test-new-user-456',
+            type: 'user'
+          },
+          timestamp: Date.now()
+        }
+      ]
+    };
+
+    const response = await fetch(`${BASE_URL}/webhook`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'X-Line-Signature': 'test-signature'
       },
-      body: JSON.stringify({
-        events: [
-          {
-            type: 'follow',
-            replyToken: `test-follow-${Date.now()}`,
-            source: {
-              userId: 'test-new-user-456',
-              type: 'user'
-            }
-          }
-        ]
-      })
+      body: JSON.stringify(followEvent),
+      timeout: 10000
     });
 
     const status = response.ok ? '✅ 成功' : '❌ 失敗';
     console.log(`📥 加好友事件回應: ${status} (${response.status})`);
     
   } catch (error) {
-    console.log(`❌ 加好友事件測試失敗: ${error}`);
+    console.log(`❌ 加好友事件測試失敗: ${error.message}`);
   }
 }
 
-// 執行測試
-async function runTests() {
-  await testLineBot();
+// 執行完整測試
+async function runFullTest() {
+  console.log('🤖 開始完整 LINE Bot 測試...\n');
+  
+  // 1. 檢查伺服器健康狀態
+  const serverHealthy = await testHealthCheck();
+  if (!serverHealthy) {
+    console.log('❌ 伺服器不可用，停止測試');
+    return;
+  }
+  
+  // 2. 測試 Webhook 端點
+  const webhookAvailable = await testWebhookEndpoint();
+  if (!webhookAvailable) {
+    console.log('❌ Webhook 端點不可用，停止測試');
+    return;
+  }
+  
+  console.log('\n🔄 開始訊息測試...');
+  
+  // 3. 測試各種訊息
+  for (const message of testMessages) {
+    await sendTestMessage(message, 800);
+  }
+  
+  // 4. 測試加好友事件
   await testFollowEvent();
+  
+  console.log('\n✅ LINE Bot 完整測試完成！');
+  console.log('\n💡 如果測試成功但實際 LINE 仍無回應，請檢查：');
+  console.log('   1. LINE Channel Access Token 是否正確');
+  console.log('   2. LINE Channel Secret 是否正確');
+  console.log('   3. LINE Webhook URL 是否設定為正確的公開 URL');
+  console.log('   4. LINE Bot 是否已加為好友');
 }
 
-runTests().catch(console.error);
+// 快速測試單一訊息
+async function quickTest(message = '哈囉') {
+  console.log(`🚀 快速測試訊息: "${message}"`);
+  
+  const serverHealthy = await testHealthCheck();
+  if (serverHealthy) {
+    await sendTestMessage(message, 0);
+  }
+}
+
+// 根據命令行參數決定執行哪種測試
+const args = process.argv.slice(2);
+if (args.length > 0 && args[0] === 'quick') {
+  const message = args[1] || '哈囉';
+  quickTest(message).catch(console.error);
+} else {
+  runFullTest().catch(console.error);
+}

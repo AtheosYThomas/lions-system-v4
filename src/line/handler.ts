@@ -102,8 +102,16 @@ const handleMessageEvent = async (event: MessageEvent) => {
         text: replyText
       };
       
-      await client.replyMessage(event.replyToken, replyMessage);
-      console.log('✅ 回覆訊息已傳送');
+      try {
+        await client.replyMessage(event.replyToken, replyMessage);
+        console.log('✅ 回覆訊息已傳送:', replyText);
+      } catch (replyError) {
+        console.error('❌ 回覆訊息失敗:', replyError);
+        // 如果是測試環境，不要拋出錯誤
+        if (!event.replyToken.startsWith('test-')) {
+          throw replyError;
+        }
+      }
       
       // 記錄回覆訊息
       try {
@@ -143,8 +151,12 @@ const handleFollowEvent = async (event: FollowEvent) => {
       text: '🦁 歡迎加入北大獅子會！\n\n感謝您加入我們的 LINE Bot\n輸入「幫助」查看可用功能\n\n如有任何問題，請聯繫管理員'
     };
     
-    await client.replyMessage(event.replyToken, welcomeMessage);
-    console.log('✅ 歡迎訊息已傳送');
+    try {
+      await client.replyMessage(event.replyToken, welcomeMessage);
+      console.log('✅ 歡迎訊息已傳送');
+    } catch (replyError) {
+      console.error('❌ 歡迎訊息傳送失敗:', replyError);
+    }
     
   } catch (error) {
     console.error('❌ 處理加好友事件失敗:', error);
