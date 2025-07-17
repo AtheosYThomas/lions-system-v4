@@ -15,7 +15,7 @@ deploymentTarget = "autoscale"
 ignorePorts = false
 
 [workflows]
-runButton = "完整 Checkpoint 1 驗證"
+runButton = "系統問題診斷"
 
 [[workflows.workflow]]
 name = "Run TypeScript Server"
@@ -792,6 +792,57 @@ args = "echo \"📋 診斷完成，請檢查 comprehensive-problem-diagnosis-rep
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "echo \"💡 如有問題，請根據建議進行修正\""
+
+[[workflows.workflow]]
+name = "系統問題診斷"
+author = 44484841
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "echo \"🔍 執行完整系統問題排查診斷...\""
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npx ts-node src/comprehensive-problem-diagnosis.ts"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "echo \"📋 診斷完成，檢查報告檔案\""
+
+[[workflows.workflow]]
+name = "系統修復"
+author = 44484841
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "echo \"🔧 執行系統修復...\""
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npx ts-node src/system-fix.ts"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "echo \"✅ 修復完成\""
+
+[[workflows.workflow]]
+name = "環境修復"
+author = 44484841
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "echo \"🔧 修復環境變數...\""
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npx ts-node src/env-fix.ts"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "echo \"✅ 環境修復完成\""
 
 [[ports]]
 localPort = 5000
