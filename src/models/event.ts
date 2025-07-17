@@ -57,7 +57,7 @@ Event.init({
   timestamps: false
 });
 
-static associate(models: any) {
+Event.associate = (models: any) => {
   Event.hasMany(models.Registration, { 
     foreignKey: 'event_id',
     onDelete: 'CASCADE',
@@ -76,6 +76,6 @@ static associate(models: any) {
     onUpdate: 'CASCADE',
     hooks: true
   });
-}
+};
 
 export default Event;
