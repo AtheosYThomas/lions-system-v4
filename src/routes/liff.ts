@@ -62,4 +62,102 @@ router.post('/init', async (req, res) => {
   }
 });
 
+// 會員註冊 API
+router.post('/register', async (req, res) => {
+  console.log('📝 LIFF /register 請求:', req.body);
+  
+  const { line_uid, name, email, phone } = req.body;
+
+  if (!line_uid || !name || !email) {
+    console.log('❌ 必填欄位缺失');
+    return res.status(400).json({ error: '姓名、email 和 line_uid 為必填欄位' });
+  }
+
+  try {
+    // 檢查是否已經註冊
+    const existingMember = await Member.findOne({ where: { line_uid } });
+    if (existingMember) {
+      console.log('⚠️ 會員已存在');
+      return res.status(400).json({ error: '此 LINE 帳號已經註冊過了' });
+    }
+
+    // 檢查 email 是否重複
+    const emailExists = await Member.findOne({ where: { email } });
+    if (emailExists) {
+      console.log('⚠️ Email 已存在');
+      return res.status(400).json({ error: '此 email 已被使用' });
+    }
+
+    // 建立新會員
+    const newMember = await Member.create({
+      name,
+      email,
+      line_uid,
+      phone: phone || null,
+      role: 'member',
+      status: 'active'
+    });
+
+    console.log('✅ 新會員註冊成功:', newMember.name);
+
+    // 更新 LIFF session 狀態
+    await LiffSession.update(
+      { status: 'signed_in' },
+      { where: { line_uid } }
+    );
+
+    const response = {
+      success: true,
+      message: '註冊成功！歡迎加入北大獅子會',
+      member: {
+        id: newMember.id,
+        name: newMember.name,
+        email: newMember.email,
+        role: newMember.role
+      }
+    };
+
+    console.log('📤 註冊回應:', response);
+    return res.json(response);
+    
+  } catch (error) {
+    console.error('❌ 註冊錯誤:', error);
+    return res.status(500).json({ 
+      error: '註冊失敗',
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
+// 查詢會員資料 API
+router.get('/profile/:line_uid', async (req, res) => {
+  console.log('👤 LIFF /profile 請求:', req.params.line_uid);
+  
+  const { line_uid } = req.params;
+
+  try {
+    const member = await Member.findOne({ 
+      where: { line_uid },
+      attributes: ['id', 'name', 'email', 'phone', 'role', 'status', 'created_at']
+    });
+
+    if (!member) {
+      return res.status(404).json({ error: '找不到會員資料' });
+    }
+
+    console.log('✅ 會員資料查詢成功');
+    return res.json({
+      success: true,
+      member: member
+    });
+    
+  } catch (error) {
+    console.error('❌ 查詢錯誤:', error);
+    return res.status(500).json({ 
+      error: '查詢失敗',
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
 export default router;
