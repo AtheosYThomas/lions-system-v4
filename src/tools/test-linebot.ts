@@ -1,6 +1,4 @@
 
-#!/usr/bin/env npx tsx
-
 import fetch from 'node-fetch';
 
 const BASE_URL = 'http://localhost:5000';
