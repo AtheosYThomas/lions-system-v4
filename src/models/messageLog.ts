@@ -13,7 +13,7 @@ const MessageLog = sequelize.define('MessageLog', {
     allowNull: false,
     references: {
       model: 'members',
-      key: 'line_uid'
+      key: 'line_user_id'  // 修正為實際的資料庫欄位名稱
     },
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE'
