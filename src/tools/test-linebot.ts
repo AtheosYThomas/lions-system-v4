@@ -13,26 +13,50 @@ const testMessages = [
   'help'
 ];
 
-async function testHealthCheck() {
+async function testHealthCheck(retries = 3) {
   console.log('🏥 檢查伺服器健康狀態...');
   
-  try {
-    const response = await fetch(`${BASE_URL}/health`, {
-      timeout: 5000
-    });
-    
-    if (response.ok) {
-      const health = await response.json();
-      console.log('✅ 伺服器健康狀態:', health);
-      return true;
-    } else {
-      console.log('❌ 伺服器回應異常:', response.status);
-      return false;
+  for (let i = 0; i < retries; i++) {
+    try {
+      console.log(`🔄 嘗試 ${i + 1}/${retries}...`);
+      
+      const response = await fetch(`${BASE_URL}/health`, {
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      console.log(`📊 回應狀態: ${response.status}`);
+      console.log(`📊 回應類型: ${response.headers.get('content-type')}`);
+      
+      if (response.ok) {
+        const responseText = await response.text();
+        console.log(`📊 回應內容: ${responseText.substring(0, 200)}...`);
+        
+        try {
+          const health = JSON.parse(responseText);
+          console.log('✅ 伺服器健康狀態:', health);
+          return true;
+        } catch (jsonError) {
+          console.log('❌ JSON 解析錯誤，伺服器可能回應了 HTML');
+          console.log('回應開頭:', responseText.substring(0, 100));
+        }
+      } else {
+        console.log('❌ 伺服器回應異常:', response.status);
+      }
+    } catch (error) {
+      console.log(`❌ 連接錯誤 (${i + 1}/${retries}):`, error.message);
     }
-  } catch (error) {
-    console.log('❌ 無法連接到伺服器:', error.message);
-    return false;
+    
+    // 如果不是最後一次嘗試，等待 2 秒
+    if (i < retries - 1) {
+      console.log('⏳ 等待 2 秒後重試...');
+      await new Promise(resolve => setTimeout(resolve, 2000));
+    }
   }
+  
+  return false;
 }
 
 async function testWebhookEndpoint() {
