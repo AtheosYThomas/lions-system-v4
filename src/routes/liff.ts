@@ -15,6 +15,12 @@ router.post('/init', async (req, res) => {
     return res.status(400).json({ error: 'line_uid 必填' });
   }
 
+  // 驗證 event_id 格式（如果有提供的話）
+  if (event_id && !event_id.match(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i)) {
+    console.log('❌ event_id 格式無效:', event_id);
+    return res.status(400).json({ error: 'event_id 必須是有效的 UUID 格式' });
+  }
+
   try {
     console.log('🔍 查詢會員:', line_uid);
     // 使用原始 SQL 查詢來確保正確的欄位名稱
