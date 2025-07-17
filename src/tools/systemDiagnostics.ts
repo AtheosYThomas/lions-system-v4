@@ -259,7 +259,7 @@ class SystemDiagnostics {
     }
     
     if (warningResults.length > 0) {
-      console.log(chalk.orange('\n⚠️ 需要注意:'));
+      console.log(chalk.yellow('\n⚠️ 需要注意:'));
       warningResults.forEach((result, index) => {
         console.log(`${index + 1}. ${result.category}: ${result.message}`);
       });

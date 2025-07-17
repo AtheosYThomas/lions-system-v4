@@ -228,6 +228,27 @@ mode = "sequential"
 task = "shell.exec"
 args = "npx tsx src/tools/systemDiagnostics.ts"
 
+[[workflows.workflow]]
+name = "System Recovery"
+author = 44484841
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "pkill -f \"ts-node|tsx|vite\""
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "sleep 2"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm run init-db"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm run dev"
+
 [[ports]]
 localPort = 3000
 externalPort = 80

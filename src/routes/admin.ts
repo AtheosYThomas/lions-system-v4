@@ -1,4 +1,3 @@
-
 import express from 'express';
 import Member from '../models/member';
 import Registration from '../models/registration';
@@ -13,22 +12,22 @@ async function getQuickStats() {
       'SELECT COUNT(*) as count FROM members',
       { type: sequelize.QueryTypes.SELECT }
     );
-    
+
     const [activeResult] = await sequelize.query(
       "SELECT COUNT(*) as count FROM members WHERE status = 'active'",
       { type: sequelize.QueryTypes.SELECT }
     );
-    
+
     const [registrationResult] = await sequelize.query(
       'SELECT COUNT(*) as count FROM registrations',
       { type: sequelize.QueryTypes.SELECT }
     );
-    
+
     const [eventResult] = await sequelize.query(
       'SELECT COUNT(*) as count FROM events',
       { type: sequelize.QueryTypes.SELECT }
     );
-    
+
     return {
       memberCount: parseInt(memberResult.count as string) || 0,
       activeMembers: parseInt(activeResult.count as string) || 0,
@@ -50,77 +49,22 @@ const router = express.Router();
 
 // 系統總覽
 router.get('/summary', async (req, res) => {
-  console.log('📊 收到系統總覽請求，開始處理...');
-  const startTime = Date.now();
-  
-  // 設定請求超時處理（增加到5秒以匹配前端）
-  const timeout = setTimeout(() => {
-    if (!res.headersSent) {
-      console.log('⏱️ 請求超時，回傳預設數據');
-      res.status(200).json({ 
-        memberCount: 0,
-        activeMembers: 0,
-        registrationCount: 0,
-        eventCount: 0,
-        timestamp: new Date().toISOString(),
-        status: 'timeout_fallback',
-        message: '查詢中，請稍後重新整理'
-      });
-    }
-  }, 4500); // 比前端超時稍短
-
   try {
-    console.log('🔍 開始資料庫連線測試...');
-    await sequelize.authenticate();
-    console.log('✅ 資料庫連線正常');
+    // 設定較短的超時時間避免前端超時
+    const timeoutPromise = new Promise((_, reject) => 
+      setTimeout(() => reject(new Error('操作超時')), 3000)
+    );
 
-    console.log('📊 開始快速查詢統計數據...');
-    
-    // 使用快速查詢函數
-    const stats = await getQuickStats();
-    console.log('✅ 快速查詢結果:', stats);
-    
-    const { memberCount, activeMembers, registrationCount, eventCount } = stats;
-    
-    const endTime = Date.now();
-    const queryTime = endTime - startTime;
-    
-    const result = { 
-      memberCount, 
-      activeMembers, 
-      registrationCount, 
-      eventCount,
-      timestamp: new Date().toISOString(),
-      queryTime: `${queryTime}ms`,
-      status: 'success'
-    };
-    
-    clearTimeout(timeout);
-    
-    if (!res.headersSent) {
-      console.log(`✅ 系統總覽完成 (${queryTime}ms):`, result);
-      res.json(result);
-    }
-  } catch (err) {
-    clearTimeout(timeout);
-    const endTime = Date.now();
-    const queryTime = endTime - startTime;
-    
-    console.error(`❌ 系統總覽錯誤 (${queryTime}ms):`, err);
-    
-    if (!res.headersSent) {
-      // 即使發生錯誤，也回傳基本結構避免前端崩潰
-      res.status(200).json({ 
-        memberCount: 0,
-        activeMembers: 0,
-        registrationCount: 0,
-        eventCount: 0,
-        timestamp: new Date().toISOString(),
-        queryTime: `${queryTime}ms`,
-        status: 'error',
-        error: err instanceof Error ? err.message : '未知錯誤'
-      });
-    }
+    const statsPromise = getQuickStats();
+    const stats = await Promise.race([statsPromise, timeoutPromise]);
+
+    res.json(stats);
+  } catch (error) {
+    console.error('獲取統計資料錯誤:', error);
+    res.status(500).json({ 
+      error: '獲取統計資料失敗',
+      message: error instanceof Error ? error.message : '未知錯誤'
+    });
   }
 });
 
