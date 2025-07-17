@@ -1,4 +1,3 @@
-
 /**
  * Utils 統一匯出點
  * 將所有工具函數集中匯出
@@ -47,3 +46,5 @@ export {
   camelToSnake,
   snakeToCamel
 } from './stringUtils';
+
+// systemCheck 已移動到 src/tools/systemCheck.ts
