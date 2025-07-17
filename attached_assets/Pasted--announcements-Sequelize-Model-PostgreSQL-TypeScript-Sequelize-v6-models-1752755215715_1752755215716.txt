@@ -1,0 +1,133 @@
+以下是為 announcements 資料表撰寫的 Sequelize Model，支援 PostgreSQL，語言為 TypeScript，使用 Sequelize v6 標準。
+
+✅ models/announcement.ts
+ts
+複製
+編輯
+import {
+  Model,
+  DataTypes,
+  Optional,
+  Sequelize,
+  InferAttributes,
+  InferCreationAttributes,
+  CreationOptional,
+  ForeignKey,
+} from 'sequelize';
+
+export interface AnnouncementAttributes extends InferAttributes<Announcement> {
+  id: number;
+  title: string;
+  content: string;
+  related_event_id?: number | null;
+  created_by?: number | null;
+  audience: 'all' | 'officers' | 'members';
+  category: 'event' | 'system' | 'personnel';
+  status: 'draft' | 'scheduled' | 'published';
+  scheduled_at?: Date | null;
+  published_at?: Date | null;
+  is_visible: boolean;
+  created_at?: Date;
+  updated_at?: Date;
+}
+
+export class Announcement extends Model<
+  InferAttributes<Announcement>,
+  InferCreationAttributes<Announcement>
+> implements AnnouncementAttributes {
+  declare id: CreationOptional<number>;
+  declare title: string;
+  declare content: string;
+  declare related_event_id: ForeignKey<number> | null;
+  declare created_by: ForeignKey<number> | null;
+  declare audience: 'all' | 'officers' | 'members';
+  declare category: 'event' | 'system' | 'personnel';
+  declare status: 'draft' | 'scheduled' | 'published';
+  declare scheduled_at: Date | null;
+  declare published_at: Date | null;
+  declare is_visible: boolean;
+  declare created_at: CreationOptional<Date>;
+  declare updated_at: CreationOptional<Date>;
+
+  static initModel(sequelize: Sequelize): typeof Announcement {
+    Announcement.init(
+      {
+        id: {
+          type: DataTypes.INTEGER,
+          autoIncrement: true,
+          primaryKey: true,
+        },
+        title: {
+          type: DataTypes.TEXT,
+          allowNull: false,
+        },
+        content: {
+          type: DataTypes.TEXT,
+          allowNull: false,
+        },
+        related_event_id: {
+          type: DataTypes.INTEGER,
+          allowNull: true,
+        },
+        created_by: {
+          type: DataTypes.INTEGER,
+          allowNull: true,
+        },
+        audience: {
+          type: DataTypes.ENUM('all', 'officers', 'members'),
+          allowNull: false,
+          defaultValue: 'all',
+        },
+        category: {
+          type: DataTypes.ENUM('event', 'system', 'personnel'),
+          allowNull: false,
+          defaultValue: 'event',
+        },
+        status: {
+          type: DataTypes.ENUM('draft', 'scheduled', 'published'),
+          allowNull: false,
+          defaultValue: 'draft',
+        },
+        scheduled_at: {
+          type: DataTypes.DATE,
+          allowNull: true,
+        },
+        published_at: {
+          type: DataTypes.DATE,
+          allowNull: true,
+        },
+        is_visible: {
+          type: DataTypes.BOOLEAN,
+          allowNull: false,
+          defaultValue: true,
+        },
+        created_at: {
+          type: DataTypes.DATE,
+          allowNull: false,
+          defaultValue: DataTypes.NOW,
+        },
+        updated_at: {
+          type: DataTypes.DATE,
+          allowNull: false,
+          defaultValue: DataTypes.NOW,
+        },
+      },
+      {
+        sequelize,
+        tableName: 'announcements',
+        modelName: 'Announcement',
+        timestamps: false, // 若你用 created_at/updated_at，這裡需手動更新時間
+        underscored: true,
+      }
+    );
+
+    return Announcement;
+  }
+}
+🔗 關聯設定（放在 models/index.ts 或初始化關聯的地方）
+ts
+複製
+編輯
+// Announcement 關聯：可選
+Announcement.belongsTo(Member, { foreignKey: 'created_by' });
+Announcement.belongsTo(Event, { foreignKey: 'related_event_id' });
