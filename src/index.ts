@@ -31,9 +31,7 @@ app.use((req, res, next) => {
   }
 });
 
-app.use(express.static(path.join(__dirname, '../client/dist')));
-
-// Health Check 路由
+// Health Check 路由（必須在靜態檔案之前）
 app.get('/health', async (req, res) => {
   try {
     // 測試資料庫連線
@@ -71,6 +69,9 @@ app.get('/api/system/status', (req, res) => {
   });
 });
 
+// 靜態檔案服務
+app.use(express.static(path.join(__dirname, '../client/dist')));
+
 // LINE Webhook - 加強錯誤處理
 app.post('/webhook', async (req, res) => {
   try {
@@ -98,9 +99,6 @@ app.use('/api/members', memberRoutes);
 app.use('/api/checkin', checkinRoutes);
 app.use('/api/liff', liffRoutes);
 app.use('/api/announcements', announcementRoutes);
-
-// 前端靜態檔案服務
-app.use(express.static(path.join(__dirname, '../client/dist')));
 
 // 前端路由（提供 React 應用）- 必須在最後
 app.get(['/', '/admin', '/register', '/checkin', '/profile'], (req, res) => {
