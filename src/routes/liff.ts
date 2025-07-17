@@ -34,9 +34,9 @@ router.post('/init', async (req, res) => {
     console.log('💾 建立 LIFF session...');
     const session = await LiffSession.create({
       line_uid,
-      display_name: display_name || null,
-      picture_url: picture_url || null,
-      event_id: event_id || null,
+      display_name: display_name || undefined,
+      picture_url: picture_url || undefined,
+      event_id: event_id || undefined,
       status: member ? 'signed_in' : 'pending',
       last_seen_at: new Date()
     });
@@ -93,7 +93,7 @@ router.post('/register', async (req, res) => {
       name,
       email,
       line_uid,
-      phone: phone || null,
+      phone: phone || undefined,
       role: 'member',
       status: 'active'
     });
