@@ -4,13 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "concurrently \"cd client && npm run dev\" \"npx ts-node src/index.ts\"",
+    "dev": "tsx src/index.ts",
     "init-db": "tsx src/init.ts",
-    "build": "npx tsc",
-    "start": "node dist/index.js",
-    "build:all": "npx tsc && cd client && npm run build",
-    "check-ports": "echo '🔍 檢查端口配置...' && grep -r 'port.*3000' . --exclude-dir=node_modules --exclude-dir=.git || echo '✅ 未發現 PORT 3000 配置'",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build:all": "cd client && npm run build && cd .. && npm run build",
+    "lint": "eslint . --ext .ts",
+    "build": "tsc",
+    "start": "node dist/index.js"
   },
   "keywords": [],
   "author": "",
@@ -23,7 +22,6 @@
     "@types/uuid": "^10.0.0",
     "body-parser": "^2.2.0",
     "chalk": "^5.4.1",
-    "concurrently": "^9.2.0",
     "dotenv": "^17.2.0",
     "esprima": "^4.0.1",
     "express": "^5.1.0",

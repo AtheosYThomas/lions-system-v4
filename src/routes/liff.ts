@@ -99,11 +99,7 @@ router.post('/register', async (req, res) => {
       line_uid,
       phone: phone || undefined,
       role: 'member',
-      status: 'active',
-      birthday: '1990-01-01', // 預設生日，可以後續更新
-      job_title: '待填寫', // 預設職稱
-      address: '待填寫', // 預設地址
-      mobile: phone || '待填寫' // 使用 phone 或預設值
+      status: 'active'
     };
 
     const newMember = await Member.create(memberData);
