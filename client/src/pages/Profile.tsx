@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import liff from '@line/liff';
 
@@ -85,63 +84,84 @@ export default function Profile() {
   }
 
   return (
-    <div style={styles.container}>
-      <div style={styles.header}>
-        <h1>👤 會員資料</h1>
-      </div>
-      
-      {profile && (
-        <div style={styles.profileCard}>
-          <div style={styles.field}>
-            <label style={styles.label}>姓名</label>
-            <div style={styles.value}>{profile.name}</div>
+    <div style={{ padding: '20px', maxWidth: '800px', margin: '0 auto' }}>
+      <h1>👤 會員資料管理</h1>
+      <p>查看並更新您的會員資料</p>
+
+      <div style={{ 
+        backgroundColor: '#f8f9fa', 
+        padding: '20px', 
+        borderRadius: '8px',
+        marginTop: '20px'
+      }}>
+        <h2>個人資料</h2>
+        <div style={{ display: 'grid', gap: '15px' }}>
+          <div>
+            <label><strong>姓名：</strong></label>
+            <input type="text" placeholder="請輸入姓名" style={{ marginLeft: '10px', padding: '5px' }} />
           </div>
-          
-          <div style={styles.field}>
-            <label style={styles.label}>電子郵件</label>
-            <div style={styles.value}>{profile.email}</div>
+          <div>
+            <label><strong>英文姓名：</strong></label>
+            <input type="text" placeholder="請輸入英文姓名" style={{ marginLeft: '10px', padding: '5px' }} />
           </div>
-          
-          {profile.phone && (
-            <div style={styles.field}>
-              <label style={styles.label}>電話</label>
-              <div style={styles.value}>{profile.phone}</div>
-            </div>
-          )}
-          
-          <div style={styles.field}>
-            <label style={styles.label}>會員等級</label>
-            <div style={styles.value}>{profile.role}</div>
+          <div>
+            <label><strong>電子郵件：</strong></label>
+            <input type="email" placeholder="請輸入電子郵件" style={{ marginLeft: '10px', padding: '5px' }} />
           </div>
-          
-          <div style={styles.field}>
-            <label style={styles.label}>狀態</label>
-            <div style={styles.value}>
-              <span style={{
-                ...styles.status,
-                backgroundColor: profile.status === 'active' ? '#10b981' : '#f59e0b'
-              }}>
-                {profile.status === 'active' ? '啟用中' : '暫停'}
-              </span>
-            </div>
+          <div>
+            <label><strong>手機號碼：</strong></label>
+            <input type="tel" placeholder="請輸入手機號碼" style={{ marginLeft: '10px', padding: '5px' }} />
           </div>
-          
-          <div style={styles.field}>
-            <label style={styles.label}>加入日期</label>
-            <div style={styles.value}>
-              {new Date(profile.created_at).toLocaleDateString('zh-TW')}
-            </div>
+          <div>
+            <label><strong>生日：</strong></label>
+            <input type="date" style={{ marginLeft: '10px', padding: '5px' }} />
+          </div>
+          <div>
+            <label><strong>職業：</strong></label>
+            <input type="text" placeholder="請輸入職業" style={{ marginLeft: '10px', padding: '5px' }} />
+          </div>
+          <div>
+            <label><strong>地址：</strong></label>
+            <textarea placeholder="請輸入地址" style={{ marginLeft: '10px', padding: '5px', width: '300px', height: '60px' }}></textarea>
           </div>
         </div>
-      )}
-      
-      <div style={styles.actions}>
-        <button 
-          onClick={() => window.history.back()}
-          style={styles.backButton}
-        >
-          ← 返回
-        </button>
+
+        <div style={{ marginTop: '20px' }}>
+          <button style={{
+            backgroundColor: '#28a745',
+            color: 'white',
+            padding: '10px 20px',
+            border: 'none',
+            borderRadius: '5px',
+            cursor: 'pointer',
+            marginRight: '10px'
+          }}>
+            更新資料
+          </button>
+          <button style={{
+            backgroundColor: '#6c757d',
+            color: 'white',
+            padding: '10px 20px',
+            border: 'none',
+            borderRadius: '5px',
+            cursor: 'pointer'
+          }}>
+            取消
+          </button>
+        </div>
+      </div>
+
+      <div style={{ marginTop: '20px' }}>
+        <a href="/" style={{
+          display: 'inline-block',
+          padding: '10px 20px',
+          backgroundColor: '#007bff',
+          color: 'white',
+          textDecoration: 'none',
+          borderRadius: '5px'
+        }}>
+          返回首頁
+        </a>
       </div>
     </div>
   );
