@@ -9,6 +9,7 @@ import memberRoutes from './routes/members';
 import checkinRoutes from './routes/checkin';
 import liffRoutes from './routes/liff';
 import { validateEnvironment } from './utils/envValidation';
+import announcementRoutes from './routes/announcements';
 
 const app = express();
 const PORT: number = parseInt(process.env.PORT || '5000', 10);
@@ -93,7 +94,8 @@ app.use('/public', express.static(path.join(__dirname, '../public')));
 app.use('/api/admin', adminRoutes);
 app.use('/api/members', memberRoutes);
 app.use('/api/checkin', checkinRoutes);
-app.use('/liff', liffRoutes);
+app.use('/api/liff', liffRoutes);
+app.use('/api/announcements', announcementRoutes);
 
 // 前端路由（提供 React 應用）
 app.get('/', (req, res) => {

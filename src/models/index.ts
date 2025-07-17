@@ -5,6 +5,7 @@ import Payment from './payment';
 import MessageLog from './messageLog';
 import LiffSession from './liffSession';
 import Checkin from './checkin';
+import Announcement from './announcement';
 import sequelize from '../config/database';
 
 // 定義關聯
@@ -31,4 +32,11 @@ Payment.belongsTo(Event, { foreignKey: 'event_id', as: 'event' });
 Member.hasMany(MessageLog, { foreignKey: 'user_id', sourceKey: 'line_uid', as: 'messageLogs' });
 MessageLog.belongsTo(Member, { foreignKey: 'user_id', targetKey: 'line_uid', as: 'member' });
 
-export { sequelize, Member, Event, Registration, Checkin, Payment, MessageLog, LiffSession };
+// Announcement 關聯
+Member.hasMany(Announcement, { foreignKey: 'created_by', as: 'announcements' });
+Announcement.belongsTo(Member, { foreignKey: 'created_by', as: 'creator' });
+
+Event.hasMany(Announcement, { foreignKey: 'related_event_id', as: 'announcements' });
+Announcement.belongsTo(Event, { foreignKey: 'related_event_id', as: 'relatedEvent' });
+
+export { sequelize, Member, Event, Registration, Checkin, Payment, MessageLog, LiffSession, Announcement };
