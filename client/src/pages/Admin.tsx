@@ -35,16 +35,24 @@ const Admin: React.FC = () => {
         if (error.code === 'ECONNABORTED' || error.message.includes('timeout')) {
           console.log('🔄 嘗試直接訪問 API...');
           try {
-            const directResponse = await fetch('/api/admin/summary');
-            if (directResponse.ok) {
-              const data = await directResponse.json();
-              console.log('✅ 直接訪問成功:', data);
-              setStats(data);
-              setError(null);
+              const directResponse = await fetch('/api/admin/summary', {
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Accept': 'application/json'
+                }
+              });
+              if (directResponse.ok) {
+                const data = await directResponse.json();
+                console.log('✅ 直接訪問成功:', data);
+                setStats(data);
+                setError(null);
+              } else {
+                console.error('❌ 直接訪問失敗，狀態碼:', directResponse.status);
+              }
+            } catch (fetchError) {
+              console.error('❌ 直接訪問也失敗:', fetchError);
             }
-          } catch (fetchError) {
-            console.error('❌ 直接訪問也失敗:', fetchError);
-          }
         }
       } finally {
         setLoading(false);
