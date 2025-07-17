@@ -844,6 +844,32 @@ args = "npx ts-node src/env-fix.ts"
 task = "shell.exec"
 args = "echo \"✅ 環境修復完成\""
 
+[[workflows.workflow]]
+name = "啟動系統"
+author = 44484841
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "echo \"🚀 啟動系統...\""
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npx ts-node src/index.ts"
+
+[[workflows.workflow]]
+name = "啟動系統"
+author = 44484841
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "echo \"🚀 啟動系統...\""
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npx ts-node src/index.ts"
+
 [[ports]]
 localPort = 5000
 externalPort = 80
