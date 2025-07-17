@@ -1,5 +1,5 @@
 
-const BASE_URL = 'http://localhost:3001';
+const BASE_URL = 'http://0.0.0.0:5000';
 
 const testMessages = [
   '哈囉',
