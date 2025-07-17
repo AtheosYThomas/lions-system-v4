@@ -79,22 +79,7 @@ app.use('/api/members', memberRoutes);
 app.use('/api/checkin', checkinRoutes);
 app.use('/liff', liffRoutes);
 
-// Health Check 端點
-app.get('/health', (req, res) => {
-  res.json({
-    status: 'healthy',
-    timestamp: new Date().toISOString(),
-    version: '4.0',
-    uptime: process.uptime(),
-    database: 'connected',
-    services: {
-      line: 'configured',
-      routes: ['admin', 'checkin', 'members', 'webhook']
-    }
-  });
-});
-
-// 靜態檔案服務
+// 靜態檔案服務（需要在其他路由之前）
 app.use('/public', express.static(path.join(__dirname, '../public')));
 
 // 前端路由（提供 React 應用）
