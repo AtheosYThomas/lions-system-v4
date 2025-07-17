@@ -1,211 +1,111 @@
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
-import React, { useEffect, useState } from 'react';
-
-interface SystemSummary {
-  memberCount: number;
-  activeMembers: number;
-  registrationCount: number;
-  eventCount: number;
-  timestamp: string;
-}
-
-export default function Admin() {
+const Admin: React.FC = () => {
+  const [stats, setStats] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [summary, setSummary] = useState<SystemSummary | null>(null);
-  const [error, setError] = useState('');
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetchSystemSummary();
-  }, []);
+    const fetchStats = async () => {
+      try {
+        setError(null);
+        console.log('🔄 開始載入管理員統計資料...');
 
-  const fetchSystemSummary = async () => {
-    try {
-      const response = await fetch('/admin/summary');
-      const result = await response.json();
+        // 先測試 health check
+        const healthResponse = await axios.get('/health', { timeout: 3000 });
+        console.log('✅ Health check 成功:', healthResponse.data);
 
-      if (response.ok) {
-        setSummary(result);
-      } else {
-        setError('無法獲取系統統計資料');
+        // 再調用統計 API
+        const response = await axios.get('/api/admin/summary', {
+          timeout: 10000, // 延長超時時間
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          }
+        });
+
+        console.log('✅ 統計資料載入成功:', response.data);
+        setStats(response.data);
+      } catch (error: any) {
+        console.error('❌ 載入統計資料失敗:', error);
+        setError(error.message || '載入失敗');
+
+        // 如果是網路錯誤，嘗試直接訪問
+        if (error.code === 'ECONNABORTED' || error.message.includes('timeout')) {
+          console.log('🔄 嘗試直接訪問 API...');
+          try {
+            const directResponse = await fetch('/api/admin/summary');
+            if (directResponse.ok) {
+              const data = await directResponse.json();
+              console.log('✅ 直接訪問成功:', data);
+              setStats(data);
+              setError(null);
+            }
+          } catch (fetchError) {
+            console.error('❌ 直接訪問也失敗:', fetchError);
+          }
+        }
+      } finally {
+        setLoading(false);
       }
-    } catch (err) {
-      console.error('獲取系統統計錯誤:', err);
-      setError('系統連接錯誤');
-    } finally {
-      setLoading(false);
-    }
-  };
+    };
+
+    fetchStats();
+  }, []);
 
   if (loading) {
     return (
-      <div style={styles.container}>
-        <div style={styles.loading}>
-          <h2>📊 正在載入系統統計...</h2>
-        </div>
+      <div style={{ padding: '20px' }}>
+        <h1>管理員面板</h1>
+        <div>🔄 載入統計資料中...</div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div style={styles.container}>
-        <div style={styles.error}>
-          <h2>❌ {error}</h2>
-          <button 
-            onClick={() => window.location.reload()}
-            style={styles.button}
-          >
-            重新載入
-          </button>
+      <div style={{ padding: '20px' }}>
+        <h1>管理員面板</h1>
+        <div style={{ color: 'red', marginBottom: '20px' }}>
+          ❌ 錯誤: {error}
         </div>
+        <button onClick={() => window.location.reload()}>
+          🔄 重新載入
+        </button>
       </div>
     );
   }
 
   return (
-    <div style={styles.container}>
-      <div style={styles.header}>
-        <h1>📊 管理後台</h1>
-        <p>北大獅子會系統統計概覽</p>
-      </div>
-      
-      {summary && (
-        <div style={styles.statsGrid}>
-          <div style={styles.statCard}>
-            <div style={styles.statIcon}>👥</div>
-            <div style={styles.statNumber}>{summary.memberCount}</div>
-            <div style={styles.statLabel}>總會員數</div>
+    <div style={{ padding: '20px' }}>
+      <h1>管理員面板</h1>
+      {stats ? (
+        <div>
+          <h2>📊 系統統計</h2>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '15px' }}>
+            <div style={{ padding: '10px', border: '1px solid #ccc', borderRadius: '5px' }}>
+              <strong>👥 會員總數:</strong> {stats.memberCount}
+            </div>
+            <div style={{ padding: '10px', border: '1px solid #ccc', borderRadius: '5px' }}>
+              <strong>✅ 活躍會員:</strong> {stats.activeMembers}
+            </div>
+            <div style={{ padding: '10px', border: '1px solid #ccc', borderRadius: '5px' }}>
+              <strong>📝 報名總數:</strong> {stats.registrationCount}
+            </div>
+            <div style={{ padding: '10px', border: '1px solid #ccc', borderRadius: '5px' }}>
+              <strong>🎉 活動總數:</strong> {stats.eventCount}
+            </div>
           </div>
-          
-          <div style={styles.statCard}>
-            <div style={styles.statIcon}>✅</div>
-            <div style={styles.statNumber}>{summary.activeMembers}</div>
-            <div style={styles.statLabel}>活躍會員</div>
-          </div>
-          
-          <div style={styles.statCard}>
-            <div style={styles.statIcon}>📅</div>
-            <div style={styles.statNumber}>{summary.eventCount}</div>
-            <div style={styles.statLabel}>活動數量</div>
-          </div>
-          
-          <div style={styles.statCard}>
-            <div style={styles.statIcon}>📝</div>
-            <div style={styles.statNumber}>{summary.registrationCount}</div>
-            <div style={styles.statLabel}>報名記錄</div>
+          <div style={{ marginTop: '15px', fontSize: '0.9em', color: '#666' }}>
+            最後更新: {new Date(stats.timestamp).toLocaleString('zh-TW')}
           </div>
         </div>
+      ) : (
+        <div>❌ 無統計資料可顯示</div>
       )}
-      
-      <div style={styles.info}>
-        <p>最後更新時間: {summary ? new Date(summary.timestamp).toLocaleString('zh-TW') : ''}</p>
-      </div>
-      
-      <div style={styles.actions}>
-        <button 
-          onClick={() => window.history.back()}
-          style={styles.backButton}
-        >
-          ← 返回主頁
-        </button>
-        <button 
-          onClick={() => window.location.reload()}
-          style={styles.refreshButton}
-        >
-          🔄 重新整理
-        </button>
-      </div>
     </div>
   );
-}
-
-const styles = {
-  container: {
-    maxWidth: '800px',
-    margin: '0 auto',
-    padding: '20px',
-    fontFamily: 'Arial, sans-serif'
-  },
-  header: {
-    textAlign: 'center' as const,
-    marginBottom: '2rem',
-    color: '#333'
-  },
-  loading: {
-    textAlign: 'center' as const,
-    color: '#666',
-    marginTop: '3rem'
-  },
-  error: {
-    textAlign: 'center' as const,
-    color: '#dc2626',
-    marginTop: '3rem'
-  },
-  statsGrid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-    gap: '1.5rem',
-    marginBottom: '2rem'
-  },
-  statCard: {
-    backgroundColor: '#f9fafb',
-    border: '1px solid #e5e7eb',
-    borderRadius: '10px',
-    padding: '1.5rem',
-    textAlign: 'center' as const,
-    boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)'
-  },
-  statIcon: {
-    fontSize: '2rem',
-    marginBottom: '0.5rem'
-  },
-  statNumber: {
-    fontSize: '2.5rem',
-    fontWeight: 'bold' as const,
-    color: '#3b82f6',
-    marginBottom: '0.5rem'
-  },
-  statLabel: {
-    fontSize: '14px',
-    color: '#6b7280',
-    fontWeight: 'bold' as const
-  },
-  info: {
-    textAlign: 'center' as const,
-    color: '#6b7280',
-    fontSize: '14px',
-    marginBottom: '2rem'
-  },
-  actions: {
-    display: 'flex',
-    justifyContent: 'center',
-    gap: '1rem'
-  },
-  button: {
-    backgroundColor: '#3b82f6',
-    color: 'white',
-    border: 'none',
-    padding: '0.75rem 1.5rem',
-    borderRadius: '6px',
-    fontSize: '16px',
-    cursor: 'pointer'
-  },
-  backButton: {
-    backgroundColor: '#6b7280',
-    color: 'white',
-    border: 'none',
-    padding: '0.75rem 1.5rem',
-    borderRadius: '6px',
-    fontSize: '16px',
-    cursor: 'pointer'
-  },
-  refreshButton: {
-    backgroundColor: '#10b981',
-    color: 'white',
-    border: 'none',
-    padding: '0.75rem 1.5rem',
-    borderRadius: '6px',
-    fontSize: '16px',
-    cursor: 'pointer'
-  }
 };
+
+export default Admin;

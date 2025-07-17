@@ -86,26 +86,22 @@ app.post('/webhook', async (req, res) => {
   }
 });
 
+// 靜態檔案服務（需要在其他路由之前）
+app.use('/public', express.static(path.join(__dirname, '../public')));
+
 // API 路由
 app.use('/api/admin', adminRoutes);
 app.use('/api/members', memberRoutes);
 app.use('/api/checkin', checkinRoutes);
 app.use('/liff', liffRoutes);
 
-// 靜態檔案服務（需要在其他路由之前）
-app.use('/public', express.static(path.join(__dirname, '../public')));
-
 // 前端路由（提供 React 應用）
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../client/dist/index.html'));
 });
 
-// 其他靜態路由
-app.get('/register', (req, res) => {
-  res.sendFile(path.join(__dirname, '../client/dist/index.html'));
-});
-
-app.get('/checkin', (req, res) => {
+// 其他靜態路由 - 支援 SPA 路由
+app.get(['/admin', '/register', '/checkin', '/profile'], (req, res) => {
   res.sendFile(path.join(__dirname, '../client/dist/index.html'));
 });
 
