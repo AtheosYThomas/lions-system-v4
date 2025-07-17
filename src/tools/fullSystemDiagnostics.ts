@@ -458,7 +458,7 @@ async function runFullDiagnostics() {
     console.log(chalk.red('🚨 發現以下問題需要修正：\n'));
     allIssues.forEach((category, index) => {
       console.log(chalk.red(`${index + 1}. ${category.category}:`));
-      category.issues.forEach((issue) => {
+      category.issues.forEach((issue: string) => {
         console.log(chalk.red(`   ❌ ${issue}`));
       });
       console.log('');
