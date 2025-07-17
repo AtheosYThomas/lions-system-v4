@@ -1,3 +1,4 @@
+
 import fs from 'fs';
 import path from 'path';
 import dotenv from 'dotenv';
@@ -17,7 +18,7 @@ console.log(chalk.cyan('\n🔍 北大獅子會系統完整診斷報告\n'));
 // 1. 掃描 /src 目錄下所有檔案的錯誤
 function scanSourceFiles() {
   console.log(chalk.blue('📁 1. 掃描 /src 目錄檔案錯誤...'));
-
+  
   const patterns = [
     'src/routes/**/*.ts',
     'src/controllers/**/*.ts', 
@@ -29,18 +30,18 @@ function scanSourceFiles() {
   ];
 
   let hasErrors = false;
-  let errorReport: Array<{file: string, issues: string[]}> = [];
+  const errorReport = [];
 
   patterns.forEach(pattern => {
     const files = globSync(pattern);
     console.log(chalk.cyan(`檢查模式: ${pattern} (${files.length} 個檔案)`));
-
+    
     files.forEach((file: string) => {
       try {
         const content = fs.readFileSync(file, 'utf-8');
 
         // 檢查 TypeScript 語法問題
-        const issues: string[] = [];
+        const issues = [];
 
         // 檢查 import 語句
         const importMatches = content.match(/import.*from.*;/g);
@@ -69,7 +70,7 @@ function scanSourceFiles() {
 
         if (issues.length > 0) {
           console.log(chalk.yellow(`⚠️ ${file}:`));
-          issues.forEach((issue: string) => console.log(chalk.yellow(`   - ${issue}`)));
+          issues.forEach(issue => console.log(chalk.yellow(`   - ${issue}`)));
           errorReport.push({ file, issues });
           hasErrors = true;
         } else {
@@ -97,13 +98,13 @@ function checkEnvVariables() {
 
   const envReport = {
     envFileExists: false,
-    missingVars: [] as string[],
-    configuredVars: [] as string[],
-    usedButNotDefined: [] as string[]
+    missingVars: [],
+    configuredVars: [],
+    usedButNotDefined: []
   };
 
   const envPath = path.resolve('.env');
-
+  
   if (!fs.existsSync(envPath)) {
     console.log(chalk.red('❌ 缺少 .env 檔案'));
     envReport.envFileExists = false;
@@ -134,9 +135,9 @@ function checkEnvVariables() {
     const missingVars = Array.from(usedEnvVars).filter(varName => !envVars[varName as string]);
     const configuredVars = Object.keys(envVars);
 
-    envReport.missingVars = missingVars as string[];
-    envReport.configuredVars = configuredVars as string[];
-    envReport.usedButNotDefined = missingVars as string[];
+    envReport.missingVars = missingVars;
+    envReport.configuredVars = configuredVars;
+    envReport.usedButNotDefined = missingVars;
 
     if (missingVars.length > 0) {
       console.log(chalk.red(`❌ 程式中使用但 .env 中缺少的變數: ${missingVars.join(', ')}`));
@@ -160,14 +161,14 @@ function checkFrontendFiles() {
 
   const frontendReport = {
     frontendFound: false,
-    directories: [] as string[],
-    jsFiles: [] as string[],
-    htmlFiles: [] as string[],
-    errors: [] as string[]
+    directories: [],
+    jsFiles: [],
+    htmlFiles: [],
+    errors: []
   };
 
   const frontendDirs = ['public', 'client/src', 'src/frontend'];
-
+  
   frontendDirs.forEach(dir => {
     if (fs.existsSync(dir)) {
       frontendReport.frontendFound = true;
@@ -177,16 +178,16 @@ function checkFrontendFiles() {
       // 檢查 JS/TS 檔案
       const jsFiles = globSync(`${dir}/**/*.{js,ts,tsx,jsx}`);
       frontendReport.jsFiles.push(...jsFiles);
-
+      
       jsFiles.forEach(file => {
         try {
           const content = fs.readFileSync(file, 'utf-8');
-
+          
           // 檢查基本語法問題
           if (content.includes('import') && !content.includes('from')) {
             frontendReport.errors.push(`${file}: 可能有不完整的 import`);
           }
-
+          
           // 檢查未處理的錯誤
           if (content.includes('fetch(') && !content.includes('catch')) {
             frontendReport.errors.push(`${file}: fetch 請求缺少錯誤處理`);
@@ -203,7 +204,7 @@ function checkFrontendFiles() {
       // 檢查 HTML 檔案
       const htmlFiles = globSync(`${dir}/**/*.html`);
       frontendReport.htmlFiles.push(...htmlFiles);
-
+      
       htmlFiles.forEach(file => {
         const content = fs.readFileSync(file, 'utf-8');
         if (!content.includes('<script') && !content.includes('<link')) {
@@ -234,7 +235,7 @@ function runHealthCheck(): Promise<any> {
       { url: `http://localhost:5000/`, name: 'Frontend' }
     ];
 
-    let results: any[] = [];
+    const results = [];
 
     const testEndpoint = (endpoint: any, callback: any) => {
       const req = http.get(endpoint.url, (res) => {
@@ -252,13 +253,13 @@ function runHealthCheck(): Promise<any> {
             success: res.statusCode === 200,
             response: data
           };
-
+          
           if (res.statusCode === 200) {
             console.log(chalk.green(`✅ ${endpoint.name} 正常 (${res.statusCode})`));
           } else {
             console.log(chalk.red(`❌ ${endpoint.name} 異常 (${res.statusCode})`));
           }
-
+          
           results.push(result);
           callback();
         });
@@ -272,7 +273,7 @@ function runHealthCheck(): Promise<any> {
           success: false,
           error: err.message
         };
-
+        
         console.log(chalk.red(`❌ ${endpoint.name} 連線失敗: ${err.message}`));
         results.push(result);
         callback();
@@ -286,7 +287,7 @@ function runHealthCheck(): Promise<any> {
           success: false,
           error: 'Timeout'
         };
-
+        
         console.log(chalk.red(`❌ ${endpoint.name} 逾時`));
         results.push(result);
         req.destroy();
@@ -400,7 +401,7 @@ async function runFullDiagnostics() {
   console.log(chalk.cyan('=' .repeat(60)));
 
   // 彙總所有問題
-  const allIssues: Array<{category: string, issues: string[]}> = [];
+  const allIssues = [];
 
   // 源碼問題
   if (report.sourceFiles.length > 0) {
@@ -458,7 +459,7 @@ async function runFullDiagnostics() {
     console.log(chalk.red('🚨 發現以下問題需要修正：\n'));
     allIssues.forEach((category, index) => {
       console.log(chalk.red(`${index + 1}. ${category.category}:`));
-      category.issues.forEach((issue: string) => {
+      category.issues.forEach(issue => {
         console.log(chalk.red(`   ❌ ${issue}`));
       });
       console.log('');

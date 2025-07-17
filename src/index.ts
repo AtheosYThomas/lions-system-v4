@@ -5,15 +5,14 @@ import sequelize from './config/database';
 import './models/index'; // 載入模型關聯
 import lineHandler from './line/handler';
 import adminRoutes from './routes/admin';
-import announcementRoutes from './routes/announcements';
 import memberRoutes from './routes/members';
 import checkinRoutes from './routes/checkin';
 import liffRoutes from './routes/liff';
-import lineWebhookRoutes from './line/webhook';
 import { validateEnvironment } from './utils/envValidation';
+import announcementRoutes from './routes/announcements';
 
 const app = express();
-const PORT: number = parseInt(process.env.PORT || '3001', 10);
+const PORT: number = parseInt(process.env.PORT || '5000', 10);
 
 // 中介軟體
 app.use(express.json());
@@ -31,7 +30,9 @@ app.use((req, res, next) => {
   }
 });
 
-// API 路由優先（必須在靜態檔案之前）
+app.use(express.static(path.join(__dirname, '../client/dist')));
+
+// Health Check 路由
 app.get('/health', async (req, res) => {
   try {
     // 測試資料庫連線
@@ -69,32 +70,40 @@ app.get('/api/system/status', (req, res) => {
   });
 });
 
-// LINE Webhook - 直接處理（最重要）
-app.use('/webhook', lineWebhookRoutes);
+// LINE Webhook - 加強錯誤處理
+app.post('/webhook', async (req, res) => {
+  try {
+    console.log('📨 收到 LINE webhook 請求');
+    console.log('📦 Request headers:', req.headers);
+    console.log('📦 Request body:', JSON.stringify(req.body, null, 2));
 
-// 添加調試路由
-app.get('/webhook', (req, res) => {
-  console.log('📥 收到 GET 請求到 /webhook');
-  res.status(200).json({ 
-    status: 'webhook endpoint active',
-    method: 'GET',
-    timestamp: new Date().toISOString()
-  });
+    await lineHandler(req, res);
+  } catch (error) {
+    console.error('🔥 Webhook 處理錯誤:', error);
+    // 確保回傳 200 狀態碼給 LINE
+    if (!res.headersSent) {
+      res.status(200).json({ status: 'ok' });
+    }
+  }
 });
 
-// 其他 API 路由
+// 靜態檔案服務（需要在其他路由之前）
+app.use('/public', express.static(path.join(__dirname, '../public')));
+
+// API 路由
 app.use('/api/admin', adminRoutes);
 app.use('/api/members', memberRoutes);
 app.use('/api/checkin', checkinRoutes);
 app.use('/api/liff', liffRoutes);
 app.use('/api/announcements', announcementRoutes);
 
-// 靜態檔案服務
-app.use('/public', express.static(path.join(__dirname, '../public')));
-app.use(express.static(path.join(__dirname, '../client/dist')));
+// 前端路由（提供 React 應用）
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/dist/index.html'));
+});
 
-// 前端路由（提供 React 應用）- 必須在最後
-app.get(['/', '/admin', '/register', '/checkin', '/profile'], (req, res) => {
+// 其他靜態路由 - 支援 SPA 路由
+app.get(['/admin', '/register', '/checkin', '/profile'], (req, res) => {
   res.sendFile(path.join(__dirname, '../client/dist/index.html'));
 });
 
@@ -151,7 +160,6 @@ const startServer = async () => {
       console.log(`📍 Health Check: http://0.0.0.0:${PORT}/health`);
       console.log(`📱 LINE Webhook: http://0.0.0.0:${PORT}/webhook`);
       console.log(`🌐 前端頁面: http://0.0.0.0:${PORT}`);
-      console.log(`🔗 外部訪問: https://${process.env.REPL_SLUG}.${process.env.REPL_OWNER}.repl.co`);
     });
   } catch (error) {
     console.error('❌ 伺服器啟動失敗:', error);

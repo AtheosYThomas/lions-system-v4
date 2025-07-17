@@ -4,7 +4,7 @@ import sequelize from '../config/database';
 
 export interface MessageLogAttributes {
   id: string;
-  line_user_id: string;
+  user_id: string;
   timestamp: Date;
   message_type?: string;
   message_content?: string;
@@ -17,7 +17,7 @@ export type MessageLogCreationAttributes = Optional<MessageLogAttributes, 'id' |
 
 export class MessageLog extends Model<MessageLogAttributes, MessageLogCreationAttributes> implements MessageLogAttributes {
   public id!: string;
-  public line_user_id!: string;
+  public user_id!: string;
   public timestamp!: Date;
   public message_type?: string;
   public message_content?: string;
@@ -32,9 +32,15 @@ MessageLog.init({
     primaryKey: true,
     defaultValue: DataTypes.UUIDV4
   },
-  line_user_id: {
+  user_id: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: false,
+    references: {
+      model: 'members',
+      key: 'line_user_id'  // 對應資料庫中的實際欄位名稱
+    },
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
   },
   timestamp: {
     type: DataTypes.DATE,

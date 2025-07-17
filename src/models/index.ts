@@ -28,9 +28,9 @@ Payment.belongsTo(Member, { foreignKey: 'member_id', as: 'member' });
 Event.hasMany(Payment, { foreignKey: 'event_id', as: 'payments' });
 Payment.belongsTo(Event, { foreignKey: 'event_id', as: 'event' });
 
-// MessageLog 關聯 (使用 line_user_id 字段)
-Member.hasMany(MessageLog, { foreignKey: 'line_user_id', sourceKey: 'line_user_id', as: 'messageLogs' });
-MessageLog.belongsTo(Member, { foreignKey: 'line_user_id', targetKey: 'line_user_id', as: 'member' });
+// MessageLog 關聯 (使用 user_id 字段)
+Member.hasMany(MessageLog, { foreignKey: 'user_id', sourceKey: 'line_uid', as: 'messageLogs' });
+MessageLog.belongsTo(Member, { foreignKey: 'user_id', targetKey: 'line_uid', as: 'member' });
 
 // Announcement 關聯
 Member.hasMany(Announcement, { foreignKey: 'created_by', as: 'announcements' });

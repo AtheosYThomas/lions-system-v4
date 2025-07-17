@@ -219,24 +219,6 @@ args = "npm run init-db && npm run dev"
 task = "shell.exec"
 args = "cd client && npm run dev"
 
-[[workflows.workflow]]
-name = "System Monitor"
-author = 44484841
-mode = "sequential"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "npx tsx src/tools/monitor.ts"
-
-[[workflows.workflow]]
-name = "Test LINE Bot"
-author = 44484841
-mode = "sequential"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "npx tsx src/tools/test-linebot.ts"
-
 [[ports]]
 localPort = 3000
 externalPort = 80
