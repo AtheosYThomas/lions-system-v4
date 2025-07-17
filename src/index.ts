@@ -91,8 +91,10 @@ app.post('/webhook', async (req, res) => {
 app.use('/public', express.static(path.join(__dirname, '../public')));
 
 // 添加 API 路由調試（必須在路由註冊之前）
-app.use('/api/*', (req, res, next) => {
-  console.log(`🔍 API 請求: ${req.method} ${req.originalUrl} - ${req.path}`);
+app.use((req, res, next) => {
+  if (req.path.startsWith('/api/')) {
+    console.log(`🔍 API 請求: ${req.method} ${req.originalUrl} - ${req.path}`);
+  }
   next();
 });
 
