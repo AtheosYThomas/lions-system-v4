@@ -1,59 +1,38 @@
 {
-  "timestamp": "2025-07-16T13:44:18.464Z",
-  "summary": {
-    "totalErrors": 0,
-    "totalWarnings": 1,
-    "systemStatus": "issues"
-  },
-  "sections": {
-    "routes": {
-      "status": "ok",
-      "errors": [],
-      "warnings": []
-    },
-    "environment": {
-      "status": "ok",
-      "errors": [],
-      "warnings": [
-        "⚠️ .env 檔案中有重複設定: LINE_CHANNEL_ACCESS_TOKEN, LINE_CHANNEL_SECRET, DATABASE_URL, PORT, NODE_ENV"
-      ],
-      "duplicates": [
-        "LINE_CHANNEL_ACCESS_TOKEN",
-        "LINE_CHANNEL_SECRET",
-        "DATABASE_URL",
-        "PORT",
-        "NODE_ENV"
-      ]
-    },
-    "frontend": {
-      "status": "ok",
-      "errors": [],
-      "warnings": []
-    },
-    "health": {
-      "status": "ok",
-      "errors": [],
-      "details": {
-        "timestamp": "2025-07-16T13:44:20.951Z",
-        "status": "healthy",
-        "checks": {
-          "database": {
-            "status": "ok",
-            "message": "資料庫連線正常"
-          },
-          "environment": {
-            "status": "ok",
-            "missing": []
-          },
-          "models": {
-            "status": "ok",
-            "message": "找到 5 個資料表"
-          }
-        }
-      }
-    },
-    "suggestions": [
-      "清理 .env 檔案中的重複設定"
+  "timestamp": "2025-07-17T00:29:31.323Z",
+  "pathToRegexpIssues": [],
+  "environmentVariables": {
+    "dangerous": [],
+    "missing": [],
+    "valid": [
+      "LINE_CHANNEL_ACCESS_TOKEN",
+      "LINE_CHANNEL_SECRET"
     ]
-  }
+  },
+  "routeFiles": [
+    {
+      "file": "src/routes/admin.ts",
+      "status": "healthy",
+      "issues": []
+    },
+    {
+      "file": "src/routes/members.ts",
+      "status": "healthy",
+      "issues": []
+    },
+    {
+      "file": "src/routes/events.ts",
+      "status": "healthy",
+      "issues": []
+    },
+    {
+      "file": "src/routes/checkin.ts",
+      "status": "healthy",
+      "issues": []
+    }
+  ],
+  "recommendations": [
+    "系統狀態良好，可以正常啟動"
+  ],
+  "severity": "low"
 }
