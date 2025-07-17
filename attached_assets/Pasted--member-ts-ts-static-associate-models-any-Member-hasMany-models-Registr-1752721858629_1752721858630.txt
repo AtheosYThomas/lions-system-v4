@@ -1,0 +1,96 @@
+這個錯誤是因為你在 member.ts 裡寫了這段：
+
+ts
+複製
+編輯
+static associate(models: any) {
+  Member.hasMany(models.Registration, { foreignKey: 'member_id' });
+  Member.hasMany(models.Checkin, { foreignKey: 'member_id' });
+  Member.hasMany(models.Payment, { foreignKey: 'member_id' });
+}
+但是 TypeScript 報錯：
+
+pgsql
+複製
+編輯
+TS2304: Cannot find name 'associate'
+TS2552: Cannot find name 'models'. Did you mean 'Model'?
+TS2693: 'any' only refers to a type, but is being used as a value here.
+✅ 原因解析
+這段代碼語法本身是 正確的 JavaScript/TypeScript Class 靜態方法寫法，錯誤的根源通常是你把這段 associate() 方法 寫在錯誤的位置。
+
+通常這種錯誤發生在：
+
+✅ 正確位置：
+這應該寫在 Member.init(...) 之後，並且在 class Member extends Model 外部定義 Member.associate。
+
+✅ 正確寫法參考：
+ts
+複製
+編輯
+// src/models/member.ts
+import { Model, DataTypes } from 'sequelize';
+import sequelize from '../config/database';
+
+export interface MemberAttributes {
+  id?: number;
+  name: string;
+  email: string;
+  phone: string;
+  line_uid: string;
+  status: string;
+}
+
+class Member extends Model<MemberAttributes> implements MemberAttributes {
+  public id!: number;
+  public name!: string;
+  public email!: string;
+  public phone!: string;
+  public line_uid!: string;
+  public status!: string;
+
+  // timestamps!
+  public readonly createdAt!: Date;
+  public readonly updatedAt!: Date;
+}
+
+// ✅ 初始化
+Member.init(
+  {
+    name: DataTypes.STRING,
+    email: DataTypes.STRING,
+    phone: DataTypes.STRING,
+    line_uid: DataTypes.STRING,
+    status: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      defaultValue: 'active',
+    },
+  },
+  {
+    sequelize,
+    modelName: 'Member',
+    tableName: 'members',
+  }
+);
+
+// ✅ 關聯定義寫在 class 外部
+Member.associate = (models: any) => {
+  Member.hasMany(models.Registration, { foreignKey: 'member_id' });
+  Member.hasMany(models.Checkin, { foreignKey: 'member_id' });
+  Member.hasMany(models.Payment, { foreignKey: 'member_id' });
+};
+
+export default Member;
+🛠 解決建議
+請你將 static associate(models: any) 改成：
+
+ts
+複製
+編輯
+Member.associate = (models: any) => {
+  Member.hasMany(models.Registration, { foreignKey: 'member_id' });
+  Member.hasMany(models.Checkin, { foreignKey: 'member_id' });
+  Member.hasMany(models.Payment, { foreignKey: 'member_id' });
+};
+並 放到 Member.init(...) 後面，class 外面
