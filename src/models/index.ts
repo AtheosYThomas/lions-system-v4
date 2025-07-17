@@ -4,6 +4,7 @@ import Registration from './registration';
 import Payment from './payment';
 import MessageLog from './messageLog';
 import LiffSession from './liffSession';
+import Checkin from './checkin';
 import { sequelize } from '../config/database';
 
 // 定義關聯

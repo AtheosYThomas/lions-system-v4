@@ -77,7 +77,7 @@ app.post('/webhook', async (req, res) => {
 app.use('/api/admin', adminRoutes);
 app.use('/api/members', memberRoutes);
 app.use('/api/checkin', checkinRoutes);
-app.use('/api/liff', liffRoutes);
+app.use('/liff', liffRoutes);
 
 // 前端路由（提供 React 應用）
 app.get('/', (req, res) => {
