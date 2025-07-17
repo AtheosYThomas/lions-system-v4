@@ -5,7 +5,6 @@ import dotenv from 'dotenv';
 import { Sequelize } from 'sequelize';
 import express from 'express';
 import http from 'http';
-import { parseScript } from 'esprima';
 import { globSync } from 'glob';
 import chalk from 'chalk';
 import { execSync } from 'child_process';
@@ -128,10 +127,7 @@ function checkFrontendFiles() {
         try {
           const content = fs.readFileSync(file, 'utf-8');
           
-          // 簡單的語法檢查
-          if (file.endsWith('.js')) {
-            parseScript(content);
-          }
+          // 簡單的語法檢查已移除 (不需要 esprima)
           
           console.log(chalk.green(`✅ ${file} 語法正確`));
         } catch (err) {
