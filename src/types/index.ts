@@ -14,6 +14,12 @@ export * from './announcement';
 // LINE types
 export * from './line';
 
+// Checkin types
+export * from './checkin';
+
+// Payment types  
+export * from './payment';
+
 // Common types
 export interface ApiResponse<T = any> {
   success: boolean;
