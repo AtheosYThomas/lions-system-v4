@@ -52,7 +52,7 @@ router.post('/init', async (req, res) => {
     console.log('📤 回應資料:', response);
     return res.json(response);
     
-  } catch (error) {
+  } catch (error: any) {
     console.error('❌ LIFF init 錯誤詳情:', error);
     console.error('❌ 錯誤堆疊:', error.stack);
     return res.status(500).json({ 
@@ -120,7 +120,7 @@ router.post('/register', async (req, res) => {
     console.log('📤 註冊回應:', response);
     return res.json(response);
     
-  } catch (error) {
+  } catch (error: any) {
     console.error('❌ 註冊錯誤:', error);
     return res.status(500).json({ 
       error: '註冊失敗',
@@ -151,7 +151,7 @@ router.get('/profile/:line_uid', async (req, res) => {
       member: member
     });
     
-  } catch (error) {
+  } catch (error: any) {
     console.error('❌ 查詢錯誤:', error);
     return res.status(500).json({ 
       error: '查詢失敗',

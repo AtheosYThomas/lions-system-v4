@@ -5,7 +5,7 @@ import Payment from './payment';
 import MessageLog from './messageLog';
 import LiffSession from './liffSession';
 import Checkin from './checkin';
-import { sequelize } from '../config/database';
+import sequelize from '../config/database';
 
 // 定義關聯
 Event.hasMany(Registration, { foreignKey: 'event_id', as: 'registrations' });

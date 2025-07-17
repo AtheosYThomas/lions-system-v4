@@ -1,4 +1,3 @@
-
 import express from 'express';
 import Member from '../models/member';
 import Event from '../models/event';
