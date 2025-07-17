@@ -24,3 +24,9 @@ export interface LineServiceResponse {
   message?: string;
   error?: string;
 }
+
+export interface LineEventProcessResult {
+  success: boolean;
+  processedEvents: number;
+  errors: string[];
+}
