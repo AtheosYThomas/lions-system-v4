@@ -1,115 +1,82 @@
-
-export interface RegistrationProfile {
-  id: string;
-  event_id: string;
-  member_id: string;
-  registration_date: Date;
+export interface Registration {
+  id: number;
+  eventId: number;
+  memberId: number;
   status: RegistrationStatus;
-  created_at: Date;
+  registrationDate: Date;
   notes?: string;
-  num_attendees?: number;
+  paymentStatus: PaymentStatus;
+  paymentAmount?: number;
+  paymentDate?: Date;
+  createdAt: Date;
+  updatedAt: Date;
+
+  // 關聯資料
+  event?: import('./event').Event;
+  member?: import('./member').Member;
 }
 
-export interface RegistrationCreateRequest {
-  event_id: string;
-  member_id: string;
-  notes?: string;
-  num_attendees?: number;
-  status?: RegistrationStatus;
-}
-
-export interface RegistrationUpdateRequest {
-  status?: RegistrationStatus;
-  notes?: string;
-  num_attendees?: number;
-}
-
-export interface RegistrationWithDetails {
-  id: string;
-  event_id: string;
-  member_id: string;
-  registration_date: Date;
-  status: RegistrationStatus;
-  created_at: Date;
-  notes?: string;
-  num_attendees?: number;
-  event?: {
-    id: string;
-    title: string;
-    date: Date;
-    location?: string;
-  };
-  member?: {
-    id: string;
-    name: string;
-    email: string;
-    phone?: string;
-  };
-}
-
-export interface RegistrationSearchQuery {
-  event_id?: string;
-  member_id?: string;
-  status?: RegistrationStatus;
-  dateFrom?: Date;
-  dateTo?: Date;
-  limit?: number;
-  offset?: number;
-}
-
-export interface RegistrationStats {
-  total: number;
-  confirmed: number;
-  cancelled: number;
-  pending: number;
-  waitlisted: number;
-  byEvent: Record<string, number>;
-  byMember: Record<string, number>;
-  recentRegistrations: number;
-}
-
-export interface BulkRegistrationRequest {
-  event_id: string;
-  member_ids: string[];
-  notes?: string;
-  num_attendees?: number;
-}
-
-export interface BulkRegistrationResult {
-  success: number;
-  failed: number;
-  errors: Array<{
-    member_id: string;
-    error: string;
-  }>;
-}
-
-// 報名狀態枚舉
 export enum RegistrationStatus {
   PENDING = 'pending',
   CONFIRMED = 'confirmed',
   CANCELLED = 'cancelled',
-  WAITLISTED = 'waitlisted',
-  ATTENDED = 'attended',
+  WAITLIST = 'waitlist',
   NO_SHOW = 'no_show'
 }
 
-// 報名驗證規則
-export interface RegistrationValidation {
-  isEventActive: boolean;
-  hasCapacity: boolean;
-  isNotDuplicate: boolean;
-  isMemberEligible: boolean;
-  isWithinDeadline: boolean;
+export enum PaymentStatus {
+  PENDING = 'pending',
+  PAID = 'paid',
+  REFUNDED = 'refunded',
+  WAIVED = 'waived'
 }
 
-// 報名匯出格式
-export interface RegistrationExport {
-  event_title: string;
-  member_name: string;
-  member_email: string;
-  registration_date: string;
-  status: string;
+export interface CreateRegistrationRequest {
+  eventId: number;
+  memberId: number;
   notes?: string;
-  num_attendees?: number;
+  paymentAmount?: number;
+}
+
+export interface UpdateRegistrationRequest {
+  status?: RegistrationStatus;
+  notes?: string;
+  paymentStatus?: PaymentStatus;
+  paymentAmount?: number;
+  paymentDate?: Date;
+}
+
+export interface RegistrationStats {
+  total: number;
+  byStatus: Record<RegistrationStatus, number>;
+  byPaymentStatus: Record<PaymentStatus, number>;
+  totalRevenue: number;
+  averageRegistrationsPerEvent: number;
+  cancellationRate: number;
+}
+
+export interface RegistrationSearchParams {
+  eventId?: number;
+  memberId?: number;
+  status?: RegistrationStatus;
+  paymentStatus?: PaymentStatus;
+  registrationDateFrom?: Date;
+  registrationDateTo?: Date;
+  limit?: number;
+  offset?: number;
+}
+
+export interface BulkRegistrationRequest {
+  eventId: number;
+  memberIds: number[];
+  notes?: string;
+}
+
+export interface RegistrationSummary {
+  eventId: number;
+  eventTitle: string;
+  totalRegistrations: number;
+  confirmedRegistrations: number;
+  revenue: number;
+  availableSpots: number;
 }

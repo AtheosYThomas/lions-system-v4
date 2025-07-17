@@ -1,116 +1,24 @@
-
-export interface AnnouncementProfile {
-  id: string;
+export interface Announcement {
+  id: number;
   title: string;
   content: string;
-  related_event_id?: string;
-  created_by?: string;
-  audience: AnnouncementAudience;
-  category: AnnouncementCategory;
   status: AnnouncementStatus;
-  scheduled_at?: Date;
-  published_at?: Date;
-  is_visible: boolean;
-  created_at: Date;
-  updated_at: Date;
-}
-
-export interface AnnouncementCreateRequest {
-  title: string;
-  content: string;
-  related_event_id?: string;
-  audience?: AnnouncementAudience;
-  category?: AnnouncementCategory;
-  status?: AnnouncementStatus;
-  scheduled_at?: Date;
-  is_visible?: boolean;
-}
-
-export interface AnnouncementUpdateRequest {
-  title?: string;
-  content?: string;
-  related_event_id?: string;
-  audience?: AnnouncementAudience;
-  category?: AnnouncementCategory;
-  status?: AnnouncementStatus;
-  scheduled_at?: Date;
-  is_visible?: boolean;
-}
-
-export interface AnnouncementWithDetails {
-  id: string;
-  title: string;
-  content: string;
-  related_event_id?: string;
-  created_by?: string;
-  audience: AnnouncementAudience;
+  priority: AnnouncementPriority;
   category: AnnouncementCategory;
-  status: AnnouncementStatus;
-  scheduled_at?: Date;
-  published_at?: Date;
-  is_visible: boolean;
-  created_at: Date;
-  updated_at: Date;
-  event?: {
-    id: string;
-    title: string;
-    date: Date;
-  };
-  creator?: {
-    id: string;
-    name: string;
-    role: string;
-  };
+  targetAudience: TargetAudience;
+  scheduledTime?: Date;
+  publishedTime?: Date;
+  expiryTime?: Date;
+  authorId: number;
+  isSticky: boolean;
+  viewCount: number;
+  createdAt: Date;
+  updatedAt: Date;
+
+  // 關聯資料
+  author?: import('./member').Member;
 }
 
-export interface AnnouncementSearchQuery {
-  title?: string;
-  category?: AnnouncementCategory;
-  status?: AnnouncementStatus;
-  audience?: AnnouncementAudience;
-  created_by?: string;
-  related_event_id?: string;
-  dateFrom?: Date;
-  dateTo?: Date;
-  is_visible?: boolean;
-  limit?: number;
-  offset?: number;
-}
-
-export interface AnnouncementStats {
-  total: number;
-  draft: number;
-  scheduled: number;
-  published: number;
-  byCategory: Record<AnnouncementCategory, number>;
-  byAudience: Record<AnnouncementAudience, number>;
-  recentPublished: number;
-  scheduledToday: number;
-}
-
-export interface BulkAnnouncementOperation {
-  announcement_ids: string[];
-  action: 'publish' | 'archive' | 'delete' | 'schedule';
-  scheduled_at?: Date;
-}
-
-// 公告對象枚舉
-export enum AnnouncementAudience {
-  ALL = 'all',
-  OFFICERS = 'officers',
-  MEMBERS = 'members'
-}
-
-// 公告分類枚舉
-export enum AnnouncementCategory {
-  EVENT = 'event',
-  SYSTEM = 'system',
-  PERSONNEL = 'personnel',
-  GENERAL = 'general',
-  URGENT = 'urgent'
-}
-
-// 公告狀態枚舉
 export enum AnnouncementStatus {
   DRAFT = 'draft',
   SCHEDULED = 'scheduled',
@@ -118,32 +26,78 @@ export enum AnnouncementStatus {
   ARCHIVED = 'archived'
 }
 
-// 公告發布格式
-export interface AnnouncementPublishFormat {
+export enum AnnouncementPriority {
+  LOW = 'low',
+  NORMAL = 'normal',
+  HIGH = 'high',
+  URGENT = 'urgent'
+}
+
+export enum AnnouncementCategory {
+  GENERAL = 'general',
+  EVENT = 'event',
+  MEETING = 'meeting',
+  EMERGENCY = 'emergency',
+  POLICY = 'policy',
+  SOCIAL = 'social'
+}
+
+export enum TargetAudience {
+  ALL = 'all',
+  MEMBERS_ONLY = 'members_only',
+  BOARD_ONLY = 'board_only',
+  COMMITTEE = 'committee',
+  NEW_MEMBERS = 'new_members'
+}
+
+export interface CreateAnnouncementRequest {
   title: string;
   content: string;
-  audience: AnnouncementAudience;
+  priority: AnnouncementPriority;
   category: AnnouncementCategory;
-  publish_time: Date;
-  related_links?: string[];
-  attachments?: string[];
+  targetAudience: TargetAudience;
+  scheduledTime?: Date;
+  expiryTime?: Date;
+  isSticky?: boolean;
 }
 
-// 公告通知設定
-export interface AnnouncementNotificationSettings {
-  send_line_notification: boolean;
-  send_email_notification: boolean;
-  target_audience: AnnouncementAudience;
-  notification_template?: string;
+export interface UpdateAnnouncementRequest {
+  title?: string;
+  content?: string;
+  status?: AnnouncementStatus;
+  priority?: AnnouncementPriority;
+  category?: AnnouncementCategory;
+  targetAudience?: TargetAudience;
+  scheduledTime?: Date;
+  expiryTime?: Date;
+  isSticky?: boolean;
 }
 
-// 公告權限檢查
-export interface AnnouncementPermissions {
-  canView: boolean;
-  canCreate: boolean;
-  canEdit: boolean;
-  canDelete: boolean;
-  canPublish: boolean;
-  canSchedule: boolean;
-  canManageAll: boolean;
+export interface AnnouncementStats {
+  total: number;
+  byStatus: Record<AnnouncementStatus, number>;
+  byPriority: Record<AnnouncementPriority, number>;
+  byCategory: Record<AnnouncementCategory, number>;
+  totalViews: number;
+  averageViews: number;
+  recentAnnouncements: number;
+}
+
+export interface AnnouncementSearchParams {
+  title?: string;
+  status?: AnnouncementStatus;
+  priority?: AnnouncementPriority;
+  category?: AnnouncementCategory;
+  targetAudience?: TargetAudience;
+  authorId?: number;
+  publishedAfter?: Date;
+  publishedBefore?: Date;
+  limit?: number;
+  offset?: number;
+}
+
+export interface BulkAnnouncementOperation {
+  announcementIds: number[];
+  action: 'publish' | 'archive' | 'delete';
+  scheduledTime?: Date;
 }

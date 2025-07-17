@@ -1,92 +1,64 @@
-
-export interface MemberProfile {
-  id: string;
+export interface Member {
+  id: number;
   name: string;
   email: string;
-  line_uid?: string;
-  role: MemberRole;
-  phone?: string;
-  english_name?: string;
-  birthday: string;
-  job_title: string;
-  fax?: string;
-  address: string;
-  mobile: string;
+  phone: string;
+  lineUid?: string;
+  membershipType: MembershipType;
   status: MemberStatus;
-  created_at: Date;
+  joinDate: Date;
+  lastActiveDate?: Date;
+  notes?: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
-export interface MemberCreateRequest {
+export enum MembershipType {
+  REGULAR = 'regular',
+  HONORARY = 'honorary',
+  LIFE = 'life',
+  ASSOCIATE = 'associate'
+}
+
+export enum MemberStatus {
+  ACTIVE = 'active',
+  INACTIVE = 'inactive',
+  SUSPENDED = 'suspended',
+  PENDING = 'pending'
+}
+
+export interface CreateMemberRequest {
   name: string;
   email: string;
-  line_uid?: string;
-  phone?: string;
-  english_name?: string;
-  birthday: string;
-  job_title: string;
-  fax?: string;
-  address: string;
-  mobile: string;
-  role?: MemberRole;
-  status?: MemberStatus;
+  phone: string;
+  lineUid?: string;
+  membershipType: MembershipType;
+  notes?: string;
 }
 
-export interface MemberUpdateRequest {
+export interface UpdateMemberRequest {
   name?: string;
   email?: string;
   phone?: string;
-  english_name?: string;
-  birthday?: string;
-  job_title?: string;
-  fax?: string;
-  address?: string;
-  mobile?: string;
-  role?: MemberRole;
+  lineUid?: string;
+  membershipType?: MembershipType;
   status?: MemberStatus;
-}
-
-export interface MemberSearchQuery {
-  name?: string;
-  email?: string;
-  role?: MemberRole;
-  status?: MemberStatus;
-  limit?: number;
-  offset?: number;
+  notes?: string;
 }
 
 export interface MemberStats {
   total: number;
   active: number;
-  pending: number;
-  suspended: number;
-  archived: number;
-  byRole: Record<MemberRole, number>;
+  inactive: number;
+  byType: Record<MembershipType, number>;
+  recentJoins: number;
 }
 
-// 會員角色枚舉
-export enum MemberRole {
-  GUEST = 'guest',
-  MEMBER = 'member',
-  OFFICER = 'officer',
-  PRESIDENT = 'president',
-  ADMIN = 'admin'
-}
-
-// 會員狀態枚舉
-export enum MemberStatus {
-  PENDING = 'pending',
-  ACTIVE = 'active',
-  SUSPENDED = 'suspended',
-  ARCHIVED = 'archived'
-}
-
-// 會員權限檢查
-export interface MemberPermissions {
-  canCreateEvent: boolean;
-  canEditEvent: boolean;
-  canDeleteEvent: boolean;
-  canManageMembers: boolean;
-  canViewAdminPanel: boolean;
-  canCreateAnnouncement: boolean;
-  canApproveContent: boolean;
+export interface MemberSearchParams {
+  name?: string;
+  email?: string;
+  status?: MemberStatus;
+  membershipType?: MembershipType;
+  limit?: number;
+  offset?: number;
 }

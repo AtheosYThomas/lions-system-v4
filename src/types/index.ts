@@ -1,0 +1,70 @@
+
+// Member types
+export * from './member';
+
+// Event types  
+export * from './event';
+
+// Registration types
+export * from './registration';
+
+// Announcement types
+export * from './announcement';
+
+// LINE types
+export * from './line';
+
+// Common types
+export interface ApiResponse<T = any> {
+  success: boolean;
+  data?: T;
+  message?: string;
+  error?: string;
+}
+
+export interface PaginationParams {
+  page?: number;
+  limit?: number;
+  offset?: number;
+}
+
+export interface PaginatedResponse<T> {
+  data: T[];
+  pagination: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+    hasNext: boolean;
+    hasPrev: boolean;
+  };
+}
+
+export interface SortParams {
+  sortBy?: string;
+  sortOrder?: 'ASC' | 'DESC';
+}
+
+export interface DateRange {
+  startDate: Date;
+  endDate: Date;
+}
+
+export interface SystemStats {
+  members: {
+    total: number;
+    active: number;
+  };
+  events: {
+    total: number;
+    upcoming: number;
+  };
+  registrations: {
+    total: number;
+    thisMonth: number;
+  };
+  announcements: {
+    total: number;
+    published: number;
+  };
+}

@@ -1,100 +1,83 @@
-
-export interface EventProfile {
-  id: string;
+export interface Event {
+  id: number;
   title: string;
-  description?: string;
-  date: Date;
-  location?: string;
-  max_attendees?: number;
+  description: string;
+  startTime: Date;
+  endTime: Date;
+  location: string;
+  maxParticipants?: number;
+  currentParticipants: number;
   status: EventStatus;
-  created_at: Date;
-  created_by?: string;
-  approved_by?: string;
-  approved_at?: Date;
+  type: EventType;
+  requiresRegistration: boolean;
+  registrationDeadline?: Date;
+  fee?: number;
+  organizer: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
-export interface EventCreateRequest {
-  title: string;
-  description?: string;
-  date: Date;
-  location?: string;
-  max_attendees?: number;
-  status?: EventStatus;
-}
-
-export interface EventUpdateRequest {
-  title?: string;
-  description?: string;
-  date?: Date;
-  location?: string;
-  max_attendees?: number;
-  status?: EventStatus;
-}
-
-export interface EventSearchQuery {
-  title?: string;
-  status?: EventStatus;
-  dateFrom?: Date;
-  dateTo?: Date;
-  location?: string;
-  limit?: number;
-  offset?: number;
-}
-
-export interface EventWithStats {
-  id: string;
-  title: string;
-  description?: string;
-  date: Date;
-  location?: string;
-  max_attendees?: number;
-  status: EventStatus;
-  created_at: Date;
-  registration_count: number;
-  checkin_count: number;
-  is_full: boolean;
-  attendance_rate?: number;
-}
-
-export interface EventStats {
-  total: number;
-  draft: number;
-  pending: number;
-  approved: number;
-  rejected: number;
-  upcoming: number;
-  completed: number;
-  totalRegistrations: number;
-  totalCheckins: number;
-  averageAttendance: number;
-}
-
-// 活動狀態枚舉
 export enum EventStatus {
   DRAFT = 'draft',
-  PENDING = 'pending',
-  APPROVED = 'approved',
-  REJECTED = 'rejected',
-  CANCELLED = 'cancelled',
-  COMPLETED = 'completed'
+  PUBLISHED = 'published',
+  ONGOING = 'ongoing',
+  COMPLETED = 'completed',
+  CANCELLED = 'cancelled'
 }
 
-// 活動類型枚舉
 export enum EventType {
   MEETING = 'meeting',
   SOCIAL = 'social',
   SERVICE = 'service',
+  FUNDRAISING = 'fundraising',
   TRAINING = 'training',
-  CEREMONY = 'ceremony',
   OTHER = 'other'
 }
 
-// 活動管理權限
-export interface EventPermissions {
-  canView: boolean;
-  canEdit: boolean;
-  canDelete: boolean;
-  canApprove: boolean;
-  canRegister: boolean;
-  canCheckin: boolean;
+export interface CreateEventRequest {
+  title: string;
+  description: string;
+  startTime: Date;
+  endTime: Date;
+  location: string;
+  maxParticipants?: number;
+  type: EventType;
+  requiresRegistration: boolean;
+  registrationDeadline?: Date;
+  fee?: number;
+  organizer: string;
+}
+
+export interface UpdateEventRequest {
+  title?: string;
+  description?: string;
+  startTime?: Date;
+  endTime?: Date;
+  location?: string;
+  maxParticipants?: number;
+  status?: EventStatus;
+  type?: EventType;
+  requiresRegistration?: boolean;
+  registrationDeadline?: Date;
+  fee?: number;
+  organizer?: string;
+}
+
+export interface EventStats {
+  total: number;
+  byStatus: Record<EventStatus, number>;
+  byType: Record<EventType, number>;
+  totalParticipants: number;
+  averageParticipants: number;
+  upcomingEvents: number;
+}
+
+export interface EventSearchParams {
+  title?: string;
+  status?: EventStatus;
+  type?: EventType;
+  startDate?: Date;
+  endDate?: Date;
+  limit?: number;
+  offset?: number;
 }
