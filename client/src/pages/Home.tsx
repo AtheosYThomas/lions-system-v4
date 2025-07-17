@@ -36,91 +36,98 @@ export default function Home() {
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
           gap: '1.5rem',
-          marginTop: '3rem'
+          marginTop: '3rem',
+          maxWidth: '1200px',
+          margin: '3rem auto 0'
         }}>
           <a href="/profile" style={{ 
             display: 'block',
             padding: '2rem 1.5rem',
-            backgroundColor: 'rgba(255,255,255,0.1)',
+            backgroundColor: 'rgba(59, 130, 246, 0.8)',
             color: 'white',
             textDecoration: 'none',
             borderRadius: '1rem',
             border: '1px solid rgba(255,255,255,0.2)',
             backdropFilter: 'blur(10px)',
             transition: 'all 0.3s ease',
-            textAlign: 'center'
+            textAlign: 'center',
+            boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
           }}>
             <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>👤</div>
             <h3 style={{ margin: '0 0 0.5rem 0', fontSize: '1.3rem' }}>會員資料</h3>
-            <p style={{ margin: 0, opacity: 0.8, fontSize: '0.9rem' }}>查看和編輯個人資料</p>
+            <p style={{ margin: 0, opacity: 0.9, fontSize: '0.9rem' }}>查看和編輯個人資料</p>
           </a>
           
           <a href="/register" style={{ 
             display: 'block',
             padding: '2rem 1.5rem',
-            backgroundColor: 'rgba(255,255,255,0.1)',
+            backgroundColor: 'rgba(34, 197, 94, 0.8)',
             color: 'white',
             textDecoration: 'none',
             borderRadius: '1rem',
             border: '1px solid rgba(255,255,255,0.2)',
             backdropFilter: 'blur(10px)',
             transition: 'all 0.3s ease',
-            textAlign: 'center'
+            textAlign: 'center',
+            boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
           }}>
             <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>📝</div>
             <h3 style={{ margin: '0 0 0.5rem 0', fontSize: '1.3rem' }}>活動報名</h3>
-            <p style={{ margin: 0, opacity: 0.8, fontSize: '0.9rem' }}>報名參加獅子會活動</p>
+            <p style={{ margin: 0, opacity: 0.9, fontSize: '0.9rem' }}>報名參加獅子會活動</p>
           </a>
           
           <a href="/member-register" style={{ 
             display: 'block',
             padding: '2rem 1.5rem',
-            backgroundColor: 'rgba(255,255,255,0.1)',
+            backgroundColor: 'rgba(249, 115, 22, 0.8)',
             color: 'white',
             textDecoration: 'none',
             borderRadius: '1rem',
             border: '1px solid rgba(255,255,255,0.2)',
             backdropFilter: 'blur(10px)',
             transition: 'all 0.3s ease',
-            textAlign: 'center'
+            textAlign: 'center',
+            boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
           }}>
             <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>✍️</div>
             <h3 style={{ margin: '0 0 0.5rem 0', fontSize: '1.3rem' }}>會員註冊</h3>
-            <p style={{ margin: 0, opacity: 0.8, fontSize: '0.9rem' }}>註冊成為獅子會會員</p>
+            <p style={{ margin: 0, opacity: 0.9, fontSize: '0.9rem' }}>註冊成為獅子會會員</p>
           </a>
           
           <a href="/checkin" style={{ 
             display: 'block',
             padding: '2rem 1.5rem',
-            backgroundColor: 'rgba(255,255,255,0.1)',
+            backgroundColor: 'rgba(168, 85, 247, 0.8)',
             color: 'white',
             textDecoration: 'none',
             borderRadius: '1rem',
             border: '1px solid rgba(255,255,255,0.2)',
             backdropFilter: 'blur(10px)',
             transition: 'all 0.3s ease',
-            textAlign: 'center'
+            textAlign: 'center',
+            boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
           }}>
             <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>✅</div>
             <h3 style={{ margin: '0 0 0.5rem 0', fontSize: '1.3rem' }}>活動簽到</h3>
-            <p style={{ margin: 0, opacity: 0.8, fontSize: '0.9rem' }}>快速簽到參加活動</p>
+            <p style={{ margin: 0, opacity: 0.9, fontSize: '0.9rem' }}>快速簽到參加活動</p>
           </a>
           
           <a href="/admin" style={{ 
             display: 'block',
             padding: '2rem 1.5rem',
-            backgroundColor: 'rgba(255,255,255,0.1)',
+            backgroundColor: 'rgba(236, 72, 153, 0.8)',
             color: 'white',
             textDecoration: 'none',
             borderRadius: '1rem',
             border: '1px solid rgba(255,255,255,0.2)',
             backdropFilter: 'blur(10px)',
             transition: 'all 0.3s ease',
-            textAlign: 'center'
+            textAlign: 'center',
+            boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
           }}>
             <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>⚙️</div>
             <h3 style={{ margin: '0 0 0.5rem 0', fontSize: '1.3rem' }}>管理後台</h3>
-            <p style={{ margin: 0, opacity: 0.8, fontSize: '0.9rem' }}>系統管理和數據分析</p>
+            <p style={{ margin: 0, opacity: 0.9, fontSize: '0.9rem' }}>系統管理和數據分析</p>
           </a>
         </div>
         
