@@ -34,13 +34,7 @@ MessageLog.init({
   },
   user_id: {
     type: DataTypes.STRING,
-    allowNull: false,
-    references: {
-      model: 'members',
-      key: 'line_user_id'  // 對應資料庫中的實際欄位名稱
-    },
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE'
+    allowNull: false
   },
   timestamp: {
     type: DataTypes.DATE,
