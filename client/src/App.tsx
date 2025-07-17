@@ -3,6 +3,7 @@ import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Register from './pages/Register';
 import Checkin from './pages/Checkin';
+import NotFoundPage from './pages/NotFoundPage';
 
 // 錯誤邊界組件
 class ErrorBoundary extends React.Component<
@@ -50,8 +51,34 @@ function App() {
             <div style={{ padding: '20px', textAlign: 'center' }}>
               <h1>🦁 北大獅子會系統</h1>
               <p>歡迎使用會員服務系統</p>
+              <div style={{ marginTop: '2rem' }}>
+                <a href="/register" style={{ 
+                  display: 'inline-block',
+                  margin: '0.5rem',
+                  padding: '0.75rem 1.5rem',
+                  backgroundColor: '#3b82f6',
+                  color: 'white',
+                  textDecoration: 'none',
+                  borderRadius: '0.5rem'
+                }}>
+                  會員註冊
+                </a>
+                <a href="/checkin" style={{ 
+                  display: 'inline-block',
+                  margin: '0.5rem',
+                  padding: '0.75rem 1.5rem',
+                  backgroundColor: '#10b981',
+                  color: 'white',
+                  textDecoration: 'none',
+                  borderRadius: '0.5rem'
+                }}>
+                  簽到系統
+                </a>
+              </div>
             </div>
           } />
+          {/* 兜底路由 - 處理所有未匹配的路徑 */}
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </BrowserRouter>
     </ErrorBoundary>
