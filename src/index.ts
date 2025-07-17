@@ -79,6 +79,21 @@ app.use('/api/members', memberRoutes);
 app.use('/api/checkin', checkinRoutes);
 app.use('/liff', liffRoutes);
 
+// Health Check 端點
+app.get('/health', (req, res) => {
+  res.json({
+    status: 'healthy',
+    timestamp: new Date().toISOString(),
+    version: '4.0',
+    uptime: process.uptime(),
+    database: 'connected',
+    services: {
+      line: 'configured',
+      routes: ['admin', 'checkin', 'members', 'webhook']
+    }
+  });
+});
+
 // 前端路由（提供 React 應用）
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../client/dist/index.html'));

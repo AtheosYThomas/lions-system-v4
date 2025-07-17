@@ -166,6 +166,15 @@ mode = "sequential"
 task = "shell.exec"
 args = "npx tsx src/init.ts"
 
+[[workflows.workflow]]
+name = "Run Troubleshoot"
+author = 44484841
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npx tsx src/tools/troubleshoot.ts"
+
 [[ports]]
 localPort = 3000
 externalPort = 80
