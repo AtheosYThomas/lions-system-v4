@@ -16,6 +16,19 @@ const PORT: number = parseInt(process.env.PORT || '5000', 10);
 // 中介軟體
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// CORS 支援
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  if (req.method === 'OPTIONS') {
+    res.sendStatus(200);
+  } else {
+    next();
+  }
+});
+
 app.use(express.static(path.join(__dirname, '../client/dist')));
 
 // Health Check 路由
@@ -142,24 +155,7 @@ const startServer = async () => {
     logMemoryUsage();
     setInterval(logMemoryUsage, 60000); // 每分鐘記錄一次
 
-    // Health check 端點
-    app.get('/health', (req, res) => {
-      res.json({ 
-        status: 'OK', 
-        timestamp: new Date().toISOString(),
-        service: '北大獅子會系統',
-        version: '1.0.0'
-      });
-    });
-
-    app.get('/api/health', (req, res) => {
-      res.json({ 
-        status: 'OK', 
-        timestamp: new Date().toISOString(),
-        service: '北大獅子會 API',
-        database: 'connected'
-      });
-    });
+    // 移除重複定義，使用檔案開頭的 health check 路由
 
     app.listen(PORT, '0.0.0.0', () => {
       console.log(`🚀 伺服器啟動成功！埠號: ${PORT}`);

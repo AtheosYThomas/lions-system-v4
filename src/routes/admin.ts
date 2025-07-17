@@ -9,19 +9,23 @@ const router = express.Router();
 
 // 系統總覽
 router.get('/summary', async (req, res) => {
+  console.log('📊 收到系統總覽請求');
   try {
     const memberCount = await Member.count();
     const activeMembers = await Member.count({ where: { status: 'active' } });
     const registrationCount = await Registration.count();
     const eventCount = await Event.count();
     
-    res.json({ 
+    const result = { 
       memberCount, 
       activeMembers, 
       registrationCount, 
       eventCount,
       timestamp: new Date().toISOString()
-    });
+    };
+    
+    console.log('✅ 系統總覽數據:', result);
+    res.json(result);
   } catch (err) {
     console.error('❌ 系統總覽錯誤:', err);
     res.status(500).json({ 
