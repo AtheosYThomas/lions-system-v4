@@ -70,26 +70,6 @@ app.get('/api/system/status', (req, res) => {
 });
 
 // 靜態檔案服務
-app.use(express.static(path.join(__dirname, '../client/dist')));
-
-// LINE Webhook - 加強錯誤處理
-app.post('/webhook', async (req, res) => {
-  try {
-    console.log('📨 收到 LINE webhook 請求');
-    console.log('📦 Request headers:', req.headers);
-    console.log('📦 Request body:', JSON.stringify(req.body, null, 2));
-
-    await lineHandler(req, res);
-  } catch (error) {
-    console.error('🔥 Webhook 處理錯誤:', error);
-    // 確保回傳 200 狀態碼給 LINE
-    if (!res.headersSent) {
-      res.status(200).json({ status: 'ok' });
-    }
-  }
-});
-
-// 靜態檔案服務
 app.use('/public', express.static(path.join(__dirname, '../public')));
 
 // API 路由（必須在前端路由之前）
@@ -99,6 +79,9 @@ app.use('/api/members', memberRoutes);
 app.use('/api/checkin', checkinRoutes);
 app.use('/api/liff', liffRoutes);
 app.use('/api/announcements', announcementRoutes);
+
+// 靜態檔案服務（前端）
+app.use(express.static(path.join(__dirname, '../client/dist')));
 
 // 前端路由（提供 React 應用）- 必須在最後
 app.get(['/', '/admin', '/register', '/checkin', '/profile'], (req, res) => {
