@@ -72,6 +72,23 @@ export default function Home() {
             <p style={{ margin: 0, opacity: 0.8, fontSize: '0.9rem' }}>報名參加獅子會活動</p>
           </a>
           
+          <a href="/member-register" style={{ 
+            display: 'block',
+            padding: '2rem 1.5rem',
+            backgroundColor: 'rgba(255,255,255,0.1)',
+            color: 'white',
+            textDecoration: 'none',
+            borderRadius: '1rem',
+            border: '1px solid rgba(255,255,255,0.2)',
+            backdropFilter: 'blur(10px)',
+            transition: 'all 0.3s ease',
+            textAlign: 'center'
+          }}>
+            <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>✍️</div>
+            <h3 style={{ margin: '0 0 0.5rem 0', fontSize: '1.3rem' }}>會員註冊</h3>
+            <p style={{ margin: 0, opacity: 0.8, fontSize: '0.9rem' }}>註冊成為獅子會會員</p>
+          </a>
+          
           <a href="/checkin" style={{ 
             display: 'block',
             padding: '2rem 1.5rem',

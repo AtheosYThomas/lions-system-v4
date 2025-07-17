@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
@@ -48,12 +47,26 @@ function App() {
     <ErrorBoundary>
       <BrowserRouter>
         <Routes>
+          <Route path="/" element={<Home />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/member-register" element={<div style={{ padding: '2rem', textAlign: 'center' }}>
+            <h2>會員註冊</h2>
+            <p>請使用 LINE 登入進行會員註冊</p>
+            <a href="/register.html" style={{ 
+              display: 'inline-block',
+              padding: '1rem 2rem',
+              backgroundColor: '#00C300',
+              color: 'white',
+              textDecoration: 'none',
+              borderRadius: '0.5rem',
+              fontWeight: 'bold'
+            }}>
+              透過 LINE 註冊
+            </a>
+          </div>} />
           <Route path="/checkin" element={<Checkin />} />
           <Route path="/admin" element={<Admin />} />
-          <Route path="/" element={<Home />} />
-          {/* 兜底路由 - 處理所有未匹配的路徑 */}
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </BrowserRouter>
