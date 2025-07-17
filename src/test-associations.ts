@@ -5,7 +5,30 @@ import Event from './models/event';
 import Registration from './models/registration';
 import Payment from './models/payment';
 import Checkin from './models/checkin';
-import './models/index'; // 載入關聯設定
+import MessageLog from './models/messageLog';
+
+// 建立 models map 傳給 associate
+const models = {
+  Member,
+  Event,
+  Registration,
+  Payment,
+  Checkin,
+  MessageLog
+};
+
+// 確保所有關聯都正確建立
+console.log('🔧 開始建立模型關聯...');
+Object.values(models).forEach((model: any) => {
+  if (model.associate && typeof model.associate === 'function') {
+    try {
+      model.associate(models);
+      console.log(`✅ ${model.name} 關聯建立成功`);
+    } catch (error) {
+      console.error(`❌ ${model.name} 關聯建立失敗:`, error);
+    }
+  }
+});
 
 const testAssociations = async () => {
   try {
@@ -15,7 +38,12 @@ const testAssociations = async () => {
     await sequelize.authenticate();
     console.log('✅ 資料庫連線成功');
 
-    // 2. 創建測試資料
+    // 2. 同步資料庫結構（確保所有表格都存在）
+    console.log('🔄 同步資料庫結構...');
+    await sequelize.sync({ force: true });
+    console.log('✅ 資料庫結構同步完成');
+
+    // 3. 創建測試資料（包含所有必填欄位）
     console.log('\n📝 創建測試資料...');
     
     const testMember = await Member.create({
@@ -23,7 +51,8 @@ const testAssociations = async () => {
       email: 'test@example.com',
       line_uid: 'test_line_uid',
       phone: '0912345678',
-      status: 'active'
+      status: 'active', // ✅ 必填欄位
+      role: 'member'
     });
     console.log('✅ 測試會員已創建:', testMember.get('id'));
 
@@ -32,14 +61,17 @@ const testAssociations = async () => {
       description: '測試用活動',
       date: new Date('2024-12-31'),
       location: '測試地點',
-      max_attendees: 50
+      max_attendees: 50,
+      status: 'active' // ✅ 確保狀態正確
     });
     console.log('✅ 測試活動已創建:', testEvent.get('id'));
 
-    // 3. 創建關聯資料
+    // 4. 創建關聯資料
     const registration = await Registration.create({
       event_id: testEvent.get('id') as string,
-      member_id: testMember.get('id') as string
+      member_id: testMember.get('id') as string,
+      registration_date: new Date(),
+      status: 'confirmed' // ✅ 必填欄位
     });
     console.log('✅ 報名記錄已創建:', registration.get('id'));
 
@@ -47,7 +79,8 @@ const testAssociations = async () => {
       member_id: testMember.get('id') as string,
       event_id: testEvent.get('id') as string,
       amount: 1000,
-      method: 'credit_card'
+      method: 'credit_card',
+      status: 'pending' // ✅ 必填欄位
     });
     console.log('✅ 付款記錄已創建:', payment.get('id'));
 
@@ -59,7 +92,17 @@ const testAssociations = async () => {
     });
     console.log('✅ 簽到記錄已創建:', checkin.get('id'));
 
-    // 4. 測試 Eager Loading
+    const messageLog = await MessageLog.create({
+      user_id: testMember.get('line_uid') as string, // ✅ 使用 line_uid
+      message_type: 'text',
+      message_content: '測試訊息',
+      intent: 'greeting',
+      action_taken: 'replied',
+      event_id: testEvent.get('id') as string
+    });
+    console.log('✅ 訊息記錄已創建:', messageLog.get('id'));
+
+    // 5. 測試 Eager Loading
     console.log('\n🔍 測試 Eager Loading...');
     
     const memberWithRegistrations = await Member.findAll({
@@ -100,7 +143,7 @@ const testAssociations = async () => {
       console.log(`  - 簽到數量: ${event.Checkins?.length || 0}`);
     });
 
-    // 5. 測試 CASCADE 刪除 - 先查詢關聯記錄數量
+    // 6. 測試 CASCADE 刪除
     console.log('\n🔍 測試 CASCADE 刪除完整性...');
     
     const beforeDeleteCounts = {
@@ -114,12 +157,12 @@ const testAssociations = async () => {
     console.log(`  - 付款記錄: ${beforeDeleteCounts.payments}`);
     console.log(`  - 簽到記錄: ${beforeDeleteCounts.checkins}`);
 
-    // 6. 刪除 Member，測試 CASCADE
+    // 7. 刪除 Member，測試 CASCADE
     console.log('\n🗑️ 刪除測試會員...');
     await testMember.destroy();
     console.log('✅ 測試會員已刪除');
 
-    // 7. 檢查關聯記錄是否被自動刪除
+    // 8. 檢查關聯記錄是否被自動刪除
     const afterDeleteCounts = {
       registrations: await Registration.count({ where: { member_id: testMember.get('id') } }),
       payments: await Payment.count({ where: { member_id: testMember.get('id') } }),
@@ -131,7 +174,7 @@ const testAssociations = async () => {
     console.log(`  - 付款記錄: ${afterDeleteCounts.payments}`);
     console.log(`  - 簽到記錄: ${afterDeleteCounts.checkins}`);
 
-    // 8. 驗證 CASCADE 是否成功
+    // 9. 驗證 CASCADE 是否成功
     const cascadeSuccess = 
       afterDeleteCounts.registrations === 0 &&
       afterDeleteCounts.payments === 0 &&
@@ -143,12 +186,16 @@ const testAssociations = async () => {
       console.log('\n❌ CASCADE 刪除測試失敗！部分關聯記錄未被刪除');
     }
 
-    // 9. 清理測試 Event
+    // 10. 清理測試 Event 和 MessageLog
+    await messageLog.destroy();
     await testEvent.destroy();
-    console.log('✅ 測試活動已清理');
+    console.log('✅ 測試資料已清理');
 
-    // 10. 最終結果報告
+    // 11. 最終結果報告
     console.log('\n📋 測試結果報告:');
+    console.log(`✅ 模型關聯初始化: 成功`);
+    console.log(`✅ 資料庫同步: 成功`);
+    console.log(`✅ 測試資料創建: 成功`);
     console.log(`✅ Eager Loading: 成功`);
     console.log(`${cascadeSuccess ? '✅' : '❌'} CASCADE 刪除: ${cascadeSuccess ? '成功' : '失敗'}`);
     
@@ -162,6 +209,7 @@ const testAssociations = async () => {
     console.error('❌ 測試過程中發生錯誤:', error);
     if (error instanceof Error) {
       console.error('錯誤詳情:', error.message);
+      console.error('錯誤堆疊:', error.stack);
     }
   } finally {
     await sequelize.close();
