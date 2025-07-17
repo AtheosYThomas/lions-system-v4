@@ -1,12 +1,12 @@
 export interface Checkin {
-  id: number;
-  eventId: number;
-  memberId: number;
+  id: string;
+  eventId: string;
+  memberId: string;
   checkinTime: Date;
   status: CheckinStatus;
   location?: string;
   notes?: string;
-  verifiedBy?: number;
+  verified_by?: string;
   createdAt: Date;
   updatedAt: Date;
 
@@ -25,8 +25,8 @@ export enum CheckinStatus {
 }
 
 export interface CreateCheckinRequest {
-  eventId: number;
-  memberId: number;
+  eventId: string;
+  memberId: string;
   location?: string;
   notes?: string;
 }
@@ -35,7 +35,7 @@ export interface UpdateCheckinRequest {
   status?: CheckinStatus;
   location?: string;
   notes?: string;
-  verifiedBy?: number;
+  verified_by?: string;
 }
 
 export interface CheckinStats {
@@ -48,24 +48,24 @@ export interface CheckinStats {
 }
 
 export interface CheckinSearchParams {
-  eventId?: number;
-  memberId?: number;
+  eventId?: string;
+  memberId?: string;
   status?: CheckinStatus;
   checkinDateFrom?: Date;
   checkinDateTo?: Date;
-  verifiedBy?: number;
+  verified_by?: string;
   limit?: number;
   offset?: number;
 }
 
 export interface BulkCheckinRequest {
-  eventId: number;
-  memberIds: number[];
+  eventId: string;
+  memberIds: string[];
   location?: string;
 }
 
 export interface CheckinSummary {
-  eventId: number;
+  eventId: string;
   eventTitle: string;
   totalExpected: number;
   totalCheckedIn: number;

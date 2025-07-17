@@ -10,7 +10,7 @@ export interface Payment {
   dueDate?: Date;
   description?: string;
   metadata?: Record<string, any>;
-  processedBy?: number;
+  processed_by?: string;
   createdAt: Date;
   updatedAt: Date;
 
@@ -54,7 +54,7 @@ export interface UpdatePaymentRequest {
   paymentDate?: Date;
   description?: string;
   metadata?: Record<string, any>;
-  processedBy?: number;
+  processed_by?: string;
 }
 
 export interface PaymentStats {
@@ -75,7 +75,7 @@ export interface PaymentSearchParams {
   amountMax?: number;
   paymentDateFrom?: Date;
   paymentDateTo?: Date;
-  processedBy?: number;
+  processed_by?: string;
   limit?: number;
   offset?: number;
 }
