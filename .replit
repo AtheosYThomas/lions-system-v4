@@ -772,6 +772,27 @@ args = "npx ts-node src/utils/healthCheck.ts"
 task = "shell.exec"
 args = "echo \"📋 修復完成，系統已就緒\""
 
+[[workflows.workflow]]
+name = "完整問題排查診斷"
+author = 44484841
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "echo \"🔍 開始執行完整系統問題排查診斷...\""
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npx ts-node src/comprehensive-problem-diagnosis.ts"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "echo \"📋 診斷完成，請檢查 comprehensive-problem-diagnosis-report.json 檔案\""
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "echo \"💡 如有問題，請根據建議進行修正\""
+
 [[ports]]
 localPort = 5000
 externalPort = 80
