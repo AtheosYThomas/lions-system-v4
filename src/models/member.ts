@@ -66,7 +66,7 @@ Member.init({
   timestamps: false
 });
 
-static associate(models: any) {
+Member.associate = (models: any) => {
   Member.hasMany(models.Registration, { 
     foreignKey: 'member_id',
     onDelete: 'CASCADE',
@@ -85,6 +85,6 @@ static associate(models: any) {
     onUpdate: 'CASCADE',
     hooks: true
   });
-}
+};
 
 export default Member;
