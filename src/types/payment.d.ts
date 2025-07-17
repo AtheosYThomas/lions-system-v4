@@ -1,18 +1,18 @@
 export interface Payment {
   id: number;
-  registrationId: number;
+  registration_id: number;
   amount: number;
   currency: string;
   method: PaymentMethod;
   status: PaymentStatus;
-  transactionId?: string;
-  paymentDate: Date;
-  dueDate?: Date;
+  transaction_id?: string;
+  payment_date: Date;
+  due_date?: Date;
   description?: string;
   metadata?: Record<string, any>;
   processed_by?: string;
-  createdAt: Date;
-  updatedAt: Date;
+  created_at: Date;
+  updated_at: Date;
 
   // 關聯資料
   registration?: import('./registration').Registration;
@@ -37,11 +37,11 @@ export enum PaymentStatus {
 }
 
 export interface CreatePaymentRequest {
-  registrationId: number;
+  registration_id: number;
   amount: number;
   currency?: string;
   method: PaymentMethod;
-  dueDate?: Date;
+  due_date?: Date;
   description?: string;
   metadata?: Record<string, any>;
 }
@@ -50,8 +50,8 @@ export interface UpdatePaymentRequest {
   amount?: number;
   method?: PaymentMethod;
   status?: PaymentStatus;
-  transactionId?: string;
-  paymentDate?: Date;
+  transaction_id?: string;
+  payment_date?: Date;
   description?: string;
   metadata?: Record<string, any>;
   processed_by?: string;
@@ -68,23 +68,23 @@ export interface PaymentStats {
 }
 
 export interface PaymentSearchParams {
-  registrationId?: number;
+  registration_id?: number;
   method?: PaymentMethod;
   status?: PaymentStatus;
-  amountMin?: number;
-  amountMax?: number;
-  paymentDateFrom?: Date;
-  paymentDateTo?: Date;
+  amount_min?: number;
+  amount_max?: number;
+  payment_date_from?: Date;
+  payment_date_to?: Date;
   processed_by?: string;
   limit?: number;
   offset?: number;
 }
 
 export interface PaymentSummary {
-  eventId: number;
-  eventTitle: string;
-  totalDue: number;
-  totalPaid: number;
-  totalPending: number;
-  collectionRate: number;
+  event_id: number;
+  event_title: string;
+  total_due: number;
+  total_paid: number;
+  total_pending: number;
+  collection_rate: number;
 }
