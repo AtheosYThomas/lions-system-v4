@@ -124,7 +124,7 @@ app.use('/api', apiNotFound);
 // 🛡️ 全域 fallback（前端或其他未處理的路徑）
 app.use('*', (req, res) => {
   const requestPath = req.originalUrl || req.url;
-  
+
   // 明確排除 API 和 webhook 路由
   if (requestPath.startsWith('/api/') || requestPath.startsWith('/webhook/')) {
     return res.status(404).json({ 
@@ -134,12 +134,12 @@ app.use('*', (req, res) => {
       timestamp: new Date().toISOString()
     });
   }
-  
+
   // 檢查是否為靜態資源請求
   if (requestPath.includes('.') && !requestPath.endsWith('.html')) {
     return res.status(404).send('Static resource not found');
   }
-  
+
   // 其他所有路由都回傳前端 SPA
   serveSPA(req, res);
 });
@@ -147,7 +147,7 @@ app.use('*', (req, res) => {
 // 🚨 全域錯誤攔截器 - 統一處理所有錯誤
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
   console.error('🚨 系統錯誤:', err);
-  
+
   // 特別處理 path-to-regexp 錯誤
   if (err.message && err.message.includes('Missing parameter name')) {
     return res.status(500).json({
@@ -156,7 +156,7 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
       error: 'path-to-regexp configuration error'
     });
   }
-  
+
   res.status(500).json({
     success: false,
     message: '伺服器內部錯誤',
@@ -174,9 +174,9 @@ app.use(notFoundHandler);
 // 路由驗證函數
 const validateRoutes = () => {
   console.log('🔍 驗證路由配置...');
-  
+
   const potentialIssues: string[] = [];
-  
+
   // 1. 驗證環境變數中是否有未展開的模板字串
   Object.entries(process.env).forEach(([key, value]) => {
     if (value && typeof value === 'string') {
@@ -190,7 +190,7 @@ const validateRoutes = () => {
       }
     }
   });
-  
+
   // 2. 檢查關鍵環境變數
   const requiredVars = ['LINE_CHANNEL_ACCESS_TOKEN', 'LINE_CHANNEL_SECRET'];
   requiredVars.forEach(varName => {
@@ -201,19 +201,21 @@ const validateRoutes = () => {
       potentialIssues.push(`環境變數 ${varName} 值異常: ${value}`);
     }
   });
-  
-  // 3. 檢查 DEBUG_URL 相關問題（報錯中提到的變數）
-  if (process.env.DEBUG_URL && process.env.DEBUG_URL.includes('${')) {
-    potentialIssues.push(`DEBUG_URL 包含未展開的模板字串: ${process.env.DEBUG_URL}`);
+
+  // 3. 檢查並強制清理 DEBUG_URL 相關問題
+  if (process.env.DEBUG_URL) {
+    console.log(`🚨 發現 DEBUG_URL，強制清理: ${process.env.DEBUG_URL}`);
+    delete process.env.DEBUG_URL;
+    potentialIssues.push(`DEBUG_URL 已強制清理`);
   }
-  
+
   if (potentialIssues.length > 0) {
     console.log('⚠️ 發現潛在問題:');
     potentialIssues.forEach(issue => console.log(`  - ${issue}`));
-    
+
     // 嘗試修復部分問題
     console.log('🔧 嘗試自動修復...');
-    
+
     // 清理有問題的環境變數
     Object.keys(process.env).forEach(key => {
       const value = process.env[key];
@@ -222,7 +224,7 @@ const validateRoutes = () => {
         delete process.env[key];
       }
     });
-    
+
   } else {
     console.log('✅ 路由配置驗證通過');
   }
@@ -232,17 +234,17 @@ const validateRoutes = () => {
 const startServer = async () => {
   try {
     console.log('🚨 強化預防 path-to-regexp 錯誤...');
-    
+
     // 1. 徹底清理所有可能導致問題的環境變數
     const dangerousPatterns = [
       /\$\{.*\}/,           // 任何包含 ${...} 的變數
       /Missing parameter/i,  // 包含錯誤訊息的變數
       /:.*\(\*\)/,          // 包含 :param(*) 模式的變數
     ];
-    
+
     const allEnvVars = Object.keys(process.env);
     let cleanedCount = 0;
-    
+
     allEnvVars.forEach(key => {
       const value = process.env[key];
       if (value && typeof value === 'string') {
@@ -253,7 +255,7 @@ const startServer = async () => {
                             value === 'undefined' ||
                             value === 'null' ||
                             value.trim() === '';
-        
+
         if (isDangerous) {
           console.log(`🧹 清理危險環境變數: ${key}=${value}`);
           delete process.env[key];
@@ -261,26 +263,26 @@ const startServer = async () => {
         }
       }
     });
-    
+
     console.log(`✅ 已清理 ${cleanedCount} 個危險環境變數`);
-    
+
     // 2. 強制設置安全的核心環境變數
     const safeDefaults = {
       NODE_ENV: 'development',
       PORT: '5000',
       EXPRESS_ENV: 'development'
     };
-    
+
     Object.entries(safeDefaults).forEach(([key, value]) => {
       process.env[key] = value;
       console.log(`🔧 設置安全環境變數: ${key}=${value}`);
     });
-    
+
     // 3. 執行增強的安全檢查
     cleanProblemEnvVars();
     routeSafetyCheck();
     validateRoutes();
-    
+
     console.log('🔄 測試資料庫連線...');
     await sequelize.authenticate();
     console.log('✅ 資料庫連線成功！');
