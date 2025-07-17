@@ -139,6 +139,15 @@ args = "npm run init-db"
 task = "shell.exec"
 args = "npm run dev"
 
+[[workflows.workflow]]
+name = "Run Diagnostics"
+author = 44484841
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npx tsx src/tools/diagnostics.ts"
+
 [[ports]]
 localPort = 3000
 externalPort = 80
