@@ -1,9 +1,10 @@
+
 import sequelize from './config/database';
 import { getEnvironmentStatus } from './utils/envValidation';
 
 const startupCheck = async () => {
   console.log('🔍 系統啟動檢查...\n');
-
+  
   // 檢查環境變數
   console.log('📋 環境變數狀態:');
   const envStatus = getEnvironmentStatus();
