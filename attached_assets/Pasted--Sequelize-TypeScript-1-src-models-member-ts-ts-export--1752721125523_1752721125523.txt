@@ -1,0 +1,112 @@
+掃描結果與建議修正
+我已從畫面中確認以下模型檔案（你使用了 Sequelize + TypeScript）：
+
+🔍 1. /src/models/member.ts
+ts
+複製
+編輯
+export interface MemberAttributes {
+  id: string;
+  name: string;
+  email: string;
+  line_uid: string;
+  phone: string;
+  status: string;
+  created_at: Date;
+}
+✅ 建議加入：
+ts
+複製
+編輯
+export type MemberCreationAttributes = Optional<MemberAttributes, 'id' | 'created_at'>;
+
+export class Member extends Model<MemberAttributes, MemberCreationAttributes> implements MemberAttributes {
+  // ...
+}
+🔍 2. /src/models/event.ts
+ts
+複製
+編輯
+export interface EventAttributes {
+  id: string;
+  title: string;
+  description: string;
+  date: Date;
+  location: string;
+  max_attendees: number;
+  status: string;
+  created_at: Date;
+}
+✅ 建議加入：
+ts
+複製
+編輯
+export type EventCreationAttributes = Optional<EventAttributes, 'id' | 'created_at'>;
+
+export class Event extends Model<EventAttributes, EventCreationAttributes> implements EventAttributes {
+  // ...
+}
+🔍 3. /src/models/registration.ts
+ts
+複製
+編輯
+export interface RegistrationAttributes {
+  id: string;
+  event_id: string;
+  member_id: string;
+  status: string;
+  registration_date: Date;
+  created_at: Date;
+}
+✅ 建議加入：
+ts
+複製
+編輯
+export type RegistrationCreationAttributes = Optional<RegistrationAttributes, 'id' | 'created_at' | 'registration_date'>;
+
+export class Registration extends Model<RegistrationAttributes, RegistrationCreationAttributes> implements RegistrationAttributes {
+  // ...
+}
+🔍 4. /src/models/payment.ts
+ts
+複製
+編輯
+export interface PaymentAttributes {
+  id: string;
+  member_id: string;
+  event_id: string;
+  amount: number;
+  method: string;
+  status: string;
+  created_at: Date;
+}
+✅ 建議加入：
+ts
+複製
+編輯
+export type PaymentCreationAttributes = Optional<PaymentAttributes, 'id' | 'created_at'>;
+
+export class Payment extends Model<PaymentAttributes, PaymentCreationAttributes> implements PaymentAttributes {
+  // ...
+}
+🔍 5. /src/models/checkin.ts
+ts
+複製
+編輯
+export interface CheckinAttributes {
+  id: string;
+  member_id: string;
+  event_id: string;
+  checkin_time: Date;
+  device_info: string;
+  created_at: Date;
+}
+✅ 建議加入：
+ts
+複製
+編輯
+export type CheckinCreationAttributes = Optional<CheckinAttributes, 'id' | 'created_at'>;
+
+export class Checkin extends Model<CheckinAttributes, CheckinCreationAttributes> implements CheckinAttributes {
+  // ...
+}
