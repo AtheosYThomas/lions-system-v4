@@ -22,43 +22,49 @@ const testAssociations = async () => {
       name: '測試會員',
       email: 'test@example.com',
       line_uid: 'test_line_uid',
-      phone: '0912345678'
+      phone: '0912345678',
+      status: 'active',
+      created_at: new Date()
     });
-    console.log('✅ 測試會員已創建:', testMember.id);
+    console.log('✅ 測試會員已創建:', testMember.get('id'));
 
     const testEvent = await Event.create({
       title: '測試活動',
       description: '測試用活動',
       date: new Date('2024-12-31'),
       location: '測試地點',
-      max_attendees: 50
+      max_attendees: 50,
+      status: 'active',
+      created_at: new Date()
     });
-    console.log('✅ 測試活動已創建:', testEvent.id);
+    console.log('✅ 測試活動已創建:', testEvent.get('id'));
 
     // 3. 創建關聯資料
     const registration = await Registration.create({
-      event_id: testEvent.id,
-      member_id: testMember.id,
-      status: 'confirmed'
+      event_id: testEvent.get('id') as string,
+      member_id: testMember.get('id') as string,
+      status: 'confirmed',
+      registration_date: new Date(),
+      created_at: new Date()
     });
-    console.log('✅ 報名記錄已創建:', registration.id);
+    console.log('✅ 報名記錄已創建:', registration.get('id'));
 
     const payment = await Payment.create({
-      member_id: testMember.id,
-      event_id: testEvent.id,
+      member_id: testMember.get('id') as string,
+      event_id: testEvent.get('id') as string,
       amount: 1000,
       method: 'credit_card',
       status: 'completed'
     });
-    console.log('✅ 付款記錄已創建:', payment.id);
+    console.log('✅ 付款記錄已創建:', payment.get('id'));
 
     const checkin = await Checkin.create({
-      member_id: testMember.id,
-      event_id: testEvent.id,
+      member_id: testMember.get('id') as string,
+      event_id: testEvent.get('id') as string,
       checkin_time: new Date(),
       device_info: 'test_device'
     });
-    console.log('✅ 簽到記錄已創建:', checkin.id);
+    console.log('✅ 簽到記錄已創建:', checkin.get('id'));
 
     // 4. 測試 Eager Loading
     console.log('\n🔍 測試 Eager Loading...');
@@ -105,9 +111,9 @@ const testAssociations = async () => {
     console.log('\n🔍 測試 CASCADE 刪除完整性...');
     
     const beforeDeleteCounts = {
-      registrations: await Registration.count({ where: { member_id: testMember.id } }),
-      payments: await Payment.count({ where: { member_id: testMember.id } }),
-      checkins: await Checkin.count({ where: { member_id: testMember.id } })
+      registrations: await Registration.count({ where: { member_id: testMember.get('id') } }),
+      payments: await Payment.count({ where: { member_id: testMember.get('id') } }),
+      checkins: await Checkin.count({ where: { member_id: testMember.get('id') } })
     };
     
     console.log('刪除前的關聯記錄數量:');
@@ -122,9 +128,9 @@ const testAssociations = async () => {
 
     // 7. 檢查關聯記錄是否被自動刪除
     const afterDeleteCounts = {
-      registrations: await Registration.count({ where: { member_id: testMember.id } }),
-      payments: await Payment.count({ where: { member_id: testMember.id } }),
-      checkins: await Checkin.count({ where: { member_id: testMember.id } })
+      registrations: await Registration.count({ where: { member_id: testMember.get('id') } }),
+      payments: await Payment.count({ where: { member_id: testMember.get('id') } }),
+      checkins: await Checkin.count({ where: { member_id: testMember.get('id') } })
     };
     
     console.log('\n刪除後的關聯記錄數量:');
