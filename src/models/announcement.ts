@@ -10,7 +10,7 @@ import {
 } from 'sequelize';
 import sequelize from '../config/database';
 
-export interface AnnouncementAttributes extends InferAttributes<Announcement> {
+export interface AnnouncementAttributes {
   id: string;
   title: string;
   content: string;

@@ -45,7 +45,7 @@ async function testHealthCheck(retries = 3) {
         console.log('❌ 伺服器回應異常:', response.status);
       }
     } catch (error) {
-      console.log(`❌ 連接錯誤 (${i + 1}/${retries}):`, error.message);
+      console.log(`❌ 連接錯誤 (${i + 1}/${retries}):`, (error as Error).message);
     }
 
     // 如果不是最後一次嘗試，等待 2 秒
@@ -98,7 +98,7 @@ async function testWebhookEndpoint() {
       return false;
     }
   } catch (error) {
-    console.log('❌ Webhook 端點測試失敗:', error.message);
+    console.log('❌ Webhook 端點測試失敗:', (error as Error).message);
     return false;
   }
 }
@@ -144,7 +144,7 @@ async function sendTestMessage(message: string, delay = 1000) {
     }
 
   } catch (error) {
-    console.log(`❌ 測試失敗: ${error.message}`);
+    console.log(`❌ 測試失敗: ${(error as Error).message}`);
   }
 
   console.log('---');
@@ -187,7 +187,7 @@ async function testFollowEvent() {
     console.log(`📥 加好友事件回應: ${status} (${response.status})`);
 
   } catch (error) {
-    console.log(`❌ 加好友事件測試失敗: ${error.message}`);
+    console.log(`❌ 加好友事件測試失敗: ${(error as Error).message}`);
   }
 }
 

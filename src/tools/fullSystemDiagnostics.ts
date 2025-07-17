@@ -29,7 +29,7 @@ function scanSourceFiles() {
   ];
 
   let hasErrors = false;
-  let errorReport: string[] = [];
+  let errorReport: any[] = [];
 
   patterns.forEach(pattern => {
     const files = globSync(pattern);
@@ -69,7 +69,7 @@ function scanSourceFiles() {
 
         if (issues.length > 0) {
           console.log(chalk.yellow(`⚠️ ${file}:`));
-          issues.forEach(issue => console.log(chalk.yellow(`   - ${issue}`)));
+          issues.forEach((issue: string) => console.log(chalk.yellow(`   - ${issue}`)));
           errorReport.push({ file, issues });
           hasErrors = true;
         } else {
