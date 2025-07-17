@@ -29,7 +29,7 @@ function scanSourceFiles() {
   ];
 
   let hasErrors = false;
-  let errorReport: any[] = [];
+  let errorReport: Array<{file: string, issues: string[]}> = [];
 
   patterns.forEach(pattern => {
     const files = globSync(pattern);
@@ -40,7 +40,7 @@ function scanSourceFiles() {
         const content = fs.readFileSync(file, 'utf-8');
 
         // 檢查 TypeScript 語法問題
-        const issues = [];
+        const issues: string[] = [];
 
         // 檢查 import 語句
         const importMatches = content.match(/import.*from.*;/g);
@@ -97,9 +97,9 @@ function checkEnvVariables() {
 
   const envReport = {
     envFileExists: false,
-    missingVars: [],
-    configuredVars: [],
-    usedButNotDefined: []
+    missingVars: [] as string[],
+    configuredVars: [] as string[],
+    usedButNotDefined: [] as string[]
   };
 
   const envPath = path.resolve('.env');
@@ -160,10 +160,10 @@ function checkFrontendFiles() {
 
   const frontendReport = {
     frontendFound: false,
-    directories: [],
-    jsFiles: [],
-    htmlFiles: [],
-    errors: []
+    directories: [] as string[],
+    jsFiles: [] as string[],
+    htmlFiles: [] as string[],
+    errors: [] as string[]
   };
 
   const frontendDirs = ['public', 'client/src', 'src/frontend'];
@@ -458,7 +458,7 @@ async function runFullDiagnostics() {
     console.log(chalk.red('🚨 發現以下問題需要修正：\n'));
     allIssues.forEach((category, index) => {
       console.log(chalk.red(`${index + 1}. ${category.category}:`));
-      category.issues.forEach(issue => {
+      category.issues.forEach((issue: string) => {
         console.log(chalk.red(`   ❌ ${issue}`));
       });
       console.log('');

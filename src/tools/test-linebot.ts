@@ -44,8 +44,8 @@ async function testHealthCheck(retries = 3) {
       } else {
         console.log('❌ 伺服器回應異常:', response.status);
       }
-    } catch (error) {
-      console.log(`❌ 連接錯誤 (${i + 1}/${retries}):`, (error as Error).message);
+    } catch (error: any) {
+      console.log(`❌ 連接錯誤 (${i + 1}/${retries}):`, error?.message || error);
     }
 
     // 如果不是最後一次嘗試，等待 2 秒
@@ -97,8 +97,8 @@ async function testWebhookEndpoint() {
       console.log('❌ 錯誤內容:', errorText);
       return false;
     }
-  } catch (error) {
-    console.log('❌ Webhook 端點測試失敗:', (error as Error).message);
+  } catch (error: any) {
+    console.log('❌ Webhook 端點測試失敗:', error?.message || error);
     return false;
   }
 }
@@ -131,8 +131,7 @@ async function sendTestMessage(message: string, delay = 1000) {
         'Content-Type': 'application/json',
         'X-Line-Signature': 'test-signature'
       },
-      body: JSON.stringify(testEvent),
-      timeout: 10000
+      body: JSON.stringify(testEvent)
     });
 
     const status = response.ok ? '✅ 成功' : '❌ 失敗';
@@ -143,8 +142,8 @@ async function sendTestMessage(message: string, delay = 1000) {
       console.log('錯誤詳情:', errorText);
     }
 
-  } catch (error) {
-    console.log(`❌ 測試失敗: ${(error as Error).message}`);
+  } catch (error: any) {
+    console.log(`❌ 測試失敗: ${error?.message || error}`);
   }
 
   console.log('---');
@@ -179,15 +178,14 @@ async function testFollowEvent() {
         'Content-Type': 'application/json',
         'X-Line-Signature': 'test-signature'
       },
-      body: JSON.stringify(followEvent),
-      timeout: 10000
+      body: JSON.stringify(followEvent)
     });
 
     const status = response.ok ? '✅ 成功' : '❌ 失敗';
     console.log(`📥 加好友事件回應: ${status} (${response.status})`);
 
-  } catch (error) {
-    console.log(`❌ 加好友事件測試失敗: ${(error as Error).message}`);
+  } catch (error: any) {
+    console.log(`❌ 加好友事件測試失敗: ${error?.message || error}`);
   }
 }
 

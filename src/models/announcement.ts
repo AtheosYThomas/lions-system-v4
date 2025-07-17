@@ -15,7 +15,7 @@ export interface AnnouncementAttributes {
   title: string;
   content: string;
   related_event_id: string | null;
-  created_by?: string | null;
+  created_by: string | null;
   audience: 'all' | 'officers' | 'members';
   category: 'event' | 'system' | 'personnel';
   status: 'draft' | 'scheduled' | 'published';
