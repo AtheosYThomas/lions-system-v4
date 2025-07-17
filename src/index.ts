@@ -10,7 +10,7 @@ import checkinRoutes from './routes/checkin';
 import { validateEnvironment } from './utils/envValidation';
 
 const app = express();
-const PORT: number = parseInt(process.env.PORT || '3000', 10);
+const PORT: number = parseInt(process.env.PORT || '5000', 10);
 
 // 中介軟體
 app.use(express.json());
