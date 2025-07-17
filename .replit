@@ -16,7 +16,7 @@ ignorePorts = false
 build = ["sh", "-c", "npm run build"]
 
 [workflows]
-runButton = "Full System Restart"
+runButton = "Development"
 
 [[workflows.workflow]]
 name = "Run TypeScript Server"
