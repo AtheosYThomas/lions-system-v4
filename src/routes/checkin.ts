@@ -4,17 +4,12 @@ import Member from '../models/member';
 import Checkin from '../models/checkin';
 import Event from '../models/event';
 
-const router = express.Router({ strict: true, caseSensitive: true });
+const router = express.Router();
 
 // 活動簽到
 router.post('/checkin/:eventId', async (req, res) => {
   const { lineUserId, deviceInfo } = req.body;
   const { eventId } = req.params;
-
-  // 驗證 eventId 是否為數字
-  if (!/^\d+$/.test(eventId)) {
-    return res.status(400).json({ error: '無效的活動 ID' });
-  }
 
   try {
     // 檢查活動是否存在
@@ -74,17 +69,13 @@ router.post('/checkin/:eventId', async (req, res) => {
 router.get('/checkin/:eventId', async (req, res) => {
   const { eventId } = req.params;
 
-  // 驗證 eventId 是否為數字
-  if (!/^\d+$/.test(eventId)) {
-    return res.status(400).json({ error: '無效的活動 ID' });
-  }
-
   try {
     const checkins = await Checkin.findAll({
       where: { event_id: eventId },
       include: [{
         model: Member,
-        attributes: ['name', 'role', 'phone']
+        attributes: ['name', 'role', 'phone'],
+        required: false
       }],
       order: [['checkin_time', 'DESC']]
     });
@@ -117,7 +108,8 @@ router.get('/member/:lineUserId/checkins', async (req, res) => {
       where: { member_id: member.id },
       include: [{
         model: Event,
-        attributes: ['title', 'date', 'location']
+        attributes: ['title', 'date', 'location'],
+        required: false
       }],
       order: [['checkin_time', 'DESC']]
     });

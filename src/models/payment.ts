@@ -1,35 +1,8 @@
 
-import { DataTypes, Model, Optional } from 'sequelize';
+import { DataTypes } from 'sequelize';
 import sequelize from '../config/database';
 
-interface PaymentAttributes {
-  id?: string;
-  member_id: string;
-  event_id?: string;
-  amount: number;
-  method: string;
-  status: string;
-  receipt_url?: string;
-  created_at?: Date;
-}
-
-type PaymentCreationAttributes = Optional<PaymentAttributes, 'id' | 'created_at' | 'event_id' | 'receipt_url' | 'status'>;
-
-class Payment extends Model<PaymentAttributes, PaymentCreationAttributes> implements PaymentAttributes {
-  public id?: string;
-  public member_id!: string;
-  public event_id?: string;
-  public amount!: number;
-  public method!: string;
-  public status!: string;
-  public receipt_url?: string;
-  public created_at?: Date;
-
-  // 定義 associate 靜態方法類型
-  static associate: (models: any) => void;
-}
-
-Payment.init({
+const Payment = sequelize.define('Payment', {
   id: { 
     type: DataTypes.UUID, 
     primaryKey: true,
@@ -52,24 +25,7 @@ Payment.init({
     defaultValue: DataTypes.NOW
   }
 }, {
-  sequelize,
-  tableName: 'payments',
-  timestamps: false
+  tableName: 'payments'
 });
 
 export default Payment;
-
-Payment.associate = (models: any) => {
-  Payment.belongsTo(models.Member, { 
-    foreignKey: 'member_id',
-    as: 'member',
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE'
-  });
-  Payment.belongsTo(models.Event, { 
-    foreignKey: 'event_id',
-    as: 'event',
-    onDelete: 'SET NULL',
-    onUpdate: 'CASCADE'
-  });
-};

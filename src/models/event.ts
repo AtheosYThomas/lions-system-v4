@@ -1,33 +1,27 @@
-import { DataTypes, Model, Optional } from 'sequelize';
+
+import { DataTypes, Model } from 'sequelize';
 import sequelize from '../config/database';
 
 interface EventAttributes {
-  id?: string;
+  id: string;
   title: string;
   description?: string;
   date: Date;
   location?: string;
   max_attendees?: number;
-  current_attendees?: number;
-  status?: string;
-  created_at?: Date;
+  status: string;
+  created_at: Date;
 }
 
-type EventCreationAttributes = Optional<EventAttributes, 'id' | 'created_at' | 'description' | 'location' | 'max_attendees' | 'current_attendees' | 'status'>;
-
-class Event extends Model<EventAttributes, EventCreationAttributes> implements EventAttributes {
-  public id?: string;
+class Event extends Model<EventAttributes> implements EventAttributes {
+  public id!: string;
   public title!: string;
   public description?: string;
   public date!: Date;
   public location?: string;
   public max_attendees?: number;
-  public current_attendees?: number;
-  public status?: string;
-  public created_at?: Date;
-
-  // 定義 associate 靜態方法類型
-  static associate: (models: any) => void;
+  public status!: string;
+  public created_at!: Date;
 }
 
 Event.init({
@@ -47,10 +41,6 @@ Event.init({
   },
   location: DataTypes.STRING,
   max_attendees: DataTypes.INTEGER,
-  current_attendees: {
-    type: DataTypes.INTEGER,
-    defaultValue: 0
-  },
   status: {
     type: DataTypes.STRING,
     defaultValue: 'active'
@@ -65,25 +55,6 @@ Event.init({
   timestamps: false
 });
 
-export default Event;
+// 關聯設定將在 src/models/index.ts 中統一處理
 
-Event.associate = (models: any) => {
-  Event.hasMany(models.Registration, { 
-    foreignKey: 'event_id',
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE',
-    hooks: true
-  });
-  Event.hasMany(models.Checkin, { 
-    foreignKey: 'event_id',
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE',
-    hooks: true
-  });
-  Event.hasMany(models.Payment, { 
-    foreignKey: 'event_id',
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE',
-    hooks: true
-  });
-};
+export default Event;

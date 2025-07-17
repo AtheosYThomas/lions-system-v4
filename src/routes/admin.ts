@@ -1,11 +1,11 @@
+
 import express from 'express';
 import Member from '../models/member';
 import Registration from '../models/registration';
 import Event from '../models/event';
 import sequelize from '../config/database';
-import path from 'path'; // Import path module
 
-const router = express.Router({ strict: true, caseSensitive: true });
+const router = express.Router();
 
 // 系統總覽
 router.get('/summary', async (req, res) => {
@@ -14,7 +14,7 @@ router.get('/summary', async (req, res) => {
     const activeMembers = await Member.count({ where: { status: 'active' } });
     const registrationCount = await Registration.count();
     const eventCount = await Event.count();
-
+    
     res.json({ 
       memberCount, 
       activeMembers, 
@@ -37,14 +37,14 @@ router.get('/stats', async (req, res) => {
     const stats = await Registration.findAll({
       attributes: [
         'event_id', 
-        [sequelize.fn('COUNT', sequelize.col('Registration.id')), 'count']
+        [sequelize.fn('COUNT', '*'), 'count']
       ],
-      group: ['event_id'],
+      group: ['event_id', 'Event.id', 'Event.title', 'Event.date'],
       include: [{
         model: Event,
-        attributes: ['title', 'date']
-      }],
-      raw: true
+        attributes: ['title', 'date'],
+        required: false
+      }]
     });
     res.json(stats);
   } catch (err) {
@@ -75,7 +75,5 @@ router.get('/member-stats', async (req, res) => {
     });
   }
 });
-
-// 移除不當的路由定義，這些應該在主應用程式中處理
 
 export default router;

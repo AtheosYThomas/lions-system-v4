@@ -1,27 +1,30 @@
-import { DataTypes, Model, Optional } from 'sequelize';
+
+import { DataTypes, Model } from 'sequelize';
 import sequelize from '../config/database';
 
 interface CheckinAttributes {
-  id?: string;
+  id: string;
   member_id: string;
   event_id: string;
   checkin_time: Date;
   device_info?: string;
-  created_at?: Date;
+  created_at: Date;
 }
 
-type CheckinCreationAttributes = Optional<CheckinAttributes, 'id' | 'created_at' | 'device_info' | 'checkin_time'>;
+interface CheckinCreationAttributes {
+  member_id: string;
+  event_id: string;
+  checkin_time?: Date;
+  device_info?: string;
+}
 
 class Checkin extends Model<CheckinAttributes, CheckinCreationAttributes> implements CheckinAttributes {
-  public id?: string;
+  public id!: string;
   public member_id!: string;
   public event_id!: string;
   public checkin_time!: Date;
   public device_info?: string;
-  public created_at?: Date;
-
-  // 定義 associate 靜態方法類型
-  static associate: (models: any) => void;
+  public created_at!: Date;
 }
 
 Checkin.init({
@@ -40,9 +43,12 @@ Checkin.init({
   },
   checkin_time: {
     type: DataTypes.DATE,
-    defaultValue: DataTypes.NOW
+    allowNull: false
   },
-  device_info: DataTypes.STRING,
+  device_info: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
   created_at: {
     type: DataTypes.DATE,
     defaultValue: DataTypes.NOW
@@ -53,19 +59,6 @@ Checkin.init({
   timestamps: false
 });
 
-export default Checkin;
+// 關聯設定將在 src/models/index.ts 中統一處理
 
-Checkin.associate = (models: any) => {
-  Checkin.belongsTo(models.Member, { 
-    foreignKey: 'member_id',
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE',
-    hooks: true
-  });
-  Checkin.belongsTo(models.Event, { 
-    foreignKey: 'event_id',
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE',
-    hooks: true
-  });
-};
+export default Checkin;

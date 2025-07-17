@@ -1,28 +1,23 @@
 
-import { DataTypes, Model, Optional } from 'sequelize';
+import { DataTypes, Model } from 'sequelize';
 import sequelize from '../config/database';
 
 interface RegistrationAttributes {
-  id?: string;
+  id: string;
   event_id: string;
   member_id: string;
   registration_date: Date;
   status: string;
-  created_at?: Date;
+  created_at: Date;
 }
 
-type RegistrationCreationAttributes = Optional<RegistrationAttributes, 'id' | 'created_at' | 'registration_date' | 'status'>;
-
-class Registration extends Model<RegistrationAttributes, RegistrationCreationAttributes> implements RegistrationAttributes {
-  public id?: string;
+class Registration extends Model<RegistrationAttributes> implements RegistrationAttributes {
+  public id!: string;
   public event_id!: string;
   public member_id!: string;
   public registration_date!: Date;
   public status!: string;
-  public created_at?: Date;
-
-  // 定義 associate 靜態方法類型
-  static associate: (models: any) => void;
+  public created_at!: Date;
 }
 
 Registration.init({
@@ -58,18 +53,3 @@ Registration.init({
 });
 
 export default Registration;
-
-Registration.associate = (models: any) => {
-  Registration.belongsTo(models.Member, { 
-    foreignKey: 'member_id',
-    as: 'member',
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE'
-  });
-  Registration.belongsTo(models.Event, { 
-    foreignKey: 'event_id',
-    as: 'event',
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE'
-  });
-};

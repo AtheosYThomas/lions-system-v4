@@ -1,32 +1,3 @@
-// 在載入任何模組前先清理環境
-console.log('🧹 初始化前清理 path-to-regexp 問題...');
-
-// 清理所有可能導致 path-to-regexp 錯誤的環境變數
-const dangerousVars = Object.keys(process.env).filter(key => {
-  const value = process.env[key];
-  return value && typeof value === 'string' && (
-    value.includes('${') ||
-    value.includes('Missing parameter') ||
-    value.includes('undefined') ||
-    value.includes('null') ||
-    key.includes('DEBUG_URL') ||
-    key.includes('WEBPACK') ||
-    key.includes('HMR') ||
-    key.includes('VITE_DEV')
-  );
-});
-
-dangerousVars.forEach(key => {
-  console.log(`🧹 清理危險變數: ${key}`);
-  delete process.env[key];
-});
-
-// 設置安全的預設值
-process.env.NODE_ENV = 'development';
-process.env.PORT = process.env.PORT || '5000';
-
-console.log('✅ 環境清理完成');
-
 import sequelize from './config/database';
 import './models/index'; // 載入所有模型關聯
 

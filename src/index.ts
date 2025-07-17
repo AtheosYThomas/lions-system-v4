@@ -1,4 +1,3 @@
-import './config/check-env'; // 在最頂部載入環境檢查
 import express from 'express';
 import path from 'path';
 import { config } from './config/config';
@@ -6,51 +5,40 @@ import sequelize from './config/database';
 import './models/index'; // 載入模型關聯
 import lineHandler from './line/handler';
 import adminRoutes from './routes/admin';
+import memberRoutes from './routes/members';
 import checkinRoutes from './routes/checkin';
-import membersRoutes from './routes/members';
-import eventsRoutes from './routes/events';
-import { errorHandler, notFoundHandler } from './middleware/errorHandler';
 import { validateEnvironment } from './utils/envValidation';
-import { healthCheck } from './utils/healthCheck';
-import { routeSafetyCheck, cleanProblemEnvVars } from './utils/routeSafetyCheck';
-import { createSafeRouter, validateNumericParam, routeErrorHandler } from './utils/routerSafety';
-import { safePathToRegexp, getSafePath } from './utils/safePath';
 
 const app = express();
-const rawPort = process.env.PORT;
-const PORT = rawPort && !isNaN(parseInt(rawPort)) ? parseInt(rawPort) : 5000;
+const PORT: number = parseInt(process.env.PORT || '3000', 10);
 
-// 環境變數驗證
-if (!validateEnvironment()) {
-  console.log('⚠️ 環境變數驗證失敗，但繼續啟動...');
-}
-
-// 中間件設定
+// 中介軟體
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, '../client/dist')));
 
-// CORS 設定
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-  if (req.method === 'OPTIONS') {
-    res.sendStatus(200);
-  } else {
-    next();
-  }
-});
-
-// 健康檢查路由
+// Health Check 路由
 app.get('/health', async (req, res) => {
   try {
-    const health = await healthCheck();
-    res.status(health.status === 'healthy' ? 200 : 500).json(health);
+    // 測試資料庫連線
+    await sequelize.authenticate();
+    res.status(200).json({
+      status: 'healthy',
+      timestamp: new Date().toISOString(),
+      version: '4.0',
+      uptime: process.uptime(),
+      database: 'connected',
+      services: {
+        line: config.line.accessToken ? 'configured' : 'missing_token',
+        routes: ['admin', 'checkin', 'members', 'webhook']
+      }
+    });
   } catch (error) {
     res.status(500).json({
-      status: 'unhealthy',
-      error: error instanceof Error ? error.message : '未知錯誤',
-      timestamp: new Date().toISOString()
+      status: 'error',
+      timestamp: new Date().toISOString(),
+      database: 'failed',
+      error: error instanceof Error ? error.message : 'Unknown error'
     });
   }
 });
@@ -67,266 +55,56 @@ app.get('/api/system/status', (req, res) => {
   });
 });
 
-// 建立安全的路由器
-const mainRouter = createSafeRouter();
-const apiRouter = createSafeRouter();
-const spaRouter = createSafeRouter();
+// LINE Webhook
+app.post('/webhook', lineHandler);
 
-// LINE Bot Webhook - 使用專用路由器
-const webhookRouter = express.Router();
-webhookRouter.post('/', lineHandler);
-app.use('/webhook', webhookRouter);
+// API 路由
+app.use('/api/admin', adminRoutes);
+app.use('/api/members', memberRoutes);
+app.use('/api/checkin', checkinRoutes);
 
-// API 路由集中管理
-apiRouter.use('/admin', adminRoutes);
-apiRouter.use('/', eventsRoutes);
-apiRouter.use('/', membersRoutes);
-apiRouter.use('/', checkinRoutes);
-app.use('/api', apiRouter);
-
-// 提供前端靜態檔案
-app.use(express.static(path.join(__dirname, '../client/dist')));
-
-// SPA 路由處理 - 使用嚴謹的路由器
-const serveSPA = (req: express.Request, res: express.Response) => {
-  const indexPath = path.join(__dirname, '../client/dist/index.html');
-  res.sendFile(indexPath, (err) => {
-    if (err) {
-      console.error('❌ 無法載入 SPA 檔案:', err);
-      res.status(404).send('Frontend not found');
-    }
-  });
-};
-
-// 明確定義的 SPA 路由
-spaRouter.get('/', serveSPA);
-spaRouter.get('/register', serveSPA);
-spaRouter.get('/checkin', serveSPA);
-spaRouter.get('/admin', serveSPA);
-
-// 表單路由支援
-spaRouter.get('/form/register', serveSPA);
-spaRouter.get('/form/checkin/:eventId', (req, res) => {
-  // 驗證 eventId 是數字
-  const { eventId } = req.params;
-  if (!/^\d+$/.test(eventId)) {
-    return res.status(400).send('Invalid event ID');
-  }
-  serveSPA(req, res);
+// 前端路由（提供 React 應用）
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/dist/index.html'));
 });
 
-app.use('/', spaRouter);
-
-// 最終的 fallback 處理器 - 更安全的路由匹配
-app.use('*', (req, res) => {
-  const requestPath = req.originalUrl || req.url;
-
-  // 明確排除 API 和 webhook 路由
-  if (requestPath.startsWith('/api/') || requestPath.startsWith('/webhook/')) {
-    return res.status(404).json({ 
-      error: 'API endpoint not found',
-      path: requestPath 
-    });
-  }
-
-  // 檢查是否為靜態資源請求
-  if (requestPath.includes('.') && !requestPath.endsWith('.html')) {
-    return res.status(404).send('Static resource not found');
-  }
-
-  // 其他所有路由都回傳前端 SPA
-  serveSPA(req, res);
+// 其他靜態路由
+app.get('/register', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/dist/index.html'));
 });
 
-// 路由特定錯誤處理
-app.use(routeErrorHandler);
+app.get('/checkin', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/dist/index.html'));
+});
 
-// 一般錯誤處理
-app.use(errorHandler);
-app.use(notFoundHandler);
-
-// 檢查潛在的環境變數問題（使用安全路徑模組）
-const checkEnvironmentIssues = () => {
-  const potentialIssues: string[] = [];
-
-  // 使用安全路徑獲取 DEBUG_URL
-  const debugUrl = getSafePath('DEBUG_URL', '/api/debug');
-  console.log(`📝 使用安全 DEBUG_URL: ${debugUrl}`);
-
-  // 檢查是否有未展開的模板字串
-  if (process.env.DEBUG_URL && process.env.DEBUG_URL.includes('${')) {
-    potentialIssues.push(`🚨 DEBUG_URL 包含未展開的模板字串: ${process.env.DEBUG_URL}`);
-  }
-
-  if (potentialIssues.length > 0) {
-    console.log('⚠️ 發現潛在問題:');
-    potentialIssues.forEach(issue => console.log(`  - ${issue}`));
-  }
-};
-
-// 路由驗證函數
-const validateRoutes = () => {
-  console.log('🔍 驗證路由配置...');
-
-  const potentialIssues: string[] = [];
-
-  // 1. 驗證環境變數中是否有未展開的模板字串
-  Object.entries(process.env).forEach(([key, value]) => {
-    if (value && typeof value === 'string') {
-      // 檢查未展開的模板字串 ${...}
-      if (value.includes('${') && value.includes('}')) {
-        potentialIssues.push(`環境變數 ${key} 包含未展開的模板字串: ${value}`);
-      }
-      // 檢查可能的路由參數錯誤格式
-      if (value.includes(':') && (value.includes('(*)') || value.includes('(*)'))) {
-        potentialIssues.push(`環境變數 ${key} 包含非法路由參數格式: ${value}`);
-      }
-    }
-  });
-
-  // 2. 檢查關鍵環境變數
-  const requiredVars = ['LINE_CHANNEL_ACCESS_TOKEN', 'LINE_CHANNEL_SECRET'];
-  requiredVars.forEach(varName => {
-    const value = process.env[varName];
-    if (!value) {
-      potentialIssues.push(`缺少必要環境變數: ${varName}`);
-    } else if (value.startsWith('${') || value === 'undefined' || value === 'null') {
-      potentialIssues.push(`環境變數 ${varName} 值異常: ${value}`);
-    }
-  });
-
-  // 3. 檢查 DEBUG_URL 相關問題（報錯中提到的變數）
-  if (process.env.DEBUG_URL && process.env.DEBUG_URL.includes('${')) {
-    potentialIssues.push(`DEBUG_URL 包含未展開的模板字串: ${process.env.DEBUG_URL}`);
-  }
-
-  if (potentialIssues.length > 0) {
-    console.log('⚠️ 發現潛在問題:');
-    potentialIssues.forEach(issue => console.log(`  - ${issue}`));
-
-    // 嘗試修復部分問題
-    console.log('🔧 嘗試自動修復...');
-
-    // 清理有問題的環境變數
-    Object.keys(process.env).forEach(key => {
-      const value = process.env[key];
-      if (value && typeof value === 'string' && value.includes('${') && value.includes('}')) {
-        console.log(`🧹 清理環境變數 ${key}`);
-        delete process.env[key];
-      }
-    });
-
-  } else {
-    console.log('✅ 路由配置驗證通過');
-  }
-};
+// 錯誤處理
+app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+  console.error('❌ Server Error:', err);
+  res.status(500).json({ error: 'Internal Server Error' });
+});
 
 // 啟動伺服器
 const startServer = async () => {
   try {
-    console.log('🚨 強化預防 path-to-regexp 錯誤...');
-
-    // 1. 徹底清理所有可能導致問題的環境變數
-    const dangerousPatterns = [
-      /\$\{.*\}/,           // 任何包含 ${...} 的變數
-      /Missing parameter/i,  // 包含錯誤訊息的變數
-      /:.*\(\*\)/,          // 包含 :param(*) 模式的變數
-    ];
-
-    const allEnvVars = Object.keys(process.env);
-    let cleanedCount = 0;
-
-    allEnvVars.forEach(key => {
-      const value = process.env[key];
-      if (value && typeof value === 'string') {
-        // 檢查是否匹配危險模式
-        const isDangerous = dangerousPatterns.some(pattern => pattern.test(value)) ||
-                            value.includes('${') ||
-                            value.includes('Missing parameter') ||
-                            value === 'undefined' ||
-                            value === 'null';
-
-        if (isDangerous) {
-          delete process.env[key];
-          cleanedCount++;
-          console.log(`🧹 清理危險變數: ${key}`);
-        }
-      }
-    });
-
-    if (cleanedCount > 0) {
-      console.log(`✅ 清理了 ${cleanedCount} 個危險環境變數`);
+    console.log('🔍 驗證環境變數...');
+    if (!validateEnvironment()) {
+      console.error('❌ 環境變數驗證失敗');
+      process.exit(1);
     }
-
-    // 2. 設置安全預設值
-    process.env.NODE_ENV = process.env.NODE_ENV || 'development';
-    process.env.PORT = process.env.PORT || '5000';
-
-    console.log('🔍 驗證環境安全性...');
-
-    // 3. 最終安全檢查
-    let finalCleanedCount = 0;
-    Object.entries(process.env).forEach(([key, value]) => {
-      if (value && typeof value === 'string') {
-        const isDangerous =
-          (value.includes('${') && value.includes('}')) ||
-          value.includes('Missing parameter') ||
-          value === 'undefined' ||
-          value === 'null' ||
-          value.trim() === '';
-
-        if (isDangerous) {
-          console.log(`🧹 清理危險環境變數: ${key}=${value}`);
-          delete process.env[key];
-          finalCleanedCount++;
-        }
-      }
-    });
-
-    console.log(`✅ 已清理 ${finalCleanedCount} 個危險環境變數`);
-
-    // 2. 強制設置安全的核心環境變數
-    const safeDefaults = {
-      NODE_ENV: 'development',
-      PORT: '5000',
-      EXPRESS_ENV: 'development'
-    };
-
-    Object.entries(safeDefaults).forEach(([key, value]) => {
-      process.env[key] = value;
-      console.log(`🔧 設置安全環境變數: ${key}=${value}`);
-    });
-
-    // 3. 執行增強的安全檢查
-    cleanProblemEnvVars();
-    routeSafetyCheck();
-    validateRoutes();
-
+    
     console.log('🔄 測試資料庫連線...');
     await sequelize.authenticate();
     console.log('✅ 資料庫連線成功！');
-
-    console.log('🔄 同步資料表...');
-    await sequelize.sync();
-    console.log('✅ 資料表同步完成！');
 
     app.listen(PORT, '0.0.0.0', () => {
       console.log(`🚀 伺服器啟動成功！埠號: ${PORT}`);
       console.log(`📍 Health Check: http://0.0.0.0:${PORT}/health`);
       console.log(`📱 LINE Webhook: http://0.0.0.0:${PORT}/webhook`);
       console.log(`🌐 前端頁面: http://0.0.0.0:${PORT}`);
-      console.log(`📋 會員註冊: http://0.0.0.0:${PORT}/form/register`);
-      console.log(`📝 活動簽到: http://0.0.0.0:${PORT}/form/checkin/1`);
-      console.log(`⚙️ 管理後台: http://0.0.0.0:${PORT}/admin`);
     });
   } catch (error) {
     console.error('❌ 伺服器啟動失敗:', error);
-    console.log('⚠️ 嘗試在沒有資料庫連線的情況下啟動伺服器...');
-
-    app.listen(PORT, '0.0.0.0', () => {
-      console.log(`🚀 伺服器啟動成功（無資料庫）！埠號: ${PORT}`);
-      console.log(`📍 Health Check: http://0.0.0.0:${PORT}/health`);
-    });
+    process.exit(1);
   }
 };
 

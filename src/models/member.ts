@@ -1,32 +1,27 @@
 
-import { DataTypes, Model, Optional } from 'sequelize';
+import { DataTypes, Model } from 'sequelize';
 import sequelize from '../config/database';
 
 interface MemberAttributes {
-  id?: string;
+  id: string;
   name: string;
   email: string;
   line_uid?: string;
   role?: string;
   phone?: string;
   status: string;
-  created_at?: Date;
+  created_at: Date;
 }
 
-type MemberCreationAttributes = Optional<MemberAttributes, 'id' | 'created_at' | 'role' | 'line_uid' | 'phone'>;
-
-class Member extends Model<MemberAttributes, MemberCreationAttributes> implements MemberAttributes {
-  public id?: string;
+class Member extends Model<MemberAttributes> implements MemberAttributes {
+  public id!: string;
   public name!: string;
   public email!: string;
   public line_uid?: string;
   public role?: string;
   public phone?: string;
   public status!: string;
-  public created_at?: Date;
-
-  // 定義 associate 靜態方法類型
-  static associate: (models: any) => void;
+  public created_at!: Date;
 }
 
 Member.init({
@@ -69,25 +64,6 @@ Member.init({
   timestamps: false
 });
 
-export default Member;
+// 關聯設定將在 src/models/index.ts 中統一處理
 
-Member.associate = (models: any) => {
-  Member.hasMany(models.Registration, { 
-    foreignKey: 'member_id',
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE',
-    hooks: true
-  });
-  Member.hasMany(models.Checkin, { 
-    foreignKey: 'member_id',
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE',
-    hooks: true
-  });
-  Member.hasMany(models.Payment, { 
-    foreignKey: 'member_id',
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE',
-    hooks: true
-  });
-};
+export default Member;
