@@ -19,6 +19,9 @@ class Checkin extends Model<CheckinAttributes, CheckinCreationAttributes> implem
   public checkin_time!: Date;
   public device_info?: string;
   public created_at?: Date;
+
+  // 定義 associate 靜態方法類型
+  static associate: (models: any) => void;
 }
 
 Checkin.init({

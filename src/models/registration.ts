@@ -20,6 +20,9 @@ class Registration extends Model<RegistrationAttributes, RegistrationCreationAtt
   public registration_date!: Date;
   public status!: string;
   public created_at?: Date;
+
+  // 定義 associate 靜態方法類型
+  static associate: (models: any) => void;
 }
 
 Registration.init({

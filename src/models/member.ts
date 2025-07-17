@@ -24,6 +24,9 @@ class Member extends Model<MemberAttributes, MemberCreationAttributes> implement
   public phone?: string;
   public status!: string;
   public created_at?: Date;
+
+  // 定義 associate 靜態方法類型
+  static associate: (models: any) => void;
 }
 
 Member.init({

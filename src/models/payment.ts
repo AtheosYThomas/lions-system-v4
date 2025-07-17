@@ -24,6 +24,9 @@ class Payment extends Model<PaymentAttributes, PaymentCreationAttributes> implem
   public status!: string;
   public receipt_url?: string;
   public created_at?: Date;
+
+  // 定義 associate 靜態方法類型
+  static associate: (models: any) => void;
 }
 
 Payment.init({

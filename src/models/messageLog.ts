@@ -24,6 +24,9 @@ class MessageLog extends Model<MessageLogAttributes, MessageLogCreationAttribute
   public intent?: string;
   public action_taken?: string;
   public event_id?: string;
+
+  // 定義 associate 靜態方法類型
+  static associate: (models: any) => void;
 }
 
 MessageLog.init({

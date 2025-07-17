@@ -1,4 +1,3 @@
-
 import { DataTypes, Model, Optional } from 'sequelize';
 import sequelize from '../config/database';
 
@@ -26,6 +25,9 @@ class Event extends Model<EventAttributes, EventCreationAttributes> implements E
   public current_attendees?: number;
   public status?: string;
   public created_at?: Date;
+
+  // 定義 associate 靜態方法類型
+  static associate: (models: any) => void;
 }
 
 Event.init({
