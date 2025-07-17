@@ -10,13 +10,19 @@ class LineController {
   async handleWebhook(req: Request, res: Response): Promise<void> {
     try {
       console.log('📨 收到 LINE webhook 請求');
-      console.log('📦 Request body =', JSON.stringify(req.body, null, 2));
+      
+      // 只在有 events 時才詳細記錄
+      if (req.body?.events && req.body.events.length > 0) {
+        console.log('📦 Request body =', JSON.stringify(req.body, null, 2));
+      }
 
       const body: LineWebhookRequestBody = req.body;
-      const result = await lineService.handleWebhookEvents(body.events);
+      const result = await lineService.handleWebhookEvents(body.events || []);
 
       if (!result.success) {
         console.error('❌ LINE 服務處理失敗:', result.error);
+      } else {
+        console.log('✅ LINE webhook 處理成功');
       }
 
       // LINE webhook 必須回傳 200 狀態碼
