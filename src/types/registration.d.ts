@@ -1,15 +1,16 @@
+
 export interface Registration {
   id: number;
-  eventId: number;
-  memberId: number;
+  event_id: number;
+  member_id: number;
   status: RegistrationStatus;
-  registrationDate: Date;
+  registration_date: Date;
   notes?: string;
-  paymentStatus: PaymentStatus;
-  paymentAmount?: number;
-  paymentDate?: Date;
-  createdAt: Date;
-  updatedAt: Date;
+  payment_status: PaymentStatus;
+  payment_amount?: number;
+  payment_date?: Date;
+  created_at: Date;
+  updated_at: Date;
 
   // 關聯資料
   event?: import('./event').Event;
@@ -32,51 +33,51 @@ export enum PaymentStatus {
 }
 
 export interface CreateRegistrationRequest {
-  eventId: number;
-  memberId: number;
+  event_id: number;
+  member_id: number;
   notes?: string;
-  paymentAmount?: number;
+  payment_amount?: number;
 }
 
 export interface UpdateRegistrationRequest {
   status?: RegistrationStatus;
   notes?: string;
-  paymentStatus?: PaymentStatus;
-  paymentAmount?: number;
-  paymentDate?: Date;
+  payment_status?: PaymentStatus;
+  payment_amount?: number;
+  payment_date?: Date;
 }
 
 export interface RegistrationStats {
   total: number;
   byStatus: Record<RegistrationStatus, number>;
   byPaymentStatus: Record<PaymentStatus, number>;
-  totalRevenue: number;
-  averageRegistrationsPerEvent: number;
-  cancellationRate: number;
+  total_revenue: number;
+  average_registrations_per_event: number;
+  cancellation_rate: number;
 }
 
 export interface RegistrationSearchParams {
-  eventId?: number;
-  memberId?: number;
+  event_id?: number;
+  member_id?: number;
   status?: RegistrationStatus;
-  paymentStatus?: PaymentStatus;
-  registrationDateFrom?: Date;
-  registrationDateTo?: Date;
+  payment_status?: PaymentStatus;
+  registration_date_from?: Date;
+  registration_date_to?: Date;
   limit?: number;
   offset?: number;
 }
 
 export interface BulkRegistrationRequest {
-  eventId: number;
-  memberIds: number[];
+  event_id: number;
+  member_ids: number[];
   notes?: string;
 }
 
 export interface RegistrationSummary {
-  eventId: number;
-  eventTitle: string;
-  totalRegistrations: number;
-  confirmedRegistrations: number;
+  event_id: number;
+  event_title: string;
+  total_registrations: number;
+  confirmed_registrations: number;
   revenue: number;
-  availableSpots: number;
+  available_spots: number;
 }

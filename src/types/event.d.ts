@@ -1,20 +1,21 @@
+
 export interface Event {
   id: number;
   title: string;
   description: string;
-  startTime: Date;
-  endTime: Date;
+  start_time: Date;
+  end_time: Date;
   location: string;
-  maxParticipants?: number;
-  currentParticipants: number;
+  max_participants?: number;
+  current_participants: number;
   status: EventStatus;
   type: EventType;
-  requiresRegistration: boolean;
-  registrationDeadline?: Date;
+  requires_registration: boolean;
+  registration_deadline?: Date;
   fee?: number;
   organizer: string;
-  createdAt: Date;
-  updatedAt: Date;
+  created_at: Date;
+  updated_at: Date;
 }
 
 export enum EventStatus {
@@ -37,13 +38,13 @@ export enum EventType {
 export interface CreateEventRequest {
   title: string;
   description: string;
-  startTime: Date;
-  endTime: Date;
+  start_time: Date;
+  end_time: Date;
   location: string;
-  maxParticipants?: number;
+  max_participants?: number;
   type: EventType;
-  requiresRegistration: boolean;
-  registrationDeadline?: Date;
+  requires_registration: boolean;
+  registration_deadline?: Date;
   fee?: number;
   organizer: string;
 }
@@ -51,14 +52,14 @@ export interface CreateEventRequest {
 export interface UpdateEventRequest {
   title?: string;
   description?: string;
-  startTime?: Date;
-  endTime?: Date;
+  start_time?: Date;
+  end_time?: Date;
   location?: string;
-  maxParticipants?: number;
+  max_participants?: number;
   status?: EventStatus;
   type?: EventType;
-  requiresRegistration?: boolean;
-  registrationDeadline?: Date;
+  requires_registration?: boolean;
+  registration_deadline?: Date;
   fee?: number;
   organizer?: string;
 }
@@ -67,17 +68,17 @@ export interface EventStats {
   total: number;
   byStatus: Record<EventStatus, number>;
   byType: Record<EventType, number>;
-  totalParticipants: number;
-  averageParticipants: number;
-  upcomingEvents: number;
+  total_participants: number;
+  average_participants: number;
+  upcoming_events: number;
 }
 
 export interface EventSearchParams {
   title?: string;
   status?: EventStatus;
   type?: EventType;
-  startDate?: Date;
-  endDate?: Date;
+  start_date?: Date;
+  end_date?: Date;
   limit?: number;
   offset?: number;
 }

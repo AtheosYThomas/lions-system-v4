@@ -1,3 +1,4 @@
+
 export interface Announcement {
   id: number;
   title: string;
@@ -5,15 +6,15 @@ export interface Announcement {
   status: AnnouncementStatus;
   priority: AnnouncementPriority;
   category: AnnouncementCategory;
-  targetAudience: TargetAudience;
-  scheduledTime?: Date;
-  publishedTime?: Date;
-  expiryTime?: Date;
-  authorId: number;
-  isSticky: boolean;
-  viewCount: number;
-  createdAt: Date;
-  updatedAt: Date;
+  target_audience: TargetAudience;
+  scheduled_time?: Date;
+  published_time?: Date;
+  expiry_time?: Date;
+  author_id: number;
+  is_sticky: boolean;
+  view_count: number;
+  created_at: Date;
+  updated_at: Date;
 
   // 關聯資料
   author?: import('./member').Member;
@@ -55,10 +56,10 @@ export interface CreateAnnouncementRequest {
   content: string;
   priority: AnnouncementPriority;
   category: AnnouncementCategory;
-  targetAudience: TargetAudience;
-  scheduledTime?: Date;
-  expiryTime?: Date;
-  isSticky?: boolean;
+  target_audience: TargetAudience;
+  scheduled_time?: Date;
+  expiry_time?: Date;
+  is_sticky?: boolean;
 }
 
 export interface UpdateAnnouncementRequest {
@@ -67,10 +68,10 @@ export interface UpdateAnnouncementRequest {
   status?: AnnouncementStatus;
   priority?: AnnouncementPriority;
   category?: AnnouncementCategory;
-  targetAudience?: TargetAudience;
-  scheduledTime?: Date;
-  expiryTime?: Date;
-  isSticky?: boolean;
+  target_audience?: TargetAudience;
+  scheduled_time?: Date;
+  expiry_time?: Date;
+  is_sticky?: boolean;
 }
 
 export interface AnnouncementStats {
@@ -78,9 +79,9 @@ export interface AnnouncementStats {
   byStatus: Record<AnnouncementStatus, number>;
   byPriority: Record<AnnouncementPriority, number>;
   byCategory: Record<AnnouncementCategory, number>;
-  totalViews: number;
-  averageViews: number;
-  recentAnnouncements: number;
+  total_views: number;
+  average_views: number;
+  recent_announcements: number;
 }
 
 export interface AnnouncementSearchParams {
@@ -88,16 +89,16 @@ export interface AnnouncementSearchParams {
   status?: AnnouncementStatus;
   priority?: AnnouncementPriority;
   category?: AnnouncementCategory;
-  targetAudience?: TargetAudience;
-  authorId?: number;
-  publishedAfter?: Date;
-  publishedBefore?: Date;
+  target_audience?: TargetAudience;
+  author_id?: number;
+  published_after?: Date;
+  published_before?: Date;
   limit?: number;
   offset?: number;
 }
 
 export interface BulkAnnouncementOperation {
-  announcementIds: number[];
+  announcement_ids: number[];
   action: 'publish' | 'archive' | 'delete';
-  scheduledTime?: Date;
+  scheduled_time?: Date;
 }
