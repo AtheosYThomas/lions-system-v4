@@ -1,6 +1,4 @@
 
-import fetch from 'node-fetch';
-
 const BASE_URL = 'http://localhost:5000';
 
 const testMessages = [
