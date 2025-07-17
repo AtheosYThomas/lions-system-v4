@@ -265,10 +265,15 @@ const startServer = async () => {
     console.log('🔍 驗證環境安全性...');
 
     // 3. 最終安全檢查
-                            value.includes('Missing parameter') ||
-                            value === 'undefined' ||
-                            value === 'null' ||
-                            value.trim() === '';
+    let cleanedCount = 0;
+    Object.entries(process.env).forEach(([key, value]) => {
+      if (value && typeof value === 'string') {
+        const isDangerous =
+          (value.includes('${') && value.includes('}')) ||
+          value.includes('Missing parameter') ||
+          value === 'undefined' ||
+          value === 'null' ||
+          value.trim() === '';
 
         if (isDangerous) {
           console.log(`🧹 清理危險環境變數: ${key}=${value}`);

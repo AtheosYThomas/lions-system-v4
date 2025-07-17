@@ -15,7 +15,7 @@ deploymentTarget = "autoscale"
 ignorePorts = false
 
 [workflows]
-runButton = "直接啟動系統"
+runButton = "修復後啟動"
 
 [[workflows.workflow]]
 name = "Run TypeScript Server"
@@ -883,6 +883,27 @@ args = "npx ts-node src/index.ts"
 name = "直接啟動系統"
 author = 44484841
 mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npx ts-node src/index.ts"
+
+[[workflows.workflow]]
+name = "修復後啟動"
+author = 44484841
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "echo \"🔍 檢查修復狀態...\""
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npx tsc --noEmit src/index.ts"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "echo \"🚀 啟動系統...\""
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
