@@ -1,0 +1,95 @@
+🔍 北大獅子會系統問題排查報告
+
+============================================================
+
+1️⃣ 掃描 /src 目錄檔案錯誤...
+❌ TypeScript 編譯錯誤
+src/routes/liff.ts(35,46): error TS2345: Argument of type '{ line_uid: any; display_name: any; picture_url: any; event_id: any; status: string; last_seen_at: Date; }' is not assignable to parameter of type 'Optional<LiffSessionAttributes, NullishPropertiesOf<LiffSessionAttributes>>'.
+  Type '{ line_uid: any; display_name: any; picture_url: any; event_id: any; status: string; last_seen_at: Date; }' is missing the following properties from type 'Omit<LiffSessionAttributes, NullishPropertiesOf<LiffSessionAttributes>>': id, created_at
+src/routes/liff.ts(92,43): error TS2345: Argument of type '{ name: any; email: any; line_uid: any; phone: any; role: string; status: string; }' is not assignable to parameter of type 'Optional<MemberAttributes, NullishPropertiesOf<MemberAttributes>>'.
+  Type '{ name: any; email: any; line_uid: any; phone: any; role: string; status: string; }' is missing the following properties from type 'Omit<MemberAttributes, NullishPropertiesOf<MemberAttributes>>': id, created_at
+
+✅ src/routes/members.ts 檢查通過
+⚠️ src/routes/liff.ts: 使用環境變數但未載入 dotenv: process.env.NODE_ENV, process.env.NODE_ENV, process.env.NODE_ENV
+✅ src/routes/checkin.ts 檢查通過
+✅ src/routes/admin.ts 檢查通過
+⚠️ 未找到 Controllers 檔案
+✅ src/middleware/errorHandler.ts 檢查通過
+✅ src/models/registration.ts 檢查通過
+✅ src/models/payment.ts 檢查通過
+✅ src/models/messageLog.ts 檢查通過
+✅ src/models/member.ts 檢查通過
+✅ src/models/liffSession.ts 檢查通過
+✅ src/models/index.ts 檢查通過
+✅ src/models/event.ts 檢查通過
+✅ src/models/checkin.ts 檢查通過
+✅ src/utils/systemCheck.ts 檢查通過
+✅ src/utils/envValidation.ts 檢查通過
+✅ src/utils/envCheck.ts 檢查通過
+
+2️⃣ 檢查環境變數...
+✅ .env 檔案存在
+✅ 環境變數檢查通過
+📋 已設定變數: LINE_CHANNEL_SECRET, LINE_CHANNEL_ACCESS_TOKEN, DATABASE_URL, PORT, NODE_ENV, LIFF_ID
+
+3️⃣ 檢查前端檔案...
+✅ 發現前端目錄: client/src
+📦 檢查前端套件...
+⚠️ 前端套件可能需要重新安裝
+✅ 發現前端目錄: client
+✅ client/index.html 包含必要資源
+✅ client/dist/index.html 包含必要資源
+📦 檢查前端套件...
+⚠️ 前端套件可能需要重新安裝
+
+4️⃣ 執行 Health Check...
+✅ Health check 成功 (狀態: 200)
+📋 回應: {"status":"healthy","timestamp":"2025-07-17T07:53:41.208Z","version":"4.0","uptime":161.391403553,"database":"connected","services":{"line":"configured","routes":["admin","checkin","members","webhook"]}}
+
+5️⃣ 檢查資料庫連線...
+✅ 資料庫連線正常
+✅ 模型查詢正常
+✅ 環境變數完整
+
+============================================================
+📋 系統問題排查報告
+============================================================
+
+🚨 錯誤項目 (1個):
+❌ [TypeScript編譯] TypeScript 編譯錯誤
+   詳細: src/routes/liff.ts(35,46): error TS2345: Argument of type '{ line_uid: any; display_name: any; picture_url: any; event_id: any; status: string; last_seen_at: Date; }' is not assignable to parameter of type 'Optional<LiffSessionAttributes, NullishPropertiesOf<LiffSessionAttributes>>'.
+  Type '{ line_uid: any; display_name: any; picture_url: any; event_id: any; status: string; last_seen_at: Date; }' is missing the following properties from type 'Omit<LiffSessionAttributes, NullishPropertiesOf<LiffSessionAttributes>>': id, created_at
+src/routes/liff.ts(92,43): error TS2345: Argument of type '{ name: any; email: any; line_uid: any; phone: any; role: string; status: string; }' is not assignable to parameter of type 'Optional<MemberAttributes, NullishPropertiesOf<MemberAttributes>>'.
+  Type '{ name: any; email: any; line_uid: any; phone: any; role: string; status: string; }' is missing the following properties from type 'Omit<MemberAttributes, NullishPropertiesOf<MemberAttributes>>': id, created_at
+
+   建議: 請修正 TypeScript 語法錯誤
+
+⚠️ 警告項目 (4個):
+⚠️ [Routes] src/routes/liff.ts 有潛在問題
+   詳細: 使用環境變數但未載入 dotenv: process.env.NODE_ENV, process.env.NODE_ENV, process.env.NODE_ENV
+   建議: 建議修正上述問題
+⚠️ [Controllers] 未找到 Controllers 檔案
+   詳細: 模式: src/controllers/**/*.ts
+⚠️ [前端套件] 前端套件可能有問題
+   建議: 執行 cd client && npm install
+⚠️ [前端套件] 前端套件可能有問題
+   建議: 執行 cd client && npm install
+
+✅ 正常項目 (4個):
+✅ [環境變數] 所有環境變數都已正確設定
+✅ [Health Check] Health check 成功
+✅ [資料庫] 資料庫連線正常
+✅ [資料模型] 資料模型查詢正常
+
+💡 修正建議摘要:
+🔴 高優先級 (錯誤):
+1. 請修正 TypeScript 語法錯誤
+
+🟡 中優先級 (警告):
+1. 建議修正上述問題
+2. 建議改善
+3. 執行 cd client && npm install
+4. 執行 cd client && npm install
+
+📊 系統健康度評分:
+44% (4/9 項目正常)
