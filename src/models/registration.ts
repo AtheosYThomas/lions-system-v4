@@ -1,8 +1,8 @@
 
-import { DataTypes, Model } from 'sequelize';
+import { DataTypes, Model, Optional } from 'sequelize';
 import sequelize from '../config/database';
 
-interface RegistrationAttributes {
+export interface RegistrationAttributes {
   id: string;
   event_id: string;
   member_id: string;
@@ -11,7 +11,9 @@ interface RegistrationAttributes {
   created_at: Date;
 }
 
-class Registration extends Model<RegistrationAttributes> implements RegistrationAttributes {
+export type RegistrationCreationAttributes = Optional<RegistrationAttributes, 'id' | 'registration_date' | 'created_at'>;
+
+export class Registration extends Model<RegistrationAttributes, RegistrationCreationAttributes> implements RegistrationAttributes {
   public id!: string;
   public event_id!: string;
   public member_id!: string;
