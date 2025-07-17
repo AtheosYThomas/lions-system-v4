@@ -693,6 +693,23 @@ args = "npx ts-node src/path-to-regexp-checkpoint.ts"
 task = "shell.exec"
 args = "echo \"📋 Checkpoint 1 驗證完成\""
 
+[[workflows.workflow]]
+name = "測試關聯完整性"
+author = 44484841
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "echo \"🔍 開始測試資料庫關聯完整性和 Eager Loading...\""
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npx ts-node src/test-associations.ts"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "echo \"📋 測試完成\""
+
 [[ports]]
 localPort = 5000
 externalPort = 80
