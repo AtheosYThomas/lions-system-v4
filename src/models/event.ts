@@ -9,11 +9,12 @@ interface EventAttributes {
   date: Date;
   location?: string;
   max_attendees?: number;
-  status: string;
+  current_attendees?: number;
+  status?: string;
   created_at?: Date;
 }
 
-type EventCreationAttributes = Optional<EventAttributes, 'id' | 'created_at' | 'description' | 'location' | 'max_attendees' | 'status'>;
+type EventCreationAttributes = Optional<EventAttributes, 'id' | 'created_at' | 'description' | 'location' | 'max_attendees' | 'current_attendees' | 'status'>;
 
 class Event extends Model<EventAttributes, EventCreationAttributes> implements EventAttributes {
   public id?: string;
@@ -22,7 +23,8 @@ class Event extends Model<EventAttributes, EventCreationAttributes> implements E
   public date!: Date;
   public location?: string;
   public max_attendees?: number;
-  public status!: string;
+  public current_attendees?: number;
+  public status?: string;
   public created_at?: Date;
 }
 
@@ -43,6 +45,10 @@ Event.init({
   },
   location: DataTypes.STRING,
   max_attendees: DataTypes.INTEGER,
+  current_attendees: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0
+  },
   status: {
     type: DataTypes.STRING,
     defaultValue: 'active'
@@ -56,6 +62,8 @@ Event.init({
   tableName: 'events',
   timestamps: false
 });
+
+export default Event;
 
 Event.associate = (models: any) => {
   Event.hasMany(models.Registration, { 
@@ -77,5 +85,3 @@ Event.associate = (models: any) => {
     hooks: true
   });
 };
-
-export default Event;
