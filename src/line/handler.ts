@@ -2,6 +2,8 @@
 import { Request, Response } from 'express';
 import { WebhookEvent, Client } from '@line/bot-sdk';
 import { config } from '../config/config';
+import MessageLog from '../models/messageLog';
+import Member from '../models/member';
 
 const client = new Client({
   channelAccessToken: config.line.accessToken,
@@ -22,7 +24,28 @@ const lineHandler = async (req: Request, res: Response) => {
 
         if (event.type === 'message' && event.message.type === 'text') {
           const userMsg = event.message.text;
+          const userId = event.source?.userId;
           console.log('🗣️ 使用者訊息 =', userMsg);
+          console.log('👤 使用者 ID =', userId);
+
+          // 檢查會員是否存在，避免外鍵錯誤
+          if (userId) {
+            const member = await Member.findOne({ where: { line_uid: userId } });
+            if (member) {
+              // 記錄訊息到資料庫
+              await MessageLog.create({
+                user_id: userId,
+                timestamp: new Date(),
+                message_type: event.message.type,
+                message_content: event.message.text,
+                intent: 'default',
+                action_taken: 'logged',
+              });
+              console.log('📝 訊息已記錄到資料庫');
+            } else {
+              console.log('⚠️ 使用者不在會員資料庫中，跳過訊息記錄');
+            }
+          }
 
           await client.replyMessage(event.replyToken, {
             type: 'text',
