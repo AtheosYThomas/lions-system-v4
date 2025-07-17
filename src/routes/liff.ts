@@ -1,7 +1,7 @@
 
 import express from 'express';
-import LiffSession from '../models/liffSession';
-import Member from '../models/member';
+import { LiffSession, LiffSessionCreationAttributes } from '../models/liffSession';
+import { Member, MemberCreationAttributes } from '../models/member';
 
 const router = express.Router();
 
@@ -23,23 +23,24 @@ router.post('/init', async (req, res) => {
 
   try {
     console.log('🔍 查詢會員:', line_uid);
-    // 使用原始 SQL 查詢來確保正確的欄位名稱
     const member = await Member.findOne({ 
       where: { 
-        line_uid: line_uid  // 這會自動映射到 line_user_id 欄位
+        line_uid: line_uid
       } 
     });
     console.log('👤 查詢結果:', member ? '找到會員' : '未找到會員');
 
     console.log('💾 建立 LIFF session...');
-    const session = await LiffSession.create({
+    const sessionData: LiffSessionCreationAttributes = {
       line_uid,
       display_name: display_name || undefined,
       picture_url: picture_url || undefined,
       event_id: event_id || undefined,
       status: member ? 'signed_in' : 'pending',
       last_seen_at: new Date()
-    });
+    };
+
+    const session = await LiffSession.create(sessionData);
     console.log('✅ LIFF session 建立成功:', session.id);
 
     const response = {
@@ -89,14 +90,16 @@ router.post('/register', async (req, res) => {
     }
 
     // 建立新會員
-    const newMember = await Member.create({
+    const memberData: MemberCreationAttributes = {
       name,
       email,
       line_uid,
       phone: phone || undefined,
       role: 'member',
       status: 'active'
-    });
+    };
+
+    const newMember = await Member.create(memberData);
 
     console.log('✅ 新會員註冊成功:', newMember.name);
 

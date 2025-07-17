@@ -1,7 +1,8 @@
-import { DataTypes, Model } from 'sequelize';
+
+import { DataTypes, Model, Optional } from 'sequelize';
 import sequelize from '../config/database';
 
-interface MemberAttributes {
+export interface MemberAttributes {
   id: string;
   name: string;
   email: string;
@@ -12,7 +13,9 @@ interface MemberAttributes {
   created_at: Date;
 }
 
-class Member extends Model<MemberAttributes> implements MemberAttributes {
+export type MemberCreationAttributes = Optional<MemberAttributes, 'id' | 'created_at'>;
+
+export class Member extends Model<MemberAttributes, MemberCreationAttributes> implements MemberAttributes {
   public id!: string;
   public name!: string;
   public email!: string;
@@ -63,7 +66,5 @@ Member.init({
   tableName: 'members',
   timestamps: false
 });
-
-// 關聯設定將在 src/models/index.ts 中統一處理
 
 export default Member;

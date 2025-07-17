@@ -1,8 +1,8 @@
 
-import { DataTypes, Model } from 'sequelize';
+import { DataTypes, Model, Optional } from 'sequelize';
 import sequelize from '../config/database';
 
-interface LiffSessionAttributes {
+export interface LiffSessionAttributes {
   id: string;
   line_uid: string;
   display_name?: string;
@@ -13,7 +13,9 @@ interface LiffSessionAttributes {
   created_at: Date;
 }
 
-class LiffSession extends Model<LiffSessionAttributes> implements LiffSessionAttributes {
+export type LiffSessionCreationAttributes = Optional<LiffSessionAttributes, 'id' | 'created_at'>;
+
+export class LiffSession extends Model<LiffSessionAttributes, LiffSessionCreationAttributes> implements LiffSessionAttributes {
   public id!: string;
   public line_uid!: string;
   public display_name?: string;
