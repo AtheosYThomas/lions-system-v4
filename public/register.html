@@ -1,0 +1,187 @@
+
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <title>北大獅子會 - 會員註冊</title>
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+    .container {
+      max-width: 500px;
+      margin: 0 auto;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      box-sizing: border-box;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #00C300;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #00A300;
+    }
+    .success {
+      color: #28a745;
+      text-align: center;
+    }
+    .error {
+      color: #dc3545;
+      text-align: center;
+    }
+    .loading {
+      color: #666;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>🦁 北大獅子會會員註冊</h2>
+    <div id="status"></div>
+    
+    <form id="registerForm" style="display: none;">
+      <div class="form-group">
+        <label for="name">姓名 *</label>
+        <input type="text" id="name" name="name" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="email">Email *</label>
+        <input type="email" id="email" name="email" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="phone">電話</label>
+        <input type="tel" id="phone" name="phone">
+      </div>
+      
+      <button type="submit">🎯 完成註冊</button>
+    </form>
+  </div>
+
+  <script>
+    const statusDiv = document.getElementById('status');
+    const form = document.getElementById('registerForm');
+    let currentProfile = null;
+
+    async function main() {
+      try {
+        statusDiv.innerHTML = '<p class="loading">🔐 正在驗證 LINE 身份...</p>';
+        
+        await liff.init({ liffId: '2007739371-aKePV20l' });
+        
+        if (!liff.isLoggedIn()) {
+          liff.login();
+          return;
+        }
+
+        statusDiv.innerHTML = '<p class="loading">📱 正在取得個人資料...</p>';
+        currentProfile = await liff.getProfile();
+
+        // 檢查是否已經是會員
+        const checkRes = await fetch('/liff/init', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            line_uid: currentProfile.userId,
+            display_name: currentProfile.displayName,
+            picture_url: currentProfile.pictureUrl
+          })
+        });
+
+        const checkResult = await checkRes.json();
+        
+        if (checkResult.is_member) {
+          statusDiv.innerHTML = `<p class="success">✅ ${checkResult.message}</p>`;
+          setTimeout(() => {
+            if (liff.isInClient()) {
+              liff.closeWindow();
+            }
+          }, 2000);
+        } else {
+          statusDiv.innerHTML = '<p class="loading">📝 請填寫會員資料完成註冊</p>';
+          form.style.display = 'block';
+          
+          // 預填顯示名稱
+          document.getElementById('name').value = currentProfile.displayName || '';
+        }
+
+      } catch (err) {
+        console.error('LIFF 錯誤:', err);
+        statusDiv.innerHTML = `<p class="error">❌ 初始化失敗: ${err.message}</p>`;
+      }
+    }
+
+    // 表單提交處理
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const formData = new FormData(e.target);
+      const registerData = {
+        line_uid: currentProfile.userId,
+        name: formData.get('name'),
+        email: formData.get('email'),
+        phone: formData.get('phone') || undefined
+      };
+
+      try {
+        statusDiv.innerHTML = '<p class="loading">📝 正在註冊...</p>';
+        
+        const res = await fetch('/liff/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(registerData)
+        });
+
+        const result = await res.json();
+        
+        if (result.success) {
+          statusDiv.innerHTML = `<p class="success">🎉 ${result.message}</p>`;
+          form.style.display = 'none';
+          
+          setTimeout(() => {
+            if (liff.isInClient()) {
+              liff.closeWindow();
+            }
+          }, 3000);
+        } else {
+          statusDiv.innerHTML = `<p class="error">❌ ${result.error}</p>`;
+        }
+
+      } catch (err) {
+        console.error('註冊錯誤:', err);
+        statusDiv.innerHTML = '<p class="error">❌ 註冊失敗，請稍後再試</p>';
+      }
+    });
+
+    main();
+  </script>
+</body>
+</html>
