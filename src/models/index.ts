@@ -20,8 +20,13 @@ const db = {
 
 // 統一初始化所有模型關聯
 Object.values(db).forEach((model: any) => {
-  if (model.associate && typeof model.associate === 'function') {
-    model.associate(db);
+  try {
+    if (model.associate && typeof model.associate === 'function') {
+      model.associate(db);
+      console.log(`✅ ${model.name} 關聯初始化成功`);
+    }
+  } catch (error) {
+    console.error(`❌ ${model.name} 關聯初始化失敗:`, error);
   }
 });
 

@@ -710,6 +710,39 @@ args = "npx ts-node src/test-associations.ts"
 task = "shell.exec"
 args = "echo \"📋 測試完成\""
 
+[[workflows.workflow]]
+name = "完整系統檢查修復"
+author = 44484841
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "echo \"🔍 開始完整系統檢查和修復...\""
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npx ts-node src/complete-system-fix.ts"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "echo \"🎨 檢查前端狀態...\""
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npx ts-node src/check-frontend.ts"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "echo \"🏥 測試健康檢查端點...\""
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npx ts-node src/test-health-endpoints.ts"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "echo \"📋 檢查完成，查看上方結果\""
+
 [[ports]]
 localPort = 5000
 externalPort = 80
