@@ -14,23 +14,34 @@ export default async function lineHandler(req: Request, res: Response) {
     console.log('🔄 處理 LINE webhook 請求');
     console.log('📦 Request body:', JSON.stringify(req.body, null, 2));
 
-    const events: WebhookEvent[] = req.body.events;
+    const events: WebhookEvent[] = req.body.events || [];
 
-    if (!events || events.length === 0) {
+    if (events.length === 0) {
       console.log('⚠️ 沒有收到任何事件');
-      return res.status(200).json({ status: 'ok' });
+      return res.status(200).json({ status: 'ok', message: 'no events' });
     }
 
     console.log(`📨 收到 ${events.length} 個事件`);
 
     // 處理每個事件
-    await Promise.all(events.map(handleEvent));
+    for (const event of events) {
+      try {
+        await handleEvent(event);
+      } catch (eventError) {
+        console.error('🔥 處理事件錯誤:', eventError);
+        // 繼續處理其他事件
+      }
+    }
 
-    res.status(200).json({ status: 'ok' });
+    if (!res.headersSent) {
+      res.status(200).json({ status: 'ok', processed: events.length });
+    }
   } catch (error) {
     console.error('🔥 LINE handler error:', error);
     // 確保回傳 200 狀態碼給 LINE
-    res.status(200).json({ status: 'error', message: 'processed' });
+    if (!res.headersSent) {
+      res.status(200).json({ status: 'error', message: 'processed' });
+    }
   }
 }
 

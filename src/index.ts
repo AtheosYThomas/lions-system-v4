@@ -31,7 +31,7 @@ app.use((req, res, next) => {
   }
 });
 
-// Health Check 路由（必須在靜態檔案之前）
+// API 路由優先（必須在靜態檔案之前）
 app.get('/health', async (req, res) => {
   try {
     // 測試資料庫連線
@@ -69,18 +69,18 @@ app.get('/api/system/status', (req, res) => {
   });
 });
 
-// 靜態檔案服務
-app.use('/public', express.static(path.join(__dirname, '../public')));
-
-// API 路由（必須在前端路由之前）
+// LINE Webhook - 直接處理（最重要）
 app.use('/webhook', lineWebhookRoutes);
+
+// 其他 API 路由
 app.use('/api/admin', adminRoutes);
 app.use('/api/members', memberRoutes);
 app.use('/api/checkin', checkinRoutes);
 app.use('/api/liff', liffRoutes);
 app.use('/api/announcements', announcementRoutes);
 
-// 靜態檔案服務（前端）
+// 靜態檔案服務
+app.use('/public', express.static(path.join(__dirname, '../public')));
 app.use(express.static(path.join(__dirname, '../client/dist')));
 
 // 前端路由（提供 React 應用）- 必須在最後
