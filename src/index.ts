@@ -10,8 +10,6 @@ import checkinRoutes from './routes/checkin';
 import liffRoutes from './routes/liff';
 import { validateEnvironment } from './utils/envValidation';
 import announcementRoutes from './routes/announcements';
-import cors from 'cors'; // 引入 cors
-import { timeoutMiddleware } from './middleware/timeout';
 
 const app = express();
 const PORT: number = parseInt(process.env.PORT || '5000', 10);
@@ -93,7 +91,6 @@ app.post('/webhook', async (req, res) => {
 app.use('/public', express.static(path.join(__dirname, '../public')));
 
 // API 路由
-app.use(timeoutMiddleware(8000)); // 8秒超時
 app.use('/api/admin', adminRoutes);
 app.use('/api/members', memberRoutes);
 app.use('/api/checkin', checkinRoutes);

@@ -1,110 +1,36 @@
+
 import express from 'express';
 import Member from '../models/member';
 import Registration from '../models/registration';
 import Event from '../models/event';
 import sequelize from '../config/database';
 
-// 快速查詢函數
-async function getQuickStats() {
-  try {
-    // 使用 raw SQL 查詢以提升速度
-    const [memberResult] = await sequelize.query(
-      'SELECT COUNT(*) as count FROM members',
-      { type: sequelize.QueryTypes.SELECT }
-    );
-
-    const [activeResult] = await sequelize.query(
-      "SELECT COUNT(*) as count FROM members WHERE status = 'active'",
-      { type: sequelize.QueryTypes.SELECT }
-    );
-
-    const [registrationResult] = await sequelize.query(
-      'SELECT COUNT(*) as count FROM registrations',
-      { type: sequelize.QueryTypes.SELECT }
-    );
-
-    const [eventResult] = await sequelize.query(
-      'SELECT COUNT(*) as count FROM events',
-      { type: sequelize.QueryTypes.SELECT }
-    );
-
-    return {
-      memberCount: parseInt(memberResult.count as string) || 0,
-      activeMembers: parseInt(activeResult.count as string) || 0,
-      registrationCount: parseInt(registrationResult.count as string) || 0,
-      eventCount: parseInt(eventResult.count as string) || 0
-    };
-  } catch (error) {
-    console.error('❌ 快速查詢失敗:', error);
-    return {
-      memberCount: 0,
-      activeMembers: 0,
-      registrationCount: 0,
-      eventCount: 0
-    };
-  }
-}
-
 const router = express.Router();
-
-// 建立測試資料
-router.post('/seed-data', async (req, res) => {
-  try {
-    const seedData = await import('../tools/seedData');
-    await seedData.default();
-    
-    res.json({ 
-      success: true, 
-      message: '測試資料建立成功' 
-    });
-  } catch (error) {
-    console.error('建立測試資料失敗:', error);
-    res.status(500).json({ 
-      success: false, 
-      message: '建立測試資料失敗',
-      error: error instanceof Error ? error.message : '未知錯誤'
-    });
-  }
-});
-
-// 清除測試資料
-router.delete('/clear-data', async (req, res) => {
-  try {
-    await Registration.destroy({ where: {} });
-    await Event.destroy({ where: {} });
-    await Member.destroy({ where: {} });
-    
-    res.json({ 
-      success: true, 
-      message: '測試資料清除成功' 
-    });
-  } catch (error) {
-    console.error('清除測試資料失敗:', error);
-    res.status(500).json({ 
-      success: false, 
-      message: '清除測試資料失敗',
-      error: error instanceof Error ? error.message : '未知錯誤'
-    });
-  }
-});
 
 // 系統總覽
 router.get('/summary', async (req, res) => {
+  console.log('📊 收到系統總覽請求');
   try {
-    // 設定較短的超時時間避免前端超時
-    const timeoutPromise = new Promise((_, reject) => 
-      setTimeout(() => reject(new Error('操作超時')), 3000)
-    );
-
-    const statsPromise = getQuickStats();
-    const stats = await Promise.race([statsPromise, timeoutPromise]);
-
-    res.json(stats);
-  } catch (error) {
-    console.error('獲取統計資料錯誤:', error);
+    const memberCount = await Member.count();
+    const activeMembers = await Member.count({ where: { status: 'active' } });
+    const registrationCount = await Registration.count();
+    const eventCount = await Event.count();
+    
+    const result = { 
+      memberCount, 
+      activeMembers, 
+      registrationCount, 
+      eventCount,
+      timestamp: new Date().toISOString()
+    };
+    
+    console.log('✅ 系統總覽數據:', result);
+    res.json(result);
+  } catch (err) {
+    console.error('❌ 系統總覽錯誤:', err);
     res.status(500).json({ 
-      error: '獲取統計資料失敗',
-      message: error instanceof Error ? error.message : '未知錯誤'
+      error: 'Summary failed', 
+      details: err instanceof Error ? err.message : '未知錯誤'
     });
   }
 });
@@ -149,25 +75,6 @@ router.get('/member-stats', async (req, res) => {
     console.error('❌ 會員統計錯誤:', err);
     res.status(500).json({ 
       error: 'Member stats failed', 
-      details: err instanceof Error ? err.message : '未知錯誤'
-    });
-  }
-});
-
-// 簡化版統計（用於測試和快速回應）
-router.get('/quick-summary', async (req, res) => {
-  console.log('⚡ 收到快速統計請求');
-  try {
-    res.json({
-      status: 'ok',
-      timestamp: new Date().toISOString(),
-      message: '系統運作正常',
-      uptime: process.uptime(),
-      memory: process.memoryUsage()
-    });
-  } catch (err) {
-    res.status(500).json({ 
-      error: 'Quick summary failed',
       details: err instanceof Error ? err.message : '未知錯誤'
     });
   }

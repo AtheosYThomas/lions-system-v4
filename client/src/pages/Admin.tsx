@@ -16,20 +16,9 @@ const Admin: React.FC = () => {
         const healthResponse = await axios.get('/health', { timeout: 3000 });
         console.log('✅ Health check 成功:', healthResponse.data);
 
-        // 先嘗試快速統計
-        console.log('🚀 嘗試快速統計...');
-        try {
-          const quickResponse = await axios.get('/api/admin/quick-summary', {
-            timeout: 2000
-          });
-          console.log('✅ 快速統計成功:', quickResponse.data);
-        } catch (quickError) {
-          console.warn('⚠️ 快速統計失敗:', quickError.message);
-        }
-
-        // 再調用統計 API (降低超時時間)
+        // 再調用統計 API
         const response = await axios.get('/api/admin/summary', {
-          timeout: 4000, // 降低超時時間
+          timeout: 10000, // 延長超時時間
           headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json'
