@@ -5,12 +5,14 @@
   "main": "index.js",
   "scripts": {
     "dev": "tsx src/index.ts",
-    "dev:fast": "tsx src/scripts/quickStart.ts",
-    "build:all": "npm run build && cp -r public dist/",
-    "lint": "eslint . --ext .ts",
+    "init-schema": "tsx src/scripts/initSchema.ts",
+    "quick-start": "tsx src/scripts/quickStart.ts",
     "build": "tsc",
     "start": "node dist/index.js",
-    "init-schema": "tsx src/scripts/initSchema.ts"
+    "test:seed": "tsx src/scripts/test/seedMockData.ts",
+    "test:functions": "tsx src/scripts/test/testServiceFunctions.ts",
+    "test:full": "tsx src/scripts/test/index.ts full",
+    "test:clear": "tsx src/scripts/test/index.ts clear"
   },
   "keywords": [],
   "author": "",
