@@ -134,9 +134,9 @@ function checkEnvVariables() {
     const missingVars = Array.from(usedEnvVars).filter(varName => !envVars[varName as string]);
     const configuredVars = Object.keys(envVars);
 
-    envReport.missingVars = missingVars;
+    envReport.missingVars = missingVars as string[];
     envReport.configuredVars = configuredVars;
-    envReport.usedButNotDefined = missingVars;
+    envReport.usedButNotDefined = missingVars as string[];
 
     if (missingVars.length > 0) {
       console.log(chalk.red(`❌ 程式中使用但 .env 中缺少的變數: ${missingVars.join(', ')}`));
