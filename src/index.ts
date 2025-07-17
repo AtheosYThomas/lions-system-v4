@@ -4,11 +4,11 @@ import { config } from './config/config';
 import sequelize from './config/database';
 import './models/index'; // 載入模型關聯
 import adminRoutes from './routes/admin';
-import memberRoutes from './routes/members';
-import checkinRoutes from './routes/checkin';
-import liffRoutes from './routes/liff';
+import memberRoutes from './routes/api/members';
+import checkinRoutes from './routes/api/checkin';
+import liffRoutes from './routes/api/liff';
 import { validateEnvironment } from './utils/envValidation';
-import announcementRoutes from './routes/announcements';
+import announcementRoutes from './routes/api/announcements';
 import lineWebhook from './routes/line/webhook';
 
 const app = express();
