@@ -66,6 +66,8 @@ Member.init({
   timestamps: false
 });
 
+export default Member;
+
 Member.associate = (models: any) => {
   Member.hasMany(models.Registration, { 
     foreignKey: 'member_id',
@@ -86,5 +88,3 @@ Member.associate = (models: any) => {
     hooks: true
   });
 };
-
-export default Member;

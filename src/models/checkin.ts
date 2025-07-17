@@ -50,6 +50,8 @@ Checkin.init({
   timestamps: false
 });
 
+export default Checkin;
+
 Checkin.associate = (models: any) => {
   Checkin.belongsTo(models.Member, { 
     foreignKey: 'member_id',
@@ -64,5 +66,3 @@ Checkin.associate = (models: any) => {
     hooks: true
   });
 };
-
-export default Checkin;
