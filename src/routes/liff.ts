@@ -17,7 +17,12 @@ router.post('/init', async (req, res) => {
 
   try {
     console.log('🔍 查詢會員:', line_uid);
-    const member = await Member.findOne({ where: { line_uid } });
+    // 使用原始 SQL 查詢來確保正確的欄位名稱
+    const member = await Member.findOne({ 
+      where: { 
+        line_uid: line_uid  // 這會自動映射到 line_user_id 欄位
+      } 
+    });
     console.log('👤 查詢結果:', member ? '找到會員' : '未找到會員');
 
     console.log('💾 建立 LIFF session...');
