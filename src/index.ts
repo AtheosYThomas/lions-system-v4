@@ -14,7 +14,7 @@ import { validateEnvironment } from './utils/envValidation';
 import announcementRoutes from './routes/announcements';
 
 const app = express();
-const PORT: number = parseInt(process.env.PORT || '5000', 10);
+const PORT: number = parseInt(process.env.PORT || '3001', 10);
 
 // 中介軟體
 app.use(express.json());
