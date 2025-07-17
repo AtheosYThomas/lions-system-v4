@@ -5,11 +5,11 @@ import { Op } from 'sequelize';
 
 const router = express.Router();
 
-// 獲取公告列表
+// 🔍 查詢所有公告（可加篩選條件）
 router.get('/', async (req, res) => {
   try {
     const {
-      status = 'published',
+      status,
       category,
       audience,
       limit = 10,
@@ -49,15 +49,20 @@ router.get('/', async (req, res) => {
         {
           model: Member,
           as: 'creator',
-          attributes: ['id', 'name', 'email']
+          attributes: ['id', 'name', 'email'],
+          required: false
         },
         {
           model: Event,
           as: 'relatedEvent',
-          attributes: ['id', 'title', 'date', 'location']
+          attributes: ['id', 'title', 'date', 'location'],
+          required: false
         }
       ],
-      order: [['created_at', 'DESC']],
+      order: [
+        ['published_at', 'DESC'],
+        ['created_at', 'DESC']
+      ],
       limit: parseInt(limit as string),
       offset: parseInt(offset as string)
     });
@@ -123,7 +128,7 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// 創建公告
+// 📥 建立公告
 router.post('/', async (req, res) => {
   try {
     const {
@@ -146,18 +151,19 @@ router.post('/', async (req, res) => {
       });
     }
 
-    // 如果狀態是已發布，設定發布時間
+    // ⏱ 自動判斷「預約發布」與「即時發布」
     const published_at = status === 'published' ? new Date() : null;
+    const final_scheduled_at = status === 'scheduled' ? scheduled_at : null;
 
     const announcement = await Announcement.create({
       title,
       content,
-      related_event_id,
-      created_by,
+      related_event_id: related_event_id || null,
+      created_by: created_by || null,
       audience,
       category,
       status,
-      scheduled_at,
+      scheduled_at: final_scheduled_at,
       published_at,
       is_visible
     });
@@ -177,11 +183,20 @@ router.post('/', async (req, res) => {
   }
 });
 
-// 更新公告
+// 📝 更新公告
 router.put('/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const updateData = req.body;
+    const {
+      title,
+      content,
+      related_event_id,
+      audience,
+      category,
+      status,
+      scheduled_at,
+      is_visible
+    } = req.body;
 
     const announcement = await Announcement.findByPk(id);
     if (!announcement) {
@@ -191,15 +206,31 @@ router.put('/:id', async (req, res) => {
       });
     }
 
-    // 如果狀態變更為已發布，設定發布時間
-    if (updateData.status === 'published' && announcement.status !== 'published') {
+    // ⏱ 自動判斷狀態變更
+    let updateData: any = {
+      title: title ?? announcement.title,
+      content: content ?? announcement.content,
+      related_event_id: related_event_id ?? announcement.related_event_id,
+      audience: audience ?? announcement.audience,
+      category: category ?? announcement.category,
+      status: status ?? announcement.status,
+      is_visible: is_visible ?? announcement.is_visible,
+      updated_at: new Date()
+    };
+
+    // 處理預約發布與即時發布
+    if (status === 'scheduled') {
+      updateData.scheduled_at = scheduled_at;
+      updateData.published_at = null;
+    } else if (status === 'published' && announcement.status !== 'published') {
       updateData.published_at = new Date();
+      updateData.scheduled_at = null;
+    } else if (status === 'draft') {
+      updateData.scheduled_at = null;
+      updateData.published_at = null;
     }
 
-    await announcement.update({
-      ...updateData,
-      updated_at: new Date()
-    });
+    await announcement.update(updateData);
 
     res.json({
       success: true,
