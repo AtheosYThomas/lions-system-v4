@@ -94,6 +94,9 @@ app.get('/health', (req, res) => {
   });
 });
 
+// 靜態檔案服務
+app.use('/public', express.static(path.join(__dirname, '../public')));
+
 // 前端路由（提供 React 應用）
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../client/dist/index.html'));
