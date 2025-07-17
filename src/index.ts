@@ -32,6 +32,8 @@ app.use((req, res, next) => {
   }
 });
 
+app.use(express.static(path.join(__dirname, '../client/dist')));
+
 // Health Check 路由
 app.get('/health', async (req, res) => {
   try {
@@ -90,23 +92,13 @@ app.post('/webhook', async (req, res) => {
 // 靜態檔案服務（需要在其他路由之前）
 app.use('/public', express.static(path.join(__dirname, '../public')));
 
-// 添加 API 路由調試（必須在路由註冊之前）
-app.use((req, res, next) => {
-  if (req.path.startsWith('/api/')) {
-    console.log(`🔍 API 請求: ${req.method} ${req.originalUrl} - ${req.path}`);
-  }
-  next();
-});
-
-// API 路由 - 確保正確處理 /api 前綴
-app.use('/api/admin', timeoutMiddleware(8000), adminRoutes);
-app.use('/api/members', timeoutMiddleware(8000), memberRoutes);
-app.use('/api/checkin', timeoutMiddleware(8000), checkinRoutes);
-app.use('/api/liff', timeoutMiddleware(8000), liffRoutes);
-app.use('/api/announcements', timeoutMiddleware(8000), announcementRoutes);
-
-// 靜態檔案服務（放在 API 路由之後）
-app.use(express.static(path.join(__dirname, '../client/dist')));
+// API 路由
+app.use(timeoutMiddleware(8000)); // 8秒超時
+app.use('/api/admin', adminRoutes);
+app.use('/api/members', memberRoutes);
+app.use('/api/checkin', checkinRoutes);
+app.use('/api/liff', liffRoutes);
+app.use('/api/announcements', announcementRoutes);
 
 // 前端路由（提供 React 應用）
 app.get('/', (req, res) => {
