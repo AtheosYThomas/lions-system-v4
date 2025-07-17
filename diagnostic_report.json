@@ -1,0 +1,80 @@
+{
+  "timestamp": "2025-07-17T12:01:18.983Z",
+  "sourceFiles": [],
+  "envVariables": {
+    "envFileExists": true,
+    "missingVars": [],
+    "configuredVars": [
+      "LINE_CHANNEL_SECRET",
+      "LINE_CHANNEL_ACCESS_TOKEN",
+      "DATABASE_URL",
+      "PORT",
+      "NODE_ENV",
+      "LIFF_ID"
+    ],
+    "usedButNotDefined": []
+  },
+  "frontendFiles": {
+    "frontendFound": true,
+    "directories": [
+      "public",
+      "client/src"
+    ],
+    "jsFiles": [
+      "client/src/main.tsx",
+      "client/src/App.tsx",
+      "client/src/pages/Register.tsx",
+      "client/src/pages/Profile.tsx",
+      "client/src/pages/NotFoundPage.tsx",
+      "client/src/pages/Home.tsx",
+      "client/src/pages/Checkin.tsx",
+      "client/src/pages/Admin.tsx"
+    ],
+    "htmlFiles": [
+      "public/register.html",
+      "public/liff.html"
+    ],
+    "errors": []
+  },
+  "healthCheck": [
+    {
+      "endpoint": "Backend Health",
+      "url": "http://localhost:5000/health",
+      "status": 404,
+      "success": false,
+      "response": ""
+    },
+    {
+      "endpoint": "API Health",
+      "url": "http://localhost:5000/api/health",
+      "status": 404,
+      "success": false,
+      "response": ""
+    },
+    {
+      "endpoint": "Frontend",
+      "url": "http://localhost:5000/",
+      "status": 404,
+      "success": false,
+      "response": ""
+    }
+  ],
+  "database": {
+    "connectionSuccess": true,
+    "querySuccess": true,
+    "error": null
+  },
+  "dependencies": {
+    "packageJsonExists": true,
+    "totalPackages": 20,
+    "missingImportantPackages": [],
+    "availablePackages": [
+      "express",
+      "sequelize",
+      "@line/bot-sdk",
+      "dotenv",
+      "typescript",
+      "ts-node"
+    ]
+  }
+}
