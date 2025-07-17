@@ -11,7 +11,6 @@ import checkinRoutes from './routes/checkin';
 import liffRoutes from './routes/liff';
 import lineWebhookRoutes from './line/webhook';
 import { validateEnvironment } from './utils/envValidation';
-import announcementRoutes from './routes/announcements';
 
 const app = express();
 const PORT: number = parseInt(process.env.PORT || '3001', 10);
@@ -163,6 +162,7 @@ const startServer = async () => {
       console.log(`📍 Health Check: http://0.0.0.0:${PORT}/health`);
       console.log(`📱 LINE Webhook: http://0.0.0.0:${PORT}/webhook`);
       console.log(`🌐 前端頁面: http://0.0.0.0:${PORT}`);
+      console.log(`🔗 外部訪問: https://${process.env.REPL_SLUG}.${process.env.REPL_OWNER}.repl.co`);
     });
   } catch (error) {
     console.error('❌ 伺服器啟動失敗:', error);
