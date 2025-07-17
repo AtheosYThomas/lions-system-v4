@@ -1,4 +1,5 @@
 
+import sequelize from '../config/database';
 import Member from './member';
 import Event from './event';
 import Checkin from './checkin';
@@ -13,12 +14,13 @@ const db = {
   Checkin,
   Registration,
   Payment,
-  MessageLog
+  MessageLog,
+  sequelize
 };
 
 // 統一初始化所有模型關聯
 Object.values(db).forEach((model: any) => {
-  if (model.associate) {
+  if (model.associate && typeof model.associate === 'function') {
     model.associate(db);
   }
 });
