@@ -18,15 +18,20 @@ export const validateNumericParam = (paramName: string) => {
 
 // 路由路徑安全檢查
 export const validateRoutePath = (path: string): boolean => {
-  // 檢查是否包含危險的路由模式
-  const dangerousPatterns = [
-    /\$\{.*\}/,           // 模板字串
-    /:.*\(\*\)/,          // 舊式萬用字元
-    /Missing parameter/i,  // 錯誤訊息
-    /\.\./,               // 路徑遍歷
-  ];
-  
-  return !dangerousPatterns.some(pattern => pattern.test(path));
+  try {
+    // 使用新的安全路徑驗證模組
+    const { validatePath } = require('./safePath');
+    
+    // 額外檢查路徑遍歷
+    if (path.includes('..')) {
+      return false;
+    }
+    
+    return validatePath(path);
+  } catch (error) {
+    console.error('路徑驗證失敗:', error);
+    return false;
+  }
 };
 
 // 安全的路由建立器

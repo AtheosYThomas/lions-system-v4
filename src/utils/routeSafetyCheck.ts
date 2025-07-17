@@ -126,14 +126,9 @@ export const setSafeDefaults = () => {
 // 驗證路由字串是否安全
 export const validateRouteString = (route: string): boolean => {
   try {
-    // 檢查是否包含問題模式
-    const problemPatterns = [
-      /\$\{[^}]*\}/,        // ${...} 模板字串
-      /:[\w]*\(\*\)/,       // :param(*) 非法參數
-      /Missing parameter/    // 錯誤訊息
-    ];
-
-    return !problemPatterns.some(pattern => pattern.test(route));
+    // 使用新的安全路徑驗證模組
+    const { validatePath } = require('./safePath');
+    return validatePath(route);
   } catch (error) {
     console.log(`❌ 路由驗證失敗: ${route}`, error);
     return false;
