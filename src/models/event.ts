@@ -56,9 +56,24 @@ Event.init({
 });
 
 static associate(models: any) {
-  Event.hasMany(models.Registration, { foreignKey: 'event_id' });
-  Event.hasMany(models.Checkin, { foreignKey: 'event_id' });
-  Event.hasMany(models.Payment, { foreignKey: 'event_id' });
+  Event.hasMany(models.Registration, { 
+    foreignKey: 'event_id',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+    hooks: true
+  });
+  Event.hasMany(models.Checkin, { 
+    foreignKey: 'event_id',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+    hooks: true
+  });
+  Event.hasMany(models.Payment, { 
+    foreignKey: 'event_id',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+    hooks: true
+  });
 }
 
 export default Event;

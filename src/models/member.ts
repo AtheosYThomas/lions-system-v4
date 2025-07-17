@@ -65,9 +65,24 @@ Member.init({
 });
 
 static associate(models: any) {
-  Member.hasMany(models.Registration, { foreignKey: 'member_id' });
-  Member.hasMany(models.Checkin, { foreignKey: 'member_id' });
-  Member.hasMany(models.Payment, { foreignKey: 'member_id' });
+  Member.hasMany(models.Registration, { 
+    foreignKey: 'member_id',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+    hooks: true
+  });
+  Member.hasMany(models.Checkin, { 
+    foreignKey: 'member_id',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+    hooks: true
+  });
+  Member.hasMany(models.Payment, { 
+    foreignKey: 'member_id',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+    hooks: true
+  });
 }
 
 export default Member;

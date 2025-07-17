@@ -60,8 +60,18 @@ Checkin.init({
 });
 
 static associate(models: any) {
-  Checkin.belongsTo(models.Member, { foreignKey: 'member_id' });
-  Checkin.belongsTo(models.Event, { foreignKey: 'event_id' });
+  Checkin.belongsTo(models.Member, { 
+    foreignKey: 'member_id',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+    hooks: true
+  });
+  Checkin.belongsTo(models.Event, { 
+    foreignKey: 'event_id',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+    hooks: true
+  });
 }
 
 export default Checkin;

@@ -29,8 +29,18 @@ const Payment = sequelize.define('Payment', {
 });
 
 Payment.associate = (models: any) => {
-  Payment.belongsTo(models.Member, { foreignKey: 'member_id' });
-  Payment.belongsTo(models.Event, { foreignKey: 'event_id' });
+  Payment.belongsTo(models.Member, { 
+    foreignKey: 'member_id',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+    hooks: true
+  });
+  Payment.belongsTo(models.Event, { 
+    foreignKey: 'event_id',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+    hooks: true
+  });
 };
 
 export default Payment;
