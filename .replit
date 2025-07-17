@@ -16,7 +16,7 @@ ignorePorts = false
 build = ["sh", "-c", "npm run build"]
 
 [workflows]
-runButton = "Full Stack Development"
+runButton = "Restart All Services"
 
 [[workflows.workflow]]
 name = "Run TypeScript Server"
@@ -192,19 +192,6 @@ args = "npm run init-db"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "npm run dev"
-
-[[workflows.workflow]]
-name = "Full Stack Development"
-author = 44484841
-mode = "parallel"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "npm run init-db && npm run dev"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "cd client && npm run dev"
 
 [[ports]]
 localPort = 3000
