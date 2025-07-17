@@ -400,7 +400,7 @@ async function runFullDiagnostics() {
   console.log(chalk.cyan('=' .repeat(60)));
 
   // 彙總所有問題
-  const allIssues = [];
+  const allIssues: Array<{category: string, issues: string[]}> = [];
 
   // 源碼問題
   if (report.sourceFiles.length > 0) {
@@ -448,7 +448,7 @@ async function runFullDiagnostics() {
     allIssues.push({
       category: '套件依賴',
       issues: [`缺少重要套件: ${report.dependencies.missingImportantPackages.join(', ')}`]
-        });
+    });
   }
 
   // 輸出問題報告
