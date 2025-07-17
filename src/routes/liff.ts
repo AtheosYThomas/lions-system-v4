@@ -1,7 +1,11 @@
 
 import express from 'express';
+import dotenv from 'dotenv';
 import { LiffSession, LiffSessionCreationAttributes } from '../models/liffSession';
 import { Member, MemberCreationAttributes } from '../models/member';
+
+// 載入環境變數
+dotenv.config();
 
 const router = express.Router();
 
