@@ -47,6 +47,47 @@ async function getQuickStats() {
 
 const router = express.Router();
 
+// 建立測試資料
+router.post('/seed-data', async (req, res) => {
+  try {
+    const seedData = await import('../tools/seedData');
+    await seedData.default();
+    
+    res.json({ 
+      success: true, 
+      message: '測試資料建立成功' 
+    });
+  } catch (error) {
+    console.error('建立測試資料失敗:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: '建立測試資料失敗',
+      error: error instanceof Error ? error.message : '未知錯誤'
+    });
+  }
+});
+
+// 清除測試資料
+router.delete('/clear-data', async (req, res) => {
+  try {
+    await Registration.destroy({ where: {} });
+    await Event.destroy({ where: {} });
+    await Member.destroy({ where: {} });
+    
+    res.json({ 
+      success: true, 
+      message: '測試資料清除成功' 
+    });
+  } catch (error) {
+    console.error('清除測試資料失敗:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: '清除測試資料失敗',
+      error: error instanceof Error ? error.message : '未知錯誤'
+    });
+  }
+});
+
 // 系統總覽
 router.get('/summary', async (req, res) => {
   try {
