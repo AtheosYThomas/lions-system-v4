@@ -66,6 +66,12 @@ async function getQuickStats() {
 
 const router = express.Router();
 
+// 添加路由調試
+router.use((req, res, next) => {
+  console.log(`🔍 Admin 路由: ${req.method} ${req.originalUrl}`);
+  next();
+});
+
 // 建立測試資料
 router.post('/seed-data', async (req, res) => {
   try {
