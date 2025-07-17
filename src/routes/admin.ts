@@ -53,7 +53,7 @@ router.get('/summary', async (req, res) => {
   console.log('📊 收到系統總覽請求，開始處理...');
   const startTime = Date.now();
   
-  // 設定請求超時處理（縮短到2秒）
+  // 設定請求超時處理（增加到5秒以匹配前端）
   const timeout = setTimeout(() => {
     if (!res.headersSent) {
       console.log('⏱️ 請求超時，回傳預設數據');
@@ -67,7 +67,7 @@ router.get('/summary', async (req, res) => {
         message: '查詢中，請稍後重新整理'
       });
     }
-  }, 2000);
+  }, 4500); // 比前端超時稍短
 
   try {
     console.log('🔍 開始資料庫連線測試...');

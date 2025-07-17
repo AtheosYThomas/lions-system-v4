@@ -219,6 +219,15 @@ args = "npm run init-db && npm run dev"
 task = "shell.exec"
 args = "cd client && npm run dev"
 
+[[workflows.workflow]]
+name = "Run System Diagnostics"
+author = 44484841
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npx tsx src/tools/systemDiagnostics.ts"
+
 [[ports]]
 localPort = 3000
 externalPort = 80
