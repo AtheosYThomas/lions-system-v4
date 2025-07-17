@@ -51,6 +51,8 @@ MessageLog.init({
   timestamps: false
 });
 
+export default MessageLog;
+
 MessageLog.associate = (models: any) => {
   MessageLog.belongsTo(models.Member, { 
     foreignKey: 'user_id', 
@@ -66,5 +68,3 @@ MessageLog.associate = (models: any) => {
     hooks: true
   });
 };
-
-export default MessageLog;

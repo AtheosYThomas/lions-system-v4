@@ -54,6 +54,8 @@ Payment.init({
   timestamps: false
 });
 
+export default Payment;
+
 Payment.associate = (models: any) => {
   Payment.belongsTo(models.Member, { 
     foreignKey: 'member_id',
@@ -68,5 +70,3 @@ Payment.associate = (models: any) => {
     hooks: true
   });
 };
-
-export default Payment;

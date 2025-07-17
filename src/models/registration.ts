@@ -54,6 +54,8 @@ Registration.init({
   timestamps: false
 });
 
+export default Registration;
+
 Registration.associate = (models: any) => {
   Registration.belongsTo(models.Member, { 
     foreignKey: 'member_id',
@@ -68,5 +70,3 @@ Registration.associate = (models: any) => {
     hooks: true
   });
 };
-
-export default Registration;
