@@ -246,12 +246,6 @@ const startServer = async () => {
   const PORT = parseInt(process.env.PORT || '5000', 10);
   app.listen(PORT, '0.0.0.0', () => {
     console.log(`🚀 伺服器已啟動： http://0.0.0.0:${PORT}`);
-    console.log(`📍 Health Check: http://0.0.0.0:${PORT}/health`);
-    console.log(`📱 LINE Webhook: http://0.0.0.0:${PORT}/webhook`);
-    console.log(`🌐 前端頁面: http://0.0.0.0:${PORT}`);
-    console.log(`📋 會員註冊: http://0.0.0.0:${PORT}/form/register`);
-    console.log(`📝 活動簽到: http://0.0.0.0:${PORT}/form/checkin/1`);
-    console.log(`⚙️ 管理後台: http://0.0.0.0:${PORT}/admin`);
   });
 };
 
