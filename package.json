@@ -4,12 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "tsx src/index.ts",
+    "dev": "concurrently \"cd client && npm run dev\" \"npx ts-node src/index.ts\"",
     "init-db": "tsx src/init.ts",
-    "build:all": "cd client && npm run build && cd .. && npm run build",
-    "lint": "eslint . --ext .ts",
-    "build": "tsc",
-    "start": "node dist/index.js"
+    "build": "npx tsc",
+    "start": "node dist/index.js",
+    "build:all": "npx tsc && cd client && npm run build",
+    "check-ports": "echo '🔍 檢查端口配置...' && grep -r 'port.*3000' . --exclude-dir=node_modules --exclude-dir=.git || echo '✅ 未發現 PORT 3000 配置'",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
