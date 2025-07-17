@@ -10,7 +10,7 @@ import { globSync } from 'glob';
 import chalk from 'chalk';
 import { execSync } from 'child_process';
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5000;
 const DB_URL = process.env.DATABASE_URL || 'postgres://localhost:5432/postgres';
 
 console.log(chalk.cyan('\n🔍 北大獅子會系統診斷工具啟動中...\n'));
