@@ -1,8 +1,9 @@
 
 import express from 'express';
 import Member from '../models/member';
-import Checkin from '../models/checkin';
 import Event from '../models/event';
+// 需要確保 Checkin 模型存在
+// import Checkin from '../models/checkin';
 
 const router = express.Router();
 

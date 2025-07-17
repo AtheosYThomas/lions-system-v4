@@ -61,7 +61,7 @@ app.post('/webhook', async (req, res) => {
     console.log('📨 收到 LINE webhook 請求');
     console.log('📦 Request headers:', req.headers);
     console.log('📦 Request body:', JSON.stringify(req.body, null, 2));
-    
+
     await lineHandler(req, res);
   } catch (error) {
     console.error('🔥 Webhook 處理錯誤:', error);

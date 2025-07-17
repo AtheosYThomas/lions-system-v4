@@ -148,6 +148,15 @@ mode = "sequential"
 task = "shell.exec"
 args = "npx tsx src/tools/diagnostics.ts"
 
+[[workflows.workflow]]
+name = "Run System Health Check"
+author = 44484841
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npx tsx src/tools/systemHealth.ts"
+
 [[ports]]
 localPort = 3000
 externalPort = 80
