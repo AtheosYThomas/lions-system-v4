@@ -142,6 +142,25 @@ const startServer = async () => {
     logMemoryUsage();
     setInterval(logMemoryUsage, 60000); // 每分鐘記錄一次
 
+    // Health check 端點
+    app.get('/health', (req, res) => {
+      res.json({ 
+        status: 'OK', 
+        timestamp: new Date().toISOString(),
+        service: '北大獅子會系統',
+        version: '1.0.0'
+      });
+    });
+
+    app.get('/api/health', (req, res) => {
+      res.json({ 
+        status: 'OK', 
+        timestamp: new Date().toISOString(),
+        service: '北大獅子會 API',
+        database: 'connected'
+      });
+    });
+
     app.listen(PORT, '0.0.0.0', () => {
       console.log(`🚀 伺服器啟動成功！埠號: ${PORT}`);
       console.log(`📍 Health Check: http://0.0.0.0:${PORT}/health`);
