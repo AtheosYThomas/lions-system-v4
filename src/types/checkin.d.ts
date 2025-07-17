@@ -1,14 +1,14 @@
 export interface Checkin {
   id: string;
-  eventId: string;
-  memberId: string;
-  checkinTime: Date;
+  event_id: string;
+  member_id: string;
+  checkin_time: Date;
   status: CheckinStatus;
   location?: string;
   notes?: string;
   verified_by?: string;
-  createdAt: Date;
-  updatedAt: Date;
+  created_at: Date;
+  updated_at: Date;
 
   // 關聯資料
   event?: import('./event').Event;
@@ -25,8 +25,8 @@ export enum CheckinStatus {
 }
 
 export interface CreateCheckinRequest {
-  eventId: string;
-  memberId: string;
+  event_id: string;
+  member_id: string;
   location?: string;
   notes?: string;
 }
@@ -48,27 +48,27 @@ export interface CheckinStats {
 }
 
 export interface CheckinSearchParams {
-  eventId?: string;
-  memberId?: string;
+  event_id?: string;
+  member_id?: string;
   status?: CheckinStatus;
-  checkinDateFrom?: Date;
-  checkinDateTo?: Date;
+  checkin_date_from?: Date;
+  checkin_date_to?: Date;
   verified_by?: string;
   limit?: number;
   offset?: number;
 }
 
 export interface BulkCheckinRequest {
-  eventId: string;
-  memberIds: string[];
+  event_id: string;
+  member_ids: string[];
   location?: string;
 }
 
 export interface CheckinSummary {
-  eventId: string;
-  eventTitle: string;
-  totalExpected: number;
-  totalCheckedIn: number;
-  attendanceRate: number;
-  lateCount: number;
+  event_id: string;
+  event_title: string;
+  total_expected: number;
+  total_checked_in: number;
+  attendance_rate: number;
+  late_count: number;
 }
