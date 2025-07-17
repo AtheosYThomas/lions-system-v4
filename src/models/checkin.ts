@@ -3,23 +3,23 @@ import { DataTypes, Model, Optional } from 'sequelize';
 import sequelize from '../config/database';
 
 interface CheckinAttributes {
-  id: string;
+  id?: string;
   member_id: string;
   event_id: string;
   checkin_time: Date;
   device_info?: string;
-  created_at: Date;
+  created_at?: Date;
 }
 
 type CheckinCreationAttributes = Optional<CheckinAttributes, 'id' | 'created_at' | 'device_info'>;
 
 class Checkin extends Model<CheckinAttributes, CheckinCreationAttributes> implements CheckinAttributes {
-  public id!: string;
+  public id?: string;
   public member_id!: string;
   public event_id!: string;
   public checkin_time!: Date;
   public device_info?: string;
-  public created_at!: Date;
+  public created_at?: Date;
 }
 
 Checkin.init({

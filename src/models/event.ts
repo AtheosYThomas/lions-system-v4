@@ -3,27 +3,27 @@ import { DataTypes, Model, Optional } from 'sequelize';
 import sequelize from '../config/database';
 
 interface EventAttributes {
-  id: string;
+  id?: string;
   title: string;
   description?: string;
   date: Date;
   location?: string;
   max_attendees?: number;
   status: string;
-  created_at: Date;
+  created_at?: Date;
 }
 
 type EventCreationAttributes = Optional<EventAttributes, 'id' | 'created_at' | 'description' | 'location' | 'max_attendees' | 'status'>;
 
 class Event extends Model<EventAttributes, EventCreationAttributes> implements EventAttributes {
-  public id!: string;
+  public id?: string;
   public title!: string;
   public description?: string;
   public date!: Date;
   public location?: string;
   public max_attendees?: number;
   public status!: string;
-  public created_at!: Date;
+  public created_at?: Date;
 }
 
 Event.init({

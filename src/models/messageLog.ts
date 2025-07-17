@@ -3,9 +3,9 @@ import { DataTypes, Model, Optional } from 'sequelize';
 import sequelize from '../config/database';
 
 interface MessageLogAttributes {
-  id: string;
+  id?: string;
   user_id: string;
-  timestamp: Date;
+  timestamp?: Date;
   message_type?: string;
   message_content?: string;
   intent?: string;
@@ -16,9 +16,9 @@ interface MessageLogAttributes {
 type MessageLogCreationAttributes = Optional<MessageLogAttributes, 'id' | 'timestamp' | 'message_type' | 'message_content' | 'intent' | 'action_taken' | 'event_id'>;
 
 class MessageLog extends Model<MessageLogAttributes, MessageLogCreationAttributes> implements MessageLogAttributes {
-  public id!: string;
+  public id?: string;
   public user_id!: string;
-  public timestamp!: Date;
+  public timestamp?: Date;
   public message_type?: string;
   public message_content?: string;
   public intent?: string;

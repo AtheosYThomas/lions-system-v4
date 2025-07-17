@@ -3,23 +3,23 @@ import { DataTypes, Model, Optional } from 'sequelize';
 import sequelize from '../config/database';
 
 interface RegistrationAttributes {
-  id: string;
+  id?: string;
   event_id: string;
   member_id: string;
   registration_date: Date;
   status: string;
-  created_at: Date;
+  created_at?: Date;
 }
 
 type RegistrationCreationAttributes = Optional<RegistrationAttributes, 'id' | 'created_at' | 'registration_date' | 'status'>;
 
 class Registration extends Model<RegistrationAttributes, RegistrationCreationAttributes> implements RegistrationAttributes {
-  public id!: string;
+  public id?: string;
   public event_id!: string;
   public member_id!: string;
   public registration_date!: Date;
   public status!: string;
-  public created_at!: Date;
+  public created_at?: Date;
 }
 
 Registration.init({

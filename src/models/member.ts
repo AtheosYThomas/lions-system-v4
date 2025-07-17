@@ -3,27 +3,27 @@ import { DataTypes, Model, Optional } from 'sequelize';
 import sequelize from '../config/database';
 
 interface MemberAttributes {
-  id: string;
+  id?: string;
   name: string;
   email: string;
   line_uid?: string;
   role?: string;
   phone?: string;
   status: string;
-  created_at: Date;
+  created_at?: Date;
 }
 
 type MemberCreationAttributes = Optional<MemberAttributes, 'id' | 'created_at' | 'role' | 'line_uid' | 'phone'>;
 
 class Member extends Model<MemberAttributes, MemberCreationAttributes> implements MemberAttributes {
-  public id!: string;
+  public id?: string;
   public name!: string;
   public email!: string;
   public line_uid?: string;
   public role?: string;
   public phone?: string;
   public status!: string;
-  public created_at!: Date;
+  public created_at?: Date;
 }
 
 Member.init({

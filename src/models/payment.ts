@@ -3,27 +3,27 @@ import { DataTypes, Model, Optional } from 'sequelize';
 import sequelize from '../config/database';
 
 interface PaymentAttributes {
-  id: string;
+  id?: string;
   member_id: string;
   event_id?: string;
   amount: number;
   method: string;
   status: string;
   receipt_url?: string;
-  created_at: Date;
+  created_at?: Date;
 }
 
 type PaymentCreationAttributes = Optional<PaymentAttributes, 'id' | 'created_at' | 'event_id' | 'receipt_url' | 'status'>;
 
 class Payment extends Model<PaymentAttributes, PaymentCreationAttributes> implements PaymentAttributes {
-  public id!: string;
+  public id?: string;
   public member_id!: string;
   public event_id?: string;
   public amount!: number;
   public method!: string;
   public status!: string;
   public receipt_url?: string;
-  public created_at!: Date;
+  public created_at?: Date;
 }
 
 Payment.init({
