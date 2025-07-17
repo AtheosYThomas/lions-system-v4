@@ -15,7 +15,7 @@ deploymentTarget = "autoscale"
 ignorePorts = false
 
 [workflows]
-runButton = "系統問題診斷"
+runButton = "啟動伺服器"
 
 [[workflows.workflow]]
 name = "Run TypeScript Server"
@@ -865,6 +865,15 @@ mode = "sequential"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "echo \"🚀 啟動系統...\""
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npx ts-node src/index.ts"
+
+[[workflows.workflow]]
+name = "啟動伺服器"
+author = 44484841
+mode = "sequential"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
