@@ -930,6 +930,23 @@ args = "echo \"🚀 啟動系統...\""
 task = "shell.exec"
 args = "npx ts-node src/index.ts"
 
+[[workflows.workflow]]
+name = "完整系統診斷"
+author = 44484841
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "echo \"🔍 執行完整系統診斷...\""
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npx ts-node src/tools/diagnostics.ts"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "echo \"📋 診斷完成\""
+
 [[ports]]
 localPort = 5000
 externalPort = 80
