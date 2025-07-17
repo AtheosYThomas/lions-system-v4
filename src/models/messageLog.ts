@@ -4,7 +4,7 @@ import sequelize from '../config/database';
 
 export interface MessageLogAttributes {
   id: string;
-  user_id: string;
+  line_user_id: string;
   timestamp: Date;
   message_type?: string;
   message_content?: string;
@@ -17,7 +17,7 @@ export type MessageLogCreationAttributes = Optional<MessageLogAttributes, 'id' |
 
 export class MessageLog extends Model<MessageLogAttributes, MessageLogCreationAttributes> implements MessageLogAttributes {
   public id!: string;
-  public user_id!: string;
+  public line_user_id!: string;
   public timestamp!: Date;
   public message_type?: string;
   public message_content?: string;
@@ -32,7 +32,7 @@ MessageLog.init({
     primaryKey: true,
     defaultValue: DataTypes.UUIDV4
   },
-  user_id: {
+  line_user_id: {
     type: DataTypes.STRING,
     allowNull: false
   },

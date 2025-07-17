@@ -1,4 +1,3 @@
-
 import { DataTypes, Model, Optional } from 'sequelize';
 import sequelize from '../config/database';
 
@@ -6,7 +5,7 @@ export interface MemberAttributes {
   id: string;
   name: string;
   email: string;
-  line_uid?: string;
+  line_user_id?: string;
   role?: string;
   phone?: string;
   english_name?: string;
@@ -25,7 +24,7 @@ export class Member extends Model<MemberAttributes, MemberCreationAttributes> im
   public id!: string;
   public name!: string;
   public email!: string;
-  public line_uid?: string;
+  public line_user_id?: string;
   public role?: string;
   public phone?: string;
   public english_name?: string;
@@ -53,7 +52,7 @@ Member.init({
     allowNull: false,
     unique: true
   },
-  line_uid: {
+  line_user_id: {
     type: DataTypes.STRING,
     field: 'line_user_id',
     unique: true
