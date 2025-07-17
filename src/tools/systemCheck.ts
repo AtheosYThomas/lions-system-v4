@@ -1,6 +1,6 @@
 
-// 此檔案已移動到 src/tools/systemCheck.ts
-// 請使用 import { performSystemCheck } from '../tools/systemCheck';
+import sequelize from '../config/database';
+import { Member, Event, Registration, Checkin } from '../models';
 
 export const performSystemCheck = async () => {
   const report = {
