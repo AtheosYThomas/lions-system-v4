@@ -16,7 +16,7 @@ ignorePorts = false
 build = ["sh", "-c", "npm run build"]
 
 [workflows]
-runButton = "Development"
+runButton = "Fast Dev"
 
 [[workflows.workflow]]
 name = "Run TypeScript Server"
@@ -327,6 +327,15 @@ args = "echo \"=== ✅ 系統功能報告完成 ===\""
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "echo \"完成時間: $(date)\""
+
+[[workflows.workflow]]
+name = "Fast Dev"
+author = 44484841
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm run dev"
 
 [[ports]]
 localPort = 3000

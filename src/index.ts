@@ -127,19 +127,21 @@ const logMemoryUsage = () => {
 // 啟動伺服器
 const startServer = async () => {
   try {
-    console.log('🔍 驗證環境變數...');
+    // 快速環境變數檢查
     if (!validateEnvironment()) {
       console.error('❌ 環境變數驗證失敗');
       process.exit(1);
     }
 
-    console.log('🔄 測試資料庫連線...');
+    // 簡化資料庫連線檢查
     await sequelize.authenticate();
     console.log('✅ 資料庫連線成功！');
 
-    // 記憶體監控
-    logMemoryUsage();
-    setInterval(logMemoryUsage, 60000); // 每分鐘記錄一次
+    // 延遲啟動記憶體監控（減少啟動時間）
+    setTimeout(() => {
+      logMemoryUsage();
+      setInterval(logMemoryUsage, 300000); // 改為每5分鐘記錄一次
+    }, 30000); // 啟動30秒後再開始監控
 
     // 移除重複定義，使用檔案開頭的 health check 路由
 
