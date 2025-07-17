@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Home from './pages/Home';
 import Register from './pages/Register';
 import Checkin from './pages/Checkin';
 import Profile from './pages/Profile';
@@ -51,47 +52,7 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/checkin" element={<Checkin />} />
           <Route path="/admin" element={<Admin />} />
-          <Route path="/" element={
-            <div style={{ padding: '20px', textAlign: 'center' }}>
-              <h1>🦁 北大獅子會系統</h1>
-              <p>歡迎使用會員服務系統</p>
-              <div style={{ marginTop: '2rem' }}>
-                <a href="/profile" style={{ 
-                  display: 'inline-block',
-                  margin: '0.5rem',
-                  padding: '0.75rem 1.5rem',
-                  backgroundColor: '#3b82f6',
-                  color: 'white',
-                  textDecoration: 'none',
-                  borderRadius: '0.5rem'
-                }}>
-                  會員資料
-                </a>
-                <a href="/register" style={{ 
-                  display: 'inline-block',
-                  margin: '0.5rem',
-                  padding: '0.75rem 1.5rem',
-                  backgroundColor: '#10b981',
-                  color: 'white',
-                  textDecoration: 'none',
-                  borderRadius: '0.5rem'
-                }}>
-                  活動報名
-                </a>
-                <a href="/admin" style={{ 
-                  display: 'inline-block',
-                  margin: '0.5rem',
-                  padding: '0.75rem 1.5rem',
-                  backgroundColor: '#8b5cf6',
-                  color: 'white',
-                  textDecoration: 'none',
-                  borderRadius: '0.5rem'
-                }}>
-                  管理後台
-                </a>
-              </div>
-            </div>
-          } />
+          <Route path="/" element={<Home />} />
           {/* 兜底路由 - 處理所有未匹配的路徑 */}
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
