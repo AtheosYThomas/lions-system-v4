@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import path from 'path';
 import { config } from './config/config';
 import sequelize from './config/database';
@@ -145,7 +145,7 @@ app.use('*', (req, res) => {
 });
 
 // 🚨 全域錯誤攔截器 - 統一處理所有錯誤
-app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
   console.error('🚨 系統錯誤:', err);
   
   // 特別處理 path-to-regexp 錯誤
@@ -249,29 +249,6 @@ const startServer = async () => {
         // 檢查是否匹配危險模式
         const isDangerous = dangerousPatterns.some(pattern => pattern.test(value)) ||
                             value.includes('${') ||
-                            value.includes('Missing parameter') ||
-                            value === 'undefined' ||
-                            value === 'null';
-        
-        if (isDangerous) {
-          delete process.env[key];
-          cleanedCount++;
-          console.log(`🧹 清理危險變數: ${key}`);
-        }
-      }
-    });
-    
-    if (cleanedCount > 0) {
-      console.log(`✅ 清理了 ${cleanedCount} 個危險環境變數`);
-    }
-    
-    // 2. 設置安全預設值
-    process.env.NODE_ENV = process.env.NODE_ENV || 'development';
-    process.env.PORT = process.env.PORT || '5000';
-    
-    console.log('🔍 驗證環境安全性...');
-    
-    // 3. 最終安全檢查
                             value.includes('Missing parameter') ||
                             value === 'undefined' ||
                             value === 'null' ||
