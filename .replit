@@ -64,7 +64,7 @@ mode = "parallel"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "npm run init-db && npm run dev"
+args = "npm run init-schema && npm run dev"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"

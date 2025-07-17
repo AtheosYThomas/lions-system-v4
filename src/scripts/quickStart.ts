@@ -5,10 +5,10 @@ import { config } from '../config/config';
 import sequelize from '../config/database';
 import '../models/index';
 import adminRoutes from '../routes/admin';
-import memberRoutes from '../routes/members';
-import checkinRoutes from '../routes/checkin';
-import liffRoutes from '../routes/liff';
-import announcementRoutes from '../routes/announcements';
+import memberRoutes from '../routes/api/members';
+import checkinRoutes from '../routes/api/checkin';
+import liffRoutes from '../routes/api/liff';
+import announcementRoutes from '../routes/api/announcements';
 import lineWebhook from '../routes/line/webhook';
 
 const app = express();
