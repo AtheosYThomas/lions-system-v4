@@ -9,7 +9,7 @@
   "checkpoints": [
     {
       "checkpoint": "initial_env",
-      "timestamp": "2025-07-17T03:13:33.001Z",
+      "timestamp": "2025-07-17T03:14:27.745Z",
       "status": "warning",
       "details": [
         "📝 開發相關變數: DATABASE_URL=postgresql://neondb_owner:npg_hl3XT5jadDKf@ep-shy-waterfall-afhts6dg.c-2.us-west-2.aws.neon.tech/neondb?sslmode=require",
@@ -24,7 +24,7 @@
     },
     {
       "checkpoint": "module_loading",
-      "timestamp": "2025-07-17T03:13:33.067Z",
+      "timestamp": "2025-07-17T03:14:27.803Z",
       "status": "pass",
       "details": [
         "✅ path-to-regexp 模組載入成功",
@@ -38,7 +38,7 @@
     },
     {
       "checkpoint": "route_files",
-      "timestamp": "2025-07-17T03:13:33.068Z",
+      "timestamp": "2025-07-17T03:14:27.803Z",
       "status": "pass",
       "details": [
         "✅ src/routes/admin.ts 檢查完成",
@@ -50,7 +50,7 @@
     },
     {
       "checkpoint": "express_app",
-      "timestamp": "2025-07-17T03:13:33.070Z",
+      "timestamp": "2025-07-17T03:14:27.805Z",
       "status": "pass",
       "details": [
         "✅ Express 應用程式建立成功",
