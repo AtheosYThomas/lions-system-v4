@@ -1,5 +1,5 @@
 
-import { DataTypes, Model } from 'sequelize';
+import { DataTypes, Model, Optional } from 'sequelize';
 import sequelize from '../config/database';
 
 interface CheckinAttributes {
@@ -11,12 +11,7 @@ interface CheckinAttributes {
   created_at: Date;
 }
 
-interface CheckinCreationAttributes {
-  member_id: string;
-  event_id: string;
-  checkin_time?: Date;
-  device_info?: string;
-}
+type CheckinCreationAttributes = Optional<CheckinAttributes, 'id' | 'created_at' | 'device_info'>;
 
 class Checkin extends Model<CheckinAttributes, CheckinCreationAttributes> implements CheckinAttributes {
   public id!: string;

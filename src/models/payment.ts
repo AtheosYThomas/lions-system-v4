@@ -1,8 +1,32 @@
 
-import { DataTypes } from 'sequelize';
+import { DataTypes, Model, Optional } from 'sequelize';
 import sequelize from '../config/database';
 
-const Payment = sequelize.define('Payment', {
+interface PaymentAttributes {
+  id: string;
+  member_id: string;
+  event_id?: string;
+  amount: number;
+  method: string;
+  status: string;
+  receipt_url?: string;
+  created_at: Date;
+}
+
+type PaymentCreationAttributes = Optional<PaymentAttributes, 'id' | 'created_at' | 'event_id' | 'receipt_url'>;
+
+class Payment extends Model<PaymentAttributes, PaymentCreationAttributes> implements PaymentAttributes {
+  public id!: string;
+  public member_id!: string;
+  public event_id?: string;
+  public amount!: number;
+  public method!: string;
+  public status!: string;
+  public receipt_url?: string;
+  public created_at!: Date;
+}
+
+Payment.init({
   id: { 
     type: DataTypes.UUID, 
     primaryKey: true,
@@ -25,7 +49,9 @@ const Payment = sequelize.define('Payment', {
     defaultValue: DataTypes.NOW
   }
 }, {
-  tableName: 'payments'
+  sequelize,
+  tableName: 'payments',
+  timestamps: false
 });
 
 Payment.associate = (models: any) => {

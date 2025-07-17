@@ -1,5 +1,5 @@
 
-import { DataTypes, Model } from 'sequelize';
+import { DataTypes, Model, Optional } from 'sequelize';
 import sequelize from '../config/database';
 
 interface EventAttributes {
@@ -13,7 +13,9 @@ interface EventAttributes {
   created_at: Date;
 }
 
-class Event extends Model<EventAttributes> implements EventAttributes {
+type EventCreationAttributes = Optional<EventAttributes, 'id' | 'created_at' | 'description' | 'location' | 'max_attendees'>;
+
+class Event extends Model<EventAttributes, EventCreationAttributes> implements EventAttributes {
   public id!: string;
   public title!: string;
   public description?: string;
