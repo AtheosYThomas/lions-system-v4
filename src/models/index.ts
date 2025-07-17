@@ -1,9 +1,9 @@
-import Member from './member';
 import Event from './event';
-import Checkin from './checkin';
+import Member from './member';
 import Registration from './registration';
-import Payment from './payment'; // 假設 Payment 模型位於 ./payment.ts
-import MessageLog from './messageLog'; // 假設 MessageLog 模型位於 ./messageLog.ts
+import Payment from './payment';
+import MessageLog from './messageLog';
+import LiffSession from './liffSession';
 import { sequelize } from '../config/database';
 
 // 定義關聯
@@ -30,4 +30,4 @@ Payment.belongsTo(Event, { foreignKey: 'event_id', as: 'event' });
 Member.hasMany(MessageLog, { foreignKey: 'user_id', sourceKey: 'line_uid', as: 'messageLogs' });
 MessageLog.belongsTo(Member, { foreignKey: 'user_id', targetKey: 'line_uid', as: 'member' });
 
-export { sequelize, Member, Event, Registration, Checkin, Payment, MessageLog };
+export { sequelize, Member, Event, Registration, Checkin, Payment, MessageLog, LiffSession };
