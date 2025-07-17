@@ -350,6 +350,19 @@ args = "npm run init-schema"
 task = "shell.exec"
 args = "npm run dev"
 
+[[workflows.workflow]]
+name = "Clean Development Server"
+author = 44484841
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm run init-schema"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm run dev"
+
 [[ports]]
 localPort = 3000
 externalPort = 80

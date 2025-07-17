@@ -6,7 +6,6 @@
   "scripts": {
     "dev": "tsx src/index.ts",
     "dev:fast": "tsx src/scripts/quickStart.ts",
-    "init-db": "tsx src/init.ts",
     "build:all": "npm run build && cp -r public dist/",
     "lint": "eslint . --ext .ts",
     "build": "tsc",

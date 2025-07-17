@@ -25,7 +25,9 @@ const Payment = sequelize.define('Payment', {
     defaultValue: DataTypes.NOW
   }
 }, {
-  tableName: 'payments'
+  tableName: 'payments',
+  timestamps: true,
+  underscored: true
 });
 
 export default Payment;

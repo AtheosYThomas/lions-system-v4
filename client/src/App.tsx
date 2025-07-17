@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
 import Admin from './pages/Admin';
 import Register from './pages/Register';
@@ -16,14 +16,21 @@ function App() {
       .catch(error => console.error('❌ 後端連接測試失敗:', error));
   }, []);
 
-import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Home from './pages/Home';
-import Register from './pages/Register';
-import Checkin from './pages/Checkin';
-import Profile from './pages/Profile';
-import Admin from './pages/Admin';
-import NotFoundPage from './pages/NotFoundPage';
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/admin" element={<Admin />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/checkin" element={<Checkin />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="*" element={<NotFoundPage />} />
+      </Routes>
+    </Router>
+  );
+}
+
+export default App;FoundPage from './pages/NotFoundPage';
 
 // 錯誤邊界組件
 class ErrorBoundary extends React.Component<
