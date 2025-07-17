@@ -44,10 +44,12 @@ export default function Profile() {
       const response = await fetch(`/liff/profile/${lineUid}`);
       const result = await response.json();
 
-      if (result.success) {
+      console.log('API 回應:', result); // 調試用
+
+      if (result.success && result.member) {
         setProfile(result.member);
       } else {
-        setError('未找到會員資料，請先完成註冊');
+        setError(result.message || '未找到會員資料，請先完成註冊');
       }
     } catch (err) {
       console.error('獲取會員資料錯誤:', err);
@@ -95,59 +97,108 @@ export default function Profile() {
         marginTop: '20px'
       }}>
         <h2>個人資料</h2>
-        <div style={{ display: 'grid', gap: '15px' }}>
-          <div>
-            <label><strong>姓名：</strong></label>
-            <input type="text" placeholder="請輸入姓名" style={{ marginLeft: '10px', padding: '5px' }} />
+        {profile ? (
+          <div style={{ display: 'grid', gap: '15px' }}>
+            <div>
+              <label><strong>姓名：</strong></label>
+              <input 
+                type="text" 
+                value={profile.name || ''} 
+                readOnly
+                style={{ marginLeft: '10px', padding: '5px', backgroundColor: '#f0f0f0' }} 
+              />
+            </div>
+            <div>
+              <label><strong>英文姓名：</strong></label>
+              <input 
+                type="text" 
+                value={(profile as any).english_name || ''} 
+                readOnly
+                style={{ marginLeft: '10px', padding: '5px', backgroundColor: '#f0f0f0' }} 
+              />
+            </div>
+            <div>
+              <label><strong>電子郵件：</strong></label>
+              <input 
+                type="email" 
+                value={profile.email || ''} 
+                readOnly
+                style={{ marginLeft: '10px', padding: '5px', backgroundColor: '#f0f0f0' }} 
+              />
+            </div>
+            <div>
+              <label><strong>手機號碼：</strong></label>
+              <input 
+                type="tel" 
+                value={(profile as any).mobile || ''} 
+                readOnly
+                style={{ marginLeft: '10px', padding: '5px', backgroundColor: '#f0f0f0' }} 
+              />
+            </div>
+            <div>
+              <label><strong>電話：</strong></label>
+              <input 
+                type="tel" 
+                value={(profile as any).phone || ''} 
+                readOnly
+                style={{ marginLeft: '10px', padding: '5px', backgroundColor: '#f0f0f0' }} 
+              />
+            </div>
+            <div>
+              <label><strong>生日：</strong></label>
+              <input 
+                type="date" 
+                value={(profile as any).birthday || ''} 
+                readOnly
+                style={{ marginLeft: '10px', padding: '5px', backgroundColor: '#f0f0f0' }} 
+              />
+            </div>
+            <div>
+              <label><strong>職業：</strong></label>
+              <input 
+                type="text" 
+                value={(profile as any).job_title || ''} 
+                readOnly
+                style={{ marginLeft: '10px', padding: '5px', backgroundColor: '#f0f0f0' }} 
+              />
+            </div>
+            <div>
+              <label><strong>地址：</strong></label>
+              <textarea 
+                value={(profile as any).address || ''} 
+                readOnly
+                style={{ marginLeft: '10px', padding: '5px', width: '300px', height: '60px', backgroundColor: '#f0f0f0' }}
+              />
+            </div>
+            <div>
+              <label><strong>會員狀態：</strong></label>
+              <span style={{ 
+                marginLeft: '10px', 
+                padding: '5px 10px', 
+                backgroundColor: profile.status === 'active' ? '#28a745' : '#dc3545',
+                color: 'white',
+                borderRadius: '4px'
+              }}>
+                {profile.status === 'active' ? '有效' : '無效'}
+              </span>
+            </div>
+            <div>
+              <label><strong>會員角色：</strong></label>
+              <span style={{ marginLeft: '10px', padding: '5px' }}>
+                {profile.role === 'admin' ? '管理員' : '一般會員'}
+              </span>
+            </div>
           </div>
-          <div>
-            <label><strong>英文姓名：</strong></label>
-            <input type="text" placeholder="請輸入英文姓名" style={{ marginLeft: '10px', padding: '5px' }} />
+        ) : (
+          <div style={{ color: '#666', padding: '20px', textAlign: 'center' }}>
+            載入會員資料中...
           </div>
-          <div>
-            <label><strong>電子郵件：</strong></label>
-            <input type="email" placeholder="請輸入電子郵件" style={{ marginLeft: '10px', padding: '5px' }} />
-          </div>
-          <div>
-            <label><strong>手機號碼：</strong></label>
-            <input type="tel" placeholder="請輸入手機號碼" style={{ marginLeft: '10px', padding: '5px' }} />
-          </div>
-          <div>
-            <label><strong>生日：</strong></label>
-            <input type="date" style={{ marginLeft: '10px', padding: '5px' }} />
-          </div>
-          <div>
-            <label><strong>職業：</strong></label>
-            <input type="text" placeholder="請輸入職業" style={{ marginLeft: '10px', padding: '5px' }} />
-          </div>
-          <div>
-            <label><strong>地址：</strong></label>
-            <textarea placeholder="請輸入地址" style={{ marginLeft: '10px', padding: '5px', width: '300px', height: '60px' }}></textarea>
-          </div>
-        </div>
+        )}
 
-        <div style={{ marginTop: '20px' }}>
-          <button style={{
-            backgroundColor: '#28a745',
-            color: 'white',
-            padding: '10px 20px',
-            border: 'none',
-            borderRadius: '5px',
-            cursor: 'pointer',
-            marginRight: '10px'
-          }}>
-            更新資料
-          </button>
-          <button style={{
-            backgroundColor: '#6c757d',
-            color: 'white',
-            padding: '10px 20px',
-            border: 'none',
-            borderRadius: '5px',
-            cursor: 'pointer'
-          }}>
-            取消
-          </button>
+        <div style={{ marginTop: '20px', padding: '15px', backgroundColor: '#e9ecef', borderRadius: '5px' }}>
+          <p style={{ margin: '0', color: '#6c757d', fontSize: '14px' }}>
+            💡 會員資料目前為唯讀模式。如需修改資料，請聯絡系統管理員。
+          </p>
         </div>
       </div>
 

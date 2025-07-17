@@ -1,4 +1,3 @@
-
 import express from 'express';
 import dotenv from 'dotenv';
 import { LiffSession, LiffSessionCreationAttributes } from '../models/liffSession';
@@ -11,7 +10,7 @@ const router = express.Router();
 
 router.post('/init', async (req, res) => {
   console.log('📩 LIFF /init 請求:', req.body);
-  
+
   const { line_uid, display_name, picture_url, event_id } = req.body;
 
   if (!line_uid) {
@@ -53,10 +52,10 @@ router.post('/init', async (req, res) => {
       name: member?.name || display_name,
       message: member ? `歡迎回來，${member.name}` : '尚未註冊，請填寫會員資料'
     };
-    
+
     console.log('📤 回應資料:', response);
     return res.json(response);
-    
+
   } catch (error: any) {
     console.error('❌ LIFF init 錯誤詳情:', error);
     console.error('❌ 錯誤堆疊:', error.stack);
@@ -70,7 +69,7 @@ router.post('/init', async (req, res) => {
 // 會員註冊 API
 router.post('/register', async (req, res) => {
   console.log('📝 LIFF /register 請求:', req.body);
-  
+
   const { line_uid, name, email, phone } = req.body;
 
   if (!line_uid || !name || !email) {
@@ -126,7 +125,7 @@ router.post('/register', async (req, res) => {
 
     console.log('📤 註冊回應:', response);
     return res.json(response);
-    
+
   } catch (error: any) {
     console.error('❌ 註冊錯誤:', error);
     return res.status(500).json({ 
@@ -139,7 +138,7 @@ router.post('/register', async (req, res) => {
 // 查詢會員資料 API
 router.get('/profile/:line_uid', async (req, res) => {
   console.log('👤 LIFF /profile 請求:', req.params.line_uid);
-  
+
   const { line_uid } = req.params;
 
   try {
@@ -157,12 +156,55 @@ router.get('/profile/:line_uid', async (req, res) => {
       success: true,
       member: member
     });
-    
+
   } catch (error: any) {
     console.error('❌ 查詢錯誤:', error);
     return res.status(500).json({ 
       error: '查詢失敗',
       details: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+router.get('/profile/:lineUid', async (req, res) => {
+  console.log('👤 LIFF /profile 請求:', req.params.lineUid);
+
+  const { lineUid } = req.params;
+
+  try {
+    const member = await Member.findOne({
+      where: { line_uid: lineUid }
+    });
+
+    if (!member) {
+      return res.json({
+        success: false,
+        message: '未找到會員資料，請先完成註冊'
+      });
+    }
+
+    res.json({
+      success: true,
+      member: {
+        id: member.id,
+        name: member.name,
+        email: member.email,
+        phone: member.phone,
+        mobile: member.mobile,
+        english_name: member.english_name,
+        birthday: member.birthday,
+        job_title: member.job_title,
+        address: member.address,
+        role: member.role,
+        status: member.status,
+        created_at: member.created_at
+      }
+    });
+  } catch (error) {
+    console.error('❌ 查詢錯誤:', error);
+    return res.status(500).json({
+      success: false,
+      message: '查詢會員資料失敗',
+      error: process.env.NODE_ENV === 'development' ? error : undefined
     });
   }
 });
