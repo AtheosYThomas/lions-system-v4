@@ -9,6 +9,12 @@ export interface MemberAttributes {
   line_uid?: string;
   role?: string;
   phone?: string;
+  english_name?: string;
+  birthday: string;
+  job_title: string;
+  fax?: string;
+  address: string;
+  mobile: string;
   status: string;
   created_at: Date;
 }
@@ -22,6 +28,12 @@ export class Member extends Model<MemberAttributes, MemberCreationAttributes> im
   public line_uid?: string;
   public role?: string;
   public phone?: string;
+  public english_name?: string;
+  public birthday!: string;
+  public job_title!: string;
+  public fax?: string;
+  public address!: string;
+  public mobile!: string;
   public status!: string;
   public created_at!: Date;
 }
@@ -52,6 +64,28 @@ Member.init({
   },
   phone: {
     type: DataTypes.STRING
+  },
+  english_name: {
+    type: DataTypes.STRING,
+  },
+  birthday: {
+    type: DataTypes.DATEONLY,
+    allowNull: false,
+  },
+  job_title: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  mobile: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  fax: {
+    type: DataTypes.STRING,
+  },
+  address: {
+    type: DataTypes.TEXT,
+    allowNull: false,
   },
   status: {
     type: DataTypes.STRING,
