@@ -22,7 +22,8 @@ const testAssociations = async () => {
       name: '測試會員',
       email: 'test@example.com',
       line_uid: 'test_line_uid',
-      phone: '0912345678'
+      phone: '0912345678',
+      status: 'active'
     });
     console.log('✅ 測試會員已創建:', testMember.get('id'));
 
