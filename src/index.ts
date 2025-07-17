@@ -91,7 +91,7 @@ const startServer = async () => {
       console.error('❌ 環境變數驗證失敗');
       process.exit(1);
     }
-    
+
     console.log('🔄 測試資料庫連線...');
     await sequelize.authenticate();
     console.log('✅ 資料庫連線成功！');
