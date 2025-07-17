@@ -265,7 +265,7 @@ const startServer = async () => {
     console.log('🔍 驗證環境安全性...');
 
     // 3. 最終安全檢查
-    let cleanedCount = 0;
+    let finalCleanedCount = 0;
     Object.entries(process.env).forEach(([key, value]) => {
       if (value && typeof value === 'string') {
         const isDangerous =
@@ -278,12 +278,12 @@ const startServer = async () => {
         if (isDangerous) {
           console.log(`🧹 清理危險環境變數: ${key}=${value}`);
           delete process.env[key];
-          cleanedCount++;
+          finalCleanedCount++;
         }
       }
     });
 
-    console.log(`✅ 已清理 ${cleanedCount} 個危險環境變數`);
+    console.log(`✅ 已清理 ${finalCleanedCount} 個危險環境變數`);
 
     // 2. 強制設置安全的核心環境變數
     const safeDefaults = {
