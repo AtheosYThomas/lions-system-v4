@@ -99,7 +99,11 @@ router.post('/register', async (req, res) => {
       line_uid,
       phone: phone || undefined,
       role: 'member',
-      status: 'active'
+      status: 'active',
+      birthday: '', // Required field - can be updated later
+      job_title: '', // Required field - can be updated later
+      address: '', // Required field - can be updated later
+      mobile: phone || '' // Use phone as mobile, or empty string
     };
 
     const newMember = await Member.create(memberData);
