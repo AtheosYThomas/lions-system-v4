@@ -28,44 +28,61 @@ const Admin: React.FC = () => {
         }
 
         // 再調用統計 API (降低超時時間)
-        const response = await axios.get('/api/admin/summary', {
-          timeout: 4000, // 降低超時時間
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-          }
-        });
+        let retryCount = 0;
+        const maxRetries = 3;
 
-        console.log('✅ 統計資料載入成功:', response.data);
-        setStats(response.data);
-      } catch (error: any) {
-        console.error('❌ 載入統計資料失敗:', error);
-        setError(error.message || '載入失敗');
-
-        // 如果是網路錯誤，嘗試直接訪問
-        if (error.code === 'ECONNABORTED' || error.message.includes('timeout')) {
-          console.log('🔄 嘗試直接訪問 API...');
+        while (retryCount < maxRetries) {
           try {
-              const directResponse = await fetch('/api/admin/summary', {
-                method: 'GET',
-                headers: {
-                  'Content-Type': 'application/json',
-                  'Accept': 'application/json'
-                }
-              });
-              if (directResponse.ok) {
-                const data = await directResponse.json();
-                console.log('✅ 直接訪問成功:', data);
-                setStats(data);
-                setError(null);
-              } else {
-                console.error('❌ 直接訪問失敗，狀態碼:', directResponse.status);
+            const response = await axios.get('/api/admin/summary', {
+              timeout: 4000, // 降低超時時間
+              headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
               }
-            } catch (fetchError) {
-              console.error('❌ 直接訪問也失敗:', fetchError);
+            });
+
+            console.log('✅ 統計資料載入成功:', response.data);
+            setStats(response.data);
+            setLoading(false);
+            return; // 成功後直接返回
+
+          } catch (attemptError) {
+            retryCount++;
+            console.warn(`❌ 第 ${retryCount} 次嘗試失敗:`, attemptError.message);
+
+            if (retryCount < maxRetries) {
+              console.log(`⏳ 等待 ${retryCount * 2} 秒後重試...`);
+              await new Promise(resolve => setTimeout(resolve, retryCount * 2000));
+            } else {
+              throw attemptError; // 最後一次嘗試失敗後拋出錯誤
             }
+          }
         }
-      } finally {
+      } catch (error) {
+        console.error('載入統計資料失敗:', error);
+
+        // 嘗試載入快速統計作為後備
+        try {
+          console.log('🔄 嘗試載入快速統計...');
+          const quickResponse = await axios.get('/api/admin/quick-summary', {
+            timeout: 3000
+          });
+          console.log('✅ 快速統計載入成功:', quickResponse.data);
+
+          // 使用快速統計的格式
+          setStats({
+            memberCount: 0,
+            activeMembers: 0,
+            registrationCount: 0,
+            eventCount: 0,
+            message: '使用快速統計模式',
+            systemInfo: quickResponse.data
+          });
+        } catch (quickError) {
+          console.error('快速統計也失敗:', quickError);
+          setError(error instanceof Error ? error.message : '載入統計資料失敗');
+        }
+
         setLoading(false);
       }
     };
