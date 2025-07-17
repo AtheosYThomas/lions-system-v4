@@ -55,8 +55,22 @@ app.get('/api/system/status', (req, res) => {
   });
 });
 
-// LINE Webhook
-app.post('/webhook', lineHandler);
+// LINE Webhook - 加強錯誤處理
+app.post('/webhook', async (req, res) => {
+  try {
+    console.log('📨 收到 LINE webhook 請求');
+    console.log('📦 Request headers:', req.headers);
+    console.log('📦 Request body:', JSON.stringify(req.body, null, 2));
+    
+    await lineHandler(req, res);
+  } catch (error) {
+    console.error('🔥 Webhook 處理錯誤:', error);
+    // 確保回傳 200 狀態碼給 LINE
+    if (!res.headersSent) {
+      res.status(200).json({ status: 'ok' });
+    }
+  }
+});
 
 // API 路由
 app.use('/api/admin', adminRoutes);
