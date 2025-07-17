@@ -1,4 +1,3 @@
-
 import fs from 'fs';
 import path from 'path';
 import dotenv from 'dotenv';
@@ -18,7 +17,7 @@ console.log(chalk.cyan('\n🔍 北大獅子會系統完整診斷報告\n'));
 // 1. 掃描 /src 目錄下所有檔案的錯誤
 function scanSourceFiles() {
   console.log(chalk.blue('📁 1. 掃描 /src 目錄檔案錯誤...'));
-  
+
   const patterns = [
     'src/routes/**/*.ts',
     'src/controllers/**/*.ts', 
@@ -30,12 +29,12 @@ function scanSourceFiles() {
   ];
 
   let hasErrors = false;
-  const errorReport = [];
+  let errorReport: string[] = [];
 
   patterns.forEach(pattern => {
     const files = globSync(pattern);
     console.log(chalk.cyan(`檢查模式: ${pattern} (${files.length} 個檔案)`));
-    
+
     files.forEach((file: string) => {
       try {
         const content = fs.readFileSync(file, 'utf-8');
@@ -104,7 +103,7 @@ function checkEnvVariables() {
   };
 
   const envPath = path.resolve('.env');
-  
+
   if (!fs.existsSync(envPath)) {
     console.log(chalk.red('❌ 缺少 .env 檔案'));
     envReport.envFileExists = false;
@@ -168,7 +167,7 @@ function checkFrontendFiles() {
   };
 
   const frontendDirs = ['public', 'client/src', 'src/frontend'];
-  
+
   frontendDirs.forEach(dir => {
     if (fs.existsSync(dir)) {
       frontendReport.frontendFound = true;
@@ -178,16 +177,16 @@ function checkFrontendFiles() {
       // 檢查 JS/TS 檔案
       const jsFiles = globSync(`${dir}/**/*.{js,ts,tsx,jsx}`);
       frontendReport.jsFiles.push(...jsFiles);
-      
+
       jsFiles.forEach(file => {
         try {
           const content = fs.readFileSync(file, 'utf-8');
-          
+
           // 檢查基本語法問題
           if (content.includes('import') && !content.includes('from')) {
             frontendReport.errors.push(`${file}: 可能有不完整的 import`);
           }
-          
+
           // 檢查未處理的錯誤
           if (content.includes('fetch(') && !content.includes('catch')) {
             frontendReport.errors.push(`${file}: fetch 請求缺少錯誤處理`);
@@ -204,7 +203,7 @@ function checkFrontendFiles() {
       // 檢查 HTML 檔案
       const htmlFiles = globSync(`${dir}/**/*.html`);
       frontendReport.htmlFiles.push(...htmlFiles);
-      
+
       htmlFiles.forEach(file => {
         const content = fs.readFileSync(file, 'utf-8');
         if (!content.includes('<script') && !content.includes('<link')) {
@@ -235,7 +234,7 @@ function runHealthCheck(): Promise<any> {
       { url: `http://localhost:5000/`, name: 'Frontend' }
     ];
 
-    const results = [];
+    let results: any[] = [];
 
     const testEndpoint = (endpoint: any, callback: any) => {
       const req = http.get(endpoint.url, (res) => {
@@ -253,13 +252,13 @@ function runHealthCheck(): Promise<any> {
             success: res.statusCode === 200,
             response: data
           };
-          
+
           if (res.statusCode === 200) {
             console.log(chalk.green(`✅ ${endpoint.name} 正常 (${res.statusCode})`));
           } else {
             console.log(chalk.red(`❌ ${endpoint.name} 異常 (${res.statusCode})`));
           }
-          
+
           results.push(result);
           callback();
         });
@@ -273,7 +272,7 @@ function runHealthCheck(): Promise<any> {
           success: false,
           error: err.message
         };
-        
+
         console.log(chalk.red(`❌ ${endpoint.name} 連線失敗: ${err.message}`));
         results.push(result);
         callback();
@@ -287,7 +286,7 @@ function runHealthCheck(): Promise<any> {
           success: false,
           error: 'Timeout'
         };
-        
+
         console.log(chalk.red(`❌ ${endpoint.name} 逾時`));
         results.push(result);
         req.destroy();
@@ -449,7 +448,7 @@ async function runFullDiagnostics() {
     allIssues.push({
       category: '套件依賴',
       issues: [`缺少重要套件: ${report.dependencies.missingImportantPackages.join(', ')}`]
-    });
+        });
   }
 
   // 輸出問題報告

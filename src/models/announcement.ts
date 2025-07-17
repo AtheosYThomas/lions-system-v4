@@ -14,7 +14,7 @@ export interface AnnouncementAttributes extends InferAttributes<Announcement> {
   id: string;
   title: string;
   content: string;
-  related_event_id?: string | null;
+  related_event_id: string | null;
   created_by?: string | null;
   audience: 'all' | 'officers' | 'members';
   category: 'event' | 'system' | 'personnel';

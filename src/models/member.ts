@@ -6,11 +6,13 @@ export interface MemberAttributes {
   name: string;
   email: string;
   line_user_id?: string;
+  line_uid?: string;
   role?: string;
   phone?: string;
   english_name?: string;
   birthday: string;
   job_title: string;
+  occupation?: string;
   fax?: string;
   address: string;
   mobile: string;
@@ -25,11 +27,13 @@ export class Member extends Model<MemberAttributes, MemberCreationAttributes> im
   public name!: string;
   public email!: string;
   public line_user_id?: string;
+  public line_uid?: string;
   public role?: string;
   public phone?: string;
   public english_name?: string;
   public birthday!: string;
   public job_title!: string;
+  public occupation?: string;
   public fax?: string;
   public address!: string;
   public mobile!: string;
@@ -57,6 +61,11 @@ Member.init({
     field: 'line_user_id',
     unique: true
   },
+  line_uid: {
+    type: DataTypes.STRING,
+    allowNull: true,
+    unique: true
+  },
   role: {
     type: DataTypes.STRING,
     defaultValue: 'member'
@@ -74,6 +83,10 @@ Member.init({
   job_title: {
     type: DataTypes.STRING,
     allowNull: false,
+  },
+  occupation: {
+    type: DataTypes.STRING,
+    allowNull: true,
   },
   mobile: {
     type: DataTypes.STRING,
