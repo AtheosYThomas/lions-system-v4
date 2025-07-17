@@ -1,0 +1,38 @@
+{
+  "timestamp": "2025-07-17T03:19:41.771Z",
+  "pathToRegexpIssues": [],
+  "environmentVariables": {
+    "dangerous": [],
+    "missing": [],
+    "valid": [
+      "LINE_CHANNEL_ACCESS_TOKEN",
+      "LINE_CHANNEL_SECRET"
+    ]
+  },
+  "routeFiles": [
+    {
+      "file": "src/routes/admin.ts",
+      "status": "healthy",
+      "issues": []
+    },
+    {
+      "file": "src/routes/members.ts",
+      "status": "healthy",
+      "issues": []
+    },
+    {
+      "file": "src/routes/events.ts",
+      "status": "healthy",
+      "issues": []
+    },
+    {
+      "file": "src/routes/checkin.ts",
+      "status": "healthy",
+      "issues": []
+    }
+  ],
+  "recommendations": [
+    "系統狀態良好，可以正常啟動"
+  ],
+  "severity": "low"
+}

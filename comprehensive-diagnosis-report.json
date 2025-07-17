@@ -1,0 +1,166 @@
+{
+  "timestamp": "2025-07-17T03:46:41.955Z",
+  "summary": {
+    "totalIssues": 3,
+    "criticalIssues": 2,
+    "warnings": 1,
+    "status": "critical"
+  },
+  "sections": {
+    "routeErrors": {
+      "status": "error",
+      "files": [
+        {
+          "path": "src/routes/admin.ts",
+          "status": "ok",
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "path": "src/routes/members.ts",
+          "status": "ok",
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "path": "src/routes/events.ts",
+          "status": "ok",
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "path": "src/routes/checkin.ts",
+          "status": "error",
+          "errors": [
+            "載入錯誤: TSError: ⨯ Unable to compile TypeScript:\n\u001b[96msrc/routes/checkin.ts\u001b[0m:\u001b[93m50\u001b[0m:\u001b[93m7\u001b[0m - \u001b[91merror\u001b[0m\u001b[90m TS2322: \u001b[0mType 'string | undefined' is not assignable to type 'string'.\n  Type 'undefined' is not assignable to type 'string'.\n\n\u001b[7m50\u001b[0m       member_id: member.id,\n\u001b[7m  \u001b[0m \u001b[91m      ~~~~~~~~~\u001b[0m\n"
+          ],
+          "warnings": []
+        },
+        {
+          "path": "src/middleware/errorHandler.ts",
+          "status": "ok",
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "path": "src/line/handler.ts",
+          "status": "ok",
+          "errors": [],
+          "warnings": [
+            "包含模板字串語法"
+          ]
+        },
+        {
+          "path": "src/line/webhook.ts",
+          "status": "ok",
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "path": "src/line/push.ts",
+          "status": "ok",
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "path": "src/index.ts",
+          "status": "ok",
+          "errors": [],
+          "warnings": [
+            "包含模板字串語法"
+          ]
+        },
+        {
+          "path": "src/init.ts",
+          "status": "ok",
+          "errors": [],
+          "warnings": [
+            "包含模板字串語法"
+          ]
+        }
+      ],
+      "summary": "發現 1 個檔案有錯誤"
+    },
+    "environmentIssues": {
+      "status": "warning",
+      "missingVariables": [],
+      "undefinedReferences": [
+        "DEBUG_URL (在 src/debug-server.ts)",
+        "DEBUG_URL (在 src/index.ts)",
+        "DEBUG_URL (在 src/startup-safety-check.ts)",
+        "DEBUG_URL (在 src/config/config.ts)"
+      ],
+      "duplicateVariables": [],
+      "dangerousValues": [],
+      "summary": "缺少 0 個必要變數，0 個危險值"
+    },
+    "frontendStatus": {
+      "status": "pass",
+      "publicDirectory": {
+        "exists": false,
+        "files": []
+      },
+      "clientDirectory": {
+        "exists": true,
+        "built": true,
+        "issues": []
+      },
+      "staticFiles": {
+        "exists": true,
+        "accessible": true
+      },
+      "summary": "前端狀態正常"
+    },
+    "healthCheck": {
+      "status": "error",
+      "endpoints": [
+        {
+          "url": "http://localhost:5000/health",
+          "status": null,
+          "error": "連線被拒絕 (伺服器未啟動)"
+        },
+        {
+          "url": "http://localhost:5000/healthz",
+          "status": null,
+          "error": "連線被拒絕 (伺服器未啟動)"
+        },
+        {
+          "url": "http://localhost:5000/api/health",
+          "status": null,
+          "error": "連線被拒絕 (伺服器未啟動)"
+        },
+        {
+          "url": "http://0.0.0.0:5000/health",
+          "status": null,
+          "error": "連線被拒絕 (伺服器未啟動)"
+        }
+      ],
+      "systemHealth": {
+        "timestamp": "2025-07-17T03:46:44.656Z",
+        "status": "healthy",
+        "checks": {
+          "database": {
+            "status": "ok",
+            "message": "資料庫連線正常"
+          },
+          "environment": {
+            "status": "ok",
+            "missing": []
+          },
+          "models": {
+            "status": "ok",
+            "message": "找到 5 個資料表"
+          }
+        }
+      },
+      "summary": "所有健康檢查端點都無法訪問"
+    }
+  },
+  "recommendations": [
+    "修復路由檔案中的語法錯誤和載入問題",
+    "檢查所有 import/require 路徑是否正確",
+    "啟動伺服器: npm start 或 npx ts-node src/index.ts",
+    "檢查端口 5000 是否被其他程序佔用",
+    "立即修復關鍵問題後再啟動系統"
+  ]
+}
