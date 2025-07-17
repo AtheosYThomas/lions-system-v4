@@ -8,8 +8,8 @@ const initDB = async () => {
     console.log('✅ 資料庫連線成功！');
 
     console.log('🔄 開始同步資料表...');
-    await sequelize.sync({ force: true });
-    console.log('✅ 資料表初始化完成！');
+    await sequelize.sync({ alter: true });
+    console.log('✅ 資料表同步完成！');
 
     // 顯示所有已建立的表格
     const tables = await sequelize.getQueryInterface().showAllTables();
