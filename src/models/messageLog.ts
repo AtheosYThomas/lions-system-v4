@@ -13,7 +13,7 @@ const MessageLog = sequelize.define('MessageLog', {
     allowNull: false,
     references: {
       model: 'members',
-      key: 'line_uid'
+      key: 'line_user_id'
     },
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE'
