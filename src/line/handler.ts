@@ -30,10 +30,13 @@ const lineHandler = async (req: Request, res: Response) => {
 
           // 檢查會員是否存在，避免外鍵錯誤
           if (userId) {
+            console.log('🔍 查詢會員 LINE UID:', userId);
             const member = await Member.findOne({ where: { line_uid: userId } });
+            console.log('👤 找到的會員:', member ? member.name : '無');
+            
             if (member) {
               // 記錄訊息到資料庫
-              await MessageLog.create({
+              const messageLog = await MessageLog.create({
                 user_id: userId,
                 timestamp: new Date(),
                 message_type: event.message.type,
@@ -41,9 +44,10 @@ const lineHandler = async (req: Request, res: Response) => {
                 intent: 'default',
                 action_taken: 'logged',
               });
-              console.log('📝 訊息已記錄到資料庫');
+              console.log('📝 訊息已記錄到資料庫，ID:', messageLog.id);
             } else {
               console.log('⚠️ 使用者不在會員資料庫中，跳過訊息記錄');
+              console.log('💡 提示：請先在會員資料庫中新增此 LINE 使用者');
             }
           }
 
