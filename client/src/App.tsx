@@ -18,22 +18,21 @@ function App() {
 
   return (
     <Router>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/admin" element={<Admin />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/checkin" element={<Checkin />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="*" element={<NotFoundPage />} />
-      </Routes>
+      <div className="app">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/admin" element={<Admin />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/checkin" element={<Checkin />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+      </div>
     </Router>
   );
 }
 
-export default App;FoundPage from './pages/NotFoundPage';
-
-// 錯誤邊界組件
-class ErrorBoundary extends React.Component<
+export default App;
   { children: React.ReactNode },
   { hasError: boolean; error?: Error }
 > {

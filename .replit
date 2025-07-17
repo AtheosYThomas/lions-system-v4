@@ -1,4 +1,3 @@
-
 entrypoint = "src/index.ts"
 modules = ["nodejs-22", "postgresql-16"]
 hidden = [".config", "package-lock.json"]
@@ -19,122 +18,22 @@ build = ["sh", "-c", "npm run build"]
 runButton = "Fast Dev"
 
 [[workflows.workflow]]
-name = "Run TypeScript Server"
+name = "Fast Dev"
 author = 44484841
 mode = "sequential"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "npx ts-node src/index.ts"
-
-[[workflows.workflow]]
-name = "Build and Run"
-author = 44484841
-mode = "sequential"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "npx tsc"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "node dist/index.js"
-
-[[workflows.workflow]]
-name = "Build and Run Production"
-author = 44484841
-mode = "sequential"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "npm run build:all"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "node dist/index.js"
-
-[[workflows.workflow]]
-name = "Development Server"
-author = 44484841
-mode = "sequential"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "npm run init-db"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "npm run dev"
 
 [[workflows.workflow]]
-name = "Production Test"
+name = "Clean Development Server"
 author = 44484841
 mode = "sequential"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "npx tsc && node dist/index.js"
-
-[[workflows.workflow]]
-name = "Development Server Fixed"
-author = 44484841
-mode = "sequential"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "npx tsx src/init.ts"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "npx ts-node src/index.ts"
-
-[[workflows.workflow]]
-name = "Start Server"
-author = 44484841
-mode = "sequential"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "npx tsx src/init.ts"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "npx ts-node src/index.ts"
-
-[[workflows.workflow]]
-name = "Start Server"
-author = 44484841
-mode = "sequential"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "npx tsx src/init.ts"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "npx ts-node src/index.ts"
-
-[[workflows.workflow]]
-name = "Fixed Development Server"
-author = 44484841
-mode = "sequential"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "npm run init-db"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "npm run dev"
-
-[[workflows.workflow]]
-name = "Development"
-author = 44484841
-mode = "sequential"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "npm run init-db"
+args = "npm run init-schema"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
@@ -159,42 +58,7 @@ task = "shell.exec"
 args = "npx tsx src/tools/systemHealth.ts"
 
 [[workflows.workflow]]
-name = "Test DB Init"
-author = 44484841
-mode = "sequential"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "npx tsx src/init.ts"
-
-[[workflows.workflow]]
-name = "Run Troubleshoot"
-author = 44484841
-mode = "sequential"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "npx tsx src/tools/troubleshoot.ts"
-
-[[workflows.workflow]]
-name = "Restart All Services"
-author = 44484841
-mode = "sequential"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = 'pkill -f "ts-node\|vite"'
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "npm run init-db"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "npm run dev"
-
-[[workflows.workflow]]
-name = "Full System"
+name = "Full Stack Development"
 author = 44484841
 mode = "parallel"
 
@@ -205,163 +69,6 @@ args = "npm run init-db && npm run dev"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "cd client && npm run dev"
-
-[[workflows.workflow]]
-name = "Full System Restart"
-author = 44484841
-mode = "parallel"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "npm run init-db && npm run dev"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "cd client && npm run dev"
-
-[[workflows.workflow]]
-name = "System Health Check"
-author = 44484841
-mode = "sequential"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "npx tsx src/tools/systemHealth.ts"
-
-[[workflows.workflow]]
-name = "Full System Diagnostics"
-author = 44484841
-mode = "sequential"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "npx tsx src/tools/diagnostics.ts"
-
-[[workflows.workflow]]
-name = "System Troubleshoot"
-author = 44484841
-mode = "sequential"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "npx tsx src/tools/troubleshoot.ts"
-
-[[workflows.workflow]]
-name = "Basic System Check"
-author = 44484841
-mode = "sequential"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "npx tsx -e \"import { performSystemCheck } from './src/utils/systemCheck'; performSystemCheck().then(console.log);\""
-
-[[workflows.workflow]]
-name = "Complete System Report"
-author = 44484841
-mode = "sequential"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "echo \"=== 🔍 完整系統功能報告 ===\""
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "echo \"開始時間: $(date)\""
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "echo \"\""
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "echo \"1️⃣ 執行系統健康檢查...\""
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "npx tsx src/tools/systemHealth.ts"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "echo \"\""
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "echo \"2️⃣ 執行全面診斷...\""
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "npx tsx src/tools/diagnostics.ts"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "echo \"\""
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "echo \"3️⃣ 執行問題排查...\""
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "npx tsx src/tools/troubleshoot.ts"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "echo \"\""
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "echo \"4️⃣ 執行基本系統檢查...\""
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "npx tsx -e \"import { performSystemCheck } from './src/utils/systemCheck'; performSystemCheck().then(console.log);\""
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "echo \"\""
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "echo \"=== ✅ 系統功能報告完成 ===\""
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "echo \"完成時間: $(date)\""
-
-[[workflows.workflow]]
-name = "Fast Dev"
-author = 44484841
-mode = "sequential"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "npm run dev"
-
-[[workflows.workflow]]
-name = "Development Server Updated"
-author = 44484841
-mode = "sequential"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "npm run init-schema"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "npm run dev"
-
-[[workflows.workflow]]
-name = "Clean Development Server"
-author = 44484841
-mode = "sequential"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "npm run init-schema"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "npm run dev"
 
 [[ports]]
 localPort = 3000
