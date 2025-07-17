@@ -35,3 +35,16 @@ if (require.main === module) {
 }
 
 export default startupCheck;
+import sequelize from './config/database';
+
+const checkDatabaseConnection = async () => {
+  try {
+    await sequelize.authenticate();
+    console.log('✅ 資料庫連線成功');
+  } catch (error: any) {
+    console.error('❌ 資料庫連線失敗:', error.message);
+    process.exit(1);
+  }
+};
+
+checkDatabaseConnection();
