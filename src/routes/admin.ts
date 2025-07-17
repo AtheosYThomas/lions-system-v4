@@ -10,11 +10,25 @@ const router = express.Router();
 // 系統總覽
 router.get('/summary', async (req, res) => {
   console.log('📊 收到系統總覽請求');
+  
+  // 設定請求超時處理
+  const timeout = setTimeout(() => {
+    if (!res.headersSent) {
+      res.status(408).json({ 
+        error: '請求超時',
+        message: '系統負載過高，請稍後再試'
+      });
+    }
+  }, 4000);
+
   try {
-    const memberCount = await Member.count();
-    const activeMembers = await Member.count({ where: { status: 'active' } });
-    const registrationCount = await Registration.count();
-    const eventCount = await Event.count();
+    // 使用 Promise.all 並行查詢以提升性能
+    const [memberCount, activeMembers, registrationCount, eventCount] = await Promise.all([
+      Member.count().catch(() => 0),
+      Member.count({ where: { status: 'active' } }).catch(() => 0),
+      Registration.count().catch(() => 0),
+      Event.count().catch(() => 0)
+    ]);
     
     const result = { 
       memberCount, 
@@ -24,14 +38,22 @@ router.get('/summary', async (req, res) => {
       timestamp: new Date().toISOString()
     };
     
-    console.log('✅ 系統總覽數據:', result);
-    res.json(result);
+    clearTimeout(timeout);
+    
+    if (!res.headersSent) {
+      console.log('✅ 系統總覽數據:', result);
+      res.json(result);
+    }
   } catch (err) {
+    clearTimeout(timeout);
     console.error('❌ 系統總覽錯誤:', err);
-    res.status(500).json({ 
-      error: 'Summary failed', 
-      details: err instanceof Error ? err.message : '未知錯誤'
-    });
+    
+    if (!res.headersSent) {
+      res.status(500).json({ 
+        error: 'Summary failed', 
+        details: err instanceof Error ? err.message : '未知錯誤'
+      });
+    }
   }
 });
 
