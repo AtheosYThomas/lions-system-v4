@@ -135,7 +135,7 @@ function checkEnvVariables() {
     const configuredVars = Object.keys(envVars);
 
     envReport.missingVars = missingVars as string[];
-    envReport.configuredVars = configuredVars;
+    envReport.configuredVars = configuredVars as string[];
     envReport.usedButNotDefined = missingVars as string[];
 
     if (missingVars.length > 0) {
@@ -456,7 +456,7 @@ async function runFullDiagnostics() {
     console.log(chalk.green('🎉 恭喜！系統檢查全部通過，沒有發現問題。'));
   } else {
     console.log(chalk.red('🚨 發現以下問題需要修正：\n'));
-    allIssues.forEach((category, index) => {
+    allIssues.forEach((category: any, index: number) => {
       console.log(chalk.red(`${index + 1}. ${category.category}:`));
       category.issues.forEach((issue: string) => {
         console.log(chalk.red(`   ❌ ${issue}`));
