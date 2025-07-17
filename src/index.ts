@@ -15,8 +15,6 @@ import { routeSafetyCheck, cleanProblemEnvVars } from './utils/routeSafetyCheck'
 import { createSafeRouter, validateNumericParam, routeErrorHandler } from './utils/routerSafety';
 
 const app = express();
-const rawPort = process.env.PORT;
-const PORT = rawPort && !isNaN(parseInt(rawPort)) ? parseInt(rawPort) : 5000;
 
 // 環境變數驗證
 if (!validateEnvironment()) {
@@ -233,56 +231,6 @@ const validateRoutes = () => {
 // 啟動伺服器
 const startServer = async () => {
   try {
-    console.log('🚨 強化預防 path-to-regexp 錯誤...');
-
-    // 1. 徹底清理所有可能導致問題的環境變數
-    const dangerousPatterns = [
-      /\$\{.*\}/,           // 任何包含 ${...} 的變數
-      /Missing parameter/i,  // 包含錯誤訊息的變數
-      /:.*\(\*\)/,          // 包含 :param(*) 模式的變數
-    ];
-
-    const allEnvVars = Object.keys(process.env);
-    let cleanedCount = 0;
-
-    allEnvVars.forEach(key => {
-      const value = process.env[key];
-      if (value && typeof value === 'string') {
-        // 檢查是否匹配危險模式
-        const isDangerous = dangerousPatterns.some(pattern => pattern.test(value)) ||
-                            value.includes('${') ||
-                            value.includes('Missing parameter') ||
-                            value === 'undefined' ||
-                            value === 'null' ||
-                            value.trim() === '';
-
-        if (isDangerous) {
-          console.log(`🧹 清理危險環境變數: ${key}=${value}`);
-          delete process.env[key];
-          cleanedCount++;
-        }
-      }
-    });
-
-    console.log(`✅ 已清理 ${cleanedCount} 個危險環境變數`);
-
-    // 2. 強制設置安全的核心環境變數
-    const safeDefaults = {
-      NODE_ENV: 'development',
-      PORT: '5000',
-      EXPRESS_ENV: 'development'
-    };
-
-    Object.entries(safeDefaults).forEach(([key, value]) => {
-      process.env[key] = value;
-      console.log(`🔧 設置安全環境變數: ${key}=${value}`);
-    });
-
-    // 3. 執行增強的安全檢查
-    cleanProblemEnvVars();
-    routeSafetyCheck();
-    validateRoutes();
-
     console.log('🔄 測試資料庫連線...');
     await sequelize.authenticate();
     console.log('✅ 資料庫連線成功！');
@@ -290,25 +238,21 @@ const startServer = async () => {
     console.log('🔄 同步資料表...');
     await sequelize.sync();
     console.log('✅ 資料表同步完成！');
-
-    app.listen(PORT, '0.0.0.0', () => {
-      console.log(`🚀 伺服器啟動成功！埠號: ${PORT}`);
-      console.log(`📍 Health Check: http://0.0.0.0:${PORT}/health`);
-      console.log(`📱 LINE Webhook: http://0.0.0.0:${PORT}/webhook`);
-      console.log(`🌐 前端頁面: http://0.0.0.0:${PORT}`);
-      console.log(`📋 會員註冊: http://0.0.0.0:${PORT}/form/register`);
-      console.log(`📝 活動簽到: http://0.0.0.0:${PORT}/form/checkin/1`);
-      console.log(`⚙️ 管理後台: http://0.0.0.0:${PORT}/admin`);
-    });
   } catch (error) {
-    console.error('❌ 伺服器啟動失敗:', error);
-    console.log('⚠️ 嘗試在沒有資料庫連線的情況下啟動伺服器...');
-
-    app.listen(PORT, '0.0.0.0', () => {
-      console.log(`🚀 伺服器啟動成功（無資料庫）！埠號: ${PORT}`);
-      console.log(`📍 Health Check: http://0.0.0.0:${PORT}/health`);
-    });
+    console.error('❌ 資料庫連線失敗:', error);
+    console.log('⚠️ 繼續啟動伺服器（無資料庫模式）...');
   }
+
+  const PORT = parseInt(process.env.PORT || '5000', 10);
+  app.listen(PORT, '0.0.0.0', () => {
+    console.log(`🚀 伺服器已啟動： http://0.0.0.0:${PORT}`);
+    console.log(`📍 Health Check: http://0.0.0.0:${PORT}/health`);
+    console.log(`📱 LINE Webhook: http://0.0.0.0:${PORT}/webhook`);
+    console.log(`🌐 前端頁面: http://0.0.0.0:${PORT}`);
+    console.log(`📋 會員註冊: http://0.0.0.0:${PORT}/form/register`);
+    console.log(`📝 活動簽到: http://0.0.0.0:${PORT}/form/checkin/1`);
+    console.log(`⚙️ 管理後台: http://0.0.0.0:${PORT}/admin`);
+  });
 };
 
 startServer();
