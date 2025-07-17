@@ -10,7 +10,7 @@ requiredFiles = [".replit", "replit.nix", "package.json", "package-lock.json"]
 channel = "stable-24_11"
 
 [deployment]
-run = ["sh", "-c", "npm run init-db && npm start"]
+run = ["sh", "-c", "npm run init-schema && npm start"]
 deploymentTarget = "autoscale"
 ignorePorts = false
 build = ["sh", "-c", "npm run build"]
@@ -332,6 +332,19 @@ args = "echo \"完成時間: $(date)\""
 name = "Fast Dev"
 author = 44484841
 mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm run dev"
+
+[[workflows.workflow]]
+name = "Development Server Updated"
+author = 44484841
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm run init-schema"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
