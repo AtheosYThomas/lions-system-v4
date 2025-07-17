@@ -55,6 +55,10 @@ Event.init({
   timestamps: false
 });
 
-// 關聯設定將在 src/models/index.ts 中統一處理
+static associate(models: any) {
+  Event.hasMany(models.Registration, { foreignKey: 'event_id' });
+  Event.hasMany(models.Checkin, { foreignKey: 'event_id' });
+  Event.hasMany(models.Payment, { foreignKey: 'event_id' });
+}
 
 export default Event;

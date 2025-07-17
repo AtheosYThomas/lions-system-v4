@@ -26,4 +26,9 @@ const MessageLog = sequelize.define('MessageLog', {
   timestamps: false
 });
 
+MessageLog.associate = (models: any) => {
+  MessageLog.belongsTo(models.Member, { foreignKey: 'user_id', targetKey: 'line_uid' });
+  MessageLog.belongsTo(models.Event, { foreignKey: 'event_id' });
+};
+
 export default MessageLog;

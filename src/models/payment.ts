@@ -28,4 +28,9 @@ const Payment = sequelize.define('Payment', {
   tableName: 'payments'
 });
 
+Payment.associate = (models: any) => {
+  Payment.belongsTo(models.Member, { foreignKey: 'member_id' });
+  Payment.belongsTo(models.Event, { foreignKey: 'event_id' });
+};
+
 export default Payment;

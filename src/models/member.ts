@@ -64,6 +64,10 @@ Member.init({
   timestamps: false
 });
 
-// 關聯設定將在 src/models/index.ts 中統一處理
+static associate(models: any) {
+  Member.hasMany(models.Registration, { foreignKey: 'member_id' });
+  Member.hasMany(models.Checkin, { foreignKey: 'member_id' });
+  Member.hasMany(models.Payment, { foreignKey: 'member_id' });
+}
 
 export default Member;

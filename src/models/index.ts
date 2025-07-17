@@ -3,18 +3,25 @@ import Member from './member';
 import Event from './event';
 import Checkin from './checkin';
 import Registration from './registration';
+import Payment from './payment';
+import MessageLog from './messageLog';
 
-// 統一設定所有模型關聯，避免循環依賴
-Member.hasMany(Checkin, { foreignKey: 'member_id' });
-Member.hasMany(Registration, { foreignKey: 'member_id' });
+// 建立模型集合
+const db = {
+  Member,
+  Event,
+  Checkin,
+  Registration,
+  Payment,
+  MessageLog
+};
 
-Event.hasMany(Checkin, { foreignKey: 'event_id' });
-Event.hasMany(Registration, { foreignKey: 'event_id' });
+// 統一初始化所有模型關聯
+Object.values(db).forEach((model: any) => {
+  if (model.associate) {
+    model.associate(db);
+  }
+});
 
-Checkin.belongsTo(Member, { foreignKey: 'member_id' });
-Checkin.belongsTo(Event, { foreignKey: 'event_id' });
-
-Registration.belongsTo(Member, { foreignKey: 'member_id' });
-Registration.belongsTo(Event, { foreignKey: 'event_id' });
-
-export { Member, Event, Checkin, Registration };
+export { Member, Event, Checkin, Registration, Payment, MessageLog };
+export default db;

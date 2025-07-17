@@ -59,6 +59,9 @@ Checkin.init({
   timestamps: false
 });
 
-// 關聯設定將在 src/models/index.ts 中統一處理
+static associate(models: any) {
+  Checkin.belongsTo(models.Member, { foreignKey: 'member_id' });
+  Checkin.belongsTo(models.Event, { foreignKey: 'event_id' });
+}
 
 export default Checkin;

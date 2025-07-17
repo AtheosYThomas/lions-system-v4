@@ -52,4 +52,9 @@ Registration.init({
   timestamps: false
 });
 
+Registration.associate = (models: any) => {
+  Registration.belongsTo(models.Member, { foreignKey: 'member_id' });
+  Registration.belongsTo(models.Event, { foreignKey: 'event_id' });
+};
+
 export default Registration;
