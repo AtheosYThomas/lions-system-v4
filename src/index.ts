@@ -5,9 +5,11 @@ import sequelize from './config/database';
 import './models/index'; // 載入模型關聯
 import lineHandler from './line/handler';
 import adminRoutes from './routes/admin';
+import announcementRoutes from './routes/announcements';
 import memberRoutes from './routes/members';
 import checkinRoutes from './routes/checkin';
 import liffRoutes from './routes/liff';
+import lineWebhookRoutes from './line/webhook';
 import { validateEnvironment } from './utils/envValidation';
 import announcementRoutes from './routes/announcements';
 
@@ -91,6 +93,7 @@ app.post('/webhook', async (req, res) => {
 app.use('/public', express.static(path.join(__dirname, '../public')));
 
 // API 路由
+app.use('/webhook', lineWebhookRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/members', memberRoutes);
 app.use('/api/checkin', checkinRoutes);
