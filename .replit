@@ -15,7 +15,7 @@ deploymentTarget = "autoscale"
 ignorePorts = false
 
 [workflows]
-runButton = "系統問題診斷"
+runButton = "啟動系統"
 
 [[workflows.workflow]]
 name = "Run TypeScript Server"
@@ -843,6 +843,41 @@ args = "npx ts-node src/env-fix.ts"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "echo \"✅ 環境修復完成\""
+
+[[workflows.workflow]]
+name = "啟動系統"
+author = 44484841
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npx ts-node src/index.ts"
+
+[[workflows.workflow]]
+name = "初始化並啟動"
+author = 44484841
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npx tsx src/init.ts"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npx ts-node src/index.ts"
+
+[[workflows.workflow]]
+name = "生產模式"
+author = 44484841
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm run build:all"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "node dist/index.js"
 
 [[ports]]
 localPort = 5000
