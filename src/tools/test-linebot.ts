@@ -1,4 +1,3 @@
-
 const BASE_URL = 'http://localhost:5000';
 
 const testMessages = [
@@ -15,25 +14,25 @@ const testMessages = [
 
 async function testHealthCheck(retries = 3) {
   console.log('🏥 檢查伺服器健康狀態...');
-  
+
   for (let i = 0; i < retries; i++) {
     try {
       console.log(`🔄 嘗試 ${i + 1}/${retries}...`);
-      
+
       const response = await fetch(`${BASE_URL}/health`, {
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
         }
       });
-      
+
       console.log(`📊 回應狀態: ${response.status}`);
       console.log(`📊 回應類型: ${response.headers.get('content-type')}`);
-      
+
       if (response.ok) {
         const responseText = await response.text();
         console.log(`📊 回應內容: ${responseText.substring(0, 200)}...`);
-        
+
         try {
           const health = JSON.parse(responseText);
           console.log('✅ 伺服器健康狀態:', health);
@@ -48,21 +47,33 @@ async function testHealthCheck(retries = 3) {
     } catch (error) {
       console.log(`❌ 連接錯誤 (${i + 1}/${retries}):`, error.message);
     }
-    
+
     // 如果不是最後一次嘗試，等待 2 秒
     if (i < retries - 1) {
       console.log('⏳ 等待 2 秒後重試...');
       await new Promise(resolve => setTimeout(resolve, 2000));
     }
   }
-  
+
   return false;
 }
 
 async function testWebhookEndpoint() {
   console.log('🔍 測試 Webhook 端點可用性...');
-  
+
   try {
+    // 先測試 GET 請求
+    const getResponse = await fetch(`${BASE_URL}/webhook`, {
+      method: 'GET'
+    });
+
+    console.log(`📊 GET /webhook 狀態: ${getResponse.status}`);
+
+    if (getResponse.ok) {
+      const data = await getResponse.json();
+      console.log('📋 GET 回應:', JSON.stringify(data, null, 2));
+    }
+
     // 測試空的 webhook 請求 (LINE 驗證用)
     const response = await fetch(`${BASE_URL}/webhook`, {
       method: 'POST',
@@ -73,11 +84,17 @@ async function testWebhookEndpoint() {
       body: JSON.stringify({ events: [] })
     });
 
+    console.log(`📊 POST /webhook 狀態: ${response.status}`);
+
     if (response.status === 200) {
+      const data = await response.json();
       console.log('✅ Webhook 端點可用');
+      console.log('📋 回應:', JSON.stringify(data, null, 2));
       return true;
     } else {
       console.log(`❌ Webhook 端點回應異常: ${response.status}`);
+      const errorText = await response.text();
+      console.log('❌ 錯誤內容:', errorText);
       return false;
     }
   } catch (error) {
@@ -88,7 +105,7 @@ async function testWebhookEndpoint() {
 
 async function sendTestMessage(message: string, delay = 1000) {
   console.log(`\n📤 測試訊息: "${message}"`);
-  
+
   try {
     const testEvent = {
       events: [
@@ -120,18 +137,18 @@ async function sendTestMessage(message: string, delay = 1000) {
 
     const status = response.ok ? '✅ 成功' : '❌ 失敗';
     console.log(`📥 回應狀態: ${status} (${response.status})`);
-    
+
     if (!response.ok) {
       const errorText = await response.text();
       console.log('錯誤詳情:', errorText);
     }
-    
+
   } catch (error) {
     console.log(`❌ 測試失敗: ${error.message}`);
   }
-  
+
   console.log('---');
-  
+
   // 等待指定時間再測試下一個訊息
   if (delay > 0) {
     await new Promise(resolve => setTimeout(resolve, delay));
@@ -140,7 +157,7 @@ async function sendTestMessage(message: string, delay = 1000) {
 
 async function testFollowEvent() {
   console.log('\n👋 測試加好友事件...');
-  
+
   try {
     const followEvent = {
       events: [
@@ -168,7 +185,7 @@ async function testFollowEvent() {
 
     const status = response.ok ? '✅ 成功' : '❌ 失敗';
     console.log(`📥 加好友事件回應: ${status} (${response.status})`);
-    
+
   } catch (error) {
     console.log(`❌ 加好友事件測試失敗: ${error.message}`);
   }
@@ -177,31 +194,31 @@ async function testFollowEvent() {
 // 執行完整測試
 async function runFullTest() {
   console.log('🤖 開始完整 LINE Bot 測試...\n');
-  
+
   // 1. 檢查伺服器健康狀態
   const serverHealthy = await testHealthCheck();
   if (!serverHealthy) {
     console.log('❌ 伺服器不可用，停止測試');
     return;
   }
-  
+
   // 2. 測試 Webhook 端點
   const webhookAvailable = await testWebhookEndpoint();
   if (!webhookAvailable) {
     console.log('❌ Webhook 端點不可用，停止測試');
     return;
   }
-  
+
   console.log('\n🔄 開始訊息測試...');
-  
+
   // 3. 測試各種訊息
   for (const message of testMessages) {
     await sendTestMessage(message, 800);
   }
-  
+
   // 4. 測試加好友事件
   await testFollowEvent();
-  
+
   console.log('\n✅ LINE Bot 完整測試完成！');
   console.log('\n💡 如果測試成功但實際 LINE 仍無回應，請檢查：');
   console.log('   1. LINE Channel Access Token 是否正確');
@@ -213,7 +230,7 @@ async function runFullTest() {
 // 快速測試單一訊息
 async function quickTest(message = '哈囉') {
   console.log(`🚀 快速測試訊息: "${message}"`);
-  
+
   const serverHealthy = await testHealthCheck();
   if (serverHealthy) {
     await sendTestMessage(message, 0);

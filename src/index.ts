@@ -72,6 +72,16 @@ app.get('/api/system/status', (req, res) => {
 // LINE Webhook - 直接處理（最重要）
 app.use('/webhook', lineWebhookRoutes);
 
+// 添加調試路由
+app.get('/webhook', (req, res) => {
+  console.log('📥 收到 GET 請求到 /webhook');
+  res.status(200).json({ 
+    status: 'webhook endpoint active',
+    method: 'GET',
+    timestamp: new Date().toISOString()
+  });
+});
+
 // 其他 API 路由
 app.use('/api/admin', adminRoutes);
 app.use('/api/members', memberRoutes);

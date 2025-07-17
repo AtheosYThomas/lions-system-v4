@@ -5,6 +5,16 @@ import lineHandler from './handler';
 
 const router = express.Router();
 
+// 添加 GET 處理用於測試
+router.get('/', (req, res) => {
+  console.log('📥 收到 GET 請求到 /webhook');
+  res.status(200).json({ 
+    status: 'LINE webhook endpoint is active',
+    method: 'GET',
+    timestamp: new Date().toISOString()
+  });
+});
+
 // LINE webhook POST 事件處理 - 先不檢查 signature 用於測試
 router.post('/', async (req, res) => {
   try {
