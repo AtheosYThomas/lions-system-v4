@@ -15,7 +15,7 @@ deploymentTarget = "autoscale"
 ignorePorts = false
 
 [workflows]
-runButton = "啟動增強系統"
+runButton = "啟動系統"
 
 [[workflows.workflow]]
 name = "Run TypeScript Server"
@@ -701,6 +701,62 @@ mode = "sequential"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "echo \"🛡️ 啟動增強 Router fallback 系統...\""
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npx ts-node src/index.ts"
+
+[[workflows.workflow]]
+name = "啟動系統"
+author = 44484841
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npx ts-node src/index.ts"
+
+[[workflows.workflow]]
+name = "開發模式"
+author = 44484841
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm run init-db"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm run dev"
+
+[[workflows.workflow]]
+name = "完整建置"
+author = 44484841
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm run init-db"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "cd client && npm install && npm run build && cd .."
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npx ts-node src/index.ts"
+
+[[workflows.workflow]]
+name = "緊急修復"
+author = 44484841
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "echo \"🔧 執行系統修復...\""
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npx ts-node src/path-to-regexp-fix.ts"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
