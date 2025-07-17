@@ -69,14 +69,14 @@ async function handleTextMessage(event: MessageEvent) {
   try {
     // 記錄訊息
     await MessageLog.create({
-      userId,
-      message: (message as TextMessage).text,
-      timestamp: new Date(),
-      direction: 'incoming'
+      user_id: userId,
+      message_content: (message as TextMessage).text,
+      message_type: 'text',
+      timestamp: new Date()
     });
 
     // 檢查是否為註冊用戶
-    const member = await Member.findOne({ where: { lineUserId: userId } });
+    const member = await Member.findOne({ where: { line_uid: userId } });
 
     let replyMessage: string;
 
@@ -105,10 +105,10 @@ async function handleTextMessage(event: MessageEvent) {
 
     // 記錄回覆
     await MessageLog.create({
-      userId,
-      message: replyMessage,
-      timestamp: new Date(),
-      direction: 'outgoing'
+      user_id: userId,
+      message_content: replyMessage,
+      message_type: 'text',
+      timestamp: new Date()
     });
 
     console.log('✅ 訊息處理完成');
