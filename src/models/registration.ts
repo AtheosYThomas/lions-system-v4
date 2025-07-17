@@ -62,14 +62,14 @@ export default Registration;
 Registration.associate = (models: any) => {
   Registration.belongsTo(models.Member, { 
     foreignKey: 'member_id',
+    as: 'member',
     onDelete: 'CASCADE',
-    onUpdate: 'CASCADE',
-    hooks: true
+    onUpdate: 'CASCADE'
   });
   Registration.belongsTo(models.Event, { 
     foreignKey: 'event_id',
+    as: 'event',
     onDelete: 'CASCADE',
-    onUpdate: 'CASCADE',
-    hooks: true
+    onUpdate: 'CASCADE'
   });
 };

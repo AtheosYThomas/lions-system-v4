@@ -62,14 +62,14 @@ export default Payment;
 Payment.associate = (models: any) => {
   Payment.belongsTo(models.Member, { 
     foreignKey: 'member_id',
+    as: 'member',
     onDelete: 'CASCADE',
-    onUpdate: 'CASCADE',
-    hooks: true
+    onUpdate: 'CASCADE'
   });
   Payment.belongsTo(models.Event, { 
     foreignKey: 'event_id',
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE',
-    hooks: true
+    as: 'event',
+    onDelete: 'SET NULL',
+    onUpdate: 'CASCADE'
   });
 };

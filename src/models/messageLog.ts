@@ -60,12 +60,14 @@ MessageLog.associate = (models: any) => {
   MessageLog.belongsTo(models.Member, { 
     foreignKey: 'user_id', 
     targetKey: 'line_uid',
+    as: 'member',
     constraints: false,
     onDelete: 'SET NULL',
     onUpdate: 'CASCADE'
   });
   MessageLog.belongsTo(models.Event, { 
     foreignKey: 'event_id',
+    as: 'event',
     onDelete: 'SET NULL',
     onUpdate: 'CASCADE'
   });
