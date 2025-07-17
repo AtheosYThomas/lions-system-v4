@@ -16,6 +16,21 @@ import { createSafeRouter, validateNumericParam, routeErrorHandler } from './uti
 
 const app = express();
 
+// 🚨 強制清理 path-to-regexp 問題變數
+if (process.env.DEBUG_URL) {
+  console.log(`🧹 強制清理 DEBUG_URL: ${process.env.DEBUG_URL}`);
+  delete process.env.DEBUG_URL;
+}
+
+// 清理其他可能的問題變數
+const problematicVars = ['WEBPACK_DEV_SERVER_URL', 'WEBPACK_DEV_SERVER', 'HMR_HOST', 'HMR_PORT', 'VITE_DEV_SERVER_URL'];
+problematicVars.forEach(varName => {
+  if (process.env[varName]) {
+    console.log(`🧹 清理: ${varName}`);
+    delete process.env[varName];
+  }
+});
+
 // 環境變數驗證
 if (!validateEnvironment()) {
   console.log('⚠️ 環境變數驗證失敗，但繼續啟動...');
