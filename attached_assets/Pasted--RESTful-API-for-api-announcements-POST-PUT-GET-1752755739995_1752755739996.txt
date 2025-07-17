@@ -1,0 +1,146 @@
+好的！以下是完整的 RESTful API 路由實作 for /api/announcements，支援：
+
+📥 新增公告（POST）
+
+📝 編輯公告（PUT）
+
+🔍 查詢全部 / 單筆（GET）
+
+❌ 刪除公告（DELETE）
+
+⏱ 自動判斷「預約發布」與「即時發布」
+
+✅ 路由檔案：routes/announcements.ts
+ts
+複製
+編輯
+import express from 'express';
+import { Announcement } from '../models/announcement';
+import { Member } from '../models/member';
+import { Event } from '../models/event';
+import { Op } from 'sequelize';
+
+const router = express.Router();
+
+// 📥 建立公告
+router.post('/', async (req, res) => {
+  try {
+    const {
+      title,
+      content,
+      related_event_id,
+      created_by,
+      audience = 'all',
+      category = 'event',
+      status = 'draft',
+      scheduled_at,
+      is_visible = true,
+    } = req.body;
+
+    const announcement = await Announcement.create({
+      title,
+      content,
+      related_event_id: related_event_id || null,
+      created_by: created_by || null,
+      audience,
+      category,
+      status,
+      scheduled_at: status === 'scheduled' ? scheduled_at : null,
+      published_at: status === 'published' ? new Date() : null,
+      is_visible,
+    });
+
+    res.status(201).json(announcement);
+  } catch (err) {
+    res.status(500).json({ error: '建立公告失敗', details: err });
+  }
+});
+
+// 📝 更新公告
+router.put('/:id', async (req, res) => {
+  try {
+    const id = req.params.id;
+    const {
+      title,
+      content,
+      related_event_id,
+      audience,
+      category,
+      status,
+      scheduled_at,
+      is_visible,
+    } = req.body;
+
+    const announcement = await Announcement.findByPk(id);
+    if (!announcement) return res.status(404).json({ error: '找不到公告' });
+
+    announcement.title = title ?? announcement.title;
+    announcement.content = content ?? announcement.content;
+    announcement.related_event_id = related_event_id ?? announcement.related_event_id;
+    announcement.audience = audience ?? announcement.audience;
+    announcement.category = category ?? announcement.category;
+    announcement.status = status ?? announcement.status;
+    announcement.scheduled_at = status === 'scheduled' ? scheduled_at : null;
+    announcement.published_at = status === 'published' ? new Date() : null;
+    announcement.is_visible = is_visible ?? announcement.is_visible;
+
+    await announcement.save();
+    res.json(announcement);
+  } catch (err) {
+    res.status(500).json({ error: '更新公告失敗', details: err });
+  }
+});
+
+// 🔍 查詢所有公告（可加篩選條件）
+router.get('/', async (req, res) => {
+  try {
+    const { status, audience, category } = req.query;
+
+    const where: any = {};
+    if (status) where.status = status;
+    if (audience) where.audience = audience;
+    if (category) where.category = category;
+
+    const results = await Announcement.findAll({
+      where,
+      order: [['published_at', 'DESC']],
+    });
+
+    res.json(results);
+  } catch (err) {
+    res.status(500).json({ error: '查詢公告失敗', details: err });
+  }
+});
+
+// 🔍 查詢單筆公告
+router.get('/:id', async (req, res) => {
+  try {
+    const announcement = await Announcement.findByPk(req.params.id);
+    if (!announcement) return res.status(404).json({ error: '找不到公告' });
+
+    res.json(announcement);
+  } catch (err) {
+    res.status(500).json({ error: '查詢公告失敗', details: err });
+  }
+});
+
+// ❌ 刪除公告
+router.delete('/:id', async (req, res) => {
+  try {
+    const announcement = await Announcement.findByPk(req.params.id);
+    if (!announcement) return res.status(404).json({ error: '找不到公告' });
+
+    await announcement.destroy();
+    res.json({ message: '已刪除公告' });
+  } catch (err) {
+    res.status(500).json({ error: '刪除公告失敗', details: err });
+  }
+});
+
+export default router;
+✅ 註冊路由：src/index.ts 或 routes/index.ts
+ts
+複製
+編輯
+import announcementsRouter from './announcements';
+app.use('/api/announcements', announcementsRouter);
