@@ -1,0 +1,169 @@
+import fs from 'fs';
+import path from 'path';
+import dotenv from 'dotenv';
+import { Sequelize } from 'sequelize';
+import express from 'express';
+import http from 'http';
+import { parseScript } from 'esprima';
+import { globSync } from 'glob';
+import chalk from 'chalk';
+import { execSync } from 'child_process';
+import yaml from 'js-yaml';
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+const DB_URL = process.env.DATABASE_URL || 'postgres://localhost:5432/postgres';
+
+// ------------------ ENV CHECK ------------------
+function checkEnvVariables() {
+  const envPath = path.resolve('.env');
+  const examplePath = path.resolve('.env.example');
+
+  const envVars = dotenv.parse(fs.readFileSync(envPath));
+  const exampleVars = dotenv.parse(fs.readFileSync(examplePath));
+
+  const missingKeys = Object.keys(exampleVars).filter((key) => !envVars[key]);
+  if (missingKeys.length > 0) {
+    console.log(chalk.red('❌ 缺少以下 .env 變數：'), missingKeys);
+  } else {
+    console.log(chalk.green('✅ .env 檔案完整'));
+  }
+}
+
+// ------------------ ROUTE SCAN ------------------
+function scanRoutesForErrors() {
+  const files = globSync('src/{routes,controllers,middleware}/**/*.ts');
+  for (const file of files) {
+    try {
+      require(path.resolve(file));
+      console.log(chalk.green(`✅ ${file} OK`));
+    } catch (err) {
+      console.log(chalk.red(`❌ ${file} 錯誤: ${err.message}`));
+    }
+  }
+}
+
+// ------------------ STATIC RESOURCE CHECK ------------------
+function checkStaticAssets() {
+  const staticDirs = ['public'];
+  for (const dir of staticDirs) {
+    if (!fs.existsSync(dir)) {
+      console.log(chalk.red(`❌ 缺少靜態資源資料夾: ${dir}`));
+    } else {
+      console.log(chalk.green(`✅ 靜態資源存在: ${dir}`));
+    }
+  }
+}
+
+// ------------------ JS SYNTAX CHECK ------------------
+function lintPublicJS() {
+  const files = globSync('public/**/*.js');
+  for (const file of files) {
+    const code = fs.readFileSync(file, 'utf-8');
+    try {
+      parseScript(code);
+      console.log(chalk.green(`✅ ${file} JS 語法正確`));
+    } catch (e) {
+      console.log(chalk.red(`❌ ${file} JS 語法錯誤: ${e.message}`));
+    }
+  }
+}
+
+// ------------------ HEALTH CHECK ------------------
+function runHealthCheck() {
+  http.get(`http://localhost:${PORT}/health`, (res) => {
+    if (res.statusCode === 200) {
+      console.log(chalk.green(`✅ Health check OK`));
+    } else {
+      console.log(chalk.red(`❌ Health check failed. Status: ${res.statusCode}`));
+    }
+  }).on('error', (err) => {
+    console.log(chalk.red(`❌ 無法連接到 /health: ${err.message}`));
+  });
+}
+
+// ------------------ DATABASE TEST ------------------
+async function runDatabaseTest() {
+  try {
+    const sequelize = new Sequelize(DB_URL);
+    await sequelize.authenticate();
+    console.log(chalk.green('✅ 資料庫連線成功'));
+
+    await sequelize.query("CREATE TEMP TABLE IF NOT EXISTS test_table (id SERIAL PRIMARY KEY, name TEXT);");
+    await sequelize.query("INSERT INTO test_table (name) VALUES ('test user');");
+    await sequelize.query("DROP TABLE test_table;");
+
+    console.log(chalk.green('✅ 資料庫模擬寫入成功'));
+    await sequelize.close();
+  } catch (e) {
+    console.log(chalk.red(`❌ 資料庫錯誤: ${e.message}`));
+  }
+}
+
+// ------------------ HTML LINK CHECK ------------------
+function checkHtmlLinks() {
+  const htmlFiles = globSync('public/**/*.html');
+  for (const file of htmlFiles) {
+    const content = fs.readFileSync(file, 'utf-8');
+    if (!content.includes('<script') && !content.includes('<link')) {
+      console.log(chalk.yellow(`⚠️ ${file} 未包含 JS 或 CSS 資源`));
+    } else {
+      console.log(chalk.green(`✅ ${file} OK`));
+    }
+  }
+}
+
+// ------------------ UNIT TEST CHECK ------------------
+function runUnitTests() {
+  try {
+    execSync('npx jest --silent', { stdio: 'inherit' });
+  } catch (e) {
+    console.log(chalk.red('❌ 單元測試失敗'));
+  }
+}
+
+// ------------------ SWAGGER CHECK ------------------
+function checkSwaggerDocs() {
+  const swaggerPath = path.resolve('src/swagger/swagger.yaml');
+  if (!fs.existsSync(swaggerPath)) {
+    console.log(chalk.yellow('⚠️ swagger.yaml 不存在'));
+    return;
+  }
+  try {
+    const content = fs.readFileSync(swaggerPath, 'utf-8');
+    yaml.load(content);
+    console.log(chalk.green('✅ Swagger YAML 格式正確'));
+  } catch (err) {
+    console.log(chalk.red(`❌ Swagger 檔案格式錯誤: ${err.message}`));
+  }
+}
+
+// ------------------ DOCKER CHECK ------------------
+function checkDockerFiles() {
+  const dockerfile = path.resolve('Dockerfile');
+  const compose = path.resolve('docker-compose.yml');
+  if (!fs.existsSync(dockerfile)) {
+    console.log(chalk.yellow('⚠️ 缺少 Dockerfile'));
+  } else {
+    console.log(chalk.green('✅ Dockerfile 存在'));
+  }
+  if (!fs.existsSync(compose)) {
+    console.log(chalk.yellow('⚠️ 缺少 docker-compose.yml'));
+  } else {
+    console.log(chalk.green('✅ docker-compose.yml 存在'));
+  }
+}
+
+(async () => {
+  console.log(chalk.cyan('\n🔍 系統診斷啟動中...\n'));
+  checkEnvVariables();
+  scanRoutesForErrors();
+  checkStaticAssets();
+  lintPublicJS();
+  checkHtmlLinks();
+  runHealthCheck();
+  await runDatabaseTest();
+  runUnitTests();
+  checkSwaggerDocs();
+  checkDockerFiles();
+})();
