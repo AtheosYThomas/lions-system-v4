@@ -28,33 +28,40 @@ const lineHandler = async (req: Request, res: Response) => {
           console.log('🗣️ 使用者訊息 =', userMsg);
           console.log('👤 使用者 ID =', userId);
 
-          // 檢查會員是否存在，避免外鍵錯誤
+          // 處理訊息記錄與回覆邏輯
           if (userId) {
             console.log('🔍 查詢會員 LINE UID:', userId);
             const member = await Member.findOne({ where: { line_uid: userId } });
             console.log('👤 找到的會員:', member ? member.name : '無');
             
+            // 📝 記錄訊息（不管是否為會員都記錄）
+            const messageLog = await MessageLog.create({
+              user_id: userId,
+              timestamp: new Date(),
+              message_type: event.message.type,
+              message_content: event.message.text,
+              intent: member ? 'member' : 'guest',
+              action_taken: member ? 'logged' : 'unregistered_prompted',
+            });
+            console.log('📝 訊息已記錄到資料庫，ID:', messageLog.id);
+            
+            // 🤖 回覆訊息（分流處理）
             if (member) {
-              // 記錄訊息到資料庫
-              const messageLog = await MessageLog.create({
-                user_id: userId,
-                timestamp: new Date(),
-                message_type: event.message.type,
-                message_content: event.message.text,
-                intent: 'default',
-                action_taken: 'logged',
+              // ✅ 已註冊會員 → 正常回覆
+              await client.replyMessage(event.replyToken, {
+                type: 'text',
+                text: `你說的是：${userMsg}`,
               });
-              console.log('📝 訊息已記錄到資料庫，ID:', messageLog.id);
+              console.log('✅ 已註冊會員，正常回覆');
             } else {
-              console.log('⚠️ 使用者不在會員資料庫中，跳過訊息記錄');
-              console.log('💡 提示：請先在會員資料庫中新增此 LINE 使用者');
+              // ❌ 未註冊會員 → 引導註冊
+              await client.replyMessage(event.replyToken, {
+                type: 'text',
+                text: `您好！您尚未完成會員資料填寫，請點選下方連結進行註冊：\nhttps://checkin.peida.net/form/register`,
+              });
+              console.log('❌ 未註冊會員，已引導註冊');
             }
           }
-
-          await client.replyMessage(event.replyToken, {
-            type: 'text',
-            text: `你說的是：${userMsg}`,
-          });
 
           console.log('✅ 回覆訊息成功');
         } else {
