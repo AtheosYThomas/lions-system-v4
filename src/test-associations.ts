@@ -22,9 +22,7 @@ const testAssociations = async () => {
       name: '測試會員',
       email: 'test@example.com',
       line_uid: 'test_line_uid',
-      phone: '0912345678',
-      status: 'active',
-      created_at: new Date()
+      phone: '0912345678'
     });
     console.log('✅ 測試會員已創建:', testMember.get('id'));
 
@@ -33,19 +31,14 @@ const testAssociations = async () => {
       description: '測試用活動',
       date: new Date('2024-12-31'),
       location: '測試地點',
-      max_attendees: 50,
-      status: 'active',
-      created_at: new Date()
+      max_attendees: 50
     });
     console.log('✅ 測試活動已創建:', testEvent.get('id'));
 
     // 3. 創建關聯資料
     const registration = await Registration.create({
       event_id: testEvent.get('id') as string,
-      member_id: testMember.get('id') as string,
-      status: 'confirmed',
-      registration_date: new Date(),
-      created_at: new Date()
+      member_id: testMember.get('id') as string
     });
     console.log('✅ 報名記錄已創建:', registration.get('id'));
 
@@ -53,8 +46,7 @@ const testAssociations = async () => {
       member_id: testMember.get('id') as string,
       event_id: testEvent.get('id') as string,
       amount: 1000,
-      method: 'credit_card',
-      status: 'completed'
+      method: 'credit_card'
     });
     console.log('✅ 付款記錄已創建:', payment.get('id'));
 

@@ -11,7 +11,7 @@ interface RegistrationAttributes {
   created_at: Date;
 }
 
-type RegistrationCreationAttributes = Optional<RegistrationAttributes, 'id' | 'created_at' | 'registration_date'>;
+type RegistrationCreationAttributes = Optional<RegistrationAttributes, 'id' | 'created_at' | 'registration_date' | 'status'>;
 
 class Registration extends Model<RegistrationAttributes, RegistrationCreationAttributes> implements RegistrationAttributes {
   public id!: string;

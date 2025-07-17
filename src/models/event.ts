@@ -13,7 +13,7 @@ interface EventAttributes {
   created_at: Date;
 }
 
-type EventCreationAttributes = Optional<EventAttributes, 'id' | 'created_at' | 'description' | 'location' | 'max_attendees'>;
+type EventCreationAttributes = Optional<EventAttributes, 'id' | 'created_at' | 'description' | 'location' | 'max_attendees' | 'status'>;
 
 class Event extends Model<EventAttributes, EventCreationAttributes> implements EventAttributes {
   public id!: string;

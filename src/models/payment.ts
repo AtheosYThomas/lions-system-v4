@@ -13,7 +13,7 @@ interface PaymentAttributes {
   created_at: Date;
 }
 
-type PaymentCreationAttributes = Optional<PaymentAttributes, 'id' | 'created_at' | 'event_id' | 'receipt_url'>;
+type PaymentCreationAttributes = Optional<PaymentAttributes, 'id' | 'created_at' | 'event_id' | 'receipt_url' | 'status'>;
 
 class Payment extends Model<PaymentAttributes, PaymentCreationAttributes> implements PaymentAttributes {
   public id!: string;

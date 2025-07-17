@@ -13,7 +13,7 @@ interface MemberAttributes {
   created_at: Date;
 }
 
-type MemberCreationAttributes = Optional<MemberAttributes, 'id' | 'created_at' | 'role'>;
+type MemberCreationAttributes = Optional<MemberAttributes, 'id' | 'created_at' | 'role' | 'line_uid' | 'phone'>;
 
 class Member extends Model<MemberAttributes, MemberCreationAttributes> implements MemberAttributes {
   public id!: string;

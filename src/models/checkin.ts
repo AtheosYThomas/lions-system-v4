@@ -54,7 +54,7 @@ Checkin.init({
   timestamps: false
 });
 
-static associate(models: any) {
+Checkin.associate = (models: any) => {
   Checkin.belongsTo(models.Member, { 
     foreignKey: 'member_id',
     onDelete: 'CASCADE',
@@ -67,6 +67,6 @@ static associate(models: any) {
     onUpdate: 'CASCADE',
     hooks: true
   });
-}
+};
 
 export default Checkin;
