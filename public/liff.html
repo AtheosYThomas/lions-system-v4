@@ -103,8 +103,9 @@
       try {
         // 初始化 LIFF
         updateStatus('正在初始化 LINE 登入...');
+        // 請到 LINE Developers Console 確認正確的 LIFF App ID
         await liff.init({
-          liffId: '2007739371-aKePV20l'
+          liffId: '2007739371-aKePV20l' // 請替換為有效的 LIFF App ID
         });
 
         // 檢查登入狀態
