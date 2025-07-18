@@ -27,7 +27,7 @@ class LiffController {
       console.log('🔍 查詢會員:', line_uid);
       const member = await Member.findOne({ 
         where: { 
-          line_uid: line_uid
+          line_user_id: line_uid
         } 
       });
       console.log('👤 查詢結果:', member ? '找到會員' : '未找到會員');
@@ -77,7 +77,7 @@ class LiffController {
 
     try {
       // 檢查是否已經註冊
-      const existingMember = await Member.findOne({ where: { line_uid } });
+      const existingMember = await Member.findOne({ where: { line_user_id: line_uid } });
       if (existingMember) {
         console.log('⚠️ 會員已存在');
         return res.status(400).json({ error: '此 LINE 帳號已經註冊過了' });
@@ -94,7 +94,7 @@ class LiffController {
       const memberData: MemberCreationAttributes = {
         name,
         email,
-        line_uid,
+        line_user_id: line_uid,
         phone: phone || undefined,
         role: 'member',
         status: 'active',
@@ -144,7 +144,7 @@ class LiffController {
 
     try {
       const member = await Member.findOne({ 
-        where: { line_uid },
+        where: { line_user_id: line_uid },
         attributes: ['id', 'name', 'email', 'phone', 'role', 'status', 'created_at']
       });
 
@@ -174,7 +174,7 @@ class LiffController {
 
     try {
       const member = await Member.findOne({
-        where: { line_uid: lineUid }
+        where: { line_user_id: lineUid }
       });
 
       if (!member) {

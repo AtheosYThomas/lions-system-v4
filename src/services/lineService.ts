@@ -150,7 +150,7 @@ class LineService {
 
       // 先檢查會員是否存在
       let member = await Member.findOne({ 
-        where: { line_uid: lineUserId } 
+        where: { line_user_id: lineUserId } 
       });
 
       if (!member) {
