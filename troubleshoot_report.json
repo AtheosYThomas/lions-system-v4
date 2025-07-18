@@ -1,10 +1,10 @@
 {
-  "timestamp": "2025-07-18T14:53:56.098Z",
+  "timestamp": "2025-07-18T15:07:03.903Z",
   "summary": {
-    "total": 99,
-    "pass": 74,
-    "warning": 24,
-    "error": 1
+    "total": 101,
+    "pass": 76,
+    "warning": 25,
+    "error": 0
   },
   "results": [
     {
@@ -394,6 +394,20 @@
     },
     {
       "category": "Source Files",
+      "status": "warning",
+      "message": "src/utils/diagnostics/systemReport.ts: 使用 any 型別可能導致型別安全問題",
+      "suggestions": [
+        "明確定義型別",
+        "使用具體的介面"
+      ]
+    },
+    {
+      "category": "Source Files",
+      "status": "pass",
+      "message": "src/utils/diagnostics/systemReport.ts: 語法檢查通過"
+    },
+    {
+      "category": "Source Files",
       "status": "pass",
       "message": "src/utils/diagnostics/systemHealth.ts: 語法檢查通過"
     },
@@ -595,12 +609,9 @@
     },
     {
       "category": "Health Check",
-      "status": "error",
-      "message": "Health check 逾時",
-      "suggestions": [
-        "檢查伺服器回應時間",
-        "確認網路連線"
-      ]
+      "status": "pass",
+      "message": "Health check 成功 (狀態: 200)",
+      "details": "{\n  \"status\": \"healthy\",\n  \"timestamp\": \"2025-07-18T15:07:03.871Z\",\n  \"version\": \"4.0\",\n  \"uptime\": 2421.942162386,\n  \"database\": \"connected\",\n  \"services\": {\n    \"line\": \"configured\",\n    \"routes\": [\n      \"admin\",\n      \"checkin\",\n      \"members\",\n      \"webhook\"\n    ]\n  }\n}"
     }
   ]
 }

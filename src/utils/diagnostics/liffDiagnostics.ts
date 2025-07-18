@@ -110,5 +110,4 @@ export class LiffDiagnostics {
     }
   }
 }
-// 移除錯誤的匯入，改為直接實作
-export * from '../../tools/liffDiagnostics';
+// LiffDiagnostics 類別已在此檔案中完整實作

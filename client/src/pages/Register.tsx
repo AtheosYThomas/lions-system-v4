@@ -1,70 +1,80 @@
 
-import React, { useEffect, useState } from 'react';
-import liff from '@line/liff';
+import React, { useState } from 'react';
 
-export default function Register() {
-  const [lineId, setLineId] = useState('');
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(true);
+const Register: React.FC = () => {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    lineId: ''
+  });
 
-  useEffect(() => {
-    const initLiff = async () => {
-      try {
-        // 使用固定的 LIFF ID
-        const liffId = '2007739371-aKePV20l';
-        console.log('LIFF ID:', liffId);
-        
-        if (!liffId) {
-          throw new Error('LIFF ID 未設定');
-        }
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
 
-        await liff.init({ liffId });
-        
-        if (liff.isLoggedIn()) {
-          const profile = await liff.getProfile();
-          setLineId(profile.userId);
-        } else {
-          liff.login();
-        }
-      } catch (err: any) {
-        console.error('LIFF 初始化錯誤:', err);
-        setError(`LIFF 初始化失敗: ${err.message || err.code || '未知錯誤'}`);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    initLiff();
-  }, []);
-
-  if (loading) {
-    return (
-      <div style={{ padding: '20px', textAlign: 'center' }}>
-        <h2>載入中...</h2>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div style={{ padding: '20px', textAlign: 'center' }}>
-        <h2>錯誤</h2>
-        <p style={{ color: 'red' }}>{error}</p>
-        <button onClick={() => window.location.reload()}>重新載入</button>
-      </div>
-    );
-  }
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log('註冊資料:', formData);
+    // TODO: 實作註冊邏輯
+  };
 
   return (
-    <div style={{ padding: '20px' }}>
+    <div className="register-container">
       <h2>會員註冊</h2>
-      <p>LINE UID: {lineId}</p>
-      {lineId && (
-        <div>
-          <p>✅ LINE 帳號已連接</p>
-          {/* 可擴充註冊表單 */}
+      <form onSubmit={handleSubmit}>
+        <div className="form-group">
+          <label htmlFor="name">姓名</label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            required
+          />
         </div>
-      )} */}
+        <div className="form-group">
+          <label htmlFor="email">Email</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="phone">電話</label>
+          <input
+            type="tel"
+            id="phone"
+            name="phone"
+            value={formData.phone}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="lineId">LINE ID</label>
+          <input
+            type="text"
+            id="lineId"
+            name="lineId"
+            value={formData.lineId}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <button type="submit">註冊</button>
+      </form>
     </div>
   );
-}
+};
+
+export default Register;
