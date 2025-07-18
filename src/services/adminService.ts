@@ -1,4 +1,3 @@
-
 import Member from '../models/member';
 import Event from '../models/event';
 import Registration from '../models/registration';
@@ -35,7 +34,7 @@ class AdminService {
   async getSystemSummary() {
     try {
       console.log('📊 開始獲取系統總覽...');
-      
+
       // 並行查詢各項統計
       const [
         memberCount,
@@ -92,18 +91,37 @@ class AdminService {
     }
   }
 
-  // 會員狀態統計
+  // 會員統計
   async getMemberStats() {
     try {
-      const memberStats = await Member.findAll({
-        attributes: [
-          'status',
-          [sequelize.fn('COUNT', '*'), 'count']
-        ],
-        group: ['status']
-      });
+      console.log('📊 開始計算會員統計...');
 
-      return memberStats;
+      // 分別查詢各項統計，確保準確性
+      const [total, active, inactive, officers, members, withLineAccount] = await Promise.all([
+        Member.count(),
+        Member.count({ where: { status: 'active' } }),
+        Member.count({ where: { status: 'inactive' } }),
+        Member.count({ where: { role: 'officer' } }),
+        Member.count({ where: { role: 'member' } }),
+        Member.count({ 
+          where: { 
+            line_user_id: { [Op.ne]: null },
+            status: 'active'
+          }
+        })
+      ]);
+
+      const stats = {
+        total,
+        active,
+        inactive,
+        officers,
+        members,
+        withLineAccount
+      };
+
+      console.log('✅ 會員統計結果:', stats);
+      return stats;
     } catch (error) {
       console.error('❌ 會員統計失敗:', error);
       throw error;
@@ -153,11 +171,11 @@ class AdminService {
   async exportMembersReport(filters: ReportFilters, format: string = 'json') {
     try {
       const whereClause: any = {};
-      
+
       if (filters.status) {
         whereClause.status = filters.status;
       }
-      
+
       if (filters.dateFrom || filters.dateTo) {
         whereClause.created_at = {};
         if (filters.dateFrom) {
@@ -190,11 +208,11 @@ class AdminService {
   async exportEventsReport(filters: ReportFilters, format: string = 'json') {
     try {
       const whereClause: any = {};
-      
+
       if (filters.status) {
         whereClause.status = filters.status;
       }
-      
+
       if (filters.dateFrom || filters.dateTo) {
         whereClause.date = {};
         if (filters.dateFrom) {
@@ -241,15 +259,15 @@ class AdminService {
   async exportRegistrationsReport(filters: ReportFilters, format: string = 'json') {
     try {
       const whereClause: any = {};
-      
+
       if (filters.eventId) {
         whereClause.event_id = filters.eventId;
       }
-      
+
       if (filters.status) {
         whereClause.status = filters.status;
       }
-      
+
       if (filters.dateFrom || filters.dateTo) {
         whereClause.created_at = {};
         if (filters.dateFrom) {
@@ -293,11 +311,11 @@ class AdminService {
   async exportCheckinsReport(filters: ReportFilters, format: string = 'json') {
     try {
       const whereClause: any = {};
-      
+
       if (filters.eventId) {
         whereClause.event_id = filters.eventId;
       }
-      
+
       if (filters.dateFrom || filters.dateTo) {
         whereClause.created_at = {};
         if (filters.dateFrom) {
@@ -374,7 +392,7 @@ class AdminService {
           ['總活動數', systemSummary.eventCount, '系統中所有活動'],
           ['總簽到數', systemSummary.checkinCount, '所有簽到記錄']
         ];
-        
+
         return csvData.map(row => row.join(',')).join('\n');
       }
 
@@ -399,7 +417,7 @@ class AdminService {
           const value = field.includes('.') ? 
             field.split('.').reduce((obj, key) => obj?.[key], item) : 
             item[field];
-          
+
           // 處理 CSV 中的特殊字符
           const stringValue = String(value || '');
           return stringValue.includes(',') || stringValue.includes('\n') || stringValue.includes('"') ?

@@ -210,27 +210,33 @@ class MemberService {
    */
   async getMemberStats() {
     try {
-      const [total, active, inactive, officers, members] = await Promise.all([
+      console.log('📊 memberService: 開始計算會員統計...');
+      
+      const [total, active, inactive, officers, members, withLineAccount] = await Promise.all([
         Member.count(),
         Member.count({ where: { status: 'active' } }),
         Member.count({ where: { status: 'inactive' } }),
-        Member.count({ where: { role: 'officer' } }),
-        Member.count({ where: { role: 'member' } })
-      ]);
-
-      return {
-        total,
-        active,
-        inactive,
-        officers,
-        members,
-        withLineAccount: await Member.count({
+        Member.count({ where: { role: 'officer', status: 'active' } }),
+        Member.count({ where: { role: 'member', status: 'active' } }),
+        Member.count({
           where: { 
             line_user_id: { [Op.ne]: null as any },
             status: 'active'
           }
         })
+      ]);
+
+      const stats = {
+        total,
+        active,
+        inactive,
+        officers,
+        members,
+        withLineAccount
       };
+
+      console.log('✅ memberService: 會員統計結果:', stats);
+      return stats;
     } catch (error) {
       console.error('獲取會員統計失敗:', error);
       throw error;
