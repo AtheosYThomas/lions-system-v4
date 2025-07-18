@@ -5,7 +5,8 @@ export * from './member';
 export * from './event';
 
 // Registration types
-export * from './registration';
+// 全域註冊型別  
+export type { RegistrationAttributes, RegistrationCreationAttributes } from './registration';
 export { PaymentMethod, PaymentProvider, PaymentRecord, PaymentTransaction } from './payment';
 
 // Announcement types

@@ -5,7 +5,10 @@
 
 // 環境相關
 export { checkRequiredEnvVars } from './envCheck';
-export { validateEnvironment } from './envValidation';
+
+// 匯出診斷工具
+export { checkEnvironment } from './diagnostics/envCheck';
+export { validateEnvironment } from './diagnostics/envValidation';
 
 // 格式化工具
 export {

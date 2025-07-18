@@ -72,6 +72,11 @@ class LineService {
     const lineUserId = textEvent.source.userId;
     const userMessage = textEvent.message.text;
 
+    if (!lineUserId) {
+      console.log('⚠️ 無法獲取用戶 ID');
+      return;
+    }
+
     console.log('💬 收到訊息:', { lineUserId, userMessage });
 
     // 🔍 核心邏輯：檢查用戶是否為會員
@@ -121,8 +126,8 @@ class LineService {
         contents: {
           type: 'bubble' as const,
           body: {
-            type: 'box',
-            layout: 'vertical',
+            type: 'box' as const,
+            layout: 'vertical' as const,
             contents: [
               {
                 type: 'text',
@@ -208,8 +213,8 @@ class LineService {
         contents: {
           type: 'bubble' as const,
           body: {
-            type: 'box',
-            layout: 'vertical',
+            type: 'box' as const,
+            layout: 'vertical' as const,
             contents: [
               {
                 type: 'text',

@@ -13,7 +13,7 @@ export { runDiagnostics } from './diagnostics';
 export { default as runFullSystemDiagnostics } from './fullSystemDiagnostics';
 export { performSystemCheck } from './systemCheck';
 export { generateTroubleshootReport } from './troubleshoot';
-export { createTroubleshootReport } from './troubleshootReport';
+// export { createTroubleshootReport } from './troubleshootReport'; // 暫時註解，等待實作
 export { generateDetailedReport } from './detailedTroubleshootReport';
 export * from './troubleshootReport';
 

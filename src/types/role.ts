@@ -100,3 +100,7 @@ export function hasRolePermission(userRole: Role | string, requiredRole: Role): 
   // 完全匹配或更高等級
   return userRank >= requiredRank;
 }
+
+export function canAccessRoute(userRole: Role, requiredRole: Role.President | Role.Admin): boolean {
+  return roleRank[userRole] >= roleRank[requiredRole as Role];
+}
