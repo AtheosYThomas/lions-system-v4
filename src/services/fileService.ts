@@ -57,7 +57,7 @@ class FileService {
   /**
    * 根據 ID 獲取檔案
    */
-  async getFileById(id: number): Promise<IFileModel | null> {
+  async getFileById(id: string): Promise<IFileModel | null> {
     try {
       const file = await File.findByPk(id, {
         include: [
@@ -129,7 +129,7 @@ class FileService {
   /**
    * 刪除檔案（軟刪除）
    */
-  async deleteFile(id: number): Promise<void> {
+  async deleteFile(id: string): Promise<void> {
     try {
       const file = await File.findByPk(id);
 
@@ -181,7 +181,7 @@ class FileService {
   /**
    * 更新檔案資訊
    */
-  async updateFile(id: number, updateData: Partial<FileUploadData>): Promise<IFileModel> {
+  async updateFile(id: string, updateData: Partial<FileUploadData>): Promise<IFileModel> {
     try {
       const file = await File.findByPk(id);
 

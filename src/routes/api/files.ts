@@ -54,8 +54,8 @@ router.get('/', async (req, res) => {
 
     const result = await fileService.searchFiles({
       usage: usage as string,
-      uploaded_by: uploaded_by ? parseInt(uploaded_by as string) : undefined,
-      related_id: related_id ? parseInt(related_id as string) : undefined,
+      uploaded_by: uploaded_by as string,
+      related_id: related_id as string,
       status: status as string,
       limit: limit ? parseInt(limit as string) : undefined,
       offset: offset ? parseInt(offset as string) : undefined
@@ -82,7 +82,7 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const file = await fileService.getFileById(parseInt(id));
+    const file = await fileService.getFileById(id);
 
     if (!file) {
       return res.status(404).json({
@@ -114,7 +114,7 @@ router.put('/:id', async (req, res) => {
     const { id } = req.params;
     const updateData = req.body;
 
-    const file = await fileService.updateFile(parseInt(id), updateData);
+    const file = await fileService.updateFile(id, updateData);
 
     res.json({
       success: true,
@@ -138,7 +138,7 @@ router.put('/:id', async (req, res) => {
 router.delete('/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    await fileService.deleteFile(parseInt(id));
+    await fileService.deleteFile(id);
 
     res.json({
       success: true,
@@ -165,7 +165,7 @@ router.get('/usage/:usage', async (req, res) => {
 
     const files = await fileService.getFilesByUsage(
       usage,
-      related_id ? parseInt(related_id as string) : undefined
+      related_id as string
     );
 
     res.json({
