@@ -231,13 +231,15 @@ class RegistrationService {
       }
 
       // 檢查是否還能取消報名（活動前24小時）
-      const event = registration.event;
-      const now = new Date();
-      const eventDate = new Date(event.date);
-      const twentyFourHoursBefore = new Date(eventDate.getTime() - 24 * 60 * 60 * 1000);
+      const event = (registration as any).event;
+      if (event) {
+        const now = new Date();
+        const eventDate = new Date(event.date);
+        const twentyFourHoursBefore = new Date(eventDate.getTime() - 24 * 60 * 60 * 1000);
 
-      if (now > twentyFourHoursBefore) {
-        throw new Error('活動前24小時內無法取消報名');
+        if (now > twentyFourHoursBefore) {
+          throw new Error('活動前24小時內無法取消報名');
+        }
       }
 
       await registration.update({ status: 'cancelled' });

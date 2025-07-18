@@ -1,4 +1,3 @@
-
 import Event from '../models/event';
 import Registration from '../models/registration';
 import Checkin from '../models/checkin';
@@ -164,7 +163,7 @@ class EventService {
   async updateEvent(updateData: EventUpdateData): Promise<Event> {
     try {
       const event = await Event.findByPk(updateData.id);
-      
+
       if (!event) {
         throw new Error('活動不存在');
       }
@@ -198,7 +197,7 @@ class EventService {
   async deleteEvent(id: string): Promise<void> {
     try {
       const event = await Event.findByPk(id);
-      
+
       if (!event) {
         throw new Error('活動不存在');
       }
@@ -238,10 +237,12 @@ class EventService {
         const event = await Event.findByPk(eventId);
         const attendanceRate = registrationCount > 0 ? (checkinCount / registrationCount) * 100 : 0;
 
+        const availableSlots = event?.max_attendees ? event.max_attendees - registrationCount : null;
+
         return {
           eventId,
           eventTitle: event?.title,
-          maxAttendees: event?.max_attendees,
+          maxAttendees: event?.max_attendees ?? null,
           registrations: registrationCount,
           checkins: checkinCount,
           payments: paymentCount,
