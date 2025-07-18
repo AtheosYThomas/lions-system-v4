@@ -37,7 +37,7 @@ MessageLog.init({
     allowNull: false,
     references: {
       model: 'members',
-      key: 'line_user_id'  // 對應資料庫中的實際欄位名稱
+      key: 'line_uid'  // 修正為正確的欄位名稱
     },
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE'
