@@ -149,10 +149,10 @@ class LineService {
     try {
       // TODO: 根據您的 MessageLog 模型調整欄位
       await MessageLog.create({
-        userId: event.source.userId,
-        message: event.message.text,
+        user_id: event.source.userId,
+        message_content: event.message.text,
         timestamp: new Date(event.timestamp),
-        messageType: 'text'
+        message_type: 'text'
       });
       console.log('💾 訊息記錄已儲存');
     } catch (error) {
