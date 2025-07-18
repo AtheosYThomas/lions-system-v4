@@ -1,28 +1,20 @@
 {
-  "timestamp": "2025-07-18T22:31:48.427Z",
+  "timestamp": "2025-07-18T22:33:18.524Z",
   "summary": {
-    "totalIssues": 4,
+    "totalIssues": 3,
     "errors": 3,
     "warnings": 0,
-    "info": 1,
-    "healthScore": 35
+    "info": 0,
+    "healthScore": 40
   },
   "issues": [
     {
       "category": "TypeScript編譯",
       "severity": "high",
       "issue": "TypeScript 編譯錯誤",
-      "details": "src/tools/index.ts(10,3): error TS2300: Duplicate identifier 'generateTroubleshootReport'.\nsrc/tools/index.ts(11,3): error TS2300: Duplicate identifier 'generateTroubleshootReport'.\nsrc/types/role.ts(83,37): error TS2345: Argument of type 'Role' is not assignable to parameter of type 'Role.President | Role.Admin'.\nsrc/utils/index.ts(7,38): error TS2307: Cannot find module './envCheck' or its corresponding type declarations.\n",
+      "details": "src/types/role.ts(82,37): error TS2345: Argument of type 'Role' is not assignable to parameter of type 'Role.President | Role.Admin'.\nsrc/utils/index.ts(7,38): error TS2307: Cannot find module './envCheck' or its corresponding type declarations.\n",
       "suggestion": "修正 TypeScript 語法錯誤",
       "status": "error"
-    },
-    {
-      "category": "Routes",
-      "severity": "low",
-      "issue": "src/routes/api/liff.ts 使用環境變數但未載入 dotenv",
-      "details": "可能導致環境變數未正確載入",
-      "suggestion": "確認 dotenv 已在主程式載入",
-      "status": "info"
     },
     {
       "category": "前端LIFF",
