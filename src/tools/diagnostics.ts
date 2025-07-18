@@ -240,7 +240,7 @@ function checkDependencies() {
 }
 
 // 主要診斷函數
-async function runDiagnostics() {
+export async function runDiagnostics() {
   console.log(chalk.cyan('=' .repeat(60)));
   console.log(chalk.cyan('🦁 北大獅子會系統診斷報告'));
   console.log(chalk.cyan('=' .repeat(60)));

@@ -40,7 +40,7 @@ class ServiceFunctionTester {
       // 測試獲取會員統計
       const stats = await memberService.getMemberStats();
       this.recordTest('memberService.getMemberStats', 
-        typeof stats === 'object' && stats?.total >= 0);
+        typeof stats === 'object' && Number(stats?.total) >= 0);
 
       // 測試搜尋會員
       const searchResult = await memberService.searchMembers({
@@ -116,7 +116,7 @@ class ServiceFunctionTester {
       // 測試獲取公告統計
       const stats = await announcementService.getAnnouncementStats();
       this.recordTest('announcementService.getAnnouncementStats', 
-        typeof stats === 'object' && stats?.total >= 0);
+        typeof stats === 'object' && Number(stats?.total) >= 0);
 
       // 測試搜尋公告
       const searchResult = await announcementService.searchAnnouncements({
@@ -197,7 +197,7 @@ class ServiceFunctionTester {
       // 測試獲取簽到統計
       const stats = await checkinService.getCheckinStats();
       this.recordTest('checkinService.getCheckinStats', 
-        typeof stats === 'object' && stats?.totalCheckins >= 0);
+        typeof stats === 'object' && Number(stats?.totalCheckins) >= 0);
 
       // 測試驗證簽到資格（使用第一個會員和第一個活動）
       const members = await memberService.searchMembers({ limit: 1 });
@@ -340,7 +340,7 @@ class ServiceFunctionTester {
     console.log(`總測試項目: ${totalTests}`);
     console.log(`通過測試: ${passedTests}`);
     console.log(`失敗測試: ${failedTests}`);
-    console.log(`通過率: ${((passedTests / totalTests) * 100).toFixed(1)}%`);
+    console.log(`通過率: ${((Number(passedTests) / Number(totalTests)) * 100).toFixed(1)}%`);
 
     if (failedTests > 0) {
       console.log('\n❌ 失敗的測試項目:');

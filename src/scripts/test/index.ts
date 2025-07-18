@@ -33,7 +33,7 @@ export class TestSuite {
 
       // 產生綜合報告
       console.log('\n📊 綜合測試報告');
-      console.log('=' * 60);
+      console.log('='.repeat(60));
       console.log('✅ 測試資料建立：成功');
       console.log(`✅ 服務功能測試：${testReport.passed}/${testReport.total} 通過 (${testReport.passRate.toFixed(1)}%)`);
 
@@ -47,7 +47,8 @@ export class TestSuite {
 
     } catch (error) {
       console.error('\n❌ 測試套件執行失敗:', error);
-      return { success: false, error: error.message };
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      return { success: false, error: errorMessage };
     }
   }
 

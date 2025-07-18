@@ -1,6 +1,6 @@
 
 import { Registration, RegistrationCreationAttributes } from '../models/registration';
-import { Event } from '../models/event';
+import Event from '../models/event';
 import { Member } from '../models/member';
 import { Op } from 'sequelize';
 
@@ -232,7 +232,7 @@ class RegistrationService {
       }
 
       // 檢查是否還能取消報名（活動前24小時）
-      const event = registration.event as Event;
+      const event = registration.event;
       const now = new Date();
       const eventDate = new Date(event.date);
       const twentyFourHoursBefore = new Date(eventDate.getTime() - 24 * 60 * 60 * 1000);

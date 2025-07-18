@@ -64,3 +64,4 @@ Event.init({
 // 關聯設定將在 src/models/index.ts 中統一處理
 
 export default Event;
+export { Event };
