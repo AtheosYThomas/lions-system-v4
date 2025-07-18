@@ -1,4 +1,3 @@
-
 import fs from 'fs';
 import path from 'path';
 import { globSync } from 'glob';
@@ -24,7 +23,7 @@ class SystemDiagnostics {
   // 1. 掃描 /src 目錄下所有 route、controller、middleware 的錯誤
   async scanSourceCodeErrors() {
     console.log(chalk.yellow('🔍 步驟 1: 掃描 /src 目錄錯誤...'));
-    
+
     const patterns = [
       'routes/**/*.ts',
       'controllers/**/*.ts',
@@ -35,16 +34,15 @@ class SystemDiagnostics {
     let errorCount = 0;
 
     for (const pattern of patterns) {
-      const files = globSync(path.join(this.srcPath, pattern));
-      
-      for (const file of files) {
+      const files = globSync(path.join(this.srcPath, pattern)).filter(file => !file.includes('node_modules'));
+      files.forEach((file: string) => {
         totalFiles++;
         try {
           const content = fs.readFileSync(file, 'utf8');
-          
+
           // 檢查常見錯誤
           const errors: string[] = [];
-          
+
           // 檢查未定義的匯入
           const importMatches = content.match(/import\s+.*?\s+from\s+['"]([^'"]+)['"]/g);
           if (importMatches) {
@@ -58,7 +56,7 @@ class SystemDiagnostics {
                   resolvedPath + '/index.ts',
                   resolvedPath + '/index.js'
                 ];
-                
+
                 const exists = possiblePaths.some(p => fs.existsSync(p));
                 if (!exists) {
                   errors.push(`找不到模組: ${modulePath}`);
@@ -66,7 +64,7 @@ class SystemDiagnostics {
               }
             }
           }
-          
+
           // 檢查未定義的變數使用
           const envVarMatches = content.match(/process\.env\.([A-Z_]+)/g);
           if (envVarMatches) {
@@ -77,12 +75,12 @@ class SystemDiagnostics {
               }
             }
           }
-          
+
           // 檢查語法錯誤（簡單檢查）
           if (content.includes('console.log(') && !content.includes('console.error(')) {
             // 檢查是否有未處理的 console.log
           }
-          
+
           if (errors.length > 0) {
             errorCount++;
             this.addResult(
@@ -93,7 +91,7 @@ class SystemDiagnostics {
               ['檢查匯入路徑', '確認環境變數設定', '檢查語法正確性']
             );
           }
-          
+
         } catch (error) {
           errorCount++;
           this.addResult(
@@ -104,7 +102,7 @@ class SystemDiagnostics {
             ['檢查檔案權限', '確認檔案存在']
           );
         }
-      }
+      });
     }
 
     if (errorCount === 0) {
@@ -115,16 +113,16 @@ class SystemDiagnostics {
   // 2. 比對 .env 檔與實際程式是否有使用未定義的變數
   async checkEnvironmentVariables() {
     console.log(chalk.yellow('🔍 步驟 2: 檢查環境變數...'));
-    
+
     const envFile = path.join(this.srcPath, '../.env');
     const envVarsInFile = new Set<string>();
-    
+
     // 讀取 .env 檔案
     try {
       if (fs.existsSync(envFile)) {
         const envContent = fs.readFileSync(envFile, 'utf8');
         const envLines = envContent.split('\n');
-        
+
         for (const line of envLines) {
           const match = line.match(/^([A-Z_]+)=/);
           if (match) {
@@ -144,12 +142,12 @@ class SystemDiagnostics {
     // 掃描程式碼中使用的環境變數
     const usedEnvVars = new Set<string>();
     const allFiles = globSync(path.join(this.srcPath, '**/*.ts'));
-    
+
     for (const file of allFiles) {
       try {
         const content = fs.readFileSync(file, 'utf8');
         const matches = content.match(/process\.env\.([A-Z_]+)/g);
-        
+
         if (matches) {
           for (const match of matches) {
             const varName = match.replace('process.env.', '');
@@ -185,7 +183,7 @@ class SystemDiagnostics {
   // 3. 檢查前端檔案
   async checkFrontendFiles() {
     console.log(chalk.yellow('🔍 步驟 3: 檢查前端檔案...'));
-    
+
     const frontendPaths = [
       path.join(this.srcPath, '../public'),
       path.join(this.srcPath, '../client'),
@@ -193,17 +191,17 @@ class SystemDiagnostics {
     ];
 
     let frontendFound = false;
-    
+
     for (const frontendPath of frontendPaths) {
       if (fs.existsSync(frontendPath)) {
         frontendFound = true;
-        
+
         try {
           const files = globSync(path.join(frontendPath, '**/*.{html,js,ts,tsx,jsx}'));
-          
+
           for (const file of files) {
             const content = fs.readFileSync(file, 'utf8');
-            
+
             // 檢查 HTML 檔案
             if (file.endsWith('.html')) {
               // 檢查基本 HTML 結構
@@ -216,7 +214,7 @@ class SystemDiagnostics {
                   ['檢查 HTML 基本結構', '確認標籤完整性']
                 );
               }
-              
+
               // 檢查 JavaScript 引用
               const scriptMatches = content.match(/<script[^>]*src=['"]([^'"]+)['"]/g);
               if (scriptMatches) {
@@ -237,18 +235,18 @@ class SystemDiagnostics {
                 }
               }
             }
-            
+
             // 檢查 JavaScript/TypeScript 檔案
             if (file.match(/\.(js|ts|tsx|jsx)$/)) {
               // 檢查基本語法錯誤
               if (content.includes('console.error(') || content.includes('throw new Error(')) {
                 // 這是正常的錯誤處理
               }
-              
+
               // 檢查未閉合的括號（簡單檢查）
               const openBraces = (content.match(/\{/g) || []).length;
               const closeBraces = (content.match(/\}/g) || []).length;
-              
+
               if (openBraces !== closeBraces) {
                 this.addResult(
                   '前端檔案檢查',
@@ -260,13 +258,13 @@ class SystemDiagnostics {
               }
             }
           }
-          
+
           this.addResult(
             '前端檔案檢查',
             'pass',
             `檢查完成 ${frontendPath} 中的 ${files.length} 個檔案`
           );
-          
+
         } catch (error) {
           this.addResult(
             '前端檔案檢查',
@@ -292,22 +290,22 @@ class SystemDiagnostics {
   // 4. 執行 health check 測試
   async runHealthCheck() {
     console.log(chalk.yellow('🔍 步驟 4: 執行 Health Check 測試...'));
-    
+
     const port = process.env.PORT || 5000;
     const healthUrl = `http://localhost:${port}/health`;
-    
+
     return new Promise<void>((resolve) => {
       const req = http.get(healthUrl, (res) => {
         let data = '';
-        
+
         res.on('data', (chunk) => {
           data += chunk;
         });
-        
+
         res.on('end', () => {
           try {
             const healthData = JSON.parse(data);
-            
+
             if (res.statusCode === 200) {
               this.addResult(
                 'Health Check',
@@ -341,7 +339,7 @@ class SystemDiagnostics {
           resolve();
         });
       });
-      
+
       req.on('error', (error) => {
         this.addResult(
           'Health Check',
@@ -352,7 +350,7 @@ class SystemDiagnostics {
         );
         resolve();
       });
-      
+
       req.setTimeout(5000, () => {
         req.destroy();
         this.addResult(
@@ -370,7 +368,7 @@ class SystemDiagnostics {
   // 5. 彙整所有錯誤訊息
   generateReport() {
     console.log(chalk.yellow('📊 步驟 5: 彙整診斷報告...'));
-    
+
     const report = {
       timestamp: new Date().toISOString(),
       summary: {
@@ -387,27 +385,27 @@ class SystemDiagnostics {
     fs.writeFileSync(reportPath, JSON.stringify(report, null, 2));
 
     console.log(chalk.green(`\n📄 診斷報告已儲存至: ${reportPath}`));
-    
+
     return report;
   }
 
   // 執行完整診斷
   async runFullDiagnostics() {
     console.log(chalk.cyan('🚀 開始系統完整診斷...\n'));
-    
+
     await this.scanSourceCodeErrors();
     await this.checkEnvironmentVariables();
     await this.checkFrontendFiles();
     await this.runHealthCheck();
-    
+
     const report = this.generateReport();
-    
+
     // 顯示摘要
     console.log(chalk.cyan('\n📋 診斷摘要:'));
     console.log(chalk.green(`✅ 通過: ${report.summary.passed}`));
     console.log(chalk.yellow(`⚠️  警告: ${report.summary.warnings}`));
     console.log(chalk.red(`❌ 失敗: ${report.summary.failed}`));
-    
+
     // 顯示詳細錯誤
     if (report.summary.failed > 0) {
       console.log(chalk.red('\n🔥 發現的問題:'));
@@ -421,7 +419,7 @@ class SystemDiagnostics {
         }
       });
     }
-    
+
     // 顯示警告
     if (report.summary.warnings > 0) {
       console.log(chalk.yellow('\n⚠️ 警告事項:'));
@@ -432,7 +430,7 @@ class SystemDiagnostics {
         }
       });
     }
-    
+
     return report;
   }
 }
