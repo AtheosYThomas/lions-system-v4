@@ -326,7 +326,7 @@ class EventService {
         }
       });
 
-      const availableSlots = event.max_attendees ? event.max_attendees - currentRegistrations : null;
+      const availableSlots = event.max_attendees !== undefined ? event.max_attendees - currentRegistrations : null;
       const isFull = event.max_attendees ? currentRegistrations >= event.max_attendees : false;
 
       return {
