@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
@@ -83,7 +82,7 @@
       <div class="title">北大獅子會</div>
       <div class="subtitle">會員註冊系統</div>
     </div>
-    
+
     <div id="status" class="status loading">
       <div class="spinner"></div>
       正在初始化 LINE 登入...
@@ -104,8 +103,10 @@
       try {
         // 初始化 LIFF
         updateStatus('正在初始化 LINE 登入...');
-        await liff.init({ liffId: '2007739371-aKePV20l' });
-        
+        await liff.init({
+          liffId: process.env.LIFF_APP_ID || '2007739371-aKePV20l' // 請替換為實際的 LIFF App ID
+        });
+
         // 檢查登入狀態
         if (!liff.isLoggedIn()) {
           updateStatus('請登入 LINE 帳號...');
@@ -116,7 +117,7 @@
         // 獲取用戶資料
         updateStatus('正在取得用戶資料...');
         const profile = await liff.getProfile();
-        
+
         console.log('📱 用戶資料:', {
           userId: profile.userId,
           displayName: profile.displayName,
@@ -140,7 +141,7 @@
         }
 
         const result = await response.json();
-        
+
         if (result.success) {
           if (result.is_member) {
             updateStatus(`✅ 歡迎回來，${result.member_name}！`, 'success');
