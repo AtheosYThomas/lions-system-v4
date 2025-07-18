@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-07-18T00:31:11.699Z",
+  "timestamp": "2025-07-18T01:40:18.651Z",
   "summary": {
     "total": 42,
     "passed": 3,
@@ -409,10 +409,12 @@
     {
       "section": "Health Check",
       "status": "fail",
-      "message": "Health Check 連線逾時",
+      "message": "Health Check 連線失敗",
+      "details": "connect ECONNREFUSED 127.0.0.1:5000",
       "suggestions": [
-        "檢查伺服器回應時間",
-        "確認網路連線"
+        "確認伺服器已啟動",
+        "檢查埠號設定",
+        "確認防火牆設定"
       ]
     }
   ]
