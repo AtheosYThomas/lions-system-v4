@@ -1,3 +1,4 @@
+
 /**
  * 角色相關的型別定義
  */
@@ -93,9 +94,8 @@ export function getSubordinateRoles(role: Role): Role[] {
 /**
  * 取得角色的所有上級角色
  */
-export function getSuperiorRoles(role: Role[]): Role[] {
-  if (!role) return [];
-  const currentRank = roleRank[role[0]];
+export function getSuperiorRoles(role: Role): Role[] {
+  const currentRank = roleRank[role];
   return Object.values(Role).filter(r => roleRank[r] > currentRank);
 }
 
@@ -103,9 +103,6 @@ export type RoleGroup = keyof typeof roleGroups;
 
 /**
  * 檢查角色是否有足夠權限
- * @param userRole 用戶角色
- * @param requiredRole 需要的角色
- * @returns 是否有權限
  */
 export function hasRolePermission(userRole: Role | string, requiredRole: Role): boolean {
   const userRank = roleRank[userRole as Role] || 0;
