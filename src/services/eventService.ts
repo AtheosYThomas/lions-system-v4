@@ -330,7 +330,7 @@ class EventService {
       const availableSlots: number | null = maxAttendees !== null
         ? maxAttendees - currentRegistrations
         : null;
-      const isFull = event.max_attendees ? currentRegistrations >= event.max_attendees : false;
+      const isFull = maxAttendees !== null ? currentRegistrations >= maxAttendees : false;
 
       return {
         maxAttendees,
