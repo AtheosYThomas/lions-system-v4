@@ -1,4 +1,3 @@
-
 import express from 'express';
 import { authMiddleware, optionalAuthMiddleware, guestOnly } from '../../middleware/authMiddleware';
 import { 
@@ -11,7 +10,7 @@ import {
   requireMinRole,
   requireAnyRole
 } from '../../middleware/roleMiddleware';
-import { Role } from '../../types/role';
+import { Role, roleDisplayNames, hasMinimumRole, isInRoleGroup } from '../types/role';
 
 const router = express.Router();
 
@@ -85,7 +84,7 @@ router.get('/register-page', guestOnly, (req, res) => {
 router.get('/test/role-system', authMiddleware, (req, res) => {
   const member = req.member!;
   const userRole = member.role as Role;
-  
+
   res.json({
     message: '角色系統測試',
     user: {
