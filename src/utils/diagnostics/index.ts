@@ -1,28 +1,68 @@
 
+// src/utils/diagnostics/index.ts - 診斷工具統一入口
 export { validateEnvironment } from './envValidation';
 export { checkEnvironment } from './envCheck';
+
+// 匯入所有診斷模組
+export { SystemDiagnostics } from './systemDiagnostics';
+export { LiffDiagnostics } from './liffDiagnostics';
+export { SystemHealthChecker } from './systemHealth';
+export { TroubleshootReporter } from './troubleshootReporter';
+export { DetailedTroubleshooter } from './detailedTroubleshooter';
 
 // 統一的診斷介面
 export interface DiagnosticResult {
   component: string;
   status: 'pass' | 'fail' | 'warning';
   message: string;
+  details?: string;
   suggestion?: string;
 }
 
-export class SystemDiagnostics {
-  static async runAll(): Promise<DiagnosticResult[]> {
-    const results: DiagnosticResult[] = [];
+export interface SystemReport {
+  timestamp: string;
+  summary: {
+    total: number;
+    pass: number;
+    warning: number;
+    error: number;
+    healthScore: number;
+  };
+  results: DiagnosticResult[];
+}
+
+// 主要診斷工具類別
+export class DiagnosticsManager {
+  static async runFullSystemCheck(): Promise<SystemReport> {
+    const systemDiag = new SystemDiagnostics();
+    const liffDiag = new LiffDiagnostics();
+    const healthChecker = new SystemHealthChecker();
     
-    // 環境變數檢查
-    const envValid = validateEnvironment();
-    results.push({
-      component: 'Environment',
-      status: envValid ? 'pass' : 'fail',
-      message: envValid ? '環境變數設定正確' : '環境變數設定不完整',
-      suggestion: envValid ? undefined : '請檢查 .env 檔案設定'
-    });
+    const results = await Promise.all([
+      systemDiag.runDiagnostics(),
+      liffDiag.runDiagnostics(),
+      healthChecker.runHealthCheck()
+    ]);
     
-    return results;
+    return this.generateSystemReport(results.flat());
+  }
+  
+  private static generateSystemReport(results: DiagnosticResult[]): SystemReport {
+    const pass = results.filter(r => r.status === 'pass').length;
+    const warning = results.filter(r => r.status === 'warning').length;
+    const error = results.filter(r => r.status === 'fail').length;
+    const healthScore = Math.round((pass / results.length) * 100);
+    
+    return {
+      timestamp: new Date().toISOString(),
+      summary: {
+        total: results.length,
+        pass,
+        warning,
+        error,
+        healthScore
+      },
+      results
+    };
   }
 }

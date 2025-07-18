@@ -11,7 +11,7 @@
     "start": "node dist/index.js",
     "test": "tsx src/scripts/test/index.ts",
     "seed": "tsx src/scripts/test/seedMockData.ts",
-    "diagnose": "tsx src/scripts/tools/fullSystemTest.ts",
+    "diagnose": "tsx src/utils/diagnostics/runner.ts",
     "quick": "tsx src/scripts/tools/quickStart.ts",
     "test:seed": "tsx src/scripts/test/seedMockData.ts",
     "test:functions": "tsx src/scripts/test/testServiceFunctions.ts",
