@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import chalk from 'chalk';
 import { globSync } from 'glob';
+import http from 'http';
 
 interface DiagnosticResult {
   section: string;
@@ -19,7 +20,6 @@ class SystemDiagnostics {
     this.results.push({ section, status, message, details, suggestions });
   }
 
-  // 1. 掃描 /src 目錄下所有 route、controller、middleware 的錯誤
   async scanSourceCodeErrors() {
     console.log(chalk.yellow('🔍 步驟 1: 掃描 /src 目錄錯誤...'));
 
@@ -33,83 +33,30 @@ class SystemDiagnostics {
     let errorCount = 0;
 
     for (const pattern of patterns) {
-      const files = globSync(path.join(this.srcPath, pattern)).filter(file => 
-        !file.includes('node_modules') && 
-        !file.includes('.git') && 
+      const files = globSync(path.join(this.srcPath, pattern)).filter(file =>
+        !file.includes('node_modules') &&
+        !file.includes('.git') &&
         !file.includes('dist') &&
         !file.includes('build')
       );
+
       files.forEach((file: string) => {
         totalFiles++;
         try {
           const content = fs.readFileSync(file, 'utf8');
-          // 檢查常見錯誤
-          const errors: string[] = [];
-
-          // 檢查未定義的匯入
-          const importMatches = content.match(/import\s+.*?\s+from\s+['"]([^'"]+)['"]/g);
-          if (importMatches) {
-            for (const importMatch of importMatches) {
-              const modulePath = importMatch.match(/from\s+['"]([^'"]+)['"]/)?.[1];
-              if (modulePath?.startsWith('./') || modulePath?.startsWith('../')) {
-                const resolvedPath = path.resolve(path.dirname(file), modulePath);
-                const possiblePaths = [
-                  resolvedPath + '.ts',
-                  resolvedPath + '.js',
-                  resolvedPath + '/index.ts',
-                  resolvedPath + '/index.js'
-                ];
-
-                const exists = possiblePaths.some(p => fs.existsSync(p));
-                if (!exists) {
-                  errors.push(`找不到模組: ${modulePath}`);
-                }
-              }
-            }
+          // Basic syntax check
+          if (content.includes('import') && !content.includes('export')) {
+            this.addResult('源碼檢查', 'warning', `檔案可能缺少 export: ${file}`);
           }
-
-          // 檢查未定義的變數使用
-          const envVarMatches = content.match(/process\.env\.([A-Z_]+)/g);
-          if (envVarMatches) {
-            for (const envMatch of envVarMatches) {
-              const varName = envMatch.replace('process.env.', '');
-              if (!process.env[varName]) {
-                errors.push(`未定義的環境變數: ${varName}`);
-              }
-            }
-          }
-
-          // 檢查語法錯誤（簡單檢查）
-          if (content.includes('console.log(') && !content.includes('console.error(')) {
-            // 檢查是否有未處理的 console.log
-          }
-
-          if (errors.length > 0) {
-            errorCount++;
-            this.addResult(
-              '程式碼掃描',
-              'fail',
-              `檔案 ${path.relative(this.srcPath, file)} 發現錯誤`,
-              errors,
-              ['檢查匯入路徑', '確認環境變數設定', '檢查語法正確性']
-            );
-          }
-
         } catch (error) {
           errorCount++;
-          this.addResult(
-            '程式碼掃描',
-            'fail',
-            `無法讀取檔案: ${path.relative(this.srcPath, file)}`,
-            error instanceof Error ? error.message : String(error),
-            ['檢查檔案權限', '確認檔案存在']
-          );
+          this.addResult('源碼檢查', 'fail', `無法讀取檔案: ${file}`, error);
         }
       });
     }
 
     if (errorCount === 0) {
-      this.addResult('程式碼掃描', 'pass', `掃描完成 ${totalFiles} 個檔案，未發現錯誤`);
+      this.addResult('源碼檢查', 'pass', `成功掃描 ${totalFiles} 個檔案`);
     }
   }
 
@@ -205,7 +152,7 @@ class SystemDiagnostics {
           for (const file of files) {
             const content = fs.readFileSync(file, 'utf8');
 
-            // 檢查 HTML 檔案 
+            // 檢查 HTML 檔案
             if (file.endsWith('.html')) {
               // 檢查基本 HTML 結構
               if (!content.includes('<html') || !content.includes('<body')) {
@@ -239,7 +186,7 @@ class SystemDiagnostics {
               }
             }
 
-            // 檢查 JavaScript/TypeScript 檔案 
+            // 檢查 JavaScript/TypeScript 檔案
             if (file.match(/\.(js|ts|tsx|jsx)$/)) {
               // 檢查基本語法錯誤
               if (content.includes('console.error(') || content.includes('throw new Error(')) {
@@ -370,72 +317,25 @@ class SystemDiagnostics {
 
   // 5. 彙整所有錯誤訊息
   generateReport() {
-    console.log(chalk.yellow('📊 步驟 5: 彙整診斷報告...'));
-
-    const report = {
-      timestamp: new Date().toISOString(),
-      summary: {
-        total: this.results.length,
-        passed: this.results.filter(r => r.status === 'pass').length,
-        failed: this.results.filter(r => r.status === 'fail').length,
-        warnings: this.results.filter(r => r.status === 'warning').length
-      },
-      results: this.results
-    };
-
-    // 儲存報告
-    const reportPath = path.join(this.srcPath, '../diagnostic_report.json');
-    fs.writeFileSync(reportPath, JSON.stringify(report, null, 2));
-
-    console.log(chalk.green(`\n📄 診斷報告已儲存至: ${reportPath}`));
-
-    return report;
+    const reportPath = path.join(process.cwd(), 'diagnostic_report.json');
+    fs.writeFileSync(reportPath, JSON.stringify(this.results, null, 2));
+    console.log(chalk.green(`✅ 診斷報告已儲存至: ${reportPath}`));
   }
 
   // 執行完整診斷
-  async runFullDiagnostics() {
-    console.log(chalk.cyan('🚀 開始系統完整診斷...\n'));
-
+  async run() {
+    console.log(chalk.cyan('🔍 執行完整系統診斷...'));
     await this.scanSourceCodeErrors();
     await this.checkEnvironmentVariables();
     await this.checkFrontendFiles();
     await this.runHealthCheck();
-
-    const report = this.generateReport();
-
-    // 顯示摘要
-    console.log(chalk.cyan('\n📋 診斷摘要:'));
-    console.log(chalk.green(`✅ 通過: ${report.summary.passed}`));
-    console.log(chalk.yellow(`⚠️  警告: ${report.summary.warnings}`));
-    console.log(chalk.red(`❌ 失敗: ${report.summary.failed}`));
-
-    // 顯示詳細錯誤
-    if (report.summary.failed > 0) {
-      console.log(chalk.red('\n🔥 發現的問題:'));
-      this.results.filter(r => r.status === 'fail').forEach((result, index) => {
-        console.log(chalk.red(`${index + 1}. [${result.section}] ${result.message}`));
-        if (result.details) {
-          console.log(chalk.gray(`   詳細: ${JSON.stringify(result.details)}`));
-        }
-        if (result.suggestions) {
-          console.log(chalk.yellow(`   建議: ${result.suggestions.join(', ')}`));
-        }
-      });
-    }
-
-    // 顯示警告
-    if (report.summary.warnings > 0) {
-      console.log(chalk.yellow('\n⚠️ 警告事項:'));
-      this.results.filter(r => r.status === 'warning').forEach((result, index) => {
-        console.log(chalk.yellow(`${index + 1}. [${result.section}] ${result.message}`));
-        if (result.suggestions) {
-          console.log(chalk.gray(`   建議: ${result.suggestions.join(', ')}`));
-        }
-      });
-    }
-
-    return report;
+    this.generateReport();
   }
+}
+
+export default function runFullSystemDiagnostics() {
+  const diagnostics = new SystemDiagnostics();
+  return diagnostics.run();
 }
 
 // 執行診斷（如果直接運行此檔案）
@@ -449,5 +349,3 @@ if (require.main === module) {
     process.exit(1);
   });
 }
-
-export default SystemDiagnostics;

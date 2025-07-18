@@ -2,7 +2,11 @@
 import { WebhookEvent, MessageEvent, TextMessage } from '@line/bot-sdk';
 
 export interface LineTextMessageEvent extends MessageEvent {
-  message: TextMessage;
+  message: {
+    type: 'text';
+    text: string;
+    emojis?: { index: number; length: number; productId: string; emojiId: string; }[];
+  };
 }
 
 export interface LineWebhookRequestBody {
