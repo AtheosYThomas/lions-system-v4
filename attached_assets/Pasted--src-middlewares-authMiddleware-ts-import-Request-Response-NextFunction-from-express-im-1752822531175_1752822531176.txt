@@ -1,0 +1,68 @@
+// src/middlewares/authMiddleware.ts
+import { Request, Response, NextFunction } from 'express';
+import { Member } from '../models/member';
+
+export const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const lineUid = req.headers['x-line-uid'] || req.session?.line_uid || req.body.line_uid;
+    if (!lineUid || typeof lineUid !== 'string') {
+      return res.status(401).json({ error: '未登入，請先註冊或登入' });
+    }
+
+    const member = await Member.findOne({ where: { line_uid: lineUid } });
+    if (!member || member.status !== 'active') {
+      return res.status(403).json({ error: '帳號未啟用或無效' });
+    }
+
+    req.member = member;
+    next();
+  } catch (err) {
+    console.error('authMiddleware 錯誤:', err);
+    res.status(500).json({ error: '驗證失敗' });
+  }
+};
+
+
+// src/middlewares/roleMiddleware.ts
+import { Request, Response, NextFunction } from 'express';
+
+export const roleMiddleware = (allowedRole: string) => {
+  return (req: Request, res: Response, next: NextFunction) => {
+    const member = req.member;
+    if (!member) {
+      return res.status(401).json({ error: '未驗證身份' });
+    }
+
+    if (member.role !== allowedRole && member.role !== 'admin') {
+      return res.status(403).json({ error: '權限不足' });
+    }
+
+    next();
+  };
+};
+
+
+// src/routes/admin/dashboard.ts
+import express from 'express';
+import { authMiddleware } from '../../middlewares/authMiddleware';
+import { roleMiddleware } from '../../middlewares/roleMiddleware';
+
+const router = express.Router();
+
+router.get('/admin/dashboard', authMiddleware, roleMiddleware('president'), async (req, res) => {
+  try {
+    res.json({
+      message: '歡迎來到後台管理介面',
+      user: req.member.name,
+      role: req.member.role,
+    });
+  } catch (error) {
+    res.status(500).json({ error: '無法載入後台資料' });
+  }
+});
+
+export default router;
+
+// 使用方式：將此 router 加入 src/app.ts 或 src/index.ts：
+// import adminDashboardRouter from './routes/admin/dashboard';
+// app.use(adminDashboardRouter);
