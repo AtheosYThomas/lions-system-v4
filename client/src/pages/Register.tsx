@@ -10,7 +10,8 @@ export default function Register() {
   useEffect(() => {
     const initLiff = async () => {
       try {
-        const liffId = import.meta.env.VITE_LIFF_ID;
+        // 使用固定的 LIFF ID
+        const liffId = '2007739371-aKePV20l';
         console.log('LIFF ID:', liffId);
         
         if (!liffId) {
