@@ -2,6 +2,22 @@ import FileModel from '../models/file';
 import Member from '../models/member';
 import { Op } from 'sequelize';
 
+// Define proper interface for FileModel instance
+interface IFileModel {
+  id?: number;
+  original_name: string;
+  mime_type?: string;
+  size?: number;
+  url: string;
+  usage: 'event_cover' | 'registration_attachment' | 'announcement_image' | 'profile_avatar';
+  uploaded_by?: number;
+  related_id?: number;
+  status?: string;
+  created_at?: Date;
+  updated_at?: Date;
+  update?: (data: any) => Promise<any>;
+}
+
 interface FileUploadData {
   original_name: string;
   mime_type?: string;
@@ -25,7 +41,7 @@ class FileService {
   /**
    * 上傳檔案記錄
    */
-  async uploadFile(fileData: FileUploadData): Promise<FileModel> {
+  async uploadFile(fileData: FileUploadData): Promise<IFileModel> {
     try {
       // 驗證檔案用途
       const validUsages = ['event_cover', 'registration_attachment', 'announcement_image', 'profile_avatar'];
@@ -56,7 +72,7 @@ class FileService {
   /**
    * 根據 ID 獲取檔案
    */
-  async getFileById(id: number): Promise<FileModel | null> {
+  async getFileById(id: number): Promise<IFileModel | null> {
     try {
       return await FileModel.findByPk(id, {
         include: [
@@ -144,7 +160,7 @@ class FileService {
   /**
    * 根據用途獲取檔案
    */
-  async getFilesByUsage(usage: string, relatedId?: number): Promise<FileModel[]> {
+  async getFilesByUsage(usage: string, relatedId?: number): Promise<IFileModel[]> {
     try {
       const whereClause: any = {
         usage,
@@ -176,7 +192,7 @@ class FileService {
   /**
    * 更新檔案資訊
    */
-  async updateFile(id: number, updateData: Partial<FileUploadData>): Promise<FileModel> {
+  async updateFile(id: number, updateData: Partial<FileUploadData>): Promise<IFileModel> {
     try {
       const file = await FileModel.findByPk(id);
 
