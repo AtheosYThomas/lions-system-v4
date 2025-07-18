@@ -8,7 +8,7 @@ interface EventAttributes {
   description?: string;
   date: Date;
   location?: string;
-  max_attendees?: number;
+  max_attendees?: number | null;
   status: string;
   created_at: Date;
   updated_at?: Date;
@@ -20,7 +20,7 @@ class Event extends Model<EventAttributes> implements EventAttributes {
   public description?: string;
   public date!: Date;
   public location?: string;
-  public max_attendees?: number;
+  public max_attendees?: number | null;
   public status!: string;
   public created_at!: Date;
   public updated_at?: Date;
@@ -42,7 +42,10 @@ Event.init({
     allowNull: false
   },
   location: DataTypes.STRING,
-  max_attendees: DataTypes.INTEGER,
+  max_attendees: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+  },
   status: {
     type: DataTypes.STRING,
     defaultValue: 'active'
