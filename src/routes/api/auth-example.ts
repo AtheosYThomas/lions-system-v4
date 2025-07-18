@@ -101,7 +101,6 @@ router.get('/test/role-system', authMiddleware, (req, res) => {
       inFinancial: isInRoleGroup(userRole, 'financial')
     }
   });
-});ge: '註冊頁面 - 僅限未登入用戶' });
 });
 
 // 範例 11: 可選認證（登入與未登入都可訪問，但有不同內容）

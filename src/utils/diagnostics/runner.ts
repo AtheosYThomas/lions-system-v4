@@ -1,5 +1,4 @@
 
-#!/usr/bin/env node
 import chalk from 'chalk';
 import fs from 'fs';
 import { DiagnosticsManager, SystemReport } from './index';

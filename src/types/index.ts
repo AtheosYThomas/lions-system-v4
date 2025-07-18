@@ -83,4 +83,3 @@ export * from './payment.d';
 export * from './registration.d';
 export * from './line';
 export * from './role';
-```
