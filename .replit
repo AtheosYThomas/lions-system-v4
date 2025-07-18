@@ -82,6 +82,15 @@ mode = "sequential"
 task = "shell.exec"
 args = "npx tsx src/utils/diagnostics/fullSystemDiagnostics.ts"
 
+[[workflows.workflow]]
+name = "System Diagnostics"
+author = 44484841
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npx tsx src/utils/diagnostics/systemReport.ts"
+
 [[ports]]
 localPort = 3000
 externalPort = 80
