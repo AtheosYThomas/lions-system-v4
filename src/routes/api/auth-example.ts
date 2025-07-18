@@ -10,7 +10,7 @@ import {
   requireMinRole,
   requireAnyRole
 } from '../../middleware/roleMiddleware';
-import { Role, roleDisplayNames, hasMinimumRole, isInRoleGroup } from '../types/role';
+import { Role, roleDisplayNames, hasMinimumRole, isInRoleGroup } from '../../types/role';
 
 const router = express.Router();
 
@@ -90,8 +90,7 @@ router.get('/test/role-system', authMiddleware, (req, res) => {
     user: {
       name: member.name,
       role: userRole,
-      roleDisplayName: roleDisplayNames[userRole],
-      roleRank: roleRank[userRole]
+      roleDisplayName: roleDisplayNames[userRole]
     },
     permissions: {
       isOfficer: hasMinimumRole(userRole, Role.Officer),
