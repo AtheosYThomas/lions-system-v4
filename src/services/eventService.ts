@@ -326,9 +326,8 @@ class EventService {
         }
       });
 
-      const availableSlots: number | null = typeof event.max_attendees === 'number'
-        ? event.max_attendees - currentRegistrations
-        : null;
+      const maxAttendees: number | null = event.max_attendees ?? null;
+      const availableSlots: number | null = maxAttendees !== null ? maxAttendees - currentRegistrations : null;
       const isFull = event.max_attendees ? currentRegistrations >= event.max_attendees : false;
 
       return {
