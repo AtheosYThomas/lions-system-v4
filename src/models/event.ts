@@ -66,5 +66,20 @@ Event.init({
 
 // 關聯設定將在 src/models/index.ts 中統一處理
 
+// Add getPublicData method to Event prototype
+Event.prototype.getPublicData = function (): any {
+  return {
+    id: this.id,
+    title: this.title,
+    description: this.description,
+    date: this.date,
+    location: this.location,
+    max_attendees: this.max_attendees,
+    status: this.status,
+    created_at: this.created_at,
+    updated_at: this.updated_at,
+  };
+};
+
 export default Event;
 export { Event };

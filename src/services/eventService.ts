@@ -54,7 +54,7 @@ class EventService {
         created_at: eventData.created_at || new Date()
       });
 
-      return event;
+      return (event as any).getPublicData();
     } catch (error) {
       console.error('創建活動失敗:', error);
       throw error;
@@ -88,9 +88,11 @@ class EventService {
         );
       }
 
-      return await Event.findByPk(id, {
+      const event = await Event.findByPk(id, {
         include: includeOptions
       });
+
+      return event ? (event as any).getPublicData() : null;
     } catch (error) {
       console.error('獲取活動失敗:', error);
       throw error;
@@ -146,7 +148,7 @@ class EventService {
       });
 
       return {
-        events: result.rows,
+        events: result.rows.map((event: any) => event.getPublicData()),
         total: result.count,
         limit: options.limit || 20,
         offset: options.offset || 0
@@ -184,7 +186,7 @@ class EventService {
       }
 
       await event.update(updateData);
-      return event;
+      return (event as any).getPublicData();
     } catch (error) {
       console.error('更新活動失敗:', error);
       throw error;
@@ -289,7 +291,7 @@ class EventService {
    */
   async getUpcomingEvents(limit: number = 5): Promise<Event[]> {
     try {
-      return await Event.findAll({
+      const events = await Event.findAll({
         where: {
           status: 'active',
           date: { [Op.gte]: new Date() }
@@ -305,6 +307,8 @@ class EventService {
           }
         ]
       });
+
+      return events.map((event: any) => event.getPublicData());
     } catch (error) {
       console.error('獲取即將到來的活動失敗:', error);
       throw error;

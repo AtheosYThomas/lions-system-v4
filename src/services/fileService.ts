@@ -62,7 +62,7 @@ class FileService {
         status: 'active'
       });
 
-      return (file as any).getPublicData();
+      return file.getPublicData();
     } catch (error) {
       console.error('檔案上傳失敗:', error);
       throw error;
@@ -84,7 +84,7 @@ class FileService {
         ]
       });
 
-      return file ? (file as any).getPublicData() : null;
+      return file ? file.getPublicData() : null;
     } catch (error) {
       console.error('獲取檔案失敗:', error);
       throw error;
@@ -205,7 +205,7 @@ class FileService {
       }
 
       await file.update(updateData);
-      return (file as any).getPublicData();
+      return file.getPublicData();
     } catch (error) {
       console.error('更新檔案失敗:', error);
       throw error;
