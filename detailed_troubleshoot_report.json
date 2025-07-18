@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-07-18T22:44:03.478Z",
+  "timestamp": "2025-07-18T22:46:01.973Z",
   "summary": {
     "totalIssues": 3,
     "errors": 3,
@@ -12,7 +12,7 @@
       "category": "TypeScript編譯",
       "severity": "high",
       "issue": "TypeScript 編譯錯誤",
-      "details": "src/index.ts(3,10): error TS2614: Module '\"./config/database\"' has no exported member 'sequelize'. Did you mean to use 'import sequelize from \"./config/database\"' instead?\nsrc/types/role.ts(82,37): error TS2345: Argument of type 'Role' is not assignable to parameter of type 'Role.President | Role.Admin'.\n",
+      "details": "src/types/role.ts(82,37): error TS2345: Argument of type 'Role' is not assignable to parameter of type 'Role.President | Role.Admin'.\n",
       "suggestion": "修正 TypeScript 語法錯誤",
       "status": "error"
     },
