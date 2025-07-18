@@ -19,7 +19,7 @@ export interface AnnouncementAttributes extends InferAttributes<Announcement> {
   audience: 'all' | 'officers' | 'members';
   category: 'event' | 'system' | 'personnel';
   status: 'draft' | 'scheduled' | 'published';
-  scheduled_at?: Date | null;
+  scheduled_at: Date | null;
   published_at?: Date | null;
   is_visible: boolean;
   created_at: Date;

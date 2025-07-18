@@ -13,6 +13,7 @@ interface EventCreationData {
   location?: string;
   max_attendees?: number;
   status?: string;
+  created_at?: Date;
 }
 
 interface EventUpdateData extends Partial<EventCreationData> {
@@ -49,7 +50,8 @@ class EventService {
 
       const event = await Event.create({
         ...eventData,
-        status: eventData.status || 'active'
+        status: eventData.status || 'active',
+        created_at: eventData.created_at || new Date()
       });
 
       return event;

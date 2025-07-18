@@ -1,4 +1,3 @@
-
 import { sequelize } from '../../models/index';
 import memberService from '../../services/memberService';
 import eventService from '../../services/eventService';
@@ -23,7 +22,7 @@ class ServiceFunctionTester {
     if (error) {
       this.testErrors[testName] = error;
     }
-    
+
     const status = passed ? '✅' : '❌';
     console.log(`${status} ${testName}`);
     if (error && !passed) {
@@ -36,12 +35,12 @@ class ServiceFunctionTester {
    */
   async testMemberService() {
     console.log('\n👥 測試會員服務功能...');
-    
+
     try {
       // 測試獲取會員統計
       const stats = await memberService.getMemberStats();
       this.recordTest('memberService.getMemberStats', 
-        typeof stats === 'object' && stats.total >= 0);
+        typeof stats === 'object' && stats?.total >= 0);
 
       // 測試搜尋會員
       const searchResult = await memberService.searchMembers({
@@ -71,12 +70,12 @@ class ServiceFunctionTester {
    */
   async testEventService() {
     console.log('\n🎭 測試活動服務功能...');
-    
+
     try {
       // 測試獲取活動統計
       const stats = await eventService.getEventStats();
       this.recordTest('eventService.getEventStats', 
-        typeof stats === 'object' && stats.totalEvents >= 0);
+        typeof stats === 'object' && typeof stats?.totalEvents === 'number');
 
       // 測試搜尋活動
       const searchResult = await eventService.searchEvents({
@@ -112,12 +111,12 @@ class ServiceFunctionTester {
    */
   async testAnnouncementService() {
     console.log('\n📢 測試公告服務功能...');
-    
+
     try {
       // 測試獲取公告統計
       const stats = await announcementService.getAnnouncementStats();
       this.recordTest('announcementService.getAnnouncementStats', 
-        typeof stats === 'object' && stats.total >= 0);
+        typeof stats === 'object' && stats?.total >= 0);
 
       // 測試搜尋公告
       const searchResult = await announcementService.searchAnnouncements({
@@ -152,12 +151,12 @@ class ServiceFunctionTester {
    */
   async testRegistrationService() {
     console.log('\n📝 測試報名服務功能...');
-    
+
     try {
       // 測試獲取報名統計
       const stats = await registrationService.getRegistrationStats();
       this.recordTest('registrationService.getRegistrationStats', 
-        typeof stats === 'object' && stats.totalRegistrations >= 0);
+        typeof stats === 'object' && typeof stats?.totalRegistrations === 'number');
 
       // 測試搜尋報名記錄
       const searchResult = await registrationService.searchRegistrations({
@@ -170,7 +169,7 @@ class ServiceFunctionTester {
       // 測試檢查報名狀態（使用第一個會員和第一個活動）
       const members = await memberService.searchMembers({ limit: 1 });
       const events = await eventService.searchEvents({ limit: 1 });
-      
+
       if (members.members.length > 0 && events.events.length > 0) {
         const registrationCheck = await registrationService.isRegistered(
           members.members[0].id, 
@@ -193,17 +192,17 @@ class ServiceFunctionTester {
    */
   async testCheckinService() {
     console.log('\n✅ 測試簽到服務功能...');
-    
+
     try {
       // 測試獲取簽到統計
       const stats = await checkinService.getCheckinStats();
       this.recordTest('checkinService.getCheckinStats', 
-        typeof stats === 'object' && stats.totalCheckins >= 0);
+        typeof stats === 'object' && stats?.totalCheckins >= 0);
 
       // 測試驗證簽到資格（使用第一個會員和第一個活動）
       const members = await memberService.searchMembers({ limit: 1 });
       const events = await eventService.searchEvents({ limit: 1 });
-      
+
       if (members.members.length > 0 && events.events.length > 0) {
         const eligibilityCheck = await checkinService.validateCheckinEligibility(
           members.members[0].id, 
@@ -235,7 +234,7 @@ class ServiceFunctionTester {
    */
   async testAdminService() {
     console.log('\n🔧 測試管理員服務功能...');
-    
+
     try {
       // 測試獲取儀表板統計
       const dashboardStats = await adminService.getDashboardStats();
@@ -265,16 +264,16 @@ class ServiceFunctionTester {
    */
   async testDatabaseConnection() {
     console.log('\n🗄️ 測試資料庫連線...');
-    
+
     try {
       await sequelize.authenticate();
       this.recordTest('database.connection', true);
-      
+
       // 測試查詢
       const result = await sequelize.query('SELECT 1 as test');
       this.recordTest('database.query', 
         Array.isArray(result) && result.length === 2);
-        
+
     } catch (error) {
       this.recordTest('database.connection', false, error.message);
     }
@@ -286,16 +285,16 @@ class ServiceFunctionTester {
   generateReport() {
     console.log('\n📊 測試報告');
     console.log('=' * 50);
-    
+
     const totalTests = Object.keys(this.testResults).length;
     const passedTests = Object.values(this.testResults).filter(Boolean).length;
     const failedTests = totalTests - passedTests;
-    
+
     console.log(`總測試項目: ${totalTests}`);
     console.log(`通過測試: ${passedTests}`);
     console.log(`失敗測試: ${failedTests}`);
     console.log(`通過率: ${((passedTests / totalTests) * 100).toFixed(1)}%`);
-    
+
     if (failedTests > 0) {
       console.log('\n❌ 失敗的測試項目:');
       Object.entries(this.testResults).forEach(([testName, passed]) => {
@@ -304,9 +303,9 @@ class ServiceFunctionTester {
         }
       });
     }
-    
+
     console.log('\n' + '=' * 50);
-    
+
     return {
       total: totalTests,
       passed: passedTests,
@@ -322,7 +321,7 @@ class ServiceFunctionTester {
    */
   async runAllTests() {
     console.log('🧪 開始執行服務功能測試...');
-    
+
     try {
       await this.testDatabaseConnection();
       await this.testMemberService();
@@ -331,7 +330,7 @@ class ServiceFunctionTester {
       await this.testRegistrationService();
       await this.testCheckinService();
       await this.testAdminService();
-      
+
       return this.generateReport();
     } catch (error) {
       console.error('❌ 測試執行失敗:', error);
@@ -343,10 +342,10 @@ class ServiceFunctionTester {
 // 主執行函數
 async function main() {
   const tester = new ServiceFunctionTester();
-  
+
   try {
     const report = await tester.runAllTests();
-    
+
     if (report.failed === 0) {
       console.log('\n🎉 所有測試通過！');
       process.exit(0);
