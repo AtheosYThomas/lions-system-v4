@@ -10,23 +10,43 @@ class LineController {
   async handleWebhook(req: Request, res: Response): Promise<void> {
     try {
       console.log('📨 LINE Controller 收到 webhook 請求');
-      console.log('📦 Request body:', JSON.stringify(req.body, null, 2));
+      console.log('📦 Request headers:', {
+        'content-type': req.headers['content-type'],
+        'user-agent': req.headers['user-agent'],
+        'x-line-signature': req.headers['x-line-signature'] ? 'Present' : 'Missing'
+      });
 
       const body: LineWebhookRequestBody = req.body;
+      console.log('📦 Request body:', JSON.stringify(body, null, 2));
       
-      if (!body || !body.events) {
-        console.log('✅ Webhook 驗證請求或空事件');
+      if (!body) {
+        console.log('⚠️ 請求體為空');
+        res.status(200).send('OK');
+        return;
+      }
+
+      if (!body.events) {
+        console.log('✅ Webhook 驗證請求（無 events 字段）');
         res.status(200).send('OK');
         return;
       }
 
       if (body.events.length === 0) {
-        console.log('✅ 空事件陣列');
+        console.log('✅ 空事件陣列 - 可能是測試請求');
         res.status(200).send('OK');
         return;
       }
 
-      console.log(`📨 處理 ${body.events.length} 個事件`);
+      console.log(`📨 開始處理 ${body.events.length} 個事件`);
+      for (let i = 0; i < body.events.length; i++) {
+        const event = body.events[i];
+        console.log(`📨 事件 ${i + 1}:`, {
+          type: event.type,
+          timestamp: event.timestamp,
+          source: event.source
+        });
+      }
+
       const result = await lineService.handleWebhookEvents(body.events);
 
       if (!result.success) {
@@ -36,10 +56,12 @@ class LineController {
       }
 
       // LINE webhook 必須回傳 200 狀態碼
+      console.log('📤 回應 LINE Platform: 200 OK');
       res.status(200).send('OK');
       
     } catch (error) {
       console.error('❌ LineController webhook 處理錯誤:', error);
+      console.error('❌ 錯誤堆疊:', error instanceof Error ? error.stack : 'No stack trace');
       // LINE webhook 必須回傳 200，否則會重複發送
       res.status(200).send('OK');
     }
