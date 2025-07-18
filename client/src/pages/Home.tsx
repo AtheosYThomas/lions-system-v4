@@ -167,20 +167,6 @@ export default function Home() {
           <p style={{ opacity: 0.9 }}>報名參加獅子會活動</p>
         </div>
 
-        {/* 會員註冊 */}
-        <div style={{
-          background: 'rgba(255, 152, 0, 0.8)',
-          padding: '30px',
-          borderRadius: '15px',
-          textAlign: 'center',
-          cursor: 'pointer',
-          transition: 'transform 0.3s ease'
-        }}>
-          <div style={{ fontSize: '3rem', marginBottom: '15px' }}>🆕</div>
-          <h3 style={{ marginBottom: '10px' }}>會員註冊</h3>
-          <p style={{ opacity: 0.9 }}>註冊成為獅子會新會員</p>
-        </div>
-
         {/* 會員註冊表 */}
         <div style={{
           background: 'rgba(156, 39, 176, 0.8)',
