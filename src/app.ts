@@ -70,6 +70,7 @@ app.get('/api/system/status', (req, res) => {
 
 // 靜態檔案服務（需要在其他路由之前）
 app.use('/public', express.static(path.join(__dirname, '../public')));
+app.use(express.static(path.join(__dirname, '../public')));
 
 // LINE Webhook 路由（優先處理）
 app.use('/webhook', lineWebhook);
