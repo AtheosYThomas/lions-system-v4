@@ -23,6 +23,14 @@ class AdminService {
       totalRegistrations: 0
     };
   }
+
+  async getSystemOverview() {
+    return this.getSystemSummary();
+  }
+
+  async getEventReport() {
+    return this.exportEventsReport({});
+  }
   // 系統總覽統計
   async getSystemSummary() {
     try {

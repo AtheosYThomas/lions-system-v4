@@ -11,6 +11,7 @@ interface EventAttributes {
   max_attendees?: number;
   status: string;
   created_at: Date;
+  updated_at?: Date;
 }
 
 class Event extends Model<EventAttributes> implements EventAttributes {
@@ -22,6 +23,7 @@ class Event extends Model<EventAttributes> implements EventAttributes {
   public max_attendees?: number;
   public status!: string;
   public created_at!: Date;
+  public updated_at?: Date;
 }
 
 Event.init({
@@ -48,6 +50,10 @@ Event.init({
   created_at: {
     type: DataTypes.DATE,
     defaultValue: DataTypes.NOW
+  },
+  updated_at: {
+    type: DataTypes.DATE,
+    allowNull: true
   }
 }, {
   sequelize,
