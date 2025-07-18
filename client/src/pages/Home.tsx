@@ -197,6 +197,33 @@ export default function Home() {
             <h3 style={{ margin: '0 0 0.5rem 0', fontSize: '1.4rem' }}>會員註冊</h3>
             <p style={{ margin: 0, opacity: 0.9, fontSize: '1rem' }}>註冊成為獅子會會員</p>
           </a>
+
+          <a href="/register.html" style={{ 
+            display: 'block',
+            padding: '2rem 1.5rem',
+            backgroundColor: 'rgba(139, 69, 19, 0.8)',
+            color: 'white',
+            textDecoration: 'none',
+            borderRadius: '1rem',
+            border: '1px solid rgba(255,255,255,0.2)',
+            backdropFilter: 'blur(10px)',
+            transition: 'all 0.3s ease',
+            textAlign: 'center',
+            boxShadow: '0 8px 32px rgba(0,0,0,0.15)',
+            transform: 'translateY(0)',
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = 'translateY(-5px)';
+            e.currentTarget.style.boxShadow = '0 12px 40px rgba(0,0,0,0.2)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = 'translateY(0)';
+            e.currentTarget.style.boxShadow = '0 8px 32px rgba(0,0,0,0.15)';
+          }}>
+            <div style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>📋</div>
+            <h3 style={{ margin: '0 0 0.5rem 0', fontSize: '1.4rem' }}>會員註冊表</h3>
+            <p style={{ margin: 0, opacity: 0.9, fontSize: '1rem' }}>填寫註冊表單，自動帶入 LINE ID</p>
+          </a>
           
           <a href="/checkin" style={{ 
             display: 'block',
