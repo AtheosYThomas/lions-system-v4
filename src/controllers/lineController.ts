@@ -9,20 +9,30 @@ class LineController {
    */
   async handleWebhook(req: Request, res: Response): Promise<void> {
     try {
-      console.log('📨 收到 LINE webhook 請求');
-      
-      // 只在有 events 時才詳細記錄
-      if (req.body?.events && req.body.events.length > 0) {
-        console.log('📦 Request body =', JSON.stringify(req.body, null, 2));
-      }
+      console.log('📨 LINE Controller 收到 webhook 請求');
+      console.log('📦 Request body:', JSON.stringify(req.body, null, 2));
 
       const body: LineWebhookRequestBody = req.body;
-      const result = await lineService.handleWebhookEvents(body.events || []);
+      
+      if (!body || !body.events) {
+        console.log('✅ Webhook 驗證請求或空事件');
+        res.status(200).send('OK');
+        return;
+      }
+
+      if (body.events.length === 0) {
+        console.log('✅ 空事件陣列');
+        res.status(200).send('OK');
+        return;
+      }
+
+      console.log(`📨 處理 ${body.events.length} 個事件`);
+      const result = await lineService.handleWebhookEvents(body.events);
 
       if (!result.success) {
         console.error('❌ LINE 服務處理失敗:', result.error);
       } else {
-        console.log('✅ LINE webhook 處理成功');
+        console.log('✅ LINE webhook 處理成功:', result.message);
       }
 
       // LINE webhook 必須回傳 200 狀態碼

@@ -8,18 +8,21 @@ const router = express.Router();
 
 // LINE webhook POST 事件處理（包含錯誤處理）
 router.post('/', 
-  (req, res, next) => {
-    // 自定義 middleware 錯誤處理
-    middleware({ channelSecret: config.line.channelSecret })(req, res, (err) => {
-      if (err) {
-        console.log('⚠️ LINE webhook 簽名驗證失敗 - 可能是非 LINE 平台的請求');
-        return res.status(200).send('OK'); // LINE 要求回傳 200
-      }
-      next();
-    });
-  },
+  middleware({ channelSecret: config.line.channelSecret }),
   async (req, res) => {
-    await lineController.handleWebhook(req, res);
+    try {
+      console.log('📨 收到 LINE webhook 請求');
+      console.log('📦 Request headers:', {
+        'x-line-signature': req.headers['x-line-signature'],
+        'content-type': req.headers['content-type'],
+        'user-agent': req.headers['user-agent']
+      });
+      
+      await lineController.handleWebhook(req, res);
+    } catch (error) {
+      console.error('❌ LINE webhook 處理錯誤:', error);
+      res.status(200).send('OK'); // LINE 要求回傳 200
+    }
   }
 );
 

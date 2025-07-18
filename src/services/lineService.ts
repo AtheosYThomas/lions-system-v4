@@ -102,16 +102,24 @@ class LineService {
    */
   async replyToMessage(replyToken: string, originalMessage: string): Promise<void> {
     try {
+      console.log('🔄 準備回應訊息:', { replyToken, originalMessage });
+      
       const replyMessage: LineReplyMessage = {
         type: 'text',
-        text: `收到您的訊息: ${originalMessage}`
+        text: `北大獅子會收到您的訊息: ${originalMessage}\n\n請使用 LIFF 系統進行會員管理操作。`
       };
 
+      console.log('📤 發送回應訊息:', replyMessage);
       await this.client.replyMessage(replyToken, replyMessage);
       console.log('✅ 訊息回應成功');
     } catch (error) {
       console.error('❌ 訊息回應失敗:', error);
-      throw error;
+      console.error('錯誤詳細:', {
+        message: error instanceof Error ? error.message : String(error),
+        replyToken,
+        originalMessage
+      });
+      // 不拋出錯誤，避免影響 webhook 回應
     }
   }
 
