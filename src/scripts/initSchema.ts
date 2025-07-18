@@ -30,8 +30,14 @@ const initSchema = async () => {
     console.error('❌ 資料庫初始化錯誤:', error);
     if (error instanceof Error) {
       console.error('錯誤詳情:', error.message);
+      if (error.message.includes('foreign key constraint')) {
+        console.error('🔧 建議: 檢查外鍵資料型別是否匹配');
+      }
     }
-    process.exit(1);
+    // 在生產環境中不要直接退出，讓應用程式繼續啟動
+    if (process.env.NODE_ENV !== 'production') {
+      process.exit(1);
+    }
   } finally {
     await sequelize.close();
     console.log('🔒 資料庫連線已關閉');

@@ -9,8 +9,8 @@ export interface IFileModel {
   size?: number;
   url: string;
   usage: 'event_cover' | 'registration_attachment' | 'announcement_image' | 'profile_avatar';
-  uploaded_by?: number;
-  related_id?: number;
+  uploaded_by?: string;
+  related_id?: string;
   status: string;
   created_at: Date;
   updated_at: Date;
@@ -27,8 +27,8 @@ class File extends Model<IFileModel, FileCreationAttributes> implements IFileMod
   public size?: number;
   public url!: string;
   public usage!: 'event_cover' | 'registration_attachment' | 'announcement_image' | 'profile_avatar';
-  public uploaded_by?: number;
-  public related_id?: number;
+  public uploaded_by?: string;
+  public related_id?: string;
   public status!: string;
   public readonly created_at!: Date;
   public readonly updated_at!: Date;
@@ -82,12 +82,12 @@ File.init({
     comment: '檔案用途：event_cover, registration_attachment, announcement_image, profile_avatar',
   },
   uploaded_by: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.UUID,
     allowNull: true,
     comment: '上傳者 ID（關聯 members.id）',
   },
   related_id: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.UUID,
     allowNull: true,
     comment: '關聯資源 ID（如活動 ID、公告 ID）',
   },
