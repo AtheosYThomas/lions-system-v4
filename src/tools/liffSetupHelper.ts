@@ -9,7 +9,7 @@ interface LiffValidationResult {
 
 class LiffSetupHelper {
   async validateLiffId(liffId: string): Promise<LiffValidationResult> {
-    console.log(chalk.cyan(`🔍 檢查 LIFF App ID: ${liffId}`));
+    console.log(chalk.cyan(`🔍 檢查 LIFF ID: ${liffId}`));
     
     try {
       // 嘗試訪問 LIFF 端點
@@ -18,10 +18,10 @@ class LiffSetupHelper {
       if (response.status === 404) {
         return {
           isValid: false,
-          message: 'LIFF App ID 不存在 (404)',
+          message: 'LIFF ID 不存在 (404)',
           suggestions: [
             '到 LINE Developers Console 檢查 LIFF 應用程式',
-            '確認 LIFF App ID 是否正確',
+            '確認 LIFF ID 是否正確',
             '建立新的 LIFF 應用程式'
           ]
         };
@@ -37,7 +37,7 @@ class LiffSetupHelper {
       } else if (response.ok || response.status === 400) {
         return {
           isValid: true,
-          message: 'LIFF App ID 有效',
+          message: 'LIFF ID 有效',
           suggestions: []
         };
       } else {
@@ -82,7 +82,7 @@ class LiffSetupHelper {
     
     console.log(chalk.yellow('\n4. 更新環境變數'));
     console.log('   在 .env 檔案中設定：');
-    console.log('   LIFF_ID=your_new_liff_app_id');
+    console.log('   LIFF_ID=your_new_liff_id');
     
     console.log(chalk.yellow('\n5. 重新啟動服務並測試'));
     console.log('   npx tsx src/tools/liffTest.ts');
@@ -94,7 +94,7 @@ class LiffSetupHelper {
     const currentLiffId = process.env.LIFF_ID || '2007739371-aKePV20l';
     
     if (currentLiffId === '2007739371-aKePV20l') {
-      console.log(chalk.red('❌ 使用預設的失效 LIFF App ID'));
+      console.log(chalk.red('❌ 使用預設的失效 LIFF ID'));
       this.generateSetupInstructions();
       return;
     }

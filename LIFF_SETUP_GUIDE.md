@@ -2,7 +2,7 @@
 # LIFF 設定指南
 
 ## 🚨 當前問題
-LIFF App ID `2007739371-aKePV20l` 返回 404 錯誤，表示此 LIFF 應用程式不存在或已被刪除。
+LIFF ID `2007739371-aKePV20l` 返回 404 錯誤，表示此 LIFF 應用程式不存在或已被刪除。
 
 ## 🔧 修復步驟
 
@@ -21,11 +21,11 @@ LIFF App ID `2007739371-aKePV20l` 返回 404 錯誤，表示此 LIFF 應用程�
    - **Scope**: profile, openid
    - **Bot link feature**: On (Aggressive)
 
-### 3. 更新系統中的 LIFF App ID
-取得新的 LIFF App ID 後，請更新以下檔案：
-- `public/liff.html`
-- `public/register.html`
-- `src/services/lineService.ts`
+### 3. 更新系統中的 LIFF ID
+取得新的 LIFF ID 後，請更新以下檔案：
+- `.env` 檔案中的 `LIFF_ID`
+- `client/.env` 檔案中的 `VITE_LIFF_ID`
+- 系統會自動從環境變數載入配置vices/lineService.ts`
 
 ### 4. 測試 LIFF 功能
 ```bash

@@ -1,4 +1,3 @@
-
 import dotenv from 'dotenv';
 import chalk from 'chalk';
 
@@ -7,7 +6,7 @@ dotenv.config();
 
 export function checkEnvironment() {
   console.log(chalk.cyan('🔍 檢查環境變數...'));
-  
+
   const requiredVars = [
     'DATABASE_URL',
     'LINE_CHANNEL_ACCESS_TOKEN',

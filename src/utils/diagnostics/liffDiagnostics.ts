@@ -31,14 +31,14 @@ export class LiffDiagnostics {
 
     if (!liffId) {
       this.addResult('LIFF Config', 'fail', 
-        'LIFF App ID 未設定',
+        'LIFF ID 未設定',
         '請在 .env 檔案中設定 LIFF_ID'
       );
       return;
     }
 
     this.addResult('LIFF Config', 'pass', 
-      `LIFF App ID 已設定: ${liffId}`
+      `LIFF ID 已設定: ${liffId}`
     );
 
     try {
@@ -46,12 +46,12 @@ export class LiffDiagnostics {
 
       if (testResponse.status === 404) {
         this.addResult('LIFF Config', 'fail', 
-          'LIFF App ID 無效 (404)',
+          'LIFF ID 無效 (404)',
           '請檢查 LINE Developers Console 中的 LIFF 設定'
         );
       } else if (testResponse.status === 403) {
         this.addResult('LIFF Config', 'fail', 
-          'LIFF App 權限不足 (403)',
+          'LIFF 應用程式權限不足 (403)',
           '請檢查 LIFF 應用程式是否已啟用'
         );
       } else if (testResponse.ok || testResponse.status === 400) {
@@ -85,8 +85,8 @@ export class LiffDiagnostics {
 
       if (content.includes('2007739371-aKePV20l')) {
         this.addResult('LIFF HTML', 'warning', 
-          'LIFF App ID 硬編碼在 HTML 中',
-          '建議使用環境變數管理 LIFF App ID'
+          'LIFF ID 硬編碼在 HTML 中',
+          '建議使用環境變數管理 LIFF ID'
         );
       }
 
