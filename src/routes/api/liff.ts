@@ -1,4 +1,3 @@
-
 import express from 'express';
 import liffController from '../../controllers/liffController';
 
@@ -20,4 +19,6 @@ router.post('/register', async (req, res) => {
   await liffController.registerMember(req, res);
 });
 
+// 檢查當前的 LIFF 路由實作
+// 確保路由正確對應到 LIFF 應用程式 ID
 export default router;
