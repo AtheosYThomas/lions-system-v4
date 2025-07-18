@@ -1,8 +1,8 @@
 import { Client, WebhookEvent, MessageEvent } from '@line/bot-sdk';
-import { config } from '../config/config';
-import Member from '../models/member';
-import MessageLog from '../models/messageLog';
-import { LineTextMessageEvent, LineServiceResponse } from '../types/line';
+import { config } from '../../config/config';
+import Member from '../../models/member';
+import MessageLog from '../../models/messageLog';
+import { LineTextMessageEvent, LineServiceResponse } from '../../types/line';
 
 class LineService {
   private client: Client;
