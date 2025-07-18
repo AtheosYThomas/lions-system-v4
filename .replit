@@ -49,7 +49,7 @@ mode = "sequential"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "npx tsx src/tools/diagnostics.ts"
+args = "npx tsx src/utils/diagnostics/diagnostics.ts"
 
 [[workflows.workflow]]
 name = "Run System Health Check"
@@ -72,6 +72,15 @@ args = "npm run init-schema && npm run dev"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "cd client && npm run dev"
+
+[[workflows.workflow]]
+name = "Full System Diagnostics"
+author = 44484841
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npx tsx src/utils/diagnostics/fullSystemDiagnostics.ts"
 
 [[ports]]
 localPort = 3000

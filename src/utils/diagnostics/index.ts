@@ -10,6 +10,16 @@ export { SystemHealthChecker } from './systemHealth';
 export { TroubleshootReporter } from './troubleshootReporter';
 export { DetailedTroubleshooter } from './detailedTroubleshooter';
 
+// 匯入移動過來的診斷工具
+export { runDiagnostics } from './diagnostics';
+export { default as runFullSystemDiagnostics } from './fullSystemDiagnostics';
+export { default as LiffDiagnosticsOld } from './liffDiagnostics';
+export { performSystemCheck } from './systemCheck';
+export { runSystemHealthCheck } from './systemHealth';
+export { generateTroubleshootReport } from './troubleshoot';
+export { createTroubleshootReport } from './troubleshootReport';
+export { generateDetailedReport } from './detailedTroubleshootReport';
+
 // 統一的診斷介面
 export interface DiagnosticResult {
   component: string;
