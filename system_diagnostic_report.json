@@ -1,9 +1,9 @@
 {
-  "timestamp": "2025-07-18T15:05:13.833Z",
+  "timestamp": "2025-07-18T22:34:00.571Z",
   "summary": {
-    "total": 125,
+    "total": 123,
     "pass": 3,
-    "warning": 122,
+    "warning": 120,
     "fail": 0,
     "healthScore": 2
   },
@@ -17,33 +17,6 @@
       "section": "環境變數檢查",
       "status": "pass",
       "message": "所有 9 個環境變數都已正確定義"
-    },
-    {
-      "section": "前端檔案檢查",
-      "status": "warning",
-      "message": "JS/TS 檔案問題: src/App.tsx",
-      "details": [
-        "包含錯誤輸出，可能有問題"
-      ],
-      "suggestions": [
-        "檢查括號配對",
-        "使用程式碼格式化工具",
-        "檢查語法錯誤"
-      ]
-    },
-    {
-      "section": "前端檔案檢查",
-      "status": "warning",
-      "message": "JS/TS 檔案問題: src/pages/Register.tsx",
-      "details": [
-        "括號不匹配 (開: 27, 閉: 28)",
-        "包含錯誤輸出，可能有問題"
-      ],
-      "suggestions": [
-        "檢查括號配對",
-        "使用程式碼格式化工具",
-        "檢查語法錯誤"
-      ]
     },
     {
       "section": "前端檔案檢查",
@@ -1634,7 +1607,7 @@
       "message": "Health Check 測試成功",
       "details": {
         "status": "healthy",
-        "uptime": 2311.833713484,
+        "uptime": 50.994503055,
         "database": "connected",
         "services": {
           "line": "configured",

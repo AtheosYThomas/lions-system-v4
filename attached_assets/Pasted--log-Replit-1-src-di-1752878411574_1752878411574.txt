@@ -1,0 +1,98 @@
+非常好！那我幫你設計一套完整的「啟動時自動執行診斷 + 紀錄 log」方案，不需要手動跑指令，Replit 一開機就會自動執行診斷工具。
+
+✅ 你需要做的步驟如下：
+🔧 第 1 步：在 src/diagnosticTool.ts 建立診斷工具模組
+在 src/diagnosticTool.ts 中貼上以下內容（我已為你準備好）：
+
+ts
+複製
+編輯
+// src/diagnosticTool.ts
+import fs from 'fs';
+import path from 'path';
+import { Sequelize } from 'sequelize';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+const LOG_PATH = path.join('logs', 'diagnostic.log');
+
+function log(message: string) {
+  const timestamp = new Date().toISOString();
+  const fullMessage = `[${timestamp}] ${message}`;
+  console.log(fullMessage);
+  fs.appendFileSync(LOG_PATH, fullMessage + '\n');
+}
+
+export async function runDiagnostics() {
+  log('🔍 啟動 V4.0 系統診斷...');
+  
+  // Check startup file
+  const indexExists = fs.existsSync(path.join('src', 'index.ts'));
+  log(`✅ 啟動點檢查：${indexExists ? 'index.ts ✔' : '❌ index.ts 不存在'}`);
+  
+  // Check middleware
+  const roleMiddlewareExists = fs.existsSync(path.join('src', 'middleware', 'roleMiddleware.ts'));
+  const authMiddlewareExists = fs.existsSync(path.join('src', 'middleware', 'authMiddleware.ts'));
+  log(`✅ Middleware：${roleMiddlewareExists ? 'roleMiddleware ✔' : '❌ roleMiddleware 缺少'} | ${authMiddlewareExists ? 'authMiddleware ✔' : '❌ authMiddleware 缺少'}`);
+  
+  // Check models
+  const modelsPath = path.join('src', 'models');
+  const requiredModels = ['Member', 'Event', 'Registration', 'Announcement', 'Donation', 'Checkin'];
+  requiredModels.forEach(model => {
+    const modelFile = fs.existsSync(path.join(modelsPath, `${model}.ts`));
+    log(`✅ 模型檢查：${model} ${modelFile ? '✔' : '❌ 缺少'}`);
+  });
+
+  // Check webhook
+  const routesPath = path.join('src', 'routes');
+  const webhookExists = fs.readdirSync(routesPath).some(f => f.includes('webhook'));
+  log(`✅ Webhook 路由檢查：${webhookExists ? '✔ 存在' : '❌ webhook.ts 不存在'}`);
+
+  // Check LIFF html
+  const liffHtmlExists = fs.existsSync(path.join('public', 'liff.html'));
+  log(`✅ LIFF 前端檢查：${liffHtmlExists ? '✔ 存在' : '❌ liff.html 不存在'}`);
+
+  // Check env variables
+  const envVars = ['LINE_CHANNEL_SECRET', 'LIFF_APP_ID', 'DATABASE_URL'];
+  envVars.forEach(key => {
+    const isSet = !!process.env[key];
+    log(`✅ .env 設定：${key} ${isSet ? '✔' : '❌ 未設定'}`);
+  });
+
+  // DB Connection Test
+  try {
+    const sequelize = new Sequelize(process.env.DATABASE_URL!, { logging: false });
+    await sequelize.authenticate();
+    log(`✅ 資料庫連線測試：✔ 成功`);
+  } catch (error) {
+    log(`❌ 資料庫連線測試失敗：${(error as Error).message}`);
+  }
+
+  log('✅ 診斷結束\n');
+}
+🔧 第 2 步：在 src/index.ts 中導入這段工具
+請在你的 index.ts 的最上方加上：
+
+ts
+複製
+編輯
+import { runDiagnostics } from './diagnosticTool';
+
+runDiagnostics(); // 每次啟動自動執行
+🔧 第 3 步：建立 logs 資料夾（一次性）
+請在專案根目錄執行一次（或手動建立）：
+
+bash
+複製
+編輯
+mkdir logs
+📁 最終結果：
+每次你執行 Replit 時，它會自動產生：
+
+lua
+複製
+編輯
+📁 logs/
+  └── diagnostic.log
+每筆診斷結果會自動加上 timestamp，方便你後續查詢與 debug。
