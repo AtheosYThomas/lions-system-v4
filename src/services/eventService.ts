@@ -235,19 +235,26 @@ class EventService {
         ]);
 
         const event = await Event.findByPk(eventId);
-        const attendanceRate = registrationCount > 0 ? (checkinCount / registrationCount) * 100 : 0;
 
-        const availableSlots = event?.max_attendees !== undefined ? event.max_attendees - registrationCount : null;
+        // 將 max_attendees 統一轉型
+        const maxAttendees: number | null = event?.max_attendees ?? null;
+
+        const attendanceRate = registrationCount > 0
+          ? (checkinCount / registrationCount) * 100
+          : 0;
+
+        const availableSlots =
+          maxAttendees !== null ? maxAttendees - registrationCount : null;
 
         return {
           eventId,
           eventTitle: event?.title,
-          maxAttendees: event?.max_attendees ?? null,
+          maxAttendees, // ← 改用轉型後變數
           registrations: registrationCount,
           checkins: checkinCount,
           payments: paymentCount,
           attendanceRate: Math.round(attendanceRate * 100) / 100,
-          availableSlots: availableSlots
+          availableSlots
         };
       } else {
         // 全體活動統計
