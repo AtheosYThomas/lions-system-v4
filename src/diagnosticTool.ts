@@ -51,7 +51,7 @@ export async function runDiagnostics() {
   log(`✅ LIFF 前端檢查：${liffHtmlExists ? '✔ 存在' : '❌ liff.html 不存在'}`);
 
   // Check env variables
-  const envVars = ['LINE_CHANNEL_SECRET', 'LIFF_APP_ID', 'DATABASE_URL', 'LINE_CHANNEL_ACCESS_TOKEN'];
+  const envVars = ['LINE_CHANNEL_SECRET', 'LIFF_ID', 'DATABASE_URL', 'LINE_CHANNEL_ACCESS_TOKEN'];
   envVars.forEach(key => {
     const isSet = !!process.env[key];
     log(`✅ .env 設定：${key} ${isSet ? '✔' : '❌ 未設定'}`);

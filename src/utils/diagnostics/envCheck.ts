@@ -12,7 +12,7 @@ export function checkEnvironment() {
     'DATABASE_URL',
     'LINE_CHANNEL_ACCESS_TOKEN',
     'LINE_CHANNEL_SECRET',
-    'LIFF_APP_ID'
+    'LIFF_ID'
   ];
 
   const missing: string[] = [];

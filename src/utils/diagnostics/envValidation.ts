@@ -27,8 +27,8 @@ export function validateEnvironment(): boolean {
   }
 
   // 檢查 LIFF 設定
-  if (!process.env.LIFF_APP_ID) {
-    errors.push('LIFF_APP_ID 未設定');
+  if (!process.env.LIFF_ID) {
+    errors.push('LIFF_ID 未設定');
   }
 
   if (errors.length > 0) {

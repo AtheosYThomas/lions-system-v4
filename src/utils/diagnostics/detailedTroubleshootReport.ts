@@ -302,7 +302,7 @@ export function generateDetailedReport() {
       DATABASE_URL: process.env.DATABASE_URL ? '已設定' : '未設定',
       LINE_CHANNEL_ACCESS_TOKEN: process.env.LINE_CHANNEL_ACCESS_TOKEN ? '已設定' : '未設定',
       LINE_CHANNEL_SECRET: process.env.LINE_CHANNEL_SECRET ? '已設定' : '未設定',
-      LIFF_APP_ID: process.env.LIFF_APP_ID ? '已設定' : '未設定'
+      LIFF_ID: process.env.LIFF_ID ? '已設定' : '未設定'
     },
     files: {
       src_exists: fs.existsSync('src'),

@@ -82,7 +82,7 @@ class LiffSetupHelper {
     
     console.log(chalk.yellow('\n4. 更新環境變數'));
     console.log('   在 .env 檔案中設定：');
-    console.log('   LIFF_APP_ID=your_new_liff_app_id');
+    console.log('   LIFF_ID=your_new_liff_app_id');
     
     console.log(chalk.yellow('\n5. 重新啟動服務並測試'));
     console.log('   npx tsx src/tools/liffTest.ts');
@@ -91,7 +91,7 @@ class LiffSetupHelper {
   async runSetupCheck() {
     console.log(chalk.cyan('🚀 LIFF 設定檢查開始...\n'));
     
-    const currentLiffId = process.env.LIFF_APP_ID || '2007739371-aKePV20l';
+    const currentLiffId = process.env.LIFF_ID || '2007739371-aKePV20l';
     
     if (currentLiffId === '2007739371-aKePV20l') {
       console.log(chalk.red('❌ 使用預設的失效 LIFF App ID'));

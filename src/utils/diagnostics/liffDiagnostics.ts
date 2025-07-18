@@ -27,12 +27,12 @@ export class LiffDiagnostics {
   private async checkLiffConfig() {
     console.log(chalk.yellow('📱 檢查 LIFF 配置...'));
 
-    const liffId = process.env.LIFF_APP_ID;
+    const liffId = process.env.LIFF_ID;
 
     if (!liffId) {
       this.addResult('LIFF Config', 'fail', 
         'LIFF App ID 未設定',
-        '請在 .env 檔案中設定 LIFF_APP_ID'
+        '請在 .env 檔案中設定 LIFF_ID'
       );
       return;
     }

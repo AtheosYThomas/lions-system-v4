@@ -199,7 +199,7 @@ export class SystemReportGenerator {
     }
 
     // 檢查關鍵環境變數
-    const criticalVars = ['LINE_CHANNEL_ACCESS_TOKEN', 'LINE_CHANNEL_SECRET', 'DATABASE_URL', 'LIFF_APP_ID'];
+    const criticalVars = ['LINE_CHANNEL_ACCESS_TOKEN', 'LINE_CHANNEL_SECRET', 'DATABASE_URL', 'LIFF_ID'];
     const missingCritical = criticalVars.filter(v => !process.env[v] && !envVarsInFile.has(v));
 
     if (missingCritical.length > 0) {

@@ -369,7 +369,7 @@ export function generateTroubleshootReport() {
       DATABASE_URL: !!process.env.DATABASE_URL,
       LINE_CHANNEL_ACCESS_TOKEN: !!process.env.LINE_CHANNEL_ACCESS_TOKEN,
       LINE_CHANNEL_SECRET: !!process.env.LINE_CHANNEL_SECRET,
-      LIFF_APP_ID: !!process.env.LIFF_APP_ID
+      LIFF_ID: !!process.env.LIFF_ID
     },
     files: {
       package_json: fs.existsSync('package.json'),

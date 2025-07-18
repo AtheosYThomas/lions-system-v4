@@ -46,8 +46,8 @@ router.post('/register', async (req, res) => {
  */
 router.get('/config', (req, res) => {
   try {
-    // 統一使用 LIFF_APP_ID 環境變數
-    const liffId = process.env.LIFF_APP_ID || '2007739371-aKePV20l';
+    // 統一使用 LIFF_ID 環境變數
+    const liffId = process.env.LIFF_ID || '2007739371-aKePV20l';
     console.log('📱 LIFF 配置請求:', { liffId, isDefault: liffId === '2007739371-aKePV20l' });
     
     res.json({
