@@ -1,4 +1,3 @@
-
 import sequelize from '../config/database';
 import '../models/index'; // 載入所有模型關聯
 
@@ -10,7 +9,7 @@ import '../models/index'; // 載入所有模型關聯
 const initSchema = async () => {
   try {
     console.log('🔄 開始資料庫結構初始化...');
-    
+
     // 測試資料庫連線
     console.log('🔗 測試資料庫連線...');
     await sequelize.authenticate();
@@ -24,9 +23,9 @@ const initSchema = async () => {
     // 顯示已建立的表格
     const tables = await sequelize.getQueryInterface().showAllTables();
     console.log('📋 已建立的資料表:', tables.sort());
-    
+
     console.log('🎉 資料庫結構初始化完成！');
-    
+
   } catch (error) {
     console.error('❌ 資料庫初始化錯誤:', error);
     if (error instanceof Error) {

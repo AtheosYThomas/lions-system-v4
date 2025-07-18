@@ -7,6 +7,7 @@ import MessageLog from './messageLog';
 import LiffSession from './liffSession';
 import Checkin from './checkin';
 import Announcement from './announcement';
+import File from './file';
 import sequelize from '../config/database';
 
 // ===================================
@@ -165,6 +166,43 @@ Announcement.belongsTo(Event, {
   as: 'relatedEvent' 
 });
 
+// -----------------------------------
+// File 相關關聯 (檔案)
+// -----------------------------------
+
+// File -> Member (多對一)
+// 每個檔案屬於一個上傳者
+File.belongsTo(Member, { 
+  foreignKey: 'uploaded_by', 
+  as: 'uploader' 
+});
+
+// Member -> File (一對多)
+// 一個會員可以上傳多個檔案
+Member.hasMany(File, { 
+  foreignKey: 'uploaded_by', 
+  as: 'uploadedFiles',
+  onDelete: 'SET NULL'
+});
+
+// Event -> File (一對多)
+// 一個活動可以有多個相關檔案
+Event.hasMany(File, { 
+  foreignKey: 'related_id', 
+  as: 'files',
+  scope: { usage: ['event_cover'] },
+  onDelete: 'CASCADE'
+});
+
+// Announcement -> File (一對多)
+// 一個公告可以有多個相關檔案
+Announcement.hasMany(File, { 
+  foreignKey: 'related_id', 
+  as: 'files',
+  scope: { usage: ['announcement_image'] },
+  onDelete: 'CASCADE'
+});
+
 // ===================================
 // 匯出所有模型和資料庫連線
 // ===================================
@@ -177,7 +215,8 @@ export {
   Payment, 
   MessageLog, 
   LiffSession, 
-  Announcement 
+  Announcement,
+  File 
 };
 
 // ===================================
