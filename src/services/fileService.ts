@@ -62,7 +62,7 @@ class FileService {
         status: 'active'
       });
 
-      return file;
+      return file as IFileModel;
     } catch (error) {
       console.error('檔案上傳失敗:', error);
       throw error;
@@ -82,7 +82,7 @@ class FileService {
             attributes: ['id', 'name', 'email']
           }
         ]
-      });
+      }) as IFileModel | null;
     } catch (error) {
       console.error('獲取檔案失敗:', error);
       throw error;
@@ -182,7 +182,7 @@ class FileService {
             required: false
           }
         ]
-      });
+      }) as IFileModel[];
     } catch (error) {
       console.error('根據用途獲取檔案失敗:', error);
       throw error;
@@ -201,7 +201,7 @@ class FileService {
       }
 
       await file.update(updateData);
-      return file;
+      return file as IFileModel;
     } catch (error) {
       console.error('更新檔案失敗:', error);
       throw error;
