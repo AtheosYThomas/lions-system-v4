@@ -93,11 +93,23 @@ File.init({
     defaultValue: 'active',
     comment: '檔案狀態：active, deleted',
   },
+  // 明確定義 timestamp 欄位
+  created_at: {
+    type: DataTypes.DATE,
+    allowNull: false,
+    field: 'created_at',
+  },
+  updated_at: {
+    type: DataTypes.DATE,
+    allowNull: false,
+    field: 'updated_at',
+  },
 }, {
   sequelize,
   tableName: 'files',
   modelName: 'File',
   timestamps: true,
+  underscored: true, // 使用 snake_case 命名慣例
   createdAt: 'created_at',
   updatedAt: 'updated_at',
 });

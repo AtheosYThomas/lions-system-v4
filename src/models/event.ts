@@ -66,17 +66,22 @@ Event.init({
   },
   created_at: {
     type: DataTypes.DATE,
-    defaultValue: DataTypes.NOW
+    defaultValue: DataTypes.NOW,
+    field: 'created_at',
   },
   updated_at: {
     type: DataTypes.DATE,
-    allowNull: true
+    allowNull: true,
+    field: 'updated_at',
   }
 }, {
   sequelize,
   tableName: 'events',
   modelName: 'Event',
-  timestamps: false
+  timestamps: true,
+  underscored: true, // 使用 snake_case 命名慣例
+  createdAt: 'created_at',
+  updatedAt: 'updated_at',
 });
 
 export default Event;
