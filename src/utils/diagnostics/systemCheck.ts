@@ -1,6 +1,6 @@
 
-import sequelize from '../config/database';
-import { Member, Event, Registration, Checkin } from '../models';
+import sequelize from '../../config/database';
+import { Member, Event, Registration, Checkin } from '../../models';
 
 export const performSystemCheck = async () => {
   const report = {

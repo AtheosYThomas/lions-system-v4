@@ -1,10 +1,10 @@
 {
-  "timestamp": "2025-07-18T06:22:35.206Z",
+  "timestamp": "2025-07-18T14:45:29.355Z",
   "summary": {
-    "total": 70,
-    "pass": 59,
-    "warning": 11,
-    "error": 0
+    "total": 99,
+    "pass": 74,
+    "warning": 24,
+    "error": 1
   },
   "results": [
     {
@@ -34,6 +34,16 @@
     {
       "category": "Source Files",
       "status": "pass",
+      "message": "src/routes/api/role-test.ts: 語法檢查通過"
+    },
+    {
+      "category": "Source Files",
+      "status": "pass",
+      "message": "src/routes/api/registration.ts: 語法檢查通過"
+    },
+    {
+      "category": "Source Files",
+      "status": "pass",
       "message": "src/routes/api/members.ts: 語法檢查通過"
     },
     {
@@ -54,6 +64,11 @@
     {
       "category": "Source Files",
       "status": "pass",
+      "message": "src/routes/api/auth-example.ts: 語法檢查通過"
+    },
+    {
+      "category": "Source Files",
+      "status": "pass",
       "message": "src/routes/api/announcements.ts: 語法檢查通過"
     },
     {
@@ -70,6 +85,11 @@
       "category": "Source Files",
       "status": "pass",
       "message": "src/routes/admin/dashboard.ts: 語法檢查通過"
+    },
+    {
+      "category": "Source Files",
+      "status": "pass",
+      "message": "src/controllers/registrationController.ts: 語法檢查通過"
     },
     {
       "category": "Source Files",
@@ -108,8 +128,50 @@
     },
     {
       "category": "Source Files",
+      "status": "warning",
+      "message": "src/middleware/roleMiddleware.ts: 可能有未使用的 import: roleRank",
+      "suggestions": [
+        "移除未使用的 import",
+        "檢查程式碼使用情況"
+      ]
+    },
+    {
+      "category": "Source Files",
+      "status": "pass",
+      "message": "src/middleware/roleMiddleware.ts: 語法檢查通過"
+    },
+    {
+      "category": "Source Files",
       "status": "pass",
       "message": "src/middleware/errorHandler.ts: 語法檢查通過"
+    },
+    {
+      "category": "Source Files",
+      "status": "warning",
+      "message": "src/middleware/authMiddleware.ts: 使用 any 型別可能導致型別安全問題",
+      "suggestions": [
+        "明確定義型別",
+        "使用具體的介面"
+      ]
+    },
+    {
+      "category": "Source Files",
+      "status": "warning",
+      "message": "src/middleware/authMiddleware.ts: 可能有未使用的 import: Role",
+      "suggestions": [
+        "移除未使用的 import",
+        "檢查程式碼使用情況"
+      ]
+    },
+    {
+      "category": "Source Files",
+      "status": "pass",
+      "message": "src/middleware/authMiddleware.ts: 語法檢查通過"
+    },
+    {
+      "category": "Source Files",
+      "status": "pass",
+      "message": "src/middleware/AuthError.ts: 語法檢查通過"
     },
     {
       "category": "Source Files",
@@ -197,11 +259,6 @@
       "category": "Source Files",
       "status": "pass",
       "message": "src/services/memberService.ts: 語法檢查通過"
-    },
-    {
-      "category": "Source Files",
-      "status": "pass",
-      "message": "src/services/lineService.ts: 語法檢查通過"
     },
     {
       "category": "Source Files",
@@ -309,18 +366,73 @@
     },
     {
       "category": "Source Files",
-      "status": "pass",
-      "message": "src/utils/envValidation.ts: 語法檢查通過"
+      "status": "warning",
+      "message": "src/utils/diagnostics/troubleshootReport.ts: 使用 any 型別可能導致型別安全問題",
+      "suggestions": [
+        "明確定義型別",
+        "使用具體的介面"
+      ]
     },
     {
       "category": "Source Files",
       "status": "pass",
-      "message": "src/utils/envCheck.ts: 語法檢查通過"
+      "message": "src/utils/diagnostics/troubleshootReport.ts: 語法檢查通過"
     },
     {
       "category": "Source Files",
       "status": "warning",
-      "message": "src/utils/cloudinary.ts: 可能有未使用的 import: v2 as cloudinary",
+      "message": "src/utils/diagnostics/troubleshoot.ts: 使用 any 型別可能導致型別安全問題",
+      "suggestions": [
+        "明確定義型別",
+        "使用具體的介面"
+      ]
+    },
+    {
+      "category": "Source Files",
+      "status": "pass",
+      "message": "src/utils/diagnostics/troubleshoot.ts: 語法檢查通過"
+    },
+    {
+      "category": "Source Files",
+      "status": "pass",
+      "message": "src/utils/diagnostics/systemHealth.ts: 語法檢查通過"
+    },
+    {
+      "category": "Source Files",
+      "status": "pass",
+      "message": "src/utils/diagnostics/systemDiagnostics.ts: 語法檢查通過"
+    },
+    {
+      "category": "Source Files",
+      "status": "warning",
+      "message": "src/utils/diagnostics/systemCheck.ts: 可能有未使用的 import: Member",
+      "suggestions": [
+        "移除未使用的 import",
+        "檢查程式碼使用情況"
+      ]
+    },
+    {
+      "category": "Source Files",
+      "status": "warning",
+      "message": "src/utils/diagnostics/systemCheck.ts: 可能有未使用的 import: Event",
+      "suggestions": [
+        "移除未使用的 import",
+        "檢查程式碼使用情況"
+      ]
+    },
+    {
+      "category": "Source Files",
+      "status": "warning",
+      "message": "src/utils/diagnostics/systemCheck.ts: 可能有未使用的 import: Registration",
+      "suggestions": [
+        "移除未使用的 import",
+        "檢查程式碼使用情況"
+      ]
+    },
+    {
+      "category": "Source Files",
+      "status": "warning",
+      "message": "src/utils/diagnostics/systemCheck.ts: 可能有未使用的 import: Checkin",
       "suggestions": [
         "移除未使用的 import",
         "檢查程式碼使用情況"
@@ -329,12 +441,101 @@
     {
       "category": "Source Files",
       "status": "pass",
-      "message": "src/utils/cloudinary.ts: 語法檢查通過"
+      "message": "src/utils/diagnostics/systemCheck.ts: 語法檢查通過"
+    },
+    {
+      "category": "Source Files",
+      "status": "pass",
+      "message": "src/utils/diagnostics/runner.ts: 語法檢查通過"
+    },
+    {
+      "category": "Source Files",
+      "status": "pass",
+      "message": "src/utils/diagnostics/liffDiagnostics.ts: 語法檢查通過"
+    },
+    {
+      "category": "Source Files",
+      "status": "warning",
+      "message": "src/utils/diagnostics/index.ts: async 函數缺少錯誤處理",
+      "suggestions": [
+        "添加 try-catch 區塊",
+        "使用 .catch() 處理 Promise 錯誤"
+      ]
+    },
+    {
+      "category": "Source Files",
+      "status": "pass",
+      "message": "src/utils/diagnostics/index.ts: 語法檢查通過"
+    },
+    {
+      "category": "Source Files",
+      "status": "warning",
+      "message": "src/utils/diagnostics/fullSystemDiagnostics.ts: 使用 any 型別可能導致型別安全問題",
+      "suggestions": [
+        "明確定義型別",
+        "使用具體的介面"
+      ]
+    },
+    {
+      "category": "Source Files",
+      "status": "pass",
+      "message": "src/utils/diagnostics/fullSystemDiagnostics.ts: 語法檢查通過"
+    },
+    {
+      "category": "Source Files",
+      "status": "pass",
+      "message": "src/utils/diagnostics/envValidation.ts: 語法檢查通過"
+    },
+    {
+      "category": "Source Files",
+      "status": "pass",
+      "message": "src/utils/diagnostics/envCheck.ts: 語法檢查通過"
+    },
+    {
+      "category": "Source Files",
+      "status": "warning",
+      "message": "src/utils/diagnostics/diagnostics.ts: 可能有未使用的 import: execSync",
+      "suggestions": [
+        "移除未使用的 import",
+        "檢查程式碼使用情況"
+      ]
+    },
+    {
+      "category": "Source Files",
+      "status": "pass",
+      "message": "src/utils/diagnostics/diagnostics.ts: 語法檢查通過"
+    },
+    {
+      "category": "Source Files",
+      "status": "warning",
+      "message": "src/utils/diagnostics/detailedTroubleshootReport.ts: 使用 any 型別可能導致型別安全問題",
+      "suggestions": [
+        "明確定義型別",
+        "使用具體的介面"
+      ]
+    },
+    {
+      "category": "Source Files",
+      "status": "warning",
+      "message": "src/utils/diagnostics/detailedTroubleshootReport.ts: 可能有未使用的 import: runSystemHealthCheck",
+      "suggestions": [
+        "移除未使用的 import",
+        "檢查程式碼使用情況"
+      ]
+    },
+    {
+      "category": "Source Files",
+      "status": "pass",
+      "message": "src/utils/diagnostics/detailedTroubleshootReport.ts: 語法檢查通過"
     },
     {
       "category": "Environment",
-      "status": "pass",
-      "message": "所有使用的環境變數都已定義"
+      "status": "error",
+      "message": "程式中使用但 .env 中缺少的變數: LIFF_APP_ID",
+      "suggestions": [
+        "在 .env 中添加缺少的變數",
+        "檢查變數名稱拼寫"
+      ]
     },
     {
       "category": "Frontend",
@@ -400,7 +601,7 @@
       "category": "Health Check",
       "status": "pass",
       "message": "Health check 成功 (狀態: 200)",
-      "details": "{\n  \"status\": \"healthy\",\n  \"timestamp\": \"2025-07-18T06:22:35.197Z\",\n  \"version\": \"4.0\",\n  \"uptime\": 890.81788432,\n  \"database\": \"connected\",\n  \"services\": {\n    \"line\": \"configured\",\n    \"routes\": [\n      \"admin\",\n      \"checkin\",\n      \"members\",\n      \"webhook\"\n    ]\n  }\n}"
+      "details": "{\n  \"status\": \"healthy\",\n  \"timestamp\": \"2025-07-18T14:45:29.351Z\",\n  \"version\": \"4.0\",\n  \"uptime\": 1127.422644896,\n  \"database\": \"connected\",\n  \"services\": {\n    \"line\": \"configured\",\n    \"routes\": [\n      \"admin\",\n      \"checkin\",\n      \"members\",\n      \"webhook\"\n    ]\n  }\n}"
     }
   ]
 }
