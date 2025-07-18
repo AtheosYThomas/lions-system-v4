@@ -1,11 +1,11 @@
 {
-  "timestamp": "2025-07-18T10:58:17.222Z",
+  "timestamp": "2025-07-18T11:01:59.106Z",
   "summary": {
-    "totalIssues": 3,
-    "errors": 2,
+    "totalIssues": 4,
+    "errors": 3,
     "warnings": 1,
     "info": 0,
-    "healthScore": 50
+    "healthScore": 30
   },
   "issues": [
     {
@@ -23,6 +23,14 @@
       "details": "async 函數未包含 try-catch",
       "suggestion": "加入適當的錯誤處理",
       "status": "warning"
+    },
+    {
+      "category": "前端LIFF",
+      "severity": "high",
+      "issue": "LIFF App ID 未設定",
+      "details": "public/liff.html 缺少 LIFF App ID",
+      "suggestion": "設定正確的 LIFF App ID",
+      "status": "error"
     },
     {
       "category": "LIFF服務",
