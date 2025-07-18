@@ -38,11 +38,14 @@ class LiffDiagnostics {
       );
     } else {
       this.addResult('LIFF Config', 'pass', 'LIFF App ID 已設定');
+      this.addResult('LIFF Config', 'pass', 
+        `LIFF App ID: ${liffId}`
+      );
     }
     
     // 測試 LIFF 端點可用性
     try {
-      const testResponse = await fetch('https://liff.line.me/2007739371-aKePV20l');
+      const testResponse = await fetch(`https://liff.line.me/${liffId}`);
       if (testResponse.status === 404) {
         this.addResult('LIFF Config', 'fail', 
           'LIFF App ID 無效 (404)',
@@ -55,9 +58,6 @@ class LiffDiagnostics {
       this.addResult('LIFF Config', 'warning', 
         'LIFF 端點測試失敗',
         '請檢查網路連接或 LIFF 設定'
-      );
-    }onfig', 'pass', 
-        `LIFF App ID: ${liffId}`
       );
     }
   }
