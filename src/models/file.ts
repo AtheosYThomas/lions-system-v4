@@ -16,8 +16,8 @@ export interface IFileModel {
   updated_at: Date;
 }
 
-// IFileModel 是全部欄位，FileCreationAttributes 是可省略 id 與 timestamps
-export type FileCreationAttributes = Optional<IFileModel, 'id' | 'created_at' | 'updated_at'>;
+// IFileModel 是全部欄位，FileCreationAttributes 是可省略 id、timestamps 和 status（有預設值）
+export type FileCreationAttributes = Optional<IFileModel, 'id' | 'created_at' | 'updated_at' | 'status'>;
 
 // 使用泛型擴充 Sequelize Model 類型
 class File extends Model<IFileModel, FileCreationAttributes> implements IFileModel {
