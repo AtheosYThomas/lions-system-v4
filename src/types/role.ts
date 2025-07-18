@@ -115,7 +115,7 @@ export function hasRolePermission(userRole: Role | string, requiredRole: Role): 
 }
 
 export function canAccessRoute(userRole: Role, requiredRole: Role.President | Role.Admin): boolean {
-  return roleRank[userRole] >= roleRank[requiredRole];
+  return isAdminRole(userRole) && roleRank[userRole] >= roleRank[requiredRole];
 }
 
 export function isAdminRole(role: Role): boolean {
