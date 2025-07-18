@@ -4,13 +4,20 @@ import liffController from '../../controllers/liffController';
 
 const router = express.Router();
 
-router.post('/init', liffController.initSession);
+/**
+ * POST /api/liff/check-member
+ * 檢查 LINE 用戶是否為會員
+ */
+router.post('/check-member', async (req, res) => {
+  await liffController.checkMember(req, res);
+});
 
-// 會員註冊 API
-router.post('/register', liffController.registerMember);
-
-// 查詢會員資料 API
-router.get('/profile/:line_uid', liffController.getMemberProfile);
-router.get('/profile/:lineUid', liffController.getMemberProfileByUid);
+/**
+ * POST /api/liff/register
+ * 註冊新會員
+ */
+router.post('/register', async (req, res) => {
+  await liffController.registerMember(req, res);
+});
 
 export default router;

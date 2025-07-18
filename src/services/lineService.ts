@@ -1,16 +1,17 @@
+
 import { Client, WebhookEvent, MessageEvent } from '@line/bot-sdk';
 import { config } from '../config/config';
-import MessageLog from '../models/messageLog';
 import Member from '../models/member';
-import { LineTextMessageEvent, LineReplyMessage, LinePushMessage, LineServiceResponse } from '../types/line';
+import MessageLog from '../models/messageLog';
+import { LineTextMessageEvent, LineServiceResponse } from '../types/line';
 
 class LineService {
   private client: Client;
 
   constructor() {
     this.client = new Client({
-      channelAccessToken: config.line.accessToken || process.env.LINE_CHANNEL_ACCESS_TOKEN || '',
-      channelSecret: config.line.channelSecret || process.env.LINE_CHANNEL_SECRET || ''
+      channelAccessToken: config.line.accessToken || '',
+      channelSecret: config.line.channelSecret || ''
     });
   }
 
@@ -60,7 +61,7 @@ class LineService {
   }
 
   /**
-   * 處理訊息事件
+   * 處理訊息事件 - 核心邏輯
    */
   private async handleMessageEvent(event: MessageEvent): Promise<void> {
     if (event.message.type !== 'text') {
@@ -69,15 +70,109 @@ class LineService {
     }
 
     const textEvent = event as LineTextMessageEvent;
+    const lineUserId = textEvent.source.userId;
     const userMessage = textEvent.message.text;
 
-    console.log('💬 收到文字訊息:', userMessage);
+    console.log('💬 收到訊息:', { lineUserId, userMessage });
 
-    // 儲存訊息記錄
-    await this.saveMessageLog(textEvent);
+    // 🔍 核心邏輯：檢查用戶是否為會員
+    const member = await Member.findOne({ 
+      where: { line_user_id: lineUserId } 
+    });
 
-    // 回應訊息
-    await this.replyToMessage(textEvent.replyToken, userMessage);
+    if (member) {
+      // ✅ 已註冊會員
+      console.log('👤 已註冊會員:', member.name);
+      await this.replyToRegisteredMember(textEvent.replyToken, member.name, userMessage);
+      
+      // 記錄已註冊會員的訊息
+      await this.saveMessageLog(textEvent, member.id);
+    } else {
+      // ❌ 尚未註冊會員
+      console.log('👤 尚未註冊會員:', lineUserId);
+      await this.replyToUnregisteredUser(textEvent.replyToken, lineUserId);
+    }
+  }
+
+  /**
+   * 回應已註冊會員
+   */
+  private async replyToRegisteredMember(replyToken: string, memberName: string, userMessage: string): Promise<void> {
+    try {
+      const replyMessage = {
+        type: 'text' as const,
+        text: `👋 歡迎回來，${memberName}！\n\n您說：${userMessage}\n\n如需使用會員功能，請透過 LIFF 系統操作。`
+      };
+
+      await this.client.replyMessage(replyToken, replyMessage);
+      console.log('✅ 已回應註冊會員');
+    } catch (error) {
+      console.error('❌ 回應註冊會員失敗:', error);
+    }
+  }
+
+  /**
+   * 回應未註冊用戶 - 提供註冊連結
+   */
+  private async replyToUnregisteredUser(replyToken: string, lineUserId: string): Promise<void> {
+    try {
+      const replyMessage = {
+        type: 'flex' as const,
+        altText: '請註冊會員',
+        contents: {
+          type: 'bubble',
+          body: {
+            type: 'box',
+            layout: 'vertical',
+            contents: [
+              {
+                type: 'text',
+                text: '🦁 北大獅子會',
+                weight: 'bold',
+                size: 'xl',
+                color: '#1DB446'
+              },
+              {
+                type: 'text',
+                text: '您尚未註冊會員',
+                weight: 'bold',
+                size: 'lg',
+                margin: 'md'
+              },
+              {
+                type: 'text',
+                text: '請點擊下方按鈕完成註冊，即可享受完整的會員服務',
+                size: 'sm',
+                color: '#666666',
+                wrap: true,
+                margin: 'sm'
+              }
+            ]
+          },
+          footer: {
+            type: 'box',
+            layout: 'vertical',
+            contents: [
+              {
+                type: 'button',
+                action: {
+                  type: 'uri',
+                  label: '🚀 立即註冊',
+                  uri: `https://liff.line.me/2007739371-aKePV20l`
+                },
+                style: 'primary',
+                color: '#1DB446'
+              }
+            ]
+          }
+        }
+      };
+
+      await this.client.replyMessage(replyToken, replyMessage);
+      console.log('✅ 已回應未註冊用戶，提供註冊連結');
+    } catch (error) {
+      console.error('❌ 回應未註冊用戶失敗:', error);
+    }
   }
 
   /**
@@ -85,7 +180,82 @@ class LineService {
    */
   private async handleFollowEvent(event: WebhookEvent): Promise<void> {
     console.log('👋 用戶開始追蹤');
-    // TODO: 處理用戶追蹤邏輯
+    
+    if (!event.source?.userId) {
+      console.log('⚠️ 無法獲取用戶 ID');
+      return;
+    }
+
+    const lineUserId = event.source.userId;
+    
+    // 檢查是否為已註冊會員
+    const member = await Member.findOne({ 
+      where: { line_user_id: lineUserId } 
+    });
+
+    if (member) {
+      // 歡迎回來訊息
+      const welcomeMessage = {
+        type: 'text' as const,
+        text: `🎉 歡迎回來，${member.name}！\n\n感謝您重新加入北大獅子會 LINE 官方帳號！`
+      };
+
+      await this.client.pushMessage(lineUserId, welcomeMessage);
+    } else {
+      // 新用戶歡迎 + 註冊邀請
+      const welcomeMessage = {
+        type: 'flex' as const,
+        altText: '歡迎加入北大獅子會',
+        contents: {
+          type: 'bubble',
+          body: {
+            type: 'box',
+            layout: 'vertical',
+            contents: [
+              {
+                type: 'text',
+                text: '🎉 歡迎加入',
+                weight: 'bold',
+                size: 'xl',
+                color: '#1DB446'
+              },
+              {
+                type: 'text',
+                text: '北大獅子會 LINE 官方帳號',
+                weight: 'bold',
+                size: 'lg'
+              },
+              {
+                type: 'text',
+                text: '請完成會員註冊，即可享受完整服務',
+                size: 'sm',
+                color: '#666666',
+                wrap: true,
+                margin: 'md'
+              }
+            ]
+          },
+          footer: {
+            type: 'box',
+            layout: 'vertical',
+            contents: [
+              {
+                type: 'button',
+                action: {
+                  type: 'uri',
+                  label: '🚀 完成註冊',
+                  uri: `https://liff.line.me/2007739371-aKePV20l`
+                },
+                style: 'primary',
+                color: '#1DB446'
+              }
+            ]
+          }
+        }
+      };
+
+      await this.client.pushMessage(lineUserId, welcomeMessage);
+    }
   }
 
   /**
@@ -93,76 +263,16 @@ class LineService {
    */
   private async handleUnfollowEvent(event: WebhookEvent): Promise<void> {
     console.log('👋 用戶取消追蹤');
-    // TODO: 處理用戶取消追蹤邏輯
-  }
-
-  /**
-   * 回應訊息
-   */
-  async replyToMessage(replyToken: string, originalMessage: string): Promise<void> {
-    try {
-      console.log('🔄 準備回應訊息:', { replyToken, originalMessage });
-
-      const replyMessage: LineReplyMessage = {
-        type: 'text',
-        text: `北大獅子會收到您的訊息: ${originalMessage}\n\n請使用 LIFF 系統進行會員管理操作。`
-      };
-
-      console.log('📤 發送回應訊息:', replyMessage);
-      await this.client.replyMessage(replyToken, replyMessage);
-      console.log('✅ 訊息回應成功');
-    } catch (error) {
-      console.error('❌ 訊息回應失敗:', error);
-      console.error('錯誤詳細:', {
-        message: error instanceof Error ? error.message : String(error),
-        replyToken,
-        originalMessage
-      });
-      // 不拋出錯誤，避免影響 webhook 回應
-    }
-  }
-
-  /**
-   * 推送訊息
-   */
-  async pushMessage(userId: string, message: string): Promise<LineServiceResponse> {
-    try {
-      const pushMessage: LinePushMessage = {
-        type: 'text',
-        text: message ?? '這是系統推播測試訊息'
-      };
-
-      await this.client.pushMessage(userId, pushMessage);
-      console.log('✅ 推播訊息成功');
-      return { success: true, message: 'Push message sent successfully' };
-    } catch (error) {
-      console.error('❌ 推播訊息失敗:', error);
-      return { success: false, error: error instanceof Error ? error.message : 'Push message failed' };
-    }
+    // 記錄取消追蹤事件（如果需要）
   }
 
   /**
    * 儲存訊息記錄
    */
-  private async saveMessageLog(event: LineTextMessageEvent): Promise<void> {
+  private async saveMessageLog(event: LineTextMessageEvent, memberId?: string): Promise<void> {
     try {
       const lineUserId = event.source.userId || '';
 
-      // 先檢查會員是否存在
-      let member = await Member.findOne({ 
-        where: { line_user_id: lineUserId } 
-      });
-
-      if (!member) {
-        console.log('👤 會員不存在，請提醒用戶完成註冊:', lineUserId);
-
-        // 回應未註冊用戶
-        await this.replyToMessage(event.replyToken, '您尚未完成會員註冊，請先透過 LIFF 系統完成註冊程序。\n\n註冊連結：https://your-domain.com/register');
-
-        return;
-      }
-
-      // 儲存訊息記錄
       await MessageLog.create({
         user_id: lineUserId,
         message_content: event.message.text,
@@ -173,7 +283,25 @@ class LineService {
       console.log('💾 訊息記錄已儲存');
     } catch (error) {
       console.error('❌ 儲存訊息記錄失敗:', error);
-      // 不拋出錯誤，避免影響主要功能
+    }
+  }
+
+  /**
+   * 推送訊息
+   */
+  async pushMessage(userId: string, message: string): Promise<LineServiceResponse> {
+    try {
+      const pushMessage = {
+        type: 'text' as const,
+        text: message
+      };
+
+      await this.client.pushMessage(userId, pushMessage);
+      console.log('✅ 推播訊息成功');
+      return { success: true, message: 'Push message sent successfully' };
+    } catch (error) {
+      console.error('❌ 推播訊息失敗:', error);
+      return { success: false, error: error instanceof Error ? error.message : 'Push message failed' };
     }
   }
 }
