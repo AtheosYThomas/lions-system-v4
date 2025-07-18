@@ -7,7 +7,6 @@
 export { checkRequiredEnvVars } from './envCheck';
 
 // 匯出診斷工具
-export { checkEnvironment } from './diagnostics/envCheck';
 export { validateEnvironment } from './diagnostics/envValidation';
 
 // 格式化工具

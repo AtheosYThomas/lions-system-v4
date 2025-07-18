@@ -1,7 +1,11 @@
 import chalk from 'chalk';
 import fs from 'fs';
 import path from 'path';
+import axios from 'axios';
+import dotenv from 'dotenv';
 import { DiagnosticResult } from './index';
+
+dotenv.config();
 
 export class LiffDiagnostics {
   private results: DiagnosticResult[] = [];

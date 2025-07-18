@@ -1,4 +1,3 @@
-
 /**
  * 角色相關的型別定義
  */
@@ -119,6 +118,10 @@ export function canAccessRoute(userRole: Role, requiredRole: Role.President | Ro
   return roleRank[userRole] >= roleRank[requiredRole as Role];
 }
 
-export function isHighRankRole(role: Role): boolean {
+export function isAdminRole(role: Role): boolean {
   return role === Role.President || role === Role.Admin;
+}
+
+export function isHighRankRole(role: Role): boolean {
+  return isAdminRole(role);
 }

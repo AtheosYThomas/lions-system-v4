@@ -1,5 +1,8 @@
 import express from 'express';
+import dotenv from 'dotenv';
 import liffController from '../../controllers/liffController';
+
+dotenv.config();
 
 const router = express.Router();
 

@@ -8,7 +8,6 @@ export {
   runDiagnostics,
   runFullSystemDiagnostics,
   generateTroubleshootReport,
-  generateTroubleshootReport,
   generateDetailedReport
 } from '../utils/diagnostics';
 
