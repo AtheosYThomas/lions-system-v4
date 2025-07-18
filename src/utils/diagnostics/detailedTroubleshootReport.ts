@@ -1,4 +1,3 @@
-
 import fs from 'fs';
 import path from 'path';
 import dotenv from 'dotenv';
@@ -287,3 +286,35 @@ class DetailedTroubleshootReport {
 // 執行詳細問題排查
 const reporter = new DetailedTroubleshootReport();
 reporter.generateCompleteReport().catch(console.error);
+
+export function generateDetailedReport() {
+  console.log(chalk.cyan('🔍 生成詳細診斷報告...'));
+
+  const report = {
+    timestamp: new Date().toISOString(),
+    system: {
+      node_version: process.version,
+      platform: process.platform,
+      arch: process.arch,
+      memory: process.memoryUsage()
+    },
+    environment: {
+      DATABASE_URL: process.env.DATABASE_URL ? '已設定' : '未設定',
+      LINE_CHANNEL_ACCESS_TOKEN: process.env.LINE_CHANNEL_ACCESS_TOKEN ? '已設定' : '未設定',
+      LINE_CHANNEL_SECRET: process.env.LINE_CHANNEL_SECRET ? '已設定' : '未設定',
+      LIFF_APP_ID: process.env.LIFF_APP_ID ? '已設定' : '未設定'
+    },
+    files: {
+      src_exists: fs.existsSync('src'),
+      models_exists: fs.existsSync('src/models'),
+      routes_exists: fs.existsSync('src/routes'),
+      controllers_exists: fs.existsSync('src/controllers')
+    }
+  };
+
+  const reportPath = path.join(process.cwd(), 'detailed_troubleshoot_report.json');
+  fs.writeFileSync(reportPath, JSON.stringify(report, null, 2));
+
+  console.log(chalk.green(`✅ 詳細診斷報告已生成: ${reportPath}`));
+  return report;
+}

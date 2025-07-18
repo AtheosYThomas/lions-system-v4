@@ -355,6 +355,36 @@ class SystemTroubleshooter {
   }
 }
 
+export function generateTroubleshootReport() {
+  console.log(chalk.cyan('🔍 生成故障排除報告...'));
+
+  const report = {
+    timestamp: new Date().toISOString(),
+    environment: {
+      node_version: process.version,
+      platform: process.platform,
+      arch: process.arch
+    },
+    env_vars: {
+      DATABASE_URL: !!process.env.DATABASE_URL,
+      LINE_CHANNEL_ACCESS_TOKEN: !!process.env.LINE_CHANNEL_ACCESS_TOKEN,
+      LINE_CHANNEL_SECRET: !!process.env.LINE_CHANNEL_SECRET,
+      LIFF_APP_ID: !!process.env.LIFF_APP_ID
+    },
+    files: {
+      package_json: fs.existsSync('package.json'),
+      tsconfig_json: fs.existsSync('tsconfig.json'),
+      env_file: fs.existsSync('.env')
+    }
+  };
+
+  const reportPath = path.join(process.cwd(), 'troubleshoot_report.json');
+  fs.writeFileSync(reportPath, JSON.stringify(report, null, 2));
+
+  console.log(chalk.green(`✅ 故障排除報告已生成: ${reportPath}`));
+  return report;
+}
+
 // 執行問題排查
 const troubleshooter = new SystemTroubleshooter();
 troubleshooter.runFullDiagnostics().catch(console.error);

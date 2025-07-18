@@ -1,18 +1,17 @@
+
 // src/utils/diagnostics/index.ts - 診斷工具統一入口
 export { validateEnvironment } from './envValidation';
 export { checkEnvironment } from './envCheck';
 
-// 匯入所有診斷模組
+// 匯入主要診斷模組
 export { SystemDiagnostics } from './systemDiagnostics';
 export { LiffDiagnostics } from './liffDiagnostics';
 export { runSystemHealthCheck } from './systemHealth';
 
-// 匯入移動過來的診斷工具
+// 匯入診斷功能
 export { runDiagnostics } from './diagnostics';
 export { default as runFullSystemDiagnostics } from './fullSystemDiagnostics';
-export { LiffDiagnostics } from '../tools/liffDiagnostics';
 export { performSystemCheck } from './systemCheck';
-export { runSystemHealthCheck } from './systemHealth';
 export { generateTroubleshootReport } from './troubleshoot';
 export { createTroubleshootReport } from './troubleshootReport';
 export { generateDetailedReport } from './detailedTroubleshootReport';
@@ -42,14 +41,17 @@ export interface SystemReport {
 // 主要診斷工具類別
 export class DiagnosticsManager {
   static async runFullSystemCheck(): Promise<SystemReport> {
+    const { SystemDiagnostics } = await import('./systemDiagnostics');
+    const { LiffDiagnostics } = await import('./liffDiagnostics');
+    const { runSystemHealthCheck } = await import('./systemHealth');
+
     const systemDiag = new SystemDiagnostics();
     const liffDiag = new LiffDiagnostics();
-    const healthChecker = new SystemHealthChecker();
 
     const results = await Promise.all([
       systemDiag.runDiagnostics(),
       liffDiag.runDiagnostics(),
-      healthChecker.runHealthCheck()
+      runSystemHealthCheck()
     ]);
 
     return this.generateSystemReport(results.flat());

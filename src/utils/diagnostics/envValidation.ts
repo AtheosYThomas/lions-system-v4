@@ -1,34 +1,38 @@
 
-const requiredEnvVars = [
-  'NODE_ENV',
-  'LINE_CHANNEL_ACCESS_TOKEN',
-  'LINE_CHANNEL_SECRET',
-  'DATABASE_URL',
-  'PORT'
-];
+import chalk from 'chalk';
 
-// 保險判斷方式
-export const isDev = process.env.NODE_ENV === 'development';
-export const isProd = process.env.NODE_ENV === 'production';
-export const isTest = process.env.NODE_ENV === 'test';
-
-export const validateEnvironment = () => {
-  const missing: string[] = [];
-  const configured: string[] = [];
+export function validateEnvironment(): boolean {
+  console.log(chalk.cyan('🔍 驗證環境變數...'));
   
-  requiredEnvVars.forEach(envVar => {
-    if (process.env[envVar]) {
-      configured.push(envVar);
-    } else {
-      missing.push(envVar);
-    }
-  });
+  const errors: string[] = [];
   
-  if (missing.length > 0) {
-    console.error('❌ 缺少必要的環境變數:', missing);
+  // 檢查資料庫連線
+  if (!process.env.DATABASE_URL) {
+    errors.push('DATABASE_URL 未設定');
+  }
+  
+  // 檢查 LINE 設定
+  if (!process.env.LINE_CHANNEL_ACCESS_TOKEN) {
+    errors.push('LINE_CHANNEL_ACCESS_TOKEN 未設定');
+  }
+  
+  if (!process.env.LINE_CHANNEL_SECRET) {
+    errors.push('LINE_CHANNEL_SECRET 未設定');
+  }
+  
+  // 檢查 LIFF 設定
+  if (!process.env.LIFF_APP_ID) {
+    errors.push('LIFF_APP_ID 未設定');
+  }
+  
+  if (errors.length > 0) {
+    console.log(chalk.red('❌ 環境變數驗證失敗:'));
+    errors.forEach(error => {
+      console.log(chalk.red(`  - ${error}`));
+    });
     return false;
   }
   
-  console.log('✅ 所有環境變數已設定:', configured);
+  console.log(chalk.green('✅ 環境變數驗證通過'));
   return true;
-};
+}
