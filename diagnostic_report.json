@@ -1,25 +1,12 @@
 {
-  "timestamp": "2025-07-18T00:07:43.977Z",
+  "timestamp": "2025-07-18T00:25:10.661Z",
   "summary": {
-    "total": 43,
+    "total": 42,
     "passed": 4,
-    "failed": 2,
+    "failed": 1,
     "warnings": 37
   },
   "results": [
-    {
-      "section": "程式碼掃描",
-      "status": "fail",
-      "message": "檔案 controllers/lineController.ts 發現錯誤",
-      "details": [
-        "找不到模組: ../types/line"
-      ],
-      "suggestions": [
-        "檢查匯入路徑",
-        "確認環境變數設定",
-        "檢查語法正確性"
-      ]
-    },
     {
       "section": "程式碼掃描",
       "status": "fail",
@@ -435,7 +422,7 @@
             "webhook"
           ]
         },
-        "uptime": 1162.916390764
+        "uptime": 38.739852876
       }
     }
   ]
