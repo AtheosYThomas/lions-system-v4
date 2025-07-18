@@ -1,4 +1,3 @@
-
 import { Request, Response } from 'express';
 import Member from '../models/member';
 
@@ -80,101 +79,99 @@ class LiffController {
    */
   async registerMember(req: Request, res: Response): Promise<void> {
     try {
-      const memberData: LiffRegisterMemberRequest = req.body;
-      console.log('📝 LIFF 註冊會員請求:', memberData);
+      const {
+        line_user_id,
+        name,
+        english_name,
+        birthday,
+        job_title,
+        mobile,
+        fax,
+        address,
+        email
+      } = req.body;
 
-      // 檢查必要欄位
-      const requiredFields = ['line_user_id', 'name', 'email', 'birthday', 'job_title', 'mobile', 'address'];
-      for (const field of requiredFields) {
-        if (!memberData[field as keyof LiffRegisterMemberRequest]) {
-          res.status(400).json({
-            success: false,
-            error: `缺少必要欄位: ${field}`
-          });
-          return;
-        }
+      console.log('📝 收到註冊請求:', {
+        line_user_id,
+        name,
+        email,
+        birthday,
+        job_title,
+        mobile,
+        address
+      });
+
+      // 基本驗證 - 檢查必要欄位
+      if (!line_user_id || !name || !birthday || !job_title || !mobile || !address || !email) {
+        res.status(400).json({
+          success: false,
+          error: '缺少必要欄位 (line_user_id, name, birthday, job_title, mobile, address, email)'
+        });
+        return;
       }
 
       // 檢查是否已註冊
       const existingMember = await Member.findOne({
-        where: { line_user_id: memberData.line_user_id }
+        where: { line_user_id }
       });
 
       if (existingMember) {
-        res.status(400).json({
+        console.log('⚠️ LINE 帳號已存在:', line_user_id);
+        res.status(409).json({
           success: false,
-          error: '此 LINE 帳號已註冊會員'
+          error: '此 LINE 帳號已註冊'
         });
         return;
       }
 
-      // 檢查 email 是否已存在
+      // 檢查 email 是否已被使用
       const existingEmail = await Member.findOne({
-        where: { email: memberData.email }
+        where: { email }
       });
 
       if (existingEmail) {
-        res.status(400).json({
+        console.log('⚠️ Email 已存在:', email);
+        res.status(409).json({
           success: false,
-          error: '此 Email 已被使用'
+          error: '此 Email 已被註冊'
         });
         return;
       }
 
-      // 創建新會員
+      // 建立新會員
       const newMember = await Member.create({
-        line_user_id: memberData.line_user_id,
-        name: memberData.name,
-        email: memberData.email,
-        english_name: memberData.english_name,
-        birthday: memberData.birthday,
-        job_title: memberData.job_title,
-        mobile: memberData.mobile,
-        phone: memberData.phone,
-        fax: memberData.fax,
-        address: memberData.address,
-        status: 'active',
-        role: 'member'
+        id: require('crypto').randomUUID(),
+        line_user_id,
+        name,
+        english_name: english_name || null,
+        birthday,
+        job_title,
+        mobile,
+        fax: fax || null,
+        address,
+        email,
+        status: 'pending', // 預設為待審核狀態
+        role: 'member',
+        created_at: new Date()
       });
 
-      console.log('✅ 會員註冊成功:', newMember.name);
-      res.json({
+      console.log('✅ 會員註冊成功:', {
+        id: newMember.id,
+        name: newMember.name,
+        email: newMember.email
+      });
+
+      res.status(201).json({
         success: true,
-        message: '會員註冊成功！歡迎加入北大獅子會！',
-        member: {
-          id: newMember.id,
-          name: newMember.name,
-          email: newMember.email,
-          line_user_id: newMember.line_user_id
-        }
+        message: '註冊成功，請等待管理員審核',
+        member_id: newMember.id
       });
 
     } catch (error) {
-      console.error('❌ LIFF 註冊會員失敗:', error);
-      
-      if (error instanceof Error) {
-        // 處理 Sequelize 驗證錯誤
-        if (error.name === 'SequelizeValidationError') {
-          res.status(400).json({
-            success: false,
-            error: '資料格式不正確，請檢查所有欄位'
-          });
-          return;
-        }
-        
-        // 處理 Sequelize 唯一性約束錯誤
-        if (error.name === 'SequelizeUniqueConstraintError') {
-          res.status(400).json({
-            success: false,
-            error: 'Email 或 LINE 帳號已被使用'
-          });
-          return;
-        }
-      }
-
+      console.error('❌ 註冊會員失敗:', error);
       res.status(500).json({
         success: false,
-        error: error instanceof Error ? error.message : '註冊失敗'
+        error: '系統錯誤，請稍後再試'
       });
     }
   }
