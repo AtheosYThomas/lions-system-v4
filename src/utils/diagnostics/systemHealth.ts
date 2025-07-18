@@ -1,6 +1,6 @@
 import sequelize from '../../config/database';
-import Member from '../models/member';
-import Event from '../models/event';
+import Member from '../../models/member';
+import Event from '../../models/event';
 
 export const runSystemHealthCheck = async () => {
   const results = {

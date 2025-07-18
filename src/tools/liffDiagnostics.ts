@@ -8,7 +8,7 @@ interface LiffDiagnosticResult {
   suggestion?: string;
 }
 
-class LiffDiagnostics {
+export class LiffDiagnostics {
   private results: LiffDiagnosticResult[] = [];
 
   private addResult(component: string, status: 'pass' | 'fail' | 'warning', message: string, suggestion?: string) {

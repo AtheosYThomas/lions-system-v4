@@ -1,7 +1,6 @@
-
 import { Request, Response, NextFunction } from 'express';
-import { Role, roleRank, hasMinimumRole, isInRoleGroup, roleDisplayNames, RoleGroup } from '../types/role';
 import { AuthError } from './AuthError';
+import { Role, roleRank, hasRolePermission } from '../types/role';
 
 /**
  * 基礎角色權限中間件
@@ -11,7 +10,7 @@ import { AuthError } from './AuthError';
 export const roleMiddleware = (allowedRole: Role) => {
   return (req: Request, res: Response, next: NextFunction) => {
     const member = req.member;
-    
+
     if (!member) {
       const error = AuthError.unauthorized();
       return res.status(error.statusCode).json(error.toJSON());
@@ -19,8 +18,8 @@ export const roleMiddleware = (allowedRole: Role) => {
 
     const userRole = member.role as Role;
 
-    // Admin 擁有最高權限，可進入所有路由
-    if (userRole !== allowedRole && userRole !== Role.Admin) {
+    // 使用角色等級系統檢查權限
+    if (!hasRolePermission(userRole, allowedRole)) {
       const error = AuthError.forbidden(
         `需要 ${roleDisplayNames[allowedRole]} 權限`,
         allowedRole,
@@ -41,7 +40,7 @@ export const roleMiddleware = (allowedRole: Role) => {
 export const requireMinRole = (minRole: Role) => {
   return (req: Request, res: Response, next: NextFunction) => {
     const member = req.member;
-    
+
     if (!member) {
       const error = AuthError.unauthorized();
       return res.status(error.statusCode).json(error.toJSON());
@@ -70,7 +69,7 @@ export const requireMinRole = (minRole: Role) => {
 export const requireRoleGroup = (group: RoleGroup) => {
   return (req: Request, res: Response, next: NextFunction) => {
     const member = req.member;
-    
+
     if (!member) {
       const error = AuthError.unauthorized();
       return res.status(error.statusCode).json(error.toJSON());
@@ -99,7 +98,7 @@ export const requireRoleGroup = (group: RoleGroup) => {
 export const requireAnyRole = (allowedRoles: Role[]) => {
   return (req: Request, res: Response, next: NextFunction) => {
     const member = req.member;
-    
+
     if (!member) {
       const error = AuthError.unauthorized();
       return res.status(error.statusCode).json(error.toJSON());

@@ -111,3 +111,4 @@ export class LiffDiagnostics {
     }
   }
 }
+export * from '../../tools/liffDiagnostics';
