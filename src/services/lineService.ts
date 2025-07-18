@@ -130,7 +130,7 @@ class LineService {
     try {
       const pushMessage: LinePushMessage = {
         type: 'text',
-        text: message ?? '這是系統推播測試訊息'
+        text: message || '這是系統推播測試訊息'
       };
 
       await this.client.pushMessage(userId, pushMessage);

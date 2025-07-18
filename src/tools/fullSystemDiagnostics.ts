@@ -331,6 +331,10 @@ class SystemDiagnostics {
     await this.runHealthCheck();
     this.generateReport();
   }
+
+  async runFullDiagnostics() {
+    return this.run();
+  }
 }
 
 export default function runFullSystemDiagnostics() {
@@ -344,7 +348,7 @@ if (require.main === module) {
   diagnostics.runFullDiagnostics().then(() => {
     console.log(chalk.green('\n✅ 診斷完成！'));
     process.exit(0);
-  }).catch((error) => {
+  }).catch((error: any) => {
     console.error(chalk.red('❌ 診斷過程中發生錯誤:'), error);
     process.exit(1);
   });

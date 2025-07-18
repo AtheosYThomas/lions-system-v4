@@ -5,6 +5,7 @@ export interface LineTextMessageEvent extends MessageEvent {
   message: {
     type: 'text';
     text: string;
+    quoteToken?: string;
     emojis?: { index: number; length: number; productId: string; emojiId: string; }[];
   };
 }

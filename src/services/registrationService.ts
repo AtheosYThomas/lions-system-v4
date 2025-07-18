@@ -1,4 +1,3 @@
-
 import { Registration, RegistrationCreationAttributes } from '../models/registration';
 import Event from '../models/event';
 import { Member } from '../models/member';
@@ -255,7 +254,7 @@ class RegistrationService {
   async updateRegistrationStatus(registrationId: string, status: string): Promise<Registration> {
     try {
       const registration = await Registration.findByPk(registrationId);
-      
+
       if (!registration) {
         throw new Error('報名記錄不存在');
       }
@@ -278,10 +277,12 @@ class RegistrationService {
    */
   async getMemberRegistrations(memberId: string, options: Partial<RegistrationSearchOptions> = {}) {
     try {
-      return await this.searchRegistrations({
-        ...options,
-        member_id: memberId
+      const registrations = await Registration.findAll({
+        where: { member_id: memberId },
+        include: [{ model: Event, as: 'event' }],
+        order: [['created_at', 'DESC']]
       });
+      return registrations;
     } catch (error) {
       console.error('獲取會員報名記錄失敗:', error);
       throw error;
