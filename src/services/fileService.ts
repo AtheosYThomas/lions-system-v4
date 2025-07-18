@@ -62,7 +62,7 @@ class FileService {
         status: 'active'
       });
 
-      return file as IFileModel;
+      return (file as any).getPublicData();
     } catch (error) {
       console.error('檔案上傳失敗:', error);
       throw error;
@@ -74,7 +74,7 @@ class FileService {
    */
   async getFileById(id: number): Promise<IFileModel | null> {
     try {
-      return await FileModel.findByPk(id, {
+      const file = await FileModel.findByPk(id, {
         include: [
           {
             model: Member,
@@ -82,7 +82,9 @@ class FileService {
             attributes: ['id', 'name', 'email']
           }
         ]
-      }) as IFileModel | null;
+      });
+
+      return file ? (file as any).getPublicData() : null;
     } catch (error) {
       console.error('獲取檔案失敗:', error);
       throw error;
@@ -128,7 +130,7 @@ class FileService {
       });
 
       return {
-        files: result.rows,
+        files: result.rows.map((file: any) => file.getPublicData()),
         total: result.count,
         limit: options.limit || 20,
         offset: options.offset || 0
@@ -171,7 +173,7 @@ class FileService {
         whereClause.related_id = relatedId;
       }
 
-      return await FileModel.findAll({
+      const files = await FileModel.findAll({
         where: whereClause,
         order: [['created_at', 'DESC']],
         include: [
@@ -182,7 +184,9 @@ class FileService {
             required: false
           }
         ]
-      }) as IFileModel[];
+      });
+
+      return files.map((file: any) => file.getPublicData());
     } catch (error) {
       console.error('根據用途獲取檔案失敗:', error);
       throw error;
@@ -201,7 +205,7 @@ class FileService {
       }
 
       await file.update(updateData);
-      return file as IFileModel;
+      return (file as any).getPublicData();
     } catch (error) {
       console.error('更新檔案失敗:', error);
       throw error;

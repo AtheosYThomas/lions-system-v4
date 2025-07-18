@@ -55,4 +55,21 @@ const FileModel = sequelize.define('File', {
   updatedAt: 'updated_at',
 });
 
+// Add getPublicData method to FileModel prototype
+FileModel.prototype.getPublicData = function (): any {
+  return {
+    id: this.id,
+    original_name: this.original_name,
+    mime_type: this.mime_type,
+    size: this.size,
+    url: this.url,
+    usage: this.usage,
+    uploaded_by: this.uploaded_by,
+    related_id: this.related_id,
+    status: this.status,
+    created_at: this.created_at,
+    updated_at: this.updated_at,
+  };
+};
+
 export default FileModel;
