@@ -18,7 +18,7 @@ export * from './line';
 export * from './checkin';
 
 // Payment types  
-export * from './payment';
+export { PaymentMethod, PaymentProvider } from './payment';
 
 // Common types
 export interface ApiResponse<T = any> {

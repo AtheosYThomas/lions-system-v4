@@ -1,6 +1,6 @@
 
-import { Checkin } from '../models/checkin';
-import { Event } from '../models/event';
+import Checkin from '../models/checkin';
+import Event from '../models/event';
 import { Member } from '../models/member';
 import { Registration } from '../models/registration';
 import { Op } from 'sequelize';

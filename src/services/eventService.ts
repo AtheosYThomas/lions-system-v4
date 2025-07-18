@@ -49,6 +49,7 @@ class EventService {
       }
 
       const event = await Event.create({
+        id: require('crypto').randomUUID(),
         ...eventData,
         status: eventData.status || 'active',
         created_at: eventData.created_at || new Date()

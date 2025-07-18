@@ -1,7 +1,7 @@
 
 import { Announcement, AnnouncementAttributes } from '../models/announcement';
-import { Member } from '../models/member';
-import { Event } from '../models/event';
+import Member from '../models/member';
+import Event from '../models/event';
 import { Op } from 'sequelize';
 
 interface AnnouncementCreationData {
@@ -18,6 +18,7 @@ interface AnnouncementCreationData {
 
 interface AnnouncementUpdateData extends Partial<AnnouncementCreationData> {
   id: string;
+  published_at?: Date;
 }
 
 interface AnnouncementSearchOptions {

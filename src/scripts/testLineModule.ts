@@ -1,4 +1,3 @@
-
 import lineService from '../services/lineService';
 import lineController from '../controllers/lineController';
 import { LineWebhookRequestBody } from '../types/line';
@@ -6,11 +5,12 @@ import { LineWebhookRequestBody } from '../types/line';
 // 測試 LINE 模組重構後的功能
 async function testLineModule() {
   console.log('🧪 開始測試 LINE 模組重構...');
-  
+
   // 1. 測試服務層
   try {
     console.log('1️⃣ 測試 LineService...');
-    const mockEvents = [];
+    const mockEvents: any[] = [];
+    console.log('Mock events:', mockEvents);
     const result = await lineService.handleWebhookEvents(mockEvents);
     console.log('✅ LineService.handleWebhookEvents 測試通過:', result);
   } catch (error) {
@@ -27,7 +27,7 @@ async function testLineModule() {
       status: (code: number) => ({ send: (msg: string) => console.log(`Response: ${code} - ${msg}`) }),
       json: (data: any) => console.log('JSON Response:', data)
     } as any;
-    
+
     await lineController.handleWebhook(mockReq, mockRes);
     console.log('✅ LineController.handleWebhook 測試通過');
   } catch (error) {
