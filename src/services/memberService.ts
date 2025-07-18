@@ -226,7 +226,7 @@ class MemberService {
         members,
         withLineAccount: await Member.count({
           where: { 
-            line_uid: { [Op.ne]: null as any },
+            line_user_id: { [Op.ne]: null as any },
             status: 'active'
           }
         })
