@@ -34,7 +34,12 @@ class SystemDiagnostics {
     let errorCount = 0;
 
     for (const pattern of patterns) {
-      const files = globSync(path.join(this.srcPath, pattern)).filter(file => !file.includes('node_modules'));
+      const files = globSync(path.join(this.srcPath, pattern)).filter(file => 
+        !file.includes('node_modules') && 
+        !file.includes('.git') && 
+        !file.includes('dist') &&
+        !file.includes('build')
+      );
       files.forEach((file: string) => {
         totalFiles++;
         try {
