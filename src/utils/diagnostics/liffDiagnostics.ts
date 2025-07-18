@@ -83,10 +83,15 @@ export class LiffDiagnostics {
         this.addResult('LIFF HTML', 'fail', 'LIFF 初始化程式碼缺失');
       }
 
-      if (content.includes('2007739371-aKePV20l')) {
+      if (content.includes('/api/liff/config')) {
+        this.addResult('LIFF HTML', 'pass', 
+          'LIFF 使用動態配置 API',
+          'HTML 正確使用 /api/liff/config 端點'
+        );
+      } else if (content.includes('2007739371-aKePV20l')) {
         this.addResult('LIFF HTML', 'warning', 
           'LIFF ID 硬編碼在 HTML 中',
-          '建議使用環境變數管理 LIFF ID'
+          '建議使用 /api/liff/config API 動態載入'
         );
       }
 

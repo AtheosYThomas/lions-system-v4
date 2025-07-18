@@ -23,8 +23,13 @@ LIFF ID `2007739371-aKePV20l` 返回 404 錯誤，表示此 LIFF 應用程式不
 
 ### 3. 更新系統中的 LIFF ID
 取得新的 LIFF ID 後，請更新以下檔案：
-- `.env` 檔案中的 `LIFF_ID`
-- `client/.env` 檔案中的 `VITE_LIFF_ID`
+- `.env` 檔案中的 `LIFF_ID=your_new_liff_id`
+- `client/.env` 檔案中的 `VITE_LIFF_ID=your_new_liff_id`
+
+**重要提醒：** 
+- 統一使用 `LIFF_ID`，不要使用 `LIFF_APP_ID`
+- 前端使用 `VITE_LIFF_ID` (Vite 前綴)
+- 系統會透過 `/api/liff/config` API 動態載入配置
 - 系統會自動從環境變數載入配置vices/lineService.ts`
 
 ### 4. 測試 LIFF 功能
