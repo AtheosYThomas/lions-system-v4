@@ -9,14 +9,14 @@ interface FileUploadData {
   size?: number;
   url: string;
   usage: 'event_cover' | 'registration_attachment' | 'announcement_image' | 'profile_avatar';
-  uploaded_by?: number;
-  related_id?: number;
+  uploaded_by?: string;
+  related_id?: string;
 }
 
 interface FileSearchOptions {
   usage?: string;
-  uploaded_by?: number;
-  related_id?: number;
+  uploaded_by?: string;
+  related_id?: string;
   status?: string;
   limit?: number;
   offset?: number;
@@ -147,7 +147,7 @@ class FileService {
   /**
    * 根據用途獲取檔案
    */
-  async getFilesByUsage(usage: string, relatedId?: number): Promise<IFileModel[]> {
+  async getFilesByUsage(usage: string, relatedId?: string): Promise<IFileModel[]> {
     try {
       const whereClause: any = {
         usage,
