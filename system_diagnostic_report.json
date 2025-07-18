@@ -1,0 +1,1651 @@
+{
+  "timestamp": "2025-07-18T15:05:13.833Z",
+  "summary": {
+    "total": 125,
+    "pass": 3,
+    "warning": 122,
+    "fail": 0,
+    "healthScore": 2
+  },
+  "results": [
+    {
+      "section": "源碼檢查",
+      "status": "pass",
+      "message": "成功掃描 44 個檔案"
+    },
+    {
+      "section": "環境變數檢查",
+      "status": "pass",
+      "message": "所有 9 個環境變數都已正確定義"
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: src/App.tsx",
+      "details": [
+        "包含錯誤輸出，可能有問題"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: src/pages/Register.tsx",
+      "details": [
+        "括號不匹配 (開: 27, 閉: 28)",
+        "包含錯誤輸出，可能有問題"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: src/pages/Profile.tsx",
+      "details": [
+        "包含錯誤輸出，可能有問題"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: src/pages/Home.tsx",
+      "details": [
+        "包含錯誤輸出，可能有問題"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/vite/dist/node/chunks/dep-f1e8587f.js",
+      "details": [
+        "括號不匹配 (開: 1700, 閉: 1697)"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/vite/dist/node/chunks/dep-f0c7dae0.js",
+      "details": [
+        "括號不匹配 (開: 1627, 閉: 1628)"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/vite/dist/node/chunks/dep-827b23df.js",
+      "details": [
+        "可能包含語法錯誤",
+        "括號不匹配 (開: 15755, 閉: 15748)",
+        "包含錯誤輸出，可能有問題"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/typescript/lib/typingsInstaller.js",
+      "details": [
+        "可能包含語法錯誤",
+        "括號不匹配 (開: 27983, 閉: 27963)"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/typescript/lib/typescriptServices.js",
+      "details": [
+        "可能包含語法錯誤",
+        "括號不匹配 (開: 38742, 閉: 38694)",
+        "包含錯誤輸出，可能有問題"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/typescript/lib/typescript.js",
+      "details": [
+        "可能包含語法錯誤",
+        "括號不匹配 (開: 38742, 閉: 38694)",
+        "包含錯誤輸出，可能有問題"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/typescript/lib/tsserverlibrary.js",
+      "details": [
+        "可能包含語法錯誤",
+        "括號不匹配 (開: 41469, 閉: 41421)"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/typescript/lib/tsserverlibrary.d.ts",
+      "details": [
+        "括號不匹配 (開: 1159, 閉: 1160)"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/typescript/lib/tsserver.js",
+      "details": [
+        "可能包含語法錯誤",
+        "括號不匹配 (開: 41776, 閉: 41728)"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/typescript/lib/tsc.js",
+      "details": [
+        "可能包含語法錯誤",
+        "括號不匹配 (開: 26851, 閉: 26847)"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/typescript/lib/protocol.d.ts",
+      "details": [
+        "括號不匹配 (開: 347, 閉: 348)"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/typescript/lib/lib.webworker.d.ts",
+      "details": [
+        "可能包含語法錯誤"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/typescript/lib/lib.es5.d.ts",
+      "details": [
+        "可能包含語法錯誤"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/typescript/lib/lib.es2022.error.d.ts",
+      "details": [
+        "可能包含語法錯誤"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/typescript/lib/lib.dom.d.ts",
+      "details": [
+        "可能包含語法錯誤"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "HTML 檔案問題: node_modules/tslib/tslib.html",
+      "details": [
+        "HTML 基本結構不完整"
+      ],
+      "suggestions": [
+        "檢查檔案路徑",
+        "確認資源檔案存在",
+        "修正 HTML 結構"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "HTML 檔案問題: node_modules/tslib/tslib.es6.html",
+      "details": [
+        "HTML 基本結構不完整"
+      ],
+      "suggestions": [
+        "檢查檔案路徑",
+        "確認資源檔案存在",
+        "修正 HTML 結構"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/source-map-js/lib/util.js",
+      "details": [
+        "括號不匹配 (開: 102, 閉: 103)"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/semver/bin/semver.js",
+      "details": [
+        "包含錯誤輸出，可能有問題"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/scheduler/cjs/scheduler.production.min.js",
+      "details": [
+        "包含錯誤輸出，可能有問題"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/rollup/dist/shared/rollup.js",
+      "details": [
+        "可能包含語法錯誤",
+        "括號不匹配 (開: 7855, 閉: 7842)"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/rollup/dist/shared/loadConfigFile.js",
+      "details": [
+        "括號不匹配 (開: 198, 閉: 197)"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/rollup/dist/shared/index.js",
+      "details": [
+        "可能包含語法錯誤",
+        "括號不匹配 (開: 1035, 閉: 1034)",
+        "包含錯誤輸出，可能有問題"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/rollup/dist/es/shared/watch.js",
+      "details": [
+        "可能包含語法錯誤",
+        "括號不匹配 (開: 1111, 閉: 1110)",
+        "包含錯誤輸出，可能有問題"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/rollup/dist/es/shared/node-entry.js",
+      "details": [
+        "可能包含語法錯誤",
+        "括號不匹配 (開: 7860, 閉: 7847)"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/readable-stream/lib/ours/util/inspect.js",
+      "details": [
+        "括號不匹配 (開: 22, 閉: 21)"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/react-router/dist/react-router.production.min.js",
+      "details": [
+        "包含錯誤輸出，可能有問題"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/react-router/dist/react-router.development.js",
+      "details": [
+        "包含錯誤輸出，可能有問題"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/react-router/dist/index.js",
+      "details": [
+        "包含錯誤輸出，可能有問題"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/react-router/dist/umd/react-router.production.min.js",
+      "details": [
+        "包含錯誤輸出，可能有問題"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/react-router/dist/umd/react-router.development.js",
+      "details": [
+        "包含錯誤輸出，可能有問題"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/react-dom/profiling.js",
+      "details": [
+        "包含錯誤輸出，可能有問題"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/react-dom/index.js",
+      "details": [
+        "包含錯誤輸出，可能有問題"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/react-dom/umd/react-dom.profiling.min.js",
+      "details": [
+        "包含錯誤輸出，可能有問題"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/react-dom/umd/react-dom.production.min.js",
+      "details": [
+        "包含錯誤輸出，可能有問題"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/react-dom/umd/react-dom-server.browser.production.min.js",
+      "details": [
+        "包含錯誤輸出，可能有問題"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/react-dom/umd/react-dom-server-legacy.browser.production.min.js",
+      "details": [
+        "包含錯誤輸出，可能有問題"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/react-dom/cjs/react-dom.profiling.min.js",
+      "details": [
+        "包含錯誤輸出，可能有問題"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/react-dom/cjs/react-dom.production.min.js",
+      "details": [
+        "包含錯誤輸出，可能有問題"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/react-dom/cjs/react-dom-server.node.production.min.js",
+      "details": [
+        "包含錯誤輸出，可能有問題"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/react-dom/cjs/react-dom-server.browser.production.min.js",
+      "details": [
+        "包含錯誤輸出，可能有問題"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/react-dom/cjs/react-dom-server-legacy.node.production.min.js",
+      "details": [
+        "包含錯誤輸出，可能有問題"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/react-dom/cjs/react-dom-server-legacy.browser.production.min.js",
+      "details": [
+        "包含錯誤輸出，可能有問題"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/react/umd/react.profiling.min.js",
+      "details": [
+        "包含錯誤輸出，可能有問題"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/react/umd/react.production.min.js",
+      "details": [
+        "包含錯誤輸出，可能有問題"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/qs/test/stringify.js",
+      "details": [
+        "可能包含語法錯誤"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/qs/test/parse.js",
+      "details": [
+        "括號不匹配 (開: 666, 閉: 668)"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/qs/dist/qs.js",
+      "details": [
+        "可能包含語法錯誤"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/postcss/lib/rule.d.ts",
+      "details": [
+        "括號不匹配 (開: 18, 閉: 17)"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/postcss/lib/postcss.js",
+      "details": [
+        "可能包含語法錯誤"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/postcss/lib/postcss.d.ts",
+      "details": [
+        "可能包含語法錯誤"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/postcss/lib/parser.js",
+      "details": [
+        "括號不匹配 (開: 137, 閉: 138)"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/postcss/lib/parse.js",
+      "details": [
+        "可能包含語法錯誤"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/postcss/lib/node.js",
+      "details": [
+        "可能包含語法錯誤"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/postcss/lib/node.d.ts",
+      "details": [
+        "可能包含語法錯誤",
+        "括號不匹配 (開: 55, 閉: 53)"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/postcss/lib/lazy-result.js",
+      "details": [
+        "可能包含語法錯誤",
+        "包含錯誤輸出，可能有問題"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/postcss/lib/lazy-result.d.ts",
+      "details": [
+        "包含錯誤輸出，可能有問題"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/postcss/lib/input.js",
+      "details": [
+        "可能包含語法錯誤"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/postcss/lib/input.d.ts",
+      "details": [
+        "可能包含語法錯誤"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/postcss/lib/css-syntax-error.js",
+      "details": [
+        "可能包含語法錯誤"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/postcss/lib/css-syntax-error.d.ts",
+      "details": [
+        "可能包含語法錯誤",
+        "括號不匹配 (開: 18, 閉: 16)"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/postcss/lib/at-rule.d.ts",
+      "details": [
+        "括號不匹配 (開: 19, 閉: 18)"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/object-inspect/test/err.js",
+      "details": [
+        "可能包含語法錯誤"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/json5/lib/parse.js",
+      "details": [
+        "可能包含語法錯誤",
+        "括號不匹配 (開: 194, 閉: 195)"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/json5/lib/cli.js",
+      "details": [
+        "包含錯誤輸出，可能有問題"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/json5/dist/index.min.js",
+      "details": [
+        "可能包含語法錯誤"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/json5/dist/index.js",
+      "details": [
+        "可能包含語法錯誤",
+        "括號不匹配 (開: 343, 閉: 344)"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/jsesc/jsesc.js",
+      "details": [
+        "括號不匹配 (開: 74, 閉: 72)"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/js-tokens/index.js",
+      "details": [
+        "括號不匹配 (開: 18, 閉: 16)"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/iconv-lite/lib/index.js",
+      "details": [
+        "包含錯誤輸出，可能有問題"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/iconv-lite/lib/extend-node.js",
+      "details": [
+        "包含錯誤輸出，可能有問題"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/get-intrinsic/index.js",
+      "details": [
+        "可能包含語法錯誤"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/get-intrinsic/test/GetIntrinsic.js",
+      "details": [
+        "可能包含語法錯誤"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/file-type/core.js",
+      "details": [
+        "括號不匹配 (開: 420, 閉: 419)"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/event-target-shim/dist/event-target-shim.umd.js",
+      "details": [
+        "包含錯誤輸出，可能有問題"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/event-target-shim/dist/event-target-shim.js",
+      "details": [
+        "包含錯誤輸出，可能有問題"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/esbuild/install.js",
+      "details": [
+        "包含錯誤輸出，可能有問題"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/es-errors/syntax.js",
+      "details": [
+        "可能包含語法錯誤"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/es-errors/syntax.d.ts",
+      "details": [
+        "可能包含語法錯誤"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/es-errors/test/index.js",
+      "details": [
+        "可能包含語法錯誤"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/call-bound/test/index.js",
+      "details": [
+        "可能包含語法錯誤"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/buffer/index.js",
+      "details": [
+        "包含錯誤輸出，可能有問題"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/body-parser/lib/types/json.js",
+      "details": [
+        "可能包含語法錯誤",
+        "括號不匹配 (開: 49, 閉: 48)"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/axios/lib/defaults/index.js",
+      "details": [
+        "可能包含語法錯誤"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/axios/dist/axios.min.js",
+      "details": [
+        "可能包含語法錯誤"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/axios/dist/axios.js",
+      "details": [
+        "可能包含語法錯誤"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/axios/dist/esm/axios.min.js",
+      "details": [
+        "可能包含語法錯誤"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/axios/dist/esm/axios.js",
+      "details": [
+        "可能包含語法錯誤"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/abort-controller/dist/abort-controller.umd.js",
+      "details": [
+        "包含錯誤輸出，可能有問題"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/@types/node/zlib.d.ts",
+      "details": [
+        "包含錯誤輸出，可能有問題"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/@types/node/util.d.ts",
+      "details": [
+        "包含錯誤輸出，可能有問題"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/@types/node/stream.d.ts",
+      "details": [
+        "包含錯誤輸出，可能有問題"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/@types/node/repl.d.ts",
+      "details": [
+        "可能包含語法錯誤"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/@types/node/readline.d.ts",
+      "details": [
+        "包含錯誤輸出，可能有問題"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/@types/node/process.d.ts",
+      "details": [
+        "包含錯誤輸出，可能有問題"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/@types/node/https.d.ts",
+      "details": [
+        "包含錯誤輸出，可能有問題"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/@types/node/http2.d.ts",
+      "details": [
+        "包含錯誤輸出，可能有問題"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/@types/node/http.d.ts",
+      "details": [
+        "包含錯誤輸出，可能有問題"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/@types/node/fs.d.ts",
+      "details": [
+        "包含錯誤輸出，可能有問題"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/@types/node/events.d.ts",
+      "details": [
+        "包含錯誤輸出，可能有問題"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/@types/node/domain.d.ts",
+      "details": [
+        "包含錯誤輸出，可能有問題"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/@types/node/console.d.ts",
+      "details": [
+        "包含錯誤輸出，可能有問題"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/@types/node/child_process.d.ts",
+      "details": [
+        "包含錯誤輸出，可能有問題"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/@types/node/assert.d.ts",
+      "details": [
+        "可能包含語法錯誤"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/@types/node/fs/promises.d.ts",
+      "details": [
+        "包含錯誤輸出，可能有問題"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/@liff/util/lib/index.es.js",
+      "details": [
+        "包含錯誤輸出，可能有問題"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/@liff/util/lib/index.cjs.js",
+      "details": [
+        "包含錯誤輸出，可能有問題"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/@babel/traverse/lib/path/index.js",
+      "details": [
+        "可能包含語法錯誤"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/@babel/parser/lib/index.js",
+      "details": [
+        "可能包含語法錯誤",
+        "括號不匹配 (開: 3806, 閉: 3801)"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/@babel/parser/bin/babel-parser.js",
+      "details": [
+        "包含錯誤輸出，可能有問題"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/@babel/helper-string-parser/lib/index.js",
+      "details": [
+        "括號不匹配 (開: 74, 閉: 75)"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/@babel/generator/lib/index.js",
+      "details": [
+        "包含錯誤輸出，可能有問題"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/@babel/generator/lib/generators/types.js",
+      "details": [
+        "括號不匹配 (開: 63, 閉: 64)"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/@babel/generator/lib/generators/template-literals.js",
+      "details": [
+        "括號不匹配 (開: 9, 閉: 10)"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/@babel/generator/lib/generators/modules.js",
+      "details": [
+        "括號不匹配 (開: 61, 閉: 64)"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/@babel/core/lib/transformation/file/file.js",
+      "details": [
+        "可能包含語法錯誤"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: node_modules/@babel/core/lib/config/files/module-types.js",
+      "details": [
+        "包含錯誤輸出，可能有問題"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "JS/TS 檔案問題: dist/assets/index-246c5e32.js",
+      "details": [
+        "包含錯誤輸出，可能有問題"
+      ],
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具",
+        "檢查語法錯誤"
+      ]
+    },
+    {
+      "section": "Health Check",
+      "status": "pass",
+      "message": "Health Check 測試成功",
+      "details": {
+        "status": "healthy",
+        "uptime": 2311.833713484,
+        "database": "connected",
+        "services": {
+          "line": "configured",
+          "routes": [
+            "admin",
+            "checkin",
+            "members",
+            "webhook"
+          ]
+        }
+      }
+    }
+  ]
+}

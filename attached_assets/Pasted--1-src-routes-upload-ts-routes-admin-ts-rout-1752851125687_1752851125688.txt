@@ -1,0 +1,854 @@
+🔍 開始執行完整系統診斷...
+
+🔍 步驟 1: 掃描 /src 目錄檔案...
+✅ routes/upload.ts 語法檢查通過
+✅ routes/admin.ts 語法檢查通過
+✅ routes/line/webhook.ts 語法檢查通過
+✅ routes/api/role-test.ts 語法檢查通過
+✅ routes/api/registration.ts 語法檢查通過
+✅ routes/api/members.ts 語法檢查通過
+✅ routes/api/liff.ts 語法檢查通過
+✅ routes/api/files.ts 語法檢查通過
+✅ routes/api/checkin.ts 語法檢查通過
+✅ routes/api/auth-example.ts 語法檢查通過
+✅ routes/api/announcements.ts 語法檢查通過
+✅ routes/admin/summary.ts 語法檢查通過
+✅ routes/admin/reports.ts 語法檢查通過
+✅ routes/admin/dashboard.ts 語法檢查通過
+✅ controllers/registrationController.ts 語法檢查通過
+✅ controllers/memberController.ts 語法檢查通過
+✅ controllers/lineController.ts 語法檢查通過
+✅ controllers/liffController.ts 語法檢查通過
+✅ controllers/index.ts 語法檢查通過
+✅ controllers/checkinController.ts 語法檢查通過
+✅ controllers/announcementController.ts 語法檢查通過
+✅ controllers/adminController.ts 語法檢查通過
+✅ middleware/roleMiddleware.ts 語法檢查通過
+✅ middleware/errorHandler.ts 語法檢查通過
+✅ middleware/authMiddleware.ts 語法檢查通過
+✅ middleware/AuthError.ts 語法檢查通過
+✅ services/registrationService.ts 語法檢查通過
+✅ services/memberService.ts 語法檢查通過
+✅ services/index.ts 語法檢查通過
+✅ services/fileService.ts 語法檢查通過
+✅ services/eventService.ts 語法檢查通過
+✅ services/checkinService.ts 語法檢查通過
+✅ services/announcementService.ts 語法檢查通過
+✅ services/adminService.ts 語法檢查通過
+✅ models/registration.ts 語法檢查通過
+✅ models/payment.ts 語法檢查通過
+✅ models/messageLog.ts 語法檢查通過
+✅ models/member.ts 語法檢查通過
+✅ models/liffSession.ts 語法檢查通過
+✅ models/index.ts 語法檢查通過
+✅ models/file.ts 語法檢查通過
+✅ models/event.ts 語法檢查通過
+✅ models/checkin.ts 語法檢查通過
+✅ models/announcement.ts 語法檢查通過
+🔍 步驟 2: 檢查環境變數...
+✅ .env 檔案存在，包含 10 個變數
+🔍 步驟 3: 檢查前端檔案...
+✅ 發現前端目錄: public
+✅ 發現前端目錄: client
+🔍 步驟 4: 執行 Health Check 測試...
+✅ Health Check 成功
+
+============================================================
+🦁 北大獅子會系統診斷報告
+============================================================
+📊 總計: 125 項檢查
+✅ 通過: 3
+⚠️  警告: 122
+❌ 失敗: 0
+
+
+📋 源碼檢查:
+  ✅ 成功掃描 44 個檔案
+
+📋 環境變數檢查:
+  ✅ 所有 9 個環境變數都已正確定義
+
+📋 前端檔案檢查:
+  ⚠️ JS/TS 檔案問題: src/App.tsx
+      - 包含錯誤輸出，可能有問題
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: src/pages/Register.tsx
+      - 括號不匹配 (開: 27, 閉: 28)
+      - 包含錯誤輸出，可能有問題
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: src/pages/Profile.tsx
+      - 包含錯誤輸出，可能有問題
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: src/pages/Home.tsx
+      - 包含錯誤輸出，可能有問題
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/vite/dist/node/chunks/dep-f1e8587f.js
+      - 括號不匹配 (開: 1700, 閉: 1697)
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/vite/dist/node/chunks/dep-f0c7dae0.js
+      - 括號不匹配 (開: 1627, 閉: 1628)
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/vite/dist/node/chunks/dep-827b23df.js
+      - 可能包含語法錯誤
+      - 括號不匹配 (開: 15755, 閉: 15748)
+      - 包含錯誤輸出，可能有問題
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/typescript/lib/typingsInstaller.js
+      - 可能包含語法錯誤
+      - 括號不匹配 (開: 27983, 閉: 27963)
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/typescript/lib/typescriptServices.js
+      - 可能包含語法錯誤
+      - 括號不匹配 (開: 38742, 閉: 38694)
+      - 包含錯誤輸出，可能有問題
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/typescript/lib/typescript.js
+      - 可能包含語法錯誤
+      - 括號不匹配 (開: 38742, 閉: 38694)
+      - 包含錯誤輸出，可能有問題
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/typescript/lib/tsserverlibrary.js
+      - 可能包含語法錯誤
+      - 括號不匹配 (開: 41469, 閉: 41421)
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/typescript/lib/tsserverlibrary.d.ts
+      - 括號不匹配 (開: 1159, 閉: 1160)
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/typescript/lib/tsserver.js
+      - 可能包含語法錯誤
+      - 括號不匹配 (開: 41776, 閉: 41728)
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/typescript/lib/tsc.js
+      - 可能包含語法錯誤
+      - 括號不匹配 (開: 26851, 閉: 26847)
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/typescript/lib/protocol.d.ts
+      - 括號不匹配 (開: 347, 閉: 348)
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/typescript/lib/lib.webworker.d.ts
+      - 可能包含語法錯誤
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/typescript/lib/lib.es5.d.ts
+      - 可能包含語法錯誤
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/typescript/lib/lib.es2022.error.d.ts
+      - 可能包含語法錯誤
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/typescript/lib/lib.dom.d.ts
+      - 可能包含語法錯誤
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ HTML 檔案問題: node_modules/tslib/tslib.html
+      - HTML 基本結構不完整
+      建議修正:
+        • 檢查檔案路徑
+        • 確認資源檔案存在
+        • 修正 HTML 結構
+  ⚠️ HTML 檔案問題: node_modules/tslib/tslib.es6.html
+      - HTML 基本結構不完整
+      建議修正:
+        • 檢查檔案路徑
+        • 確認資源檔案存在
+        • 修正 HTML 結構
+  ⚠️ JS/TS 檔案問題: node_modules/source-map-js/lib/util.js
+      - 括號不匹配 (開: 102, 閉: 103)
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/semver/bin/semver.js
+      - 包含錯誤輸出，可能有問題
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/scheduler/cjs/scheduler.production.min.js
+      - 包含錯誤輸出，可能有問題
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/rollup/dist/shared/rollup.js
+      - 可能包含語法錯誤
+      - 括號不匹配 (開: 7855, 閉: 7842)
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/rollup/dist/shared/loadConfigFile.js
+      - 括號不匹配 (開: 198, 閉: 197)
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/rollup/dist/shared/index.js
+      - 可能包含語法錯誤
+      - 括號不匹配 (開: 1035, 閉: 1034)
+      - 包含錯誤輸出，可能有問題
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/rollup/dist/es/shared/watch.js
+      - 可能包含語法錯誤
+      - 括號不匹配 (開: 1111, 閉: 1110)
+      - 包含錯誤輸出，可能有問題
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/rollup/dist/es/shared/node-entry.js
+      - 可能包含語法錯誤
+      - 括號不匹配 (開: 7860, 閉: 7847)
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/readable-stream/lib/ours/util/inspect.js
+      - 括號不匹配 (開: 22, 閉: 21)
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/react-router/dist/react-router.production.min.js
+      - 包含錯誤輸出，可能有問題
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/react-router/dist/react-router.development.js
+      - 包含錯誤輸出，可能有問題
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/react-router/dist/index.js
+      - 包含錯誤輸出，可能有問題
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/react-router/dist/umd/react-router.production.min.js
+      - 包含錯誤輸出，可能有問題
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/react-router/dist/umd/react-router.development.js
+      - 包含錯誤輸出，可能有問題
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/react-dom/profiling.js
+      - 包含錯誤輸出，可能有問題
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/react-dom/index.js
+      - 包含錯誤輸出，可能有問題
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/react-dom/umd/react-dom.profiling.min.js
+      - 包含錯誤輸出，可能有問題
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/react-dom/umd/react-dom.production.min.js
+      - 包含錯誤輸出，可能有問題
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/react-dom/umd/react-dom-server.browser.production.min.js
+      - 包含錯誤輸出，可能有問題
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/react-dom/umd/react-dom-server-legacy.browser.production.min.js
+      - 包含錯誤輸出，可能有問題
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/react-dom/cjs/react-dom.profiling.min.js
+      - 包含錯誤輸出，可能有問題
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/react-dom/cjs/react-dom.production.min.js
+      - 包含錯誤輸出，可能有問題
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/react-dom/cjs/react-dom-server.node.production.min.js
+      - 包含錯誤輸出，可能有問題
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/react-dom/cjs/react-dom-server.browser.production.min.js
+      - 包含錯誤輸出，可能有問題
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/react-dom/cjs/react-dom-server-legacy.node.production.min.js
+      - 包含錯誤輸出，可能有問題
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/react-dom/cjs/react-dom-server-legacy.browser.production.min.js
+      - 包含錯誤輸出，可能有問題
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/react/umd/react.profiling.min.js
+      - 包含錯誤輸出，可能有問題
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/react/umd/react.production.min.js
+      - 包含錯誤輸出，可能有問題
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/qs/test/stringify.js
+      - 可能包含語法錯誤
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/qs/test/parse.js
+      - 括號不匹配 (開: 666, 閉: 668)
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/qs/dist/qs.js
+      - 可能包含語法錯誤
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/postcss/lib/rule.d.ts
+      - 括號不匹配 (開: 18, 閉: 17)
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/postcss/lib/postcss.js
+      - 可能包含語法錯誤
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/postcss/lib/postcss.d.ts
+      - 可能包含語法錯誤
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/postcss/lib/parser.js
+      - 括號不匹配 (開: 137, 閉: 138)
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/postcss/lib/parse.js
+      - 可能包含語法錯誤
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/postcss/lib/node.js
+      - 可能包含語法錯誤
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/postcss/lib/node.d.ts
+      - 可能包含語法錯誤
+      - 括號不匹配 (開: 55, 閉: 53)
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/postcss/lib/lazy-result.js
+      - 可能包含語法錯誤
+      - 包含錯誤輸出，可能有問題
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/postcss/lib/lazy-result.d.ts
+      - 包含錯誤輸出，可能有問題
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/postcss/lib/input.js
+      - 可能包含語法錯誤
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/postcss/lib/input.d.ts
+      - 可能包含語法錯誤
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/postcss/lib/css-syntax-error.js
+      - 可能包含語法錯誤
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/postcss/lib/css-syntax-error.d.ts
+      - 可能包含語法錯誤
+      - 括號不匹配 (開: 18, 閉: 16)
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/postcss/lib/at-rule.d.ts
+      - 括號不匹配 (開: 19, 閉: 18)
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/object-inspect/test/err.js
+      - 可能包含語法錯誤
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/json5/lib/parse.js
+      - 可能包含語法錯誤
+      - 括號不匹配 (開: 194, 閉: 195)
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/json5/lib/cli.js
+      - 包含錯誤輸出，可能有問題
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/json5/dist/index.min.js
+      - 可能包含語法錯誤
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/json5/dist/index.js
+      - 可能包含語法錯誤
+      - 括號不匹配 (開: 343, 閉: 344)
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/jsesc/jsesc.js
+      - 括號不匹配 (開: 74, 閉: 72)
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/js-tokens/index.js
+      - 括號不匹配 (開: 18, 閉: 16)
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/iconv-lite/lib/index.js
+      - 包含錯誤輸出，可能有問題
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/iconv-lite/lib/extend-node.js
+      - 包含錯誤輸出，可能有問題
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/get-intrinsic/index.js
+      - 可能包含語法錯誤
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/get-intrinsic/test/GetIntrinsic.js
+      - 可能包含語法錯誤
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/file-type/core.js
+      - 括號不匹配 (開: 420, 閉: 419)
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/event-target-shim/dist/event-target-shim.umd.js
+      - 包含錯誤輸出，可能有問題
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/event-target-shim/dist/event-target-shim.js
+      - 包含錯誤輸出，可能有問題
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/esbuild/install.js
+      - 包含錯誤輸出，可能有問題
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/es-errors/syntax.js
+      - 可能包含語法錯誤
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/es-errors/syntax.d.ts
+      - 可能包含語法錯誤
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/es-errors/test/index.js
+      - 可能包含語法錯誤
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/call-bound/test/index.js
+      - 可能包含語法錯誤
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/buffer/index.js
+      - 包含錯誤輸出，可能有問題
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/body-parser/lib/types/json.js
+      - 可能包含語法錯誤
+      - 括號不匹配 (開: 49, 閉: 48)
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/axios/lib/defaults/index.js
+      - 可能包含語法錯誤
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/axios/dist/axios.min.js
+      - 可能包含語法錯誤
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/axios/dist/axios.js
+      - 可能包含語法錯誤
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/axios/dist/esm/axios.min.js
+      - 可能包含語法錯誤
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/axios/dist/esm/axios.js
+      - 可能包含語法錯誤
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/abort-controller/dist/abort-controller.umd.js
+      - 包含錯誤輸出，可能有問題
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/@types/node/zlib.d.ts
+      - 包含錯誤輸出，可能有問題
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/@types/node/util.d.ts
+      - 包含錯誤輸出，可能有問題
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/@types/node/stream.d.ts
+      - 包含錯誤輸出，可能有問題
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/@types/node/repl.d.ts
+      - 可能包含語法錯誤
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/@types/node/readline.d.ts
+      - 包含錯誤輸出，可能有問題
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/@types/node/process.d.ts
+      - 包含錯誤輸出，可能有問題
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/@types/node/https.d.ts
+      - 包含錯誤輸出，可能有問題
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/@types/node/http2.d.ts
+      - 包含錯誤輸出，可能有問題
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/@types/node/http.d.ts
+      - 包含錯誤輸出，可能有問題
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/@types/node/fs.d.ts
+      - 包含錯誤輸出，可能有問題
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/@types/node/events.d.ts
+      - 包含錯誤輸出，可能有問題
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/@types/node/domain.d.ts
+      - 包含錯誤輸出，可能有問題
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/@types/node/console.d.ts
+      - 包含錯誤輸出，可能有問題
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/@types/node/child_process.d.ts
+      - 包含錯誤輸出，可能有問題
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/@types/node/assert.d.ts
+      - 可能包含語法錯誤
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/@types/node/fs/promises.d.ts
+      - 包含錯誤輸出，可能有問題
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/@liff/util/lib/index.es.js
+      - 包含錯誤輸出，可能有問題
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/@liff/util/lib/index.cjs.js
+      - 包含錯誤輸出，可能有問題
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/@babel/traverse/lib/path/index.js
+      - 可能包含語法錯誤
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/@babel/parser/lib/index.js
+      - 可能包含語法錯誤
+      - 括號不匹配 (開: 3806, 閉: 3801)
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/@babel/parser/bin/babel-parser.js
+      - 包含錯誤輸出，可能有問題
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/@babel/helper-string-parser/lib/index.js
+      - 括號不匹配 (開: 74, 閉: 75)
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/@babel/generator/lib/index.js
+      - 包含錯誤輸出，可能有問題
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/@babel/generator/lib/generators/types.js
+      - 括號不匹配 (開: 63, 閉: 64)
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/@babel/generator/lib/generators/template-literals.js
+      - 括號不匹配 (開: 9, 閉: 10)
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/@babel/generator/lib/generators/modules.js
+      - 括號不匹配 (開: 61, 閉: 64)
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/@babel/core/lib/transformation/file/file.js
+      - 可能包含語法錯誤
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: node_modules/@babel/core/lib/config/files/module-types.js
+      - 包含錯誤輸出，可能有問題
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+  ⚠️ JS/TS 檔案問題: dist/assets/index-246c5e32.js
+      - 包含錯誤輸出，可能有問題
+      建議修正:
+        • 檢查括號配對
+        • 使用程式碼格式化工具
+        • 檢查語法錯誤
+
+📋 Health Check:
+  ✅ Health Check 測試成功
+      詳細資訊: {
+  "status": "healthy",
+  "uptime": 2311.833713484,
+  "database": "connected",
+  "services": {
+    "line": "configured",
+    "routes": [
+      "admin",
+      "checkin",
+      "members",
+      "webhook"
+    ]
+  }
+}
+
+✅ 詳細報告已儲存至: /home/runner/workspace/system_diagnostic_report.json
+
+💡 總結建議:
+⚠️  發現警告事項，建議排程修正:
+   - JS/TS 檔案問題: src/App.tsx
+   - JS/TS 檔案問題: src/pages/Register.tsx
+   - JS/TS 檔案問題: src/pages/Profile.tsx
+
+✅ 診斷完成！
