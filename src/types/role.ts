@@ -118,6 +118,10 @@ export function canAccessRoute(userRole: Role, requiredRole: Role.President | Ro
   return isAdminRole(userRole) && roleRank[userRole] >= roleRank[requiredRole];
 }
 
+export function canUserAccessRoute(userRole: Role, requiredRole: Role): boolean {
+  return isAdminRole(userRole) && roleRank[userRole] >= roleRank[requiredRole];
+}
+
 export function isAdminRole(role: Role): boolean {
   return role === Role.President || role === Role.Admin;
 }

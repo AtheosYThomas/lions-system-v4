@@ -120,6 +120,7 @@
         
         // 初始化 LIFF
         updateStatus('正在初始化 LINE 登入...');
+        console.log('📱 使用 LIFF ID:', config.liffId);
         await liff.init({
           liffId: config.liffId
         });
