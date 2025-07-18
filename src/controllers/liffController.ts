@@ -1,4 +1,3 @@
-
 import { Request, Response } from 'express';
 import dotenv from 'dotenv';
 import { LiffSession, LiffSessionCreationAttributes } from '../models/liffSession';
@@ -61,7 +60,7 @@ class LiffController {
       console.error('❌ 錯誤堆疊:', error.stack);
       return res.status(500).json({ 
         error: '系統錯誤',
-        details: process.env.NODE_ENV === 'development' ? error.message : undefined
+        details: (process.env.NODE_ENV || '').toLowerCase() === 'development' ? error.message : undefined
       });
     }
   }
@@ -133,7 +132,7 @@ class LiffController {
       console.error('❌ 註冊錯誤:', error);
       return res.status(500).json({ 
         error: '註冊失敗',
-        details: process.env.NODE_ENV === 'development' ? error.message : undefined
+        details: (process.env.NODE_ENV || '').toLowerCase() === 'development' ? error.message : undefined
       });
     }
   }
@@ -163,7 +162,7 @@ class LiffController {
       console.error('❌ 查詢錯誤:', error);
       return res.status(500).json({ 
         error: '查詢失敗',
-        details: process.env.NODE_ENV === 'development' ? error.message : undefined
+        details: (process.env.NODE_ENV || '').toLowerCase() === 'development' ? error.message : undefined
       });
     }
   }
@@ -207,7 +206,7 @@ class LiffController {
       return res.status(500).json({
         success: false,
         message: '查詢會員資料失敗',
-        error: process.env.NODE_ENV === 'development' ? error : undefined
+        error: (process.env.NODE_ENV || '').toLowerCase() === 'development' ? error : undefined
       });
     }
   }
