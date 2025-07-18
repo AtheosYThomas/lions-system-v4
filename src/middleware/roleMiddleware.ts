@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { AuthError } from './AuthError';
-import { Role, roleRank, hasRolePermission } from '../types/role';
+import { Role, roleRank, roleDisplayNames, hasMinimumRole, isInRoleGroup, RoleGroup } from '../types/role';
 
 /**
  * 基礎角色權限中間件
@@ -18,8 +18,8 @@ export const roleMiddleware = (allowedRole: Role) => {
 
     const userRole = member.role as Role;
 
-    // 使用角色等級系統檢查權限
-    if (!hasRolePermission(userRole, allowedRole)) {
+    // Admin 擁有最高權限，可進入所有路由
+    if (userRole !== allowedRole && userRole !== Role.Admin) {
       const error = AuthError.forbidden(
         `需要 ${roleDisplayNames[allowedRole]} 權限`,
         allowedRole,

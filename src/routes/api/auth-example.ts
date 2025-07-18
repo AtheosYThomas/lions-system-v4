@@ -78,7 +78,31 @@ router.get('/admin/policy',
 
 // 範例 10: 訪客專用（如註冊頁面）
 router.get('/register-page', guestOnly, (req, res) => {
-  res.json({ message: '註冊頁面 - 僅限未登入用戶' });
+  res.json({ message: '註冊頁面 - 僅限訪客' });
+});
+
+// 範例 11: 測試新的角色系統
+router.get('/test/role-system', authMiddleware, (req, res) => {
+  const member = req.member!;
+  const userRole = member.role as Role;
+  
+  res.json({
+    message: '角色系統測試',
+    user: {
+      name: member.name,
+      role: userRole,
+      roleDisplayName: roleDisplayNames[userRole],
+      roleRank: roleRank[userRole]
+    },
+    permissions: {
+      isOfficer: hasMinimumRole(userRole, Role.Officer),
+      isPresident: hasMinimumRole(userRole, Role.President),
+      isAdmin: userRole === Role.Admin,
+      inLeadership: isInRoleGroup(userRole, 'leadership'),
+      inFinancial: isInRoleGroup(userRole, 'financial')
+    }
+  });
+});ge: '註冊頁面 - 僅限未登入用戶' });
 });
 
 // 範例 11: 可選認證（登入與未登入都可訪問，但有不同內容）

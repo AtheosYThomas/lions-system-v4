@@ -1,4 +1,3 @@
-
 // src/utils/diagnostics/index.ts - 診斷工具統一入口
 export { validateEnvironment } from './envValidation';
 export { checkEnvironment } from './envCheck';
@@ -7,7 +6,6 @@ export { checkEnvironment } from './envCheck';
 export { SystemDiagnostics } from './systemDiagnostics';
 export { LiffDiagnostics } from './liffDiagnostics';
 export { SystemHealthChecker } from './systemHealth';
-export { TroubleshootReporter } from './troubleshootReporter';
 export { DetailedTroubleshooter } from './detailedTroubleshooter';
 
 // 匯入移動過來的診斷工具
@@ -19,6 +17,7 @@ export { runSystemHealthCheck } from './systemHealth';
 export { generateTroubleshootReport } from './troubleshoot';
 export { createTroubleshootReport } from './troubleshootReport';
 export { generateDetailedReport } from './detailedTroubleshootReport';
+export * from './troubleshootReport';
 
 // 統一的診斷介面
 export interface DiagnosticResult {
@@ -47,22 +46,22 @@ export class DiagnosticsManager {
     const systemDiag = new SystemDiagnostics();
     const liffDiag = new LiffDiagnostics();
     const healthChecker = new SystemHealthChecker();
-    
+
     const results = await Promise.all([
       systemDiag.runDiagnostics(),
       liffDiag.runDiagnostics(),
       healthChecker.runHealthCheck()
     ]);
-    
+
     return this.generateSystemReport(results.flat());
   }
-  
+
   private static generateSystemReport(results: DiagnosticResult[]): SystemReport {
     const pass = results.filter(r => r.status === 'pass').length;
     const warning = results.filter(r => r.status === 'warning').length;
     const error = results.filter(r => r.status === 'fail').length;
     const healthScore = Math.round((pass / results.length) * 100);
-    
+
     return {
       timestamp: new Date().toISOString(),
       summary: {

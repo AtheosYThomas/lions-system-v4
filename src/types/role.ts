@@ -84,3 +84,20 @@ export function getSuperiorRoles(role: Role): Role[] {
 }
 
 export type RoleGroup = keyof typeof roleGroups;
+
+/**
+ * 檢查角色是否有足夠權限
+ * @param userRole 用戶角色
+ * @param requiredRole 需要的角色
+ * @returns 是否有權限
+ */
+export function hasRolePermission(userRole: Role | string, requiredRole: Role): boolean {
+  const userRank = roleRank[userRole as Role] || 0;
+  const requiredRank = roleRank[requiredRole];
+  
+  // Admin 總是有權限
+  if (userRole === Role.Admin) return true;
+  
+  // 完全匹配或更高等級
+  return userRank >= requiredRank;
+}
