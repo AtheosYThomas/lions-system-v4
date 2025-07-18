@@ -2,7 +2,7 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../config/database';
 
-const File = sequelize.define('File', {
+const FileModel = sequelize.define('File', {
   id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
@@ -55,4 +55,4 @@ const File = sequelize.define('File', {
   updatedAt: 'updated_at',
 });
 
-export default File;
+export default FileModel;

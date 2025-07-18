@@ -1,5 +1,4 @@
-
-import File from '../models/file';
+import FileModel from '../models/file';
 import Member from '../models/member';
 import { Op } from 'sequelize';
 
@@ -26,7 +25,7 @@ class FileService {
   /**
    * 上傳檔案記錄
    */
-  async uploadFile(fileData: FileUploadData): Promise<File> {
+  async uploadFile(fileData: FileUploadData): Promise<FileModel> {
     try {
       // 驗證檔案用途
       const validUsages = ['event_cover', 'registration_attachment', 'announcement_image', 'profile_avatar'];
@@ -42,7 +41,7 @@ class FileService {
         }
       }
 
-      const file = await File.create({
+      const file = await FileModel.create({
         ...fileData,
         status: 'active'
       });
@@ -57,9 +56,9 @@ class FileService {
   /**
    * 根據 ID 獲取檔案
    */
-  async getFileById(id: number): Promise<File | null> {
+  async getFileById(id: number): Promise<FileModel | null> {
     try {
-      return await File.findByPk(id, {
+      return await FileModel.findByPk(id, {
         include: [
           {
             model: Member,
@@ -97,7 +96,7 @@ class FileService {
         whereClause.status = options.status;
       }
 
-      const result = await File.findAndCountAll({
+      const result = await FileModel.findAndCountAll({
         where: whereClause,
         limit: options.limit || 20,
         offset: options.offset || 0,
@@ -129,7 +128,7 @@ class FileService {
    */
   async deleteFile(id: number): Promise<void> {
     try {
-      const file = await File.findByPk(id);
+      const file = await FileModel.findByPk(id);
 
       if (!file) {
         throw new Error('檔案不存在');
@@ -145,7 +144,7 @@ class FileService {
   /**
    * 根據用途獲取檔案
    */
-  async getFilesByUsage(usage: string, relatedId?: number): Promise<File[]> {
+  async getFilesByUsage(usage: string, relatedId?: number): Promise<FileModel[]> {
     try {
       const whereClause: any = {
         usage,
@@ -156,7 +155,7 @@ class FileService {
         whereClause.related_id = relatedId;
       }
 
-      return await File.findAll({
+      return await FileModel.findAll({
         where: whereClause,
         order: [['created_at', 'DESC']],
         include: [
@@ -177,9 +176,9 @@ class FileService {
   /**
    * 更新檔案資訊
    */
-  async updateFile(id: number, updateData: Partial<FileUploadData>): Promise<File> {
+  async updateFile(id: number, updateData: Partial<FileUploadData>): Promise<FileModel> {
     try {
-      const file = await File.findByPk(id);
+      const file = await FileModel.findByPk(id);
 
       if (!file) {
         throw new Error('檔案不存在');
@@ -199,20 +198,20 @@ class FileService {
   async getFileStats() {
     try {
       const [totalFiles, imageFiles, documentFiles, videoFiles] = await Promise.all([
-        File.count({ where: { status: 'active' } }),
-        File.count({ 
+        FileModel.count({ where: { status: 'active' } }),
+        FileModel.count({ 
           where: { 
             status: 'active',
             mime_type: { [Op.like]: 'image/%' }
           }
         }),
-        File.count({ 
+        FileModel.count({ 
           where: { 
             status: 'active',
             mime_type: { [Op.or]: ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'] }
           }
         }),
-        File.count({ 
+        FileModel.count({ 
           where: { 
             status: 'active',
             mime_type: { [Op.like]: 'video/%' }
@@ -220,7 +219,7 @@ class FileService {
         })
       ]);
 
-      const totalSize = await File.sum('size', { where: { status: 'active' } }) || 0;
+      const totalSize = await FileModel.sum('size', { where: { status: 'active' } }) || 0;
 
       return {
         totalFiles,
