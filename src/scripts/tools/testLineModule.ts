@@ -1,5 +1,5 @@
-import lineService from '../services/lineService';
-import lineController from '../controllers/lineController';
+import lineService from '../../integrations/line/lineService';
+import lineController from '../../controllers/lineController';
 import { LineWebhookRequestBody } from '../types/line';
 
 // 測試 LINE 模組重構後的功能
