@@ -18,3 +18,9 @@ jobs:
         with:
           replSlug: lions-system-v4
           replitToken: ${{ secrets.REPLIT_TOKEN }}
+
+      - name: Notify Replit webhook
+        run: |
+          curl -X POST ${{ secrets.REPLIT_WEBHOOK_URL }}/webhook \
+          -H "Content-Type: application/json" \
+          -d '{"secret":"${{ secrets.DEPLOY_SECRET }}"}'

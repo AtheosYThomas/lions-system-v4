@@ -10,6 +10,7 @@ import liffRoutes from './routes/api/liff';
 import { validateEnvironment } from './utils/envValidation';
 import announcementRoutes from './routes/api/announcements';
 import lineWebhook from './routes/line/webhook';
+import webhookRoutes from './routes/webhook';
 
 const app = express();
 const PORT: number = parseInt(process.env.PORT || '5000', 10);
@@ -74,6 +75,9 @@ app.get('/api/system/status', (req, res) => {
 
 // 靜態檔案服務（需要在其他路由之前）
 app.use('/public', express.static(path.join(__dirname, '../public')));
+
+// GitHub Actions Webhook 路由
+app.use('/', webhookRoutes);
 
 // LINE Webhook 路由（優先處理）
 app.use('/webhook', lineWebhook);
