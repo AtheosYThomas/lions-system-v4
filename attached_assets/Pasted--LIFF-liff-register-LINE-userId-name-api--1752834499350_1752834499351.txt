@@ -1,0 +1,82 @@
+ 第二步：建立 LIFF 註冊頁面 /liff/register
+✅ 功能需求
+自動擷取使用者 LINE userId
+
+顯示填寫欄位（name、英文名、生日、手機、地址...）
+
+提交至 /api/liff/register API 寫入會員資料
+
+成功後顯示註冊完成頁面或導回首頁
+
+🧱 頁面結構說明
+📁 檔案位置：
+cpp
+複製
+編輯
+/public/liff/register.html
+📄 建議內容（register.html）
+我將提供完整 HTML 表單（內含 LIFF 初始化、欄位、自動抓 UID、送出）：
+
+html
+複製
+編輯
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>會員註冊</title>
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+</head>
+<body>
+  <h2>會員註冊</h2>
+  <form id="register-form">
+    <input type="hidden" id="line_user_id" name="line_user_id" required>
+    <label>中文姓名：<input type="text" name="name" required></label><br>
+    <label>英文姓名：<input type="text" name="english_name"></label><br>
+    <label>生日：<input type="date" name="birthday" required></label><br>
+    <label>職業：<input type="text" name="job_title" required></label><br>
+    <label>手機：<input type="text" name="mobile" required></label><br>
+    <label>傳真：<input type="text" name="fax"></label><br>
+    <label>地址：<input type="text" name="address" required></label><br>
+    <label>Email：<input type="email" name="email" required></label><br>
+    <button type="submit">送出</button>
+  </form>
+
+  <script>
+    async function main() {
+      await liff.init({ liffId: "你的LIFF ID" });
+      const profile = await liff.getProfile();
+      document.getElementById('line_user_id').value = profile.userId;
+    }
+
+    document.getElementById('register-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const json = Object.fromEntries(formData.entries());
+      const res = await fetch('/api/liff/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(json)
+      });
+
+      if (res.ok) {
+        alert("註冊成功！");
+        liff.closeWindow();
+      } else {
+        const err = await res.text();
+        alert("註冊失敗：" + err);
+      }
+    });
+
+    main();
+  </script>
+</body>
+</html>
+✅ 接下來你要做的事：
+📌 替換 你的LIFF ID 為你的實際 LIFF ID：
+例如：
+
+js
+複製
+編輯
+await liff.init({ liffId: "2007739371-aKePV20" });
