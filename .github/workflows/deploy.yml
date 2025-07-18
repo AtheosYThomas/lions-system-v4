@@ -1,0 +1,20 @@
+
+name: Replit Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Deploy to Replit
+        uses: replit/actions/deploy@v1
+        with:
+          replSlug: lions-system-v4
+          replitToken: ${{ secrets.REPLIT_TOKEN }}
