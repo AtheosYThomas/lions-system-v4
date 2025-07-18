@@ -1,10 +1,19 @@
-` tags.
+/**
+ * 角色相關的型別定義
+ */
+export type UserRole = 'admin' | 'member' | 'guest';
 
-```text
-Fixing the role type check in the isHighRankRole function.
-```
+export interface RolePermission {
+  role: UserRole;
+  permissions: string[];
+}
 
-<replit_final_file>
+export interface RoleCheckResult {
+  hasRole: boolean;
+  userRole: UserRole;
+  requiredRole: UserRole;
+}
+
 /**
  * 系統角色定義
  */
@@ -84,8 +93,9 @@ export function getSubordinateRoles(role: Role): Role[] {
 /**
  * 取得角色的所有上級角色
  */
-export function getSuperiorRoles(role: Role): Role[] {
-  const currentRank = roleRank[role];
+export function getSuperiorRoles(role: Role[]): Role[] {
+  if (!role) return [];
+  const currentRank = roleRank[role[0]];
   return Object.values(Role).filter(r => roleRank[r] > currentRank);
 }
 
@@ -113,5 +123,5 @@ export function canAccessRoute(userRole: Role, requiredRole: Role.President | Ro
 }
 
 export function isHighRankRole(role: Role): boolean {
-  return isAdminRole(role as Role.President | Role.Admin) || role === Role.President;
+  return role === Role.President || role === Role.Admin;
 }

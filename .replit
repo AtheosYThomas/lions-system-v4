@@ -18,7 +18,7 @@ build = ["sh", "-c", "npm run build"]
 NODE_ENV = "production"
 
 [workflows]
-runButton = "Fast Dev"
+runButton = "Start System"
 
 [[workflows.workflow]]
 name = "Fast Dev"
@@ -90,6 +90,15 @@ mode = "sequential"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "npx tsx src/utils/diagnostics/systemReport.ts"
+
+[[workflows.workflow]]
+name = "Start System"
+author = 44484841
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm run dev"
 
 [[ports]]
 localPort = 3000
