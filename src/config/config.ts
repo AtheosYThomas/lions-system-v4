@@ -6,6 +6,9 @@ export const config = {
     accessToken: process.env.LINE_CHANNEL_ACCESS_TOKEN || '',
     channelSecret: process.env.LINE_CHANNEL_SECRET || '',
   },
+  liff: {
+    appId: process.env.LIFF_APP_ID || '2007739371-aKePV20l'
+  },
   database: {
     url: process.env.DATABASE_URL || ''
   }
