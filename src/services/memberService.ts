@@ -7,7 +7,7 @@ interface MemberSearchOptions {
   email?: string;
   status?: string;
   role?: string;
-  line_uid?: string;
+  line_user_id?: string;
   limit?: number;
   offset?: number;
 }
@@ -32,9 +32,9 @@ class MemberService {
       }
 
       // 如果有 LINE UID，檢查是否已存在
-      if (memberData.line_uid) {
+      if (memberData.line_user_id) {
         const existingLineUser = await Member.findOne({
-          where: { line_uid: memberData.line_uid }
+          where: { line_user_id: memberData.line_user_id }
         });
 
         if (existingLineUser) {
@@ -68,7 +68,7 @@ class MemberService {
   async getMemberByLineUid(lineUid: string): Promise<Member | null> {
     try {
       return await Member.findOne({
-        where: { line_uid: lineUid }
+        where: { line_user_id: lineUid }
       });
     } catch (error) {
       console.error('根據 LINE UID 獲取會員失敗:', error);
@@ -117,8 +117,8 @@ class MemberService {
         whereClause.role = options.role;
       }
 
-      if (options.line_uid) {
-        whereClause.line_uid = options.line_uid;
+      if (options.line_user_id) {
+        whereClause.line_user_id = options.line_user_id;
       }
 
       const result = await Member.findAndCountAll({
@@ -166,10 +166,10 @@ class MemberService {
       }
 
       // 如果要更新 LINE UID，檢查是否與其他會員重複
-      if (updateData.line_uid && updateData.line_uid !== member.line_uid) {
+      if (updateData.line_user_id && updateData.line_user_id !== member.line_user_id) {
         const existingLineUser = await Member.findOne({
           where: { 
-            line_uid: updateData.line_uid,
+            line_user_id: updateData.line_user_id,
             id: { [Op.not]: updateData.id }
           }
         });
@@ -245,7 +245,7 @@ class MemberService {
       // 檢查 LINE UID 是否已被使用
       const existingLineUser = await Member.findOne({
         where: { 
-          line_uid: lineUid,
+          line_user_id: lineUid,
           id: { [Op.not]: memberId }
         }
       });
@@ -259,7 +259,7 @@ class MemberService {
         throw new Error('會員不存在');
       }
 
-      await member.update({ line_uid: lineUid });
+      await member.update({ line_user_id: lineUid });
       return member;
     } catch (error) {
       console.error('綁定 LINE 帳號失敗:', error);
