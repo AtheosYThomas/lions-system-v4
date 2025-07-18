@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-07-18T14:45:29.355Z",
+  "timestamp": "2025-07-18T14:46:59.247Z",
   "summary": {
     "total": 99,
     "pass": 74,
@@ -530,12 +530,8 @@
     },
     {
       "category": "Environment",
-      "status": "error",
-      "message": "程式中使用但 .env 中缺少的變數: LIFF_APP_ID",
-      "suggestions": [
-        "在 .env 中添加缺少的變數",
-        "檢查變數名稱拼寫"
-      ]
+      "status": "pass",
+      "message": "所有使用的環境變數都已定義"
     },
     {
       "category": "Frontend",
@@ -599,9 +595,12 @@
     },
     {
       "category": "Health Check",
-      "status": "pass",
-      "message": "Health check 成功 (狀態: 200)",
-      "details": "{\n  \"status\": \"healthy\",\n  \"timestamp\": \"2025-07-18T14:45:29.351Z\",\n  \"version\": \"4.0\",\n  \"uptime\": 1127.422644896,\n  \"database\": \"connected\",\n  \"services\": {\n    \"line\": \"configured\",\n    \"routes\": [\n      \"admin\",\n      \"checkin\",\n      \"members\",\n      \"webhook\"\n    ]\n  }\n}"
+      "status": "error",
+      "message": "Health check 逾時",
+      "suggestions": [
+        "檢查伺服器回應時間",
+        "確認網路連線"
+      ]
     }
   ]
 }
