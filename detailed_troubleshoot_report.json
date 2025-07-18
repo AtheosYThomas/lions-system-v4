@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-07-18T22:33:18.524Z",
+  "timestamp": "2025-07-18T22:42:35.178Z",
   "summary": {
     "totalIssues": 3,
     "errors": 3,
@@ -12,7 +12,7 @@
       "category": "TypeScript編譯",
       "severity": "high",
       "issue": "TypeScript 編譯錯誤",
-      "details": "src/types/role.ts(82,37): error TS2345: Argument of type 'Role' is not assignable to parameter of type 'Role.President | Role.Admin'.\nsrc/utils/index.ts(7,38): error TS2307: Cannot find module './envCheck' or its corresponding type declarations.\n",
+      "details": "src/types/role.ts(82,37): error TS2345: Argument of type 'Role' is not assignable to parameter of type 'Role.President | Role.Admin'.\n",
       "suggestion": "修正 TypeScript 語法錯誤",
       "status": "error"
     },
