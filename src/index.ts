@@ -76,6 +76,11 @@ app.get('/api/system/status', (req, res) => {
 // 靜態檔案服務（需要在其他路由之前）
 app.use('/public', express.static(path.join(__dirname, '../public')));
 
+// 會員註冊頁面路由
+app.get('/member-register', (req, res) => {
+  res.sendFile(path.join(__dirname, '../public/register.html'));
+});
+
 // LINE Webhook 路由（優先處理）
 app.use('/webhook', lineWebhook);
 

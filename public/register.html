@@ -2,186 +2,240 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>北大獅子會 - 會員註冊</title>
-  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       padding: 20px;
-      background-color: #f5f5f5;
     }
+
     .container {
-      max-width: 500px;
-      margin: 0 auto;
       background: white;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      border-radius: 15px;
+      padding: 40px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 500px;
     }
+
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .header h1 {
+      color: #333;
+      margin-bottom: 10px;
+      font-size: 28px;
+    }
+
+    .header p {
+      color: #666;
+      font-size: 16px;
+    }
+
     .form-group {
       margin-bottom: 20px;
     }
+
     label {
       display: block;
-      margin-bottom: 5px;
-      font-weight: bold;
+      margin-bottom: 8px;
+      color: #333;
+      font-weight: 500;
     }
-    input {
+
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="date"],
+    textarea,
+    select {
       width: 100%;
-      padding: 10px;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      box-sizing: border-box;
-    }
-    button {
-      width: 100%;
-      padding: 12px;
-      background-color: #00C300;
-      color: white;
-      border: none;
-      border-radius: 5px;
+      padding: 12px 15px;
+      border: 2px solid #e1e1e1;
+      border-radius: 8px;
       font-size: 16px;
+      transition: border-color 0.3s;
+    }
+
+    input:focus,
+    textarea:focus,
+    select:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .btn-submit {
+      width: 100%;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 15px;
+      border: none;
+      border-radius: 8px;
+      font-size: 18px;
+      font-weight: 600;
       cursor: pointer;
+      transition: transform 0.2s;
+      margin-top: 20px;
     }
-    button:hover {
-      background-color: #00A300;
+
+    .btn-submit:hover {
+      transform: translateY(-2px);
     }
-    .success {
-      color: #28a745;
+
+    .btn-submit:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .status-message {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 8px;
       text-align: center;
+      display: none;
     }
-    .error {
-      color: #dc3545;
-      text-align: center;
+
+    .status-success {
+      background-color: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
     }
-    .loading {
-      color: #666;
-      text-align: center;
+
+    .status-error {
+      background-color: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+
+    .required {
+      color: #e74c3c;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h2>🦁 北大獅子會會員註冊</h2>
-    <div id="status"></div>
-    
-    <form id="registerForm" style="display: none;">
+    <div class="header">
+      <h1>🦁 北大獅子會</h1>
+      <p>會員註冊表單</p>
+    </div>
+
+    <form id="registerForm">
       <div class="form-group">
-        <label for="name">姓名 *</label>
+        <label for="name">姓名 <span class="required">*</span></label>
         <input type="text" id="name" name="name" required>
       </div>
-      
+
       <div class="form-group">
-        <label for="email">Email *</label>
+        <label for="english_name">英文姓名</label>
+        <input type="text" id="english_name" name="english_name">
+      </div>
+
+      <div class="form-group">
+        <label for="email">電子郵件 <span class="required">*</span></label>
         <input type="email" id="email" name="email" required>
       </div>
-      
+
       <div class="form-group">
-        <label for="phone">電話</label>
+        <label for="mobile">手機號碼 <span class="required">*</span></label>
+        <input type="tel" id="mobile" name="mobile" required>
+      </div>
+
+      <div class="form-group">
+        <label for="phone">室內電話</label>
         <input type="tel" id="phone" name="phone">
       </div>
-      
-      <button type="submit">🎯 完成註冊</button>
+
+      <div class="form-group">
+        <label for="birthday">生日 <span class="required">*</span></label>
+        <input type="date" id="birthday" name="birthday" required>
+      </div>
+
+      <div class="form-group">
+        <label for="job_title">職業/職稱 <span class="required">*</span></label>
+        <input type="text" id="job_title" name="job_title" required>
+      </div>
+
+      <div class="form-group">
+        <label for="address">地址 <span class="required">*</span></label>
+        <textarea id="address" name="address" required></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="fax">傳真</label>
+        <input type="tel" id="fax" name="fax">
+      </div>
+
+      <button type="submit" class="btn-submit">提交註冊申請</button>
     </form>
+
+    <div id="statusMessage" class="status-message"></div>
   </div>
 
   <script>
-    const statusDiv = document.getElementById('status');
-    const form = document.getElementById('registerForm');
-    let currentProfile = null;
-
-    async function main() {
-      try {
-        statusDiv.innerHTML = '<p class="loading">🔐 正在驗證 LINE 身份...</p>';
-        
-        await liff.init({ liffId: '2007739371-aKePV20l' });
-        
-        if (!liff.isLoggedIn()) {
-          liff.login();
-          return;
-        }
-
-        statusDiv.innerHTML = '<p class="loading">📱 正在取得個人資料...</p>';
-        currentProfile = await liff.getProfile();
-
-        // 檢查是否已經是會員
-        const checkRes = await fetch('/liff/init', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            line_uid: currentProfile.userId,
-            display_name: currentProfile.displayName,
-            picture_url: currentProfile.pictureUrl
-          })
-        });
-
-        const checkResult = await checkRes.json();
-        
-        if (checkResult.is_member) {
-          statusDiv.innerHTML = `<p class="success">✅ ${checkResult.message}</p>`;
-          setTimeout(() => {
-            if (liff.isInClient()) {
-              liff.closeWindow();
-            }
-          }, 2000);
-        } else {
-          statusDiv.innerHTML = '<p class="loading">📝 請填寫會員資料完成註冊</p>';
-          form.style.display = 'block';
-          
-          // 預填顯示名稱
-          document.getElementById('name').value = currentProfile.displayName || '';
-        }
-
-      } catch (err) {
-        console.error('LIFF 錯誤:', err);
-        statusDiv.innerHTML = `<p class="error">❌ 初始化失敗: ${err.message}</p>`;
-      }
-    }
-
-    // 表單提交處理
-    form.addEventListener('submit', async (e) => {
+    document.getElementById('registerForm').addEventListener('submit', async function(e) {
       e.preventDefault();
       
-      const formData = new FormData(e.target);
-      const registerData = {
-        line_uid: currentProfile.userId,
-        name: formData.get('name'),
-        email: formData.get('email'),
-        phone: formData.get('phone') || undefined
-      };
-
+      const submitBtn = document.querySelector('.btn-submit');
+      const statusMessage = document.getElementById('statusMessage');
+      
+      // 禁用提交按鈕
+      submitBtn.disabled = true;
+      submitBtn.textContent = '提交中...';
+      
+      // 收集表單資料
+      const formData = new FormData(this);
+      const memberData = Object.fromEntries(formData.entries());
+      
       try {
-        statusDiv.innerHTML = '<p class="loading">📝 正在註冊...</p>';
-        
-        const res = await fetch('/liff/register', {
+        const response = await fetch('/api/members/register', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(registerData)
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(memberData)
         });
-
-        const result = await res.json();
         
-        if (result.success) {
-          statusDiv.innerHTML = `<p class="success">🎉 ${result.message}</p>`;
-          form.style.display = 'none';
-          
-          setTimeout(() => {
-            if (liff.isInClient()) {
-              liff.closeWindow();
-            }
-          }, 3000);
+        const result = await response.json();
+        
+        if (response.ok) {
+          statusMessage.className = 'status-message status-success';
+          statusMessage.textContent = '註冊申請已提交！請等待審核通過。';
+          statusMessage.style.display = 'block';
+          this.reset(); // 清空表單
         } else {
-          statusDiv.innerHTML = `<p class="error">❌ ${result.error}</p>`;
+          throw new Error(result.message || '註冊失敗');
         }
-
-      } catch (err) {
-        console.error('註冊錯誤:', err);
-        statusDiv.innerHTML = '<p class="error">❌ 註冊失敗，請稍後再試</p>';
+      } catch (error) {
+        statusMessage.className = 'status-message status-error';
+        statusMessage.textContent = `註冊失敗：${error.message}`;
+        statusMessage.style.display = 'block';
+      } finally {
+        // 恢復提交按鈕
+        submitBtn.disabled = false;
+        submitBtn.textContent = '提交註冊申請';
       }
     });
-
-    main();
   </script>
 </body>
 </html>
