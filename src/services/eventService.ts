@@ -247,7 +247,7 @@ class EventService {
           checkins: checkinCount,
           payments: paymentCount,
           attendanceRate: Math.round(attendanceRate * 100) / 100,
-          availableSlots: availableSlots
+          availableSlots: availableSlots ?? null
         };
       } else {
         // 全體活動統計
