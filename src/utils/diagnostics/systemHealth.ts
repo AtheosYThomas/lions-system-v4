@@ -1,5 +1,4 @@
-
-import sequelize from '../config/database';
+import sequelize from '../../config/database';
 import Member from '../models/member';
 import Event from '../models/event';
 
@@ -35,7 +34,7 @@ export const runSystemHealthCheck = async () => {
   // 檢查環境變數
   const requiredVars = ['LINE_CHANNEL_ACCESS_TOKEN', 'LINE_CHANNEL_SECRET', 'DATABASE_URL'];
   const missingVars = requiredVars.filter(v => !process.env[v]);
-  
+
   if (missingVars.length === 0) {
     results.env = true;
     console.log('✅ 環境變數完整');
