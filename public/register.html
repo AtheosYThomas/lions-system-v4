@@ -214,11 +214,27 @@
 
     async function main() {
       try {
+        // 取得 LIFF 配置
+        updateStatus('正在載入 LIFF 配置...');
+        const configResponse = await fetch('/api/liff/config');
+        const config = await configResponse.json();
+        
+        if (!config.success) {
+          throw new Error('無法載入 LIFF 配置');
+        }
+        
+        if (config.isDefault) {
+          updateStatus('⚠️ 使用預設 LIFF ID，功能可能無法正常運作', 'error');
+          setTimeout(() => {
+            updateStatus('請聯繫管理員設定正確的 LIFF App ID', 'error');
+          }, 3000);
+          return;
+        }
+        
         // 初始化 LIFF
         updateStatus('正在初始化 LINE 登入...');
-        // 請到 LINE Developers Console 確認正確的 LIFF App ID
         await liff.init({ 
-          liffId: '2007739371-aKePV20l' // 請替換為有效的 LIFF App ID
+          liffId: config.liffId
         });
         
         // 檢查登入狀態

@@ -37,6 +37,27 @@ router.post('/register', async (req, res) => {
   }
 });
 
+/**
+ * GET /api/liff/config
+ * 取得 LIFF 配置
+ */
+router.get('/config', (req, res) => {
+  try {
+    const liffId = process.env.LIFF_APP_ID || '2007739371-aKePV20l';
+    res.json({
+      success: true,
+      liffId: liffId,
+      isDefault: liffId === '2007739371-aKePV20l'
+    });
+  } catch (error) {
+    console.error('❌ LIFF config 錯誤:', error);
+    res.status(500).json({
+      success: false,
+      error: 'LIFF 配置服務錯誤'
+    });
+  }
+});
+
 // 檢查當前的 LIFF 路由實作
 // 確保路由正確對應到 LIFF 應用程式 ID
 export default router;
