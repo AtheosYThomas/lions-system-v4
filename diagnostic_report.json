@@ -1,80 +1,442 @@
 {
-  "timestamp": "2025-07-17T12:01:18.983Z",
-  "sourceFiles": [],
-  "envVariables": {
-    "envFileExists": true,
-    "missingVars": [],
-    "configuredVars": [
-      "LINE_CHANNEL_SECRET",
-      "LINE_CHANNEL_ACCESS_TOKEN",
-      "DATABASE_URL",
-      "PORT",
-      "NODE_ENV",
-      "LIFF_ID"
-    ],
-    "usedButNotDefined": []
+  "timestamp": "2025-07-18T00:07:43.977Z",
+  "summary": {
+    "total": 43,
+    "passed": 4,
+    "failed": 2,
+    "warnings": 37
   },
-  "frontendFiles": {
-    "frontendFound": true,
-    "directories": [
-      "public",
-      "client/src"
-    ],
-    "jsFiles": [
-      "client/src/main.tsx",
-      "client/src/App.tsx",
-      "client/src/pages/Register.tsx",
-      "client/src/pages/Profile.tsx",
-      "client/src/pages/NotFoundPage.tsx",
-      "client/src/pages/Home.tsx",
-      "client/src/pages/Checkin.tsx",
-      "client/src/pages/Admin.tsx"
-    ],
-    "htmlFiles": [
-      "public/register.html",
-      "public/liff.html"
-    ],
-    "errors": []
-  },
-  "healthCheck": [
+  "results": [
     {
-      "endpoint": "Backend Health",
-      "url": "http://localhost:5000/health",
-      "status": 404,
-      "success": false,
-      "response": ""
+      "section": "程式碼掃描",
+      "status": "fail",
+      "message": "檔案 controllers/lineController.ts 發現錯誤",
+      "details": [
+        "找不到模組: ../types/line"
+      ],
+      "suggestions": [
+        "檢查匯入路徑",
+        "確認環境變數設定",
+        "檢查語法正確性"
+      ]
     },
     {
-      "endpoint": "API Health",
-      "url": "http://localhost:5000/api/health",
-      "status": 404,
-      "success": false,
-      "response": ""
+      "section": "程式碼掃描",
+      "status": "fail",
+      "message": "檔案 controllers/liffController.ts 發現錯誤",
+      "details": [
+        "未定義的環境變數: NODE_ENV",
+        "未定義的環境變數: NODE_ENV",
+        "未定義的環境變數: NODE_ENV",
+        "未定義的環境變數: NODE_ENV"
+      ],
+      "suggestions": [
+        "檢查匯入路徑",
+        "確認環境變數設定",
+        "檢查語法正確性"
+      ]
     },
     {
-      "endpoint": "Frontend",
-      "url": "http://localhost:5000/",
-      "status": 404,
-      "success": false,
-      "response": ""
+      "section": "環境變數檢查",
+      "status": "pass",
+      "message": "所有環境變數都已正確定義"
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "pass",
+      "message": "檢查完成 /home/runner/workspace/public 中的 2 個檔案"
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "括號不匹配: node_modules/vite/dist/node/chunks/dep-f1e8587f.js",
+      "details": "開括號: 1700, 閉括號: 1697",
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "括號不匹配: node_modules/vite/dist/node/chunks/dep-f0c7dae0.js",
+      "details": "開括號: 1627, 閉括號: 1628",
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "括號不匹配: node_modules/vite/dist/node/chunks/dep-827b23df.js",
+      "details": "開括號: 15755, 閉括號: 15748",
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "括號不匹配: node_modules/typescript/lib/typingsInstaller.js",
+      "details": "開括號: 27983, 閉括號: 27963",
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "括號不匹配: node_modules/typescript/lib/typescriptServices.js",
+      "details": "開括號: 38742, 閉括號: 38694",
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "括號不匹配: node_modules/typescript/lib/typescript.js",
+      "details": "開括號: 38742, 閉括號: 38694",
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "括號不匹配: node_modules/typescript/lib/tsserverlibrary.js",
+      "details": "開括號: 41469, 閉括號: 41421",
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "括號不匹配: node_modules/typescript/lib/tsserverlibrary.d.ts",
+      "details": "開括號: 1159, 閉括號: 1160",
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "括號不匹配: node_modules/typescript/lib/tsserver.js",
+      "details": "開括號: 41776, 閉括號: 41728",
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "括號不匹配: node_modules/typescript/lib/tsc.js",
+      "details": "開括號: 26851, 閉括號: 26847",
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "括號不匹配: node_modules/typescript/lib/protocol.d.ts",
+      "details": "開括號: 347, 閉括號: 348",
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "HTML 檔案結構不完整: node_modules/tslib/tslib.html",
+      "suggestions": [
+        "檢查 HTML 基本結構",
+        "確認標籤完整性"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "HTML 檔案結構不完整: node_modules/tslib/tslib.es6.html",
+      "suggestions": [
+        "檢查 HTML 基本結構",
+        "確認標籤完整性"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "括號不匹配: node_modules/source-map-js/lib/util.js",
+      "details": "開括號: 102, 閉括號: 103",
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "括號不匹配: node_modules/rollup/dist/shared/rollup.js",
+      "details": "開括號: 7855, 閉括號: 7842",
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "括號不匹配: node_modules/rollup/dist/shared/loadConfigFile.js",
+      "details": "開括號: 198, 閉括號: 197",
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "括號不匹配: node_modules/rollup/dist/shared/index.js",
+      "details": "開括號: 1035, 閉括號: 1034",
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "括號不匹配: node_modules/rollup/dist/es/shared/watch.js",
+      "details": "開括號: 1111, 閉括號: 1110",
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "括號不匹配: node_modules/rollup/dist/es/shared/node-entry.js",
+      "details": "開括號: 7860, 閉括號: 7847",
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "括號不匹配: node_modules/readable-stream/lib/ours/util/inspect.js",
+      "details": "開括號: 22, 閉括號: 21",
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "括號不匹配: node_modules/qs/test/parse.js",
+      "details": "開括號: 666, 閉括號: 668",
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "括號不匹配: node_modules/postcss/lib/rule.d.ts",
+      "details": "開括號: 18, 閉括號: 17",
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "括號不匹配: node_modules/postcss/lib/parser.js",
+      "details": "開括號: 137, 閉括號: 138",
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "括號不匹配: node_modules/postcss/lib/node.d.ts",
+      "details": "開括號: 55, 閉括號: 53",
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "括號不匹配: node_modules/postcss/lib/css-syntax-error.d.ts",
+      "details": "開括號: 18, 閉括號: 16",
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "括號不匹配: node_modules/postcss/lib/at-rule.d.ts",
+      "details": "開括號: 19, 閉括號: 18",
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "括號不匹配: node_modules/json5/lib/parse.js",
+      "details": "開括號: 194, 閉括號: 195",
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "括號不匹配: node_modules/json5/dist/index.js",
+      "details": "開括號: 343, 閉括號: 344",
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "括號不匹配: node_modules/jsesc/jsesc.js",
+      "details": "開括號: 74, 閉括號: 72",
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "括號不匹配: node_modules/js-tokens/index.js",
+      "details": "開括號: 18, 閉括號: 16",
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "括號不匹配: node_modules/file-type/core.js",
+      "details": "開括號: 420, 閉括號: 419",
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "括號不匹配: node_modules/body-parser/lib/types/json.js",
+      "details": "開括號: 49, 閉括號: 48",
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "括號不匹配: node_modules/@babel/parser/lib/index.js",
+      "details": "開括號: 3806, 閉括號: 3801",
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "括號不匹配: node_modules/@babel/helper-string-parser/lib/index.js",
+      "details": "開括號: 74, 閉括號: 75",
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "括號不匹配: node_modules/@babel/generator/lib/generators/types.js",
+      "details": "開括號: 63, 閉括號: 64",
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "括號不匹配: node_modules/@babel/generator/lib/generators/template-literals.js",
+      "details": "開括號: 9, 閉括號: 10",
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "warning",
+      "message": "括號不匹配: node_modules/@babel/generator/lib/generators/modules.js",
+      "details": "開括號: 61, 閉括號: 64",
+      "suggestions": [
+        "檢查括號配對",
+        "使用程式碼格式化工具"
+      ]
+    },
+    {
+      "section": "前端檔案檢查",
+      "status": "pass",
+      "message": "檢查完成 /home/runner/workspace/client 中的 2594 個檔案"
+    },
+    {
+      "section": "Health Check",
+      "status": "pass",
+      "message": "Health Check 測試成功",
+      "details": {
+        "status": "healthy",
+        "database": "connected",
+        "services": {
+          "line": "configured",
+          "routes": [
+            "admin",
+            "checkin",
+            "members",
+            "webhook"
+          ]
+        },
+        "uptime": 1162.916390764
+      }
     }
-  ],
-  "database": {
-    "connectionSuccess": true,
-    "querySuccess": true,
-    "error": null
-  },
-  "dependencies": {
-    "packageJsonExists": true,
-    "totalPackages": 20,
-    "missingImportantPackages": [],
-    "availablePackages": [
-      "express",
-      "sequelize",
-      "@line/bot-sdk",
-      "dotenv",
-      "typescript",
-      "ts-node"
-    ]
-  }
+  ]
 }
