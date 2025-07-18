@@ -1,8 +1,7 @@
-
 // src/routes/upload.ts
 import express from 'express';
 import multer from 'multer';
-import cloudinary from '../utils/cloudinary';
+import cloudinary from '../integrations/cloudinary';
 import { Readable } from 'stream';
 
 const router = express.Router();
