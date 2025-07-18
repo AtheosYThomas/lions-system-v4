@@ -1,6 +1,6 @@
 
 import { Request, Response } from 'express';
-import lineService from '../services/lineService';
+import lineService from '../integrations/line/lineService';
 import { LineWebhookRequestBody } from '../types/line';
 
 class LineController {
