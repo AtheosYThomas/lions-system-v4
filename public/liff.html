@@ -164,33 +164,30 @@
 
       } catch (error) {
         console.error('LIFF 初始化錯誤:', error);
+        updateStatus('❌ LINE 登入失敗', 'error');
 
-        // 詳細錯誤處理
-        let errorMessage = '初始化失敗';
-        if (error && typeof error === 'object' && 'code' in error) {
-          const errorCode = error.code;
-          switch (errorCode) {
-            case '404':
-              errorMessage = 'LIFF App ID 無效或未設定';
-              break;
-            case '403':
-              errorMessage = 'LIFF 應用程式權限不足';
-              break;
-            default:
-              errorMessage = `初始化失敗 (錯誤代碼: ${errorCode})`;
-          }
+        // 顯示詳細錯誤資訊
+        const errorInfo = document.createElement('div');
+        errorInfo.className = 'error-details';
+
+        let errorMessage = '';
+        if (error.code === 404) {
+          errorMessage = 'LIFF App ID 不存在或未正確配置';
+        } else if (error.code === 403) {
+          errorMessage = 'LIFF 應用程式未啟用或權限不足';
+        } else {
+          errorMessage = error.message || JSON.stringify(error);
         }
 
-        updateStatus(`❌ ${errorMessage}，請聯繫系統管理員`, 'error');
-
-        // 提供重試選項
-        setTimeout(() => {
-          const retryBtn = document.createElement('button');
-          retryBtn.textContent = '重新嘗試';
-          retryBtn.onclick = () => location.reload();
-          retryBtn.style.cssText = 'margin-top: 10px; padding: 8px 16px; background: #1DB446; color: white; border: none; border-radius: 4px; cursor: pointer;';
-          document.getElementById('status').appendChild(retryBtn);
-        }, 2000);
+        errorInfo.innerHTML = `
+          <h3>錯誤詳細資訊:</h3>
+          <p><strong>錯誤代碼:</strong> ${error.code || 'N/A'}</p>
+          <p><strong>錯誤訊息:</strong> ${errorMessage}</p>
+          <p><strong>LIFF App ID:</strong> 2007739371-aKePV20l</p>
+          <p><strong>建議:</strong> 請到 LINE Developers Console 檢查 LIFF 應用設定</p>
+          <button onclick="window.location.reload()" style="margin-top: 10px; padding: 5px 10px;">重新載入</button>
+        `;
+        document.body.appendChild(errorInfo);
       }
     }
 
