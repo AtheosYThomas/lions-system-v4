@@ -3,4 +3,4 @@
 export { performSystemCheck } from './systemCheck';
 export { runSystemHealthCheck } from './systemHealth';
 export { runDiagnostics } from './diagnostics';
-export { runFullSystemDiagnostics } from './fullSystemDiagnostics';
+export { default as runFullSystemDiagnostics } from './fullSystemDiagnostics';

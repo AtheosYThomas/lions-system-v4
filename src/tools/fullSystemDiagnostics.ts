@@ -1,8 +1,7 @@
 import fs from 'fs';
 import path from 'path';
-import { globSync } from 'glob';
-import http from 'http';
 import chalk from 'chalk';
+import { globSync } from 'glob';
 
 interface DiagnosticResult {
   section: string;
@@ -44,7 +43,6 @@ class SystemDiagnostics {
         totalFiles++;
         try {
           const content = fs.readFileSync(file, 'utf8');
-
           // 檢查常見錯誤
           const errors: string[] = [];
 
@@ -207,7 +205,7 @@ class SystemDiagnostics {
           for (const file of files) {
             const content = fs.readFileSync(file, 'utf8');
 
-            // 檢查 HTML 檔案
+            // 檢查 HTML 檔案 
             if (file.endsWith('.html')) {
               // 檢查基本 HTML 結構
               if (!content.includes('<html') || !content.includes('<body')) {
@@ -241,7 +239,7 @@ class SystemDiagnostics {
               }
             }
 
-            // 檢查 JavaScript/TypeScript 檔案
+            // 檢查 JavaScript/TypeScript 檔案 
             if (file.match(/\.(js|ts|tsx|jsx)$/)) {
               // 檢查基本語法錯誤
               if (content.includes('console.error(') || content.includes('throw new Error(')) {

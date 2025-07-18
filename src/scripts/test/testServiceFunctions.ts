@@ -331,7 +331,7 @@ class ServiceFunctionTester {
    */
   generateReport() {
     console.log('\n📊 測試報告');
-    console.log('=' * 50);
+    console.log('='.repeat(50));
 
     const totalTests = Object.keys(this.testResults).length;
     const passedTests = Object.values(this.testResults).filter(Boolean).length;
@@ -351,13 +351,13 @@ class ServiceFunctionTester {
       });
     }
 
-    console.log('\n' + '=' * 50);
+    console.log('\n' + '='.repeat(50));
 
     return {
       total: totalTests,
       passed: passedTests,
       failed: failedTests,
-      passRate: (passedTests / totalTests) * 100,
+      passRate: (Number(passedTests) / Number(totalTests)) * 100,
       results: this.testResults,
       errors: this.testErrors
     };

@@ -143,7 +143,8 @@ class MockDataSeeder {
         date: new Date('2024-03-15 19:00:00'),
         location: '北大校友會館',
         max_attendees: 50,
-        status: 'active' as const
+        status: 'active' as const,
+        created_at: new Date('2024-03-01 10:00:00')
       },
       {
         id: uuidv4(),
@@ -152,7 +153,8 @@ class MockDataSeeder {
         date: new Date('2024-04-22 09:00:00'),
         location: '陽明山國家公園',
         max_attendees: 30,
-        status: 'active' as const
+        status: 'active' as const,
+        created_at: new Date('2024-03-05 14:00:00')
       },
       {
         id: uuidv4(),
@@ -161,7 +163,8 @@ class MockDataSeeder {
         date: new Date('2024-05-18 18:30:00'),
         location: '台北晶華酒店',
         max_attendees: 100,
-        status: 'active' as const
+        status: 'active' as const,
+        created_at: new Date('2024-04-01 09:00:00')
       },
       {
         id: uuidv4(),
@@ -170,7 +173,8 @@ class MockDataSeeder {
         date: new Date('2024-06-10 14:00:00'),
         location: '台北市政府廣場',
         max_attendees: 20,
-        status: 'active' as const
+        status: 'active' as const,
+        created_at: new Date('2024-05-01 11:00:00')
       },
       {
         id: uuidv4(),
@@ -179,7 +183,8 @@ class MockDataSeeder {
         date: new Date('2024-07-15 10:00:00'),
         location: '測試地點',
         max_attendees: 25,
-        status: 'cancelled' as const
+        status: 'cancelled' as const,
+        created_at: new Date('2024-06-01 16:00:00')
       }
     ];
 
@@ -233,7 +238,7 @@ class MockDataSeeder {
         related_event_id: null,
         created_by: members[0].id,
         audience: 'all' as 'all' | 'officers' | 'members',
-        category: 'system',
+        category: 'system' as 'event' | 'system' | 'personnel',
         status: 'published' as 'draft' | 'scheduled' | 'published',
         scheduled_at: null,
         published_at: new Date('2024-03-20 16:00:00'),
@@ -246,7 +251,7 @@ class MockDataSeeder {
         related_event_id: null,
         created_by: members[0].id,
         audience: 'officers' as 'all' | 'officers' | 'members',
-        category: 'personnel',
+        category: 'personnel' as 'event' | 'system' | 'personnel',
         status: 'published' as 'draft' | 'scheduled' | 'published',
         scheduled_at: null,
         published_at: new Date('2024-03-25 09:00:00'),
