@@ -7,6 +7,7 @@ export { checkEnvironment } from './envCheck';
 export { SystemDiagnostics } from './systemDiagnostics';
 export { LiffDiagnostics } from './liffDiagnostics';
 export { runSystemHealthCheck } from './systemHealth';
+export { AutoBootDiagnostics } from './autoBootDiagnostics';
 
 // 匯入診斷功能
 export { runDiagnostics } from './diagnostics';

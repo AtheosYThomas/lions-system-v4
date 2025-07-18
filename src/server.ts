@@ -6,6 +6,7 @@ import app from './app';
 import { config } from './config/config';
 import sequelize from './config/database';
 import { validateEnvironment } from './utils/diagnostics';
+import { AutoBootDiagnostics } from './utils/diagnostics/autoBootDiagnostics';
 
 const PORT: number = parseInt(process.env.PORT || '5000', 10);
 
@@ -35,6 +36,14 @@ const logMemoryUsage = () => {
 // 啟動伺服器
 const startServer = async () => {
   try {
+    // 🔥 新增：啟動時自動執行完整診斷
+    const diagnostics = new AutoBootDiagnostics();
+    const diagnosticsPassed = await diagnostics.runBootDiagnostics();
+    
+    if (!diagnosticsPassed) {
+      console.warn('⚠️  診斷發現一些問題，但繼續啟動伺服器...');
+    }
+
     // 快速環境變數檢查
     if (!validateEnvironment()) {
       console.error('❌ 環境變數驗證失敗');
