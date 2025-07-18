@@ -55,7 +55,7 @@ Member.init({
   },
   line_uid: {
     type: DataTypes.STRING,
-    field: 'line_user_id',
+    field: 'line_uid',
     unique: true
   },
   role: {

@@ -147,30 +147,19 @@ class LineService {
   private async saveMessageLog(event: LineTextMessageEvent): Promise<void> {
     try {
       const lineUserId = event.source.userId || '';
-      
-      // 先檢查會員是否存在，如果不存在則創建基本會員記錄
+
+      // 先檢查會員是否存在
       let member = await Member.findOne({ 
         where: { line_uid: lineUserId } 
       });
 
       if (!member) {
-        console.log('👤 會員不存在，創建基本會員記錄:', lineUserId);
-        
-        // 創建基本會員記錄
-        member = await Member.create({
-          id: require('crypto').randomUUID(),
-          name: `LINE用戶_${lineUserId.substring(0, 8)}`,
-          email: `${lineUserId}@temp.line`,
-          line_uid: lineUserId,
-          role: 'member',
-          birthday: '1900-01-01',
-          job_title: '待補充',
-          address: '待補充',
-          mobile: '待補充',
-          status: 'pending'
-        });
-        
-        console.log('✅ 已創建基本會員記錄');
+        console.log('👤 會員不存在，請提醒用戶完成註冊:', lineUserId);
+
+        // 回應未註冊用戶
+        await this.replyToMessage(event.replyToken, '您尚未完成會員註冊，請先透過 LIFF 系統完成註冊程序。\n\n註冊連結：https://your-domain.com/register');
+
+        return;
       }
 
       // 儲存訊息記錄
@@ -180,7 +169,7 @@ class LineService {
         timestamp: new Date(event.timestamp),
         message_type: 'text'
       });
-      
+
       console.log('💾 訊息記錄已儲存');
     } catch (error) {
       console.error('❌ 儲存訊息記錄失敗:', error);
