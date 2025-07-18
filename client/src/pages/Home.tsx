@@ -150,7 +150,7 @@ export default function Home() {
         }}>
           <div style={{ fontSize: '3rem', marginBottom: '15px' }}>👤</div>
           <h3 style={{ marginBottom: '10px' }}>會員資料</h3>
-          <p style={{ opacity: 0.9 }}>查看和編輯會員資料</p>
+          <p style={{ opacity: 0.9 }}>查看個人會員資料</p>
         </div>
 
         {/* 活動報名 */}
@@ -162,7 +162,7 @@ export default function Home() {
           cursor: 'pointer',
           transition: 'transform 0.3s ease'
         }}>
-          <div style={{ fontSize: '3rem', marginBottom: '15px' }}>📝</div>
+          <div style={{ fontSize: '3rem', marginBottom: '15px' }}>📅</div>
           <h3 style={{ marginBottom: '10px' }}>活動報名</h3>
           <p style={{ opacity: 0.9 }}>報名參加獅子會活動</p>
         </div>
@@ -175,10 +175,38 @@ export default function Home() {
           textAlign: 'center',
           cursor: 'pointer',
           transition: 'transform 0.3s ease'
-        }}>
-          <div style={{ fontSize: '3rem', marginBottom: '15px' }}>📋</div>
+        }} onClick={() => window.open('/liff.html', '_blank')}>
+          <div style={{ fontSize: '3rem', marginBottom: '15px' }}>📝</div>
           <h3 style={{ marginBottom: '10px' }}>會員註冊表</h3>
-          <p style={{ opacity: 0.9 }}>填寫註冊表，自動填入 LINE ID</p>
+          <p style={{ opacity: 0.9 }}>填寫會員註冊表，自動填入 LINE ID</p>
+        </div>
+
+        {/* 活動簽到 */}
+        <div style={{
+          background: 'rgba(139, 195, 74, 0.8)',
+          padding: '30px',
+          borderRadius: '15px',
+          textAlign: 'center',
+          cursor: 'pointer',
+          transition: 'transform 0.3s ease'
+        }}>
+          <div style={{ fontSize: '3rem', marginBottom: '15px' }}>✅</div>
+          <h3 style={{ marginBottom: '10px' }}>活動簽到</h3>
+          <p style={{ opacity: 0.9 }}>活動現場簽到</p>
+        </div>
+
+        {/* 備案上傳 */}
+        <div style={{
+          background: 'rgba(255, 87, 34, 0.8)',
+          padding: '30px',
+          borderRadius: '15px',
+          textAlign: 'center',
+          cursor: 'pointer',
+          transition: 'transform 0.3s ease'
+        }}>
+          <div style={{ fontSize: '3rem', marginBottom: '15px' }}>📢</div>
+          <h3 style={{ marginBottom: '10px' }}>備案上傳</h3>
+          <p style={{ opacity: 0.9 }}>上傳重要文件備案</p>
         </div>
       </div>
 
