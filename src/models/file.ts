@@ -1,5 +1,5 @@
 
-import { Model, DataTypes } from 'sequelize';
+import { Model, DataTypes, Optional } from 'sequelize';
 import sequelize from '../config/database';
 
 export interface IFileModel {
@@ -16,8 +16,11 @@ export interface IFileModel {
   updated_at: Date;
 }
 
+// IFileModel 是全部欄位，FileCreationAttributes 是可省略 id 與 timestamps
+export type FileCreationAttributes = Optional<IFileModel, 'id' | 'created_at' | 'updated_at'>;
+
 // 使用泛型擴充 Sequelize Model 類型
-class File extends Model<IFileModel> implements IFileModel {
+class File extends Model<IFileModel, FileCreationAttributes> implements IFileModel {
   public id!: number;
   public original_name!: string;
   public mime_type?: string;

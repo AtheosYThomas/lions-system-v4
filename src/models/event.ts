@@ -1,5 +1,4 @@
-
-import { DataTypes, Model } from 'sequelize';
+import { Model, DataTypes, Optional } from 'sequelize';
 import sequelize from '../config/database';
 
 export interface IEventModel {
@@ -14,7 +13,10 @@ export interface IEventModel {
   updated_at?: Date;
 }
 
-class Event extends Model<IEventModel> implements IEventModel {
+// IEventModel 是全部欄位，EventCreationAttributes 是可省略 id 與 timestamps
+export type EventCreationAttributes = Optional<IEventModel, 'id' | 'created_at' | 'updated_at'>;
+
+class Event extends Model<IEventModel, EventCreationAttributes> implements IEventModel {
   public id!: string;
   public title!: string;
   public description?: string;
