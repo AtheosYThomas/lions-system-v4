@@ -1,9 +1,9 @@
 
-import { Event } from '../models/event';
-import { Registration } from '../models/registration';
-import { Checkin } from '../models/checkin';
-import { Payment } from '../models/payment';
-import { Member } from '../models/member';
+import Event from '../models/event';
+import Registration from '../models/registration';
+import Checkin from '../models/checkin';
+import Payment from '../models/payment';
+import Member from '../models/member';
 import { Op } from 'sequelize';
 
 interface EventCreationData {

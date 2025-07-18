@@ -1,4 +1,3 @@
-
 import { sequelize } from '../../models/index';
 import Member from '../../models/member';
 import Event from '../../models/event';
@@ -13,13 +12,13 @@ import { v4 as uuidv4 } from 'uuid';
  * 僅用於開發環境測試，不要在 production 使用
  */
 class MockDataSeeder {
-  
+
   /**
    * 清空所有表格資料
    */
   async clearAllTables() {
     console.log('🗑️ 清空所有測試資料...');
-    
+
     try {
       // 依照外鍵關係順序刪除
       await Payment.destroy({ where: {}, truncate: true });
@@ -28,7 +27,7 @@ class MockDataSeeder {
       await Announcement.destroy({ where: {}, truncate: true });
       await Event.destroy({ where: {}, truncate: true });
       await Member.destroy({ where: {}, truncate: true });
-      
+
       console.log('✅ 所有測試資料已清空');
     } catch (error) {
       console.error('❌ 清空資料失敗:', error);
@@ -41,7 +40,7 @@ class MockDataSeeder {
    */
   async seedMembers() {
     console.log('👥 建立測試會員資料...');
-    
+
     const mockMembers = [
       {
         id: uuidv4(),
@@ -56,7 +55,7 @@ class MockDataSeeder {
         fax: '02-12345678',
         address: '台北市中正區重慶南路一段122號',
         mobile: '0912345678',
-        status: 'active'
+        status: 'active' as const
       },
       {
         id: uuidv4(),
@@ -71,7 +70,7 @@ class MockDataSeeder {
         fax: '02-23456789',
         address: '台北市大安區信義路三段134號',
         mobile: '0923456789',
-        status: 'active'
+        status: 'active' as const
       },
       {
         id: uuidv4(),
@@ -86,7 +85,7 @@ class MockDataSeeder {
         fax: '02-34567890',
         address: '台北市信義區松仁路100號',
         mobile: '0934567890',
-        status: 'active'
+        status: 'active' as const
       },
       {
         id: uuidv4(),
@@ -101,7 +100,7 @@ class MockDataSeeder {
         fax: '02-45678901',
         address: '台北市松山區南京東路四段1號',
         mobile: '0945678901',
-        status: 'active'
+        status: 'active' as const
       },
       {
         id: uuidv4(),
@@ -116,7 +115,7 @@ class MockDataSeeder {
         fax: '02-56789012',
         address: '台北市中山區中山北路二段48號',
         mobile: '0956789012',
-        status: 'inactive'
+        status: 'inactive' as const
       }
     ];
 
@@ -135,7 +134,7 @@ class MockDataSeeder {
    */
   async seedEvents() {
     console.log('🎭 建立測試活動資料...');
-    
+
     const mockEvents = [
       {
         id: uuidv4(),
@@ -144,7 +143,7 @@ class MockDataSeeder {
         date: new Date('2024-03-15 19:00:00'),
         location: '北大校友會館',
         max_attendees: 50,
-        status: 'active'
+        status: 'active' as const
       },
       {
         id: uuidv4(),
@@ -153,7 +152,7 @@ class MockDataSeeder {
         date: new Date('2024-04-22 09:00:00'),
         location: '陽明山國家公園',
         max_attendees: 30,
-        status: 'active'
+        status: 'active' as const
       },
       {
         id: uuidv4(),
@@ -162,7 +161,7 @@ class MockDataSeeder {
         date: new Date('2024-05-18 18:30:00'),
         location: '台北晶華酒店',
         max_attendees: 100,
-        status: 'active'
+        status: 'active' as const
       },
       {
         id: uuidv4(),
@@ -171,7 +170,7 @@ class MockDataSeeder {
         date: new Date('2024-06-10 14:00:00'),
         location: '台北市政府廣場',
         max_attendees: 20,
-        status: 'active'
+        status: 'active' as const
       },
       {
         id: uuidv4(),
@@ -180,7 +179,7 @@ class MockDataSeeder {
         date: new Date('2024-07-15 10:00:00'),
         location: '測試地點',
         max_attendees: 25,
-        status: 'cancelled'
+        status: 'cancelled' as const
       }
     ];
 
@@ -199,7 +198,7 @@ class MockDataSeeder {
    */
   async seedAnnouncements(members: Member[], events: Event[]) {
     console.log('📢 建立測試公告資料...');
-    
+
     const mockAnnouncements = [
       {
         id: uuidv4(),
@@ -209,7 +208,7 @@ class MockDataSeeder {
         created_by: members[0].id,
         audience: 'all',
         category: 'event',
-        status: 'published',
+        status: 'published' as 'draft' | 'scheduled' | 'published',
         scheduled_at: null,
         published_at: new Date('2024-03-01 10:00:00'),
         is_visible: true
@@ -222,7 +221,7 @@ class MockDataSeeder {
         created_by: members[3].id,
         audience: 'all',
         category: 'event',
-        status: 'published',
+        status: 'published' as 'draft' | 'scheduled' | 'published',
         scheduled_at: null,
         published_at: new Date('2024-03-10 14:00:00'),
         is_visible: true
@@ -235,7 +234,7 @@ class MockDataSeeder {
         created_by: members[0].id,
         audience: 'all',
         category: 'system',
-        status: 'published',
+        status: 'published' as 'draft' | 'scheduled' | 'published',
         scheduled_at: null,
         published_at: new Date('2024-03-20 16:00:00'),
         is_visible: true
@@ -248,7 +247,7 @@ class MockDataSeeder {
         created_by: members[0].id,
         audience: 'officers',
         category: 'personnel',
-        status: 'published',
+        status: 'published' as 'draft' | 'scheduled' | 'published',
         scheduled_at: null,
         published_at: new Date('2024-03-25 09:00:00'),
         is_visible: true
@@ -261,7 +260,7 @@ class MockDataSeeder {
         created_by: members[3].id,
         audience: 'all',
         category: 'event',
-        status: 'draft',
+        status: 'draft' as 'draft' | 'scheduled' | 'published',
         scheduled_at: null,
         published_at: null,
         is_visible: true
@@ -283,49 +282,49 @@ class MockDataSeeder {
    */
   async seedRegistrations(members: Member[], events: Event[]) {
     console.log('📝 建立測試報名資料...');
-    
+
     const mockRegistrations = [
       {
         id: uuidv4(),
         event_id: events[0].id,
         member_id: members[0].id,
         registration_date: new Date('2024-03-02 10:00:00'),
-        status: 'confirmed'
+        status: 'confirmed' as const
       },
       {
         id: uuidv4(),
         event_id: events[0].id,
         member_id: members[1].id,
         registration_date: new Date('2024-03-03 14:00:00'),
-        status: 'confirmed'
+        status: 'confirmed' as const
       },
       {
         id: uuidv4(),
         event_id: events[1].id,
         member_id: members[0].id,
         registration_date: new Date('2024-03-12 09:00:00'),
-        status: 'confirmed'
+        status: 'confirmed' as const
       },
       {
         id: uuidv4(),
         event_id: events[1].id,
         member_id: members[2].id,
         registration_date: new Date('2024-03-13 16:00:00'),
-        status: 'confirmed'
+        status: 'confirmed' as const
       },
       {
         id: uuidv4(),
         event_id: events[2].id,
         member_id: members[1].id,
         registration_date: new Date('2024-04-01 11:00:00'),
-        status: 'pending'
+        status: 'pending' as const
       },
       {
         id: uuidv4(),
         event_id: events[2].id,
         member_id: members[3].id,
         registration_date: new Date('2024-04-02 15:00:00'),
-        status: 'cancelled'
+        status: 'cancelled' as const
       }
     ];
 
@@ -344,7 +343,7 @@ class MockDataSeeder {
    */
   async seedCheckins(members: Member[], events: Event[]) {
     console.log('✅ 建立測試簽到資料...');
-    
+
     const mockCheckins = [
       {
         id: uuidv4(),
@@ -384,7 +383,7 @@ class MockDataSeeder {
    */
   async seedPayments(members: Member[], events: Event[]) {
     console.log('💳 建立測試付款資料...');
-    
+
     const mockPayments = [
       {
         id: uuidv4(),
@@ -394,7 +393,7 @@ class MockDataSeeder {
         payment_method: 'credit_card',
         payment_date: new Date('2024-04-05 10:30:00'),
         due_date: new Date('2024-05-15 23:59:59'),
-        status: 'completed',
+        status: 'completed' as const,
         transaction_id: 'TXN001234567890'
       },
       {
@@ -405,7 +404,7 @@ class MockDataSeeder {
         payment_method: 'bank_transfer',
         payment_date: new Date('2024-04-06 14:20:00'),
         due_date: new Date('2024-05-15 23:59:59'),
-        status: 'completed',
+        status: 'completed' as const,
         transaction_id: 'TXN001234567891'
       },
       {
@@ -416,7 +415,7 @@ class MockDataSeeder {
         payment_method: 'line_pay',
         payment_date: null,
         due_date: new Date('2024-05-15 23:59:59'),
-        status: 'pending',
+        status: 'pending' as const,
         transaction_id: null
       }
     ];
@@ -436,7 +435,7 @@ class MockDataSeeder {
    */
   async runFullSeed() {
     console.log('🌱 開始建立完整測試資料...');
-    
+
     try {
       // 確保資料庫連線
       await sequelize.authenticate();
@@ -472,7 +471,7 @@ class MockDataSeeder {
 // 主執行函數
 async function main() {
   const seeder = new MockDataSeeder();
-  
+
   try {
     await seeder.runFullSeed();
     console.log('\n✅ Mock 資料匯入完成！');

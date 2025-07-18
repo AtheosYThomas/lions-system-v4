@@ -1,4 +1,3 @@
-
 import MockDataSeeder from './seedMockData';
 import ServiceFunctionTester from './testServiceFunctions';
 
@@ -22,22 +21,22 @@ export class TestSuite {
    */
   async runFullTestSuite() {
     console.log('🚀 開始執行完整測試套件...');
-    
+
     try {
       // 步驟 1: 建立測試資料
       console.log('\n📝 步驟 1: 建立測試資料');
       await this.seeder.runFullSeed();
-      
+
       // 步驟 2: 執行服務功能測試
       console.log('\n🧪 步驟 2: 執行服務功能測試');
       const testReport = await this.tester.runAllTests();
-      
+
       // 產生綜合報告
       console.log('\n📊 綜合測試報告');
       console.log('=' * 60);
       console.log('✅ 測試資料建立：成功');
       console.log(`✅ 服務功能測試：${testReport.passed}/${testReport.total} 通過 (${testReport.passRate.toFixed(1)}%)`);
-      
+
       if (testReport.failed === 0) {
         console.log('\n🎉 完整測試套件執行成功！');
         return { success: true, report: testReport };
@@ -45,7 +44,7 @@ export class TestSuite {
         console.log('\n⚠️ 部分測試失敗，請檢查詳細報告');
         return { success: false, report: testReport };
       }
-      
+
     } catch (error) {
       console.error('\n❌ 測試套件執行失敗:', error);
       return { success: false, error: error.message };
@@ -83,7 +82,7 @@ export const runFullTestSuite = () => new TestSuite().runFullTestSuite();
 if (require.main === module) {
   const args = process.argv.slice(2);
   const testSuite = new TestSuite();
-  
+
   async function main() {
     try {
       switch (args[0]) {
@@ -111,7 +110,7 @@ if (require.main === module) {
       process.exit(1);
     }
   }
-  
+
   main();
 }
 

@@ -14,6 +14,15 @@ interface ReportFilters {
 }
 
 class AdminService {
+  async getDashboardStats() {
+    // Implementation for dashboard stats
+    return {
+      totalMembers: 0,
+      totalEvents: 0,
+      totalAnnouncements: 0,
+      totalRegistrations: 0
+    };
+  }
   // 系統總覽統計
   async getSystemSummary() {
     try {

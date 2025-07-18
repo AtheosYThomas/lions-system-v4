@@ -1,5 +1,5 @@
 
-import fetch from 'node-fetch';
+// Using native fetch (Node.js 18+)
 import crypto from 'crypto';
 import { config } from '../config/config';
 
