@@ -4,7 +4,6 @@
  */
 
 // 環境相關
-export { checkRequiredEnvVars } from './envCheck';
 
 // 匯出診斷工具
 export { validateEnvironment } from './diagnostics/envValidation';

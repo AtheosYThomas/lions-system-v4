@@ -42,3 +42,35 @@ export function checkEnvironment() {
   console.log(chalk.green('🎉 所有必要的環境變數都已設定！'));
   return true;
 }
+import chalk from 'chalk';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+export function checkRequiredEnvVars(): boolean {
+  console.log(chalk.cyan('🔍 檢查必要環境變數...'));
+  
+  const requiredVars = [
+    'DATABASE_URL',
+    'LINE_CHANNEL_ACCESS_TOKEN',
+    'LINE_CHANNEL_SECRET',
+    'LIFF_APP_ID'
+  ];
+  
+  const missingVars = requiredVars.filter(varName => !process.env[varName]);
+  
+  if (missingVars.length > 0) {
+    console.log(chalk.red('❌ 缺少必要環境變數:'));
+    missingVars.forEach(varName => {
+      console.log(chalk.red(`  - ${varName}`));
+    });
+    return false;
+  }
+  
+  console.log(chalk.green('✅ 所有必要環境變數都已設定'));
+  return true;
+}
+
+export function checkEnvironment(): boolean {
+  return checkRequiredEnvVars();
+}
