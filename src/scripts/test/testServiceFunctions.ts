@@ -58,7 +58,7 @@ class ServiceFunctionTester {
       // 測試根據 LINE UID 獲取會員
       const memberByLineUid = await memberService.getMemberByLineUid('U1234567890abcdef');
       this.recordTest('memberService.getMemberByLineUid', 
-        memberByLineUid === null || (memberByLineUid && memberByLineUid.line_uid === 'U1234567890abcdef'));
+        memberByLineUid === null || (memberByLineUid && memberByLineUid.line_user_id === 'U1234567890abcdef'));
 
     } catch (error) {
       this.recordTest('memberService', false, error instanceof Error ? error.message : String(error));

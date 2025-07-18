@@ -1,4 +1,3 @@
-
 /**
  * 系統角色定義
  */
@@ -94,10 +93,10 @@ export type RoleGroup = keyof typeof roleGroups;
 export function hasRolePermission(userRole: Role | string, requiredRole: Role): boolean {
   const userRank = roleRank[userRole as Role] || 0;
   const requiredRank = roleRank[requiredRole];
-  
+
   // Admin 總是有權限
   if (userRole === Role.Admin) return true;
-  
+
   // 完全匹配或更高等級
   return userRank >= requiredRank;
 }

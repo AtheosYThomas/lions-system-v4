@@ -1,4 +1,3 @@
-
 import { Request, Response, NextFunction } from 'express';
 import { Member } from '../models/member';
 import { AuthError } from './AuthError';
@@ -30,7 +29,7 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
 
     // 查詢會員資料
     const member = await Member.findOne({ 
-      where: { line_uid: lineUid } 
+      where: { line_user_id: lineUid } 
     });
 
     if (!member) {
@@ -48,7 +47,7 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
     if (error instanceof AuthError) {
       return res.status(error.statusCode).json(error.toJSON());
     }
-    
+
     console.error('authMiddleware 錯誤:', error);
     const authError = new AuthError('驗證失敗', 500, 'AUTH_ERROR');
     res.status(500).json(authError.toJSON());
@@ -67,9 +66,9 @@ export const optionalAuthMiddleware = async (req: Request, res: Response, next: 
 
     if (lineUid && typeof lineUid === 'string') {
       const member = await Member.findOne({ 
-        where: { line_uid: lineUid, status: 'active' } 
+        where: { line_user_id: lineUid, status: 'active' } 
       });
-      
+
       if (member) {
         req.member = member;
       }

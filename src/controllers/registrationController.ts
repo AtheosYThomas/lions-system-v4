@@ -1,4 +1,3 @@
-
 import { Request, Response } from 'express';
 import Member from '../models/member';
 import memberService from '../services/memberService';
@@ -34,11 +33,11 @@ class RegistrationController {
         fax,
         address,
         mobile,
-        line_uid
+        line_uid: lineUserId
       } = req.body;
 
       // 驗證必要欄位
-      if (!name || !email || !birthday || !job_title || !address || !mobile || !line_uid) {
+      if (!name || !email || !birthday || !job_title || !address || !mobile || !lineUserId) {
         return res.status(400).json({
           success: false,
           error: '請填寫所有必要欄位'
@@ -47,7 +46,7 @@ class RegistrationController {
 
       // 檢查 LINE UID 是否已經註冊
       const existingMember = await Member.findOne({
-        where: { line_uid }
+        where: { line_user_id: lineUserId }
       });
 
       if (existingMember) {
@@ -68,7 +67,7 @@ class RegistrationController {
         fax,
         address,
         mobile,
-        line_uid,
+        line_user_id: lineUserId,
         role: 'member',
         status: 'active'
       });
@@ -88,7 +87,7 @@ class RegistrationController {
 
     } catch (error) {
       console.error('❌ 會員註冊失敗:', error);
-      
+
       if (error instanceof Error) {
         res.status(400).json({
           success: false,
@@ -108,9 +107,9 @@ class RegistrationController {
    */
   async checkRegistrationStatus(req: Request, res: Response) {
     try {
-      const { line_uid } = req.params;
+      const { line_uid: lineUserId } = req.params;
 
-      if (!line_uid) {
+      if (!lineUserId) {
         return res.status(400).json({
           success: false,
           error: 'LINE UID 是必要參數'
@@ -118,7 +117,7 @@ class RegistrationController {
       }
 
       const member = await Member.findOne({
-        where: { line_uid }
+        where: { line_user_id: lineUserId }
       });
 
       if (member) {

@@ -105,7 +105,7 @@ class AdminService {
         Member.count({ where: { role: 'member' } }),
         Member.count({ 
           where: { 
-            line_user_id: { [Op.ne]: null },
+            line_user_id: { [Op.ne]: '' },
             status: 'active'
           }
         })

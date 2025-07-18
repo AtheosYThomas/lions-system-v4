@@ -6,6 +6,7 @@ export * from './event';
 
 // Registration types
 export * from './registration';
+export { PaymentMethod, PaymentProvider, PaymentRecord, PaymentTransaction } from './payment';
 
 // Announcement types
 export * from './announcement';
@@ -15,9 +16,6 @@ export * from './line';
 
 // Checkin types
 export * from './checkin';
-
-// Payment types  
-export { PaymentMethod, PaymentProvider } from './payment';
 
 // Common types
 export interface ApiResponse<T = any> {

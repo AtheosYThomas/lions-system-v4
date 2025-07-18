@@ -1,4 +1,3 @@
-
 import fs from 'fs';
 import path from 'path';
 import dotenv from 'dotenv';
@@ -27,7 +26,7 @@ class SystemTroubleshooter {
     await this.checkFrontendFiles();
     await this.runHealthCheck();
     await this.runDatabaseCheck();
-    
+
     this.generateReport();
   }
 
@@ -38,7 +37,7 @@ class SystemTroubleshooter {
   // 1. 掃描 /src 目錄下所有檔案錯誤
   private async scanSourceFiles() {
     console.log(chalk.blue('\n1️⃣ 掃描 /src 目錄檔案錯誤...'));
-    
+
     try {
       // 檢查 TypeScript 編譯錯誤
       try {
@@ -70,18 +69,18 @@ class SystemTroubleshooter {
           files.forEach(file => {
             try {
               const content = fs.readFileSync(file, 'utf-8');
-              
+
               // 檢查常見問題
               const issues = [];
-              
+
               if (content.includes('import') && content.match(/import.*from\s*$/m)) {
                 issues.push('不完整的 import 語句');
               }
-              
+
               if (content.includes('async') && !content.includes('try') && !content.includes('catch')) {
                 issues.push('async 函數缺少錯誤處理');
               }
-              
+
               if (content.includes('process.env.') && !content.includes('dotenv')) {
                 const envVars = content.match(/process\.env\.(\w+)/g);
                 if (envVars) {
@@ -95,7 +94,7 @@ class SystemTroubleshooter {
               } else {
                 console.log(chalk.green(`✅ ${file} 檢查通過`));
               }
-              
+
             } catch (err: any) {
               this.addResult(type, 'error', `${file} 讀取錯誤`, err.message, '檢查檔案權限和語法');
               console.log(chalk.red(`❌ ${file}: ${err.message}`));
@@ -186,7 +185,7 @@ class SystemTroubleshooter {
         htmlFiles.forEach(file => {
           try {
             const content = fs.readFileSync(file, 'utf-8');
-            
+
             if (!content.includes('<script') && !content.includes('<link')) {
               this.addResult('前端檔案', 'warning', `${file} 未包含 JS 或 CSS 資源`, '', '確認是否需要載入必要資源');
               console.log(chalk.yellow(`⚠️ ${file} 未包含 JS/CSS 資源`));
@@ -276,9 +275,9 @@ class SystemTroubleshooter {
     console.log(chalk.blue('\n5️⃣ 檢查資料庫連線...'));
 
     try {
-      const { runSystemHealthCheck } = await import('../tools/systemHealth');
+      const { runSystemHealthCheck } = await import('./systemHealth');
       const healthResults = await runSystemHealthCheck();
-      
+
       if (healthResults.database) {
         this.addResult('資料庫', 'pass', '資料庫連線正常');
       } else {
@@ -345,11 +344,11 @@ class SystemTroubleshooter {
     console.log(chalk.cyan('\n📊 系統健康度評分:'));
     const totalItems = this.results.length;
     const healthScore = Math.round((passResults.length / totalItems) * 100);
-    
+
     let scoreColor = chalk.red;
     if (healthScore >= 80) scoreColor = chalk.green;
     else if (healthScore >= 60) scoreColor = chalk.yellow;
-    
+
     console.log(scoreColor(`${healthScore}% (${passResults.length}/${totalItems} 項目正常)`));
 
     console.log(chalk.cyan('\n' + '=' .repeat(60)));

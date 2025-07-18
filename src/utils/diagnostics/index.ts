@@ -5,12 +5,12 @@ export { checkEnvironment } from './envCheck';
 // 匯入所有診斷模組
 export { SystemDiagnostics } from './systemDiagnostics';
 export { LiffDiagnostics } from './liffDiagnostics';
-export { SystemHealthChecker } from './systemHealth';
+export { runSystemHealthCheck } from './systemHealth';
 
 // 匯入移動過來的診斷工具
 export { runDiagnostics } from './diagnostics';
 export { default as runFullSystemDiagnostics } from './fullSystemDiagnostics';
-export { default as LiffDiagnosticsOld } from './liffDiagnostics';
+export { LiffDiagnostics } from '../tools/liffDiagnostics';
 export { performSystemCheck } from './systemCheck';
 export { runSystemHealthCheck } from './systemHealth';
 export { generateTroubleshootReport } from './troubleshoot';

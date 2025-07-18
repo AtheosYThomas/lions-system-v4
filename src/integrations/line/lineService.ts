@@ -76,7 +76,7 @@ class LineService {
 
     // 🔍 核心邏輯：檢查用戶是否為會員
     const member = await Member.findOne({ 
-      where: { line_uid: lineUserId } 
+      where: { line_user_id: lineUserId } 
     });
 
     if (member) {
@@ -119,7 +119,7 @@ class LineService {
         type: 'flex' as const,
         altText: '請註冊會員',
         contents: {
-          type: 'bubble',
+          type: 'bubble' as const,
           body: {
             type: 'box',
             layout: 'vertical',
@@ -189,7 +189,7 @@ class LineService {
 
     // 檢查是否為已註冊會員
     const member = await Member.findOne({ 
-      where: { line_uid: lineUserId } 
+      where: { line_user_id: lineUserId } 
     });
 
     if (member) {
@@ -206,7 +206,7 @@ class LineService {
         type: 'flex' as const,
         altText: '歡迎加入北大獅子會',
         contents: {
-          type: 'bubble',
+          type: 'bubble' as const,
           body: {
             type: 'box',
             layout: 'vertical',

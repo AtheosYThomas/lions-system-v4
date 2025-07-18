@@ -1,4 +1,3 @@
-
 import { Request, Response } from 'express';
 import Member from '../models/member';
 import Event from '../models/event';
@@ -17,7 +16,7 @@ class CheckinController {
       }
 
       // 查找會員
-      const member = await Member.findOne({ where: { line_uid: lineUserId } });
+      const member = await Member.findOne({ where: { line_user_id: lineUserId } });
       if (!member) {
         return res.status(404).json({ error: '會員不存在' });
       }
@@ -95,7 +94,7 @@ class CheckinController {
     const { lineUserId } = req.params;
 
     try {
-      const member = await Member.findOne({ where: { line_uid: lineUserId } });
+      const member = await Member.findOne({ where: { line_user_id: lineUserId } });
       if (!member) {
         return res.status(404).json({ error: '會員不存在' });
       }
@@ -113,7 +112,7 @@ class CheckinController {
       res.json({
         member: {
           name: member.name,
-          lineUid: member.line_uid
+          lineUid: member.line_user_id
         },
         checkinHistory: checkins
       });
