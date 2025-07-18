@@ -10,8 +10,8 @@ class LineService {
 
   constructor() {
     this.client = new Client({
-      channelAccessToken: config.line.accessToken,
-      channelSecret: config.line.channelSecret
+      channelAccessToken: config.line.accessToken || process.env.LINE_CHANNEL_ACCESS_TOKEN || '',
+      channelSecret: config.line.channelSecret || process.env.LINE_CHANNEL_SECRET || ''
     });
   }
 
@@ -130,7 +130,7 @@ class LineService {
     try {
       const pushMessage: LinePushMessage = {
         type: 'text',
-        text: message || '這是系統推播測試訊息'
+        text: message ?? '這是系統推播測試訊息'
       };
 
       await this.client.pushMessage(userId, pushMessage);
