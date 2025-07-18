@@ -105,7 +105,7 @@ class EventService {
    */
   async searchEvents(options: EventSearchOptions) {
     try {
-      const whereClause: any = {};
+      const whereClause: Record<string, any> = {};
 
       if (options.title) {
         whereClause.title = {
