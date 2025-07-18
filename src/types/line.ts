@@ -3,6 +3,7 @@ import { WebhookEvent, MessageEvent, TextMessage } from '@line/bot-sdk';
 
 export interface LineTextMessageEvent extends MessageEvent {
   message: {
+    id: string;
     type: 'text';
     text: string;
     quoteToken: string;

@@ -247,7 +247,7 @@ class EventService {
           checkins: checkinCount,
           payments: paymentCount,
           attendanceRate: Math.round(attendanceRate * 100) / 100,
-          availableSlots: event?.max_attendees ? event.max_attendees - registrationCount : null
+          availableSlots: availableSlots
         };
       } else {
         // 全體活動統計
