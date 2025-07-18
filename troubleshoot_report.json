@@ -1,10 +1,10 @@
 {
-  "timestamp": "2025-07-18T15:07:03.903Z",
+  "timestamp": "2025-07-18T22:31:48.434Z",
   "summary": {
-    "total": 101,
-    "pass": 76,
-    "warning": 25,
-    "error": 0
+    "total": 100,
+    "pass": 75,
+    "warning": 24,
+    "error": 1
   },
   "results": [
     {
@@ -469,15 +469,6 @@
     },
     {
       "category": "Source Files",
-      "status": "warning",
-      "message": "src/utils/diagnostics/index.ts: async 函數缺少錯誤處理",
-      "suggestions": [
-        "添加 try-catch 區塊",
-        "使用 .catch() 處理 Promise 錯誤"
-      ]
-    },
-    {
-      "category": "Source Files",
       "status": "pass",
       "message": "src/utils/diagnostics/index.ts: 語法檢查通過"
     },
@@ -609,9 +600,14 @@
     },
     {
       "category": "Health Check",
-      "status": "pass",
-      "message": "Health check 成功 (狀態: 200)",
-      "details": "{\n  \"status\": \"healthy\",\n  \"timestamp\": \"2025-07-18T15:07:03.871Z\",\n  \"version\": \"4.0\",\n  \"uptime\": 2421.942162386,\n  \"database\": \"connected\",\n  \"services\": {\n    \"line\": \"configured\",\n    \"routes\": [\n      \"admin\",\n      \"checkin\",\n      \"members\",\n      \"webhook\"\n    ]\n  }\n}"
+      "status": "error",
+      "message": "Health check 連線失敗",
+      "details": "connect ECONNREFUSED 127.0.0.1:5000",
+      "suggestions": [
+        "確認伺服器已啟動",
+        "檢查埠號設定",
+        "確認防火牆設定"
+      ]
     }
   ]
 }
