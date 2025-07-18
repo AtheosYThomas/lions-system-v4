@@ -237,7 +237,7 @@ class EventService {
         const event = await Event.findByPk(eventId);
         const attendanceRate = registrationCount > 0 ? (checkinCount / registrationCount) * 100 : 0;
 
-        const availableSlots = event?.max_attendees ? event.max_attendees - registrationCount : null;
+        const availableSlots = event?.max_attendees !== undefined ? event.max_attendees - registrationCount : null;
 
         return {
           eventId,

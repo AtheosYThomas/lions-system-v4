@@ -1,4 +1,3 @@
-
 import { Client, WebhookEvent, MessageEvent } from '@line/bot-sdk';
 import { config } from '../config/config';
 import MessageLog from '../models/messageLog';
@@ -21,7 +20,7 @@ class LineService {
   async handleWebhookEvents(events: WebhookEvent[]): Promise<LineServiceResponse> {
     try {
       console.log('📩 LINE 服務開始處理事件');
-      
+
       if (!events || events.length === 0) {
         console.log('✅ Webhook 驗證請求');
         return { success: true, message: 'Webhook verification' };
@@ -44,7 +43,7 @@ class LineService {
    */
   private async processEvent(event: WebhookEvent): Promise<void> {
     console.log('📨 處理事件類型:', event.type);
-    
+
     switch (event.type) {
       case 'message':
         await this.handleMessageEvent(event as MessageEvent);
@@ -71,7 +70,7 @@ class LineService {
 
     const textEvent = event as LineTextMessageEvent;
     const userMessage = textEvent.message.text;
-    
+
     console.log('💬 收到文字訊息:', userMessage);
 
     // 儲存訊息記錄
@@ -103,7 +102,7 @@ class LineService {
   async replyToMessage(replyToken: string, originalMessage: string): Promise<void> {
     try {
       console.log('🔄 準備回應訊息:', { replyToken, originalMessage });
-      
+
       const replyMessage: LineReplyMessage = {
         type: 'text',
         text: `北大獅子會收到您的訊息: ${originalMessage}\n\n請使用 LIFF 系統進行會員管理操作。`
@@ -149,7 +148,7 @@ class LineService {
     try {
       // TODO: 根據您的 MessageLog 模型調整欄位
       await MessageLog.create({
-        user_id: event.source.userId,
+        user_id: event.source.userId || '',
         message_content: event.message.text,
         timestamp: new Date(event.timestamp),
         message_type: 'text'
