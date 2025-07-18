@@ -10,6 +10,7 @@ import liffRoutes from './routes/api/liff';
 import { validateEnvironment } from './utils/envValidation';
 import announcementRoutes from './routes/api/announcements';
 import lineWebhook from './routes/line/webhook';
+import uploadRouter from './routes/upload';
 
 const app = express();
 const PORT: number = parseInt(process.env.PORT || '5000', 10);
@@ -84,6 +85,7 @@ app.use('/api/members', memberRoutes);
 app.use('/api/announcements', announcementRoutes);
 app.use('/api/checkin', checkinRoutes);
 app.use('/api/liff', liffRoutes);
+app.use('/api/upload', uploadRouter);
 
 // 前端路由（提供 React 應用）
 app.get('/', (req, res) => {
