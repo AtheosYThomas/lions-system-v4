@@ -1,0 +1,89 @@
+第一步：建立 Webhook 接收事件，並根據 LINE userId 判斷會員身分
+✅ 目標：
+當使用者傳訊息時，LINE Bot 要能：
+
+擷取 userId
+
+查資料庫是否為會員
+
+若不是，傳送註冊表連結
+
+🧱 步驟一：修改 src/routes/line.ts（或你的 Webhook 處理檔案）
+請先確認你的 line.ts 檔案大致結構如下（我提供一個基本範本）：
+
+ts
+複製
+編輯
+import express from 'express';
+import { middleware, Client, WebhookEvent } from '@line/bot-sdk';
+import { Member } from '../models/member';
+import lineConfig from '../config/line';
+
+const router = express.Router();
+const client = new Client(lineConfig);
+
+// LINE Webhook endpoint
+router.post('/webhook', middleware(lineConfig), async (req, res) => {
+  const events = req.body.events;
+
+  for (const event of events) {
+    if (event.type === 'message' && event.message.type === 'text') {
+      const lineUserId = event.source.userId;
+
+      const member = await Member.findOne({ where: { line_user_id: lineUserId } });
+
+      if (member) {
+        // ✅ 已註冊會員
+        await client.replyMessage(event.replyToken, {
+          type: 'text',
+          text: `👋 歡迎回來，${member.name}！`,
+        });
+      } else {
+        // ❌ 尚未註冊
+        await client.replyMessage(event.replyToken, {
+          type: 'flex',
+          altText: '請註冊會員',
+          contents: {
+            type: 'bubble',
+            body: {
+              type: 'box',
+              layout: 'vertical',
+              contents: [
+                { type: 'text', text: '尚未註冊會員', weight: 'bold', size: 'lg' },
+                { type: 'text', text: '請點擊下方按鈕填寫註冊資料', size: 'sm', color: '#888' }
+              ],
+            },
+            footer: {
+              type: 'box',
+              layout: 'vertical',
+              contents: [
+                {
+                  type: 'button',
+                  action: {
+                    type: 'uri',
+                    label: '前往註冊',
+                    uri: 'https://liff.line.me/2007739371-aKePV20'
+                  },
+                  style: 'primary'
+                }
+              ]
+            }
+          }
+        });
+      }
+    }
+  }
+
+  res.status(200).send('OK');
+});
+
+export default router;
+✅ 檢查事項：
+ 你有沒有一個 /webhook 路由在跑？
+
+ 有載入 @line/bot-sdk 的 middleware？
+
+ Member model 已正確 import？
+
+ line_user_id 在 DB 是唯一對應欄位？
+
