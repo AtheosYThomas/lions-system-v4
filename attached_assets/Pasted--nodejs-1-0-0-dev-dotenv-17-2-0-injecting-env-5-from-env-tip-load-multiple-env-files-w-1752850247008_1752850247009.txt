@@ -1,0 +1,785 @@
+
+> nodejs@1.0.0 dev
+[dotenv@17.2.0] injecting env (5) from .env (tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] })
+
+🔍 北大獅子會系統診斷工具啟動中...
+
+============================================================
+🦁 北大獅子會系統診斷報告
+============================================================
+📁 1. 掃描 /src 目錄檔案...
+✅ src/routes/upload.ts 語法檢查通過
+✅ src/routes/admin.ts 語法檢查通過
+✅ src/routes/line/webhook.ts 語法檢查通過
+✅ src/routes/api/role-test.ts 語法檢查通過
+✅ src/routes/api/registration.ts 語法檢查通過
+✅ src/routes/api/members.ts 語法檢查通過
+✅ src/routes/api/liff.ts 語法檢查通過
+✅ src/routes/api/files.ts 語法檢查通過
+✅ src/routes/api/checkin.ts 語法檢查通過
+✅ src/routes/api/auth-example.ts 語法檢查通過
+✅ src/routes/api/announcements.ts 語法檢查通過
+✅ src/routes/admin/summary.ts 語法檢查通過
+✅ src/routes/admin/reports.ts 語法檢查通過
+✅ src/routes/admin/dashboard.ts 語法檢查通過
+✅ src/controllers/registrationController.ts 語法檢查通過
+✅ src/controllers/memberController.ts 語法檢查通過
+✅ src/controllers/lineController.ts 語法檢查通過
+✅ src/controllers/liffController.ts 語法檢查通過
+✅ src/controllers/index.ts 語法檢查通過
+✅ src/controllers/checkinController.ts 語法檢查通過
+✅ src/controllers/announcementController.ts 語法檢查通過
+✅ src/controllers/adminController.ts 語法檢查通過
+✅ src/middleware/roleMiddleware.ts 語法檢查通過
+✅ src/middleware/errorHandler.ts 語法檢查通過
+✅ src/middleware/authMiddleware.ts 語法檢查通過
+✅ src/middleware/AuthError.ts 語法檢查通過
+✅ src/models/registration.ts 語法檢查通過
+✅ src/models/payment.ts 語法檢查通過
+✅ src/models/messageLog.ts 語法檢查通過
+✅ src/models/member.ts 語法檢查通過
+✅ src/models/liffSession.ts 語法檢查通過
+✅ src/models/index.ts 語法檢查通過
+✅ src/models/file.ts 語法檢查通過
+✅ src/models/event.ts 語法檢查通過
+✅ src/models/checkin.ts 語法檢查通過
+✅ src/models/announcement.ts 語法檢查通過
+✅ src/utils/validationUtils.ts 語法檢查通過
+✅ src/utils/stringUtils.ts 語法檢查通過
+✅ src/utils/index.ts 語法檢查通過
+✅ src/utils/formatUtils.ts 語法檢查通過
+✅ src/utils/diagnostics/troubleshootReport.ts 語法檢查通過
+✅ src/utils/diagnostics/troubleshoot.ts 語法檢查通過
+✅ src/utils/diagnostics/systemHealth.ts 語法檢查通過
+✅ src/utils/diagnostics/systemDiagnostics.ts 語法檢查通過
+✅ src/utils/diagnostics/systemCheck.ts 語法檢查通過
+✅ src/utils/diagnostics/runner.ts 語法檢查通過
+✅ src/utils/diagnostics/liffDiagnostics.ts 語法檢查通過
+⚠️ src/utils/diagnostics/index.ts: async 函數缺少錯誤處理
+✅ src/utils/diagnostics/index.ts 語法檢查通過
+✅ src/utils/diagnostics/fullSystemDiagnostics.ts 語法檢查通過
+✅ src/utils/diagnostics/envValidation.ts 語法檢查通過
+✅ src/utils/diagnostics/envCheck.ts 語法檢查通過
+✅ src/utils/diagnostics/diagnostics.ts 語法檢查通過
+✅ src/utils/diagnostics/detailedTroubleshootReport.ts 語法檢查通過
+✅ 所有源碼檔案檢查通過
+
+🔧 2. 檢查環境變數...
+✅ .env 檔案存在且可讀取
+✅ 所有使用的環境變數都已定義
+📋 已設定的環境變數: LINE_CHANNEL_SECRET, LINE_CHANNEL_ACCESS_TOKEN, DATABASE_URL, NODE_ENV, PORT, CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, LIFF_ID, LIFF_APP_ID
+
+🎨 3. 檢查前端檔案...
+✅ 發現前端目錄: public
+✅ public/register.html 包含必要資源
+✅ public/liff.html 包含必要資源
+✅ 發現前端目錄: client/src
+✅ client/src/main.tsx 語法正確
+✅ client/src/App.tsx 語法正確
+✅ client/src/pages/Register.tsx 語法正確
+✅ client/src/pages/Profile.tsx 語法正確
+✅ client/src/pages/NotFoundPage.tsx 語法正確
+✅ client/src/pages/Home.tsx 語法正確
+✅ client/src/pages/Checkin.tsx 語法正確
+✅ client/src/pages/Admin.tsx 語法正確
+
+🏥 4. 執行 Health Check...
+🔍 北大獅子會系統問題排查報告
+
+============================================================
+
+1️⃣ 掃描 /src 目錄檔案錯誤...
+❌ TypeScript 編譯錯誤
+src/controllers/checkinController.ts(20,54): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(this: ModelStatic<Member>, options: NonNullFindOptions<MemberAttributes>): Promise<Member>', gave the following error.
+    Object literal may only specify known properties, and 'line_uid' does not exist in type 'WhereOptions<MemberAttributes>'.
+  Overload 2 of 2, '(this: ModelStatic<Member>, options?: FindOptions<MemberAttributes> | undefined): Promise<Member | null>', gave the following error.
+    Object literal may only specify known properties, and 'line_uid' does not exist in type 'WhereOptions<MemberAttributes>'.
+src/controllers/checkinController.ts(98,54): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(this: ModelStatic<Member>, options: NonNullFindOptions<MemberAttributes>): Promise<Member>', gave the following error.
+    Object literal may only specify known properties, and 'line_uid' does not exist in type 'WhereOptions<MemberAttributes>'.
+  Overload 2 of 2, '(this: ModelStatic<Member>, options?: FindOptions<MemberAttributes> | undefined): Promise<Member | null>', gave the following error.
+    Object literal may only specify known properties, and 'line_uid' does not exist in type 'WhereOptions<MemberAttributes>'.
+src/controllers/checkinController.ts(116,27): error TS2339: Property 'line_uid' does not exist on type 'Member'.
+src/controllers/registrationController.ts(50,18): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(this: ModelStatic<Member>, options: NonNullFindOptions<MemberAttributes>): Promise<Member>', gave the following error.
+    Object literal may only specify known properties, and 'line_uid' does not exist in type 'WhereOptions<MemberAttributes>'.
+  Overload 2 of 2, '(this: ModelStatic<Member>, options?: FindOptions<MemberAttributes> | undefined): Promise<Member | null>', gave the following error.
+    Object literal may only specify known properties, and 'line_uid' does not exist in type 'WhereOptions<MemberAttributes>'.
+src/controllers/registrationController.ts(71,9): error TS2353: Object literal may only specify known properties, and 'line_uid' does not exist in type 'MemberCreationAttributes'.
+src/controllers/registrationController.ts(121,18): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(this: ModelStatic<Member>, options: NonNullFindOptions<MemberAttributes>): Promise<Member>', gave the following error.
+    Object literal may only specify known properties, and 'line_uid' does not exist in type 'WhereOptions<MemberAttributes>'.
+  Overload 2 of 2, '(this: ModelStatic<Member>, options?: FindOptions<MemberAttributes> | undefined): Promise<Member | null>', gave the following error.
+    Object literal may only specify known properties, and 'line_uid' does not exist in type 'WhereOptions<MemberAttributes>'.
+src/integrations/line/lineService.ts(79,16): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(this: ModelStatic<Member>, options: NonNullFindOptions<MemberAttributes>): Promise<Member>', gave the following error.
+    Object literal may only specify known properties, and 'line_uid' does not exist in type 'WhereOptions<MemberAttributes>'.
+  Overload 2 of 2, '(this: ModelStatic<Member>, options?: FindOptions<MemberAttributes> | undefined): Promise<Member | null>', gave the following error.
+    Object literal may only specify known properties, and 'line_uid' does not exist in type 'WhereOptions<MemberAttributes>'.
+src/integrations/line/lineService.ts(92,64): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/integrations/line/lineService.ts(170,50): error TS2345: Argument of type '{ type: "flex"; altText: string; contents: { type: string; body: { type: string; layout: string; contents: ({ type: string; text: string; weight: string; size: string; color: string; margin?: undefined; wrap?: undefined; } | { ...; } | { ...; })[]; }; footer: { ...; }; }; }' is not assignable to parameter of type 'Message | Message[]'.
+  Type '{ type: "flex"; altText: string; contents: { type: string; body: { type: string; layout: string; contents: ({ type: string; text: string; weight: string; size: string; color: string; margin?: undefined; wrap?: undefined; } | { ...; } | { ...; })[]; }; footer: { ...; }; }; }' is not assignable to type 'FlexMessage'.
+    Type '{ type: "flex"; altText: string; contents: { type: string; body: { type: string; layout: string; contents: ({ type: string; text: string; weight: string; size: string; color: string; margin?: undefined; wrap?: undefined; } | { ...; } | { ...; })[]; }; footer: { ...; }; }; }' is not assignable to type '{ type: "flex"; altText: string; contents: FlexContainer; }'.
+      Types of property 'contents' are incompatible.
+        Type '{ type: string; body: { type: string; layout: string; contents: ({ type: string; text: string; weight: string; size: string; color: string; margin?: undefined; wrap?: undefined; } | { type: string; text: string; ... 4 more ...; wrap?: undefined; } | { ...; })[]; }; footer: { ...; }; }' is not assignable to type 'FlexContainer'.
+          Type '{ type: string; body: { type: string; layout: string; contents: ({ type: string; text: string; weight: string; size: string; color: string; margin?: undefined; wrap?: undefined; } | { type: string; text: string; ... 4 more ...; wrap?: undefined; } | { ...; })[]; }; footer: { ...; }; }' is not assignable to type 'FlexBubble'.
+            Types of property 'type' are incompatible.
+              Type 'string' is not assignable to type '"bubble"'.
+src/integrations/line/lineService.ts(192,16): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(this: ModelStatic<Member>, options: NonNullFindOptions<MemberAttributes>): Promise<Member>', gave the following error.
+    Object literal may only specify known properties, and 'line_uid' does not exist in type 'WhereOptions<MemberAttributes>'.
+  Overload 2 of 2, '(this: ModelStatic<Member>, options?: FindOptions<MemberAttributes> | undefined): Promise<Member | null>', gave the following error.
+    Object literal may only specify known properties, and 'line_uid' does not exist in type 'WhereOptions<MemberAttributes>'.
+src/integrations/line/lineService.ts(256,49): error TS2345: Argument of type '{ type: "flex"; altText: string; contents: { type: string; body: { type: string; layout: string; contents: ({ type: string; text: string; weight: string; size: string; color: string; wrap?: undefined; margin?: undefined; } | { ...; } | { ...; })[]; }; footer: { ...; }; }; }' is not assignable to parameter of type 'Message | Message[]'.
+  Type '{ type: "flex"; altText: string; contents: { type: string; body: { type: string; layout: string; contents: ({ type: string; text: string; weight: string; size: string; color: string; wrap?: undefined; margin?: undefined; } | { ...; } | { ...; })[]; }; footer: { ...; }; }; }' is not assignable to type 'FlexMessage'.
+    Type '{ type: "flex"; altText: string; contents: { type: string; body: { type: string; layout: string; contents: ({ type: string; text: string; weight: string; size: string; color: string; wrap?: undefined; margin?: undefined; } | { ...; } | { ...; })[]; }; footer: { ...; }; }; }' is not assignable to type '{ type: "flex"; altText: string; contents: FlexContainer; }'.
+      Types of property 'contents' are incompatible.
+        Type '{ type: string; body: { type: string; layout: string; contents: ({ type: string; text: string; weight: string; size: string; color: string; wrap?: undefined; margin?: undefined; } | { type: string; text: string; ... 4 more ...; margin?: undefined; } | { ...; })[]; }; footer: { ...; }; }' is not assignable to type 'FlexContainer'.
+          Type '{ type: string; body: { type: string; layout: string; contents: ({ type: string; text: string; weight: string; size: string; color: string; wrap?: undefined; margin?: undefined; } | { type: string; text: string; ... 4 more ...; margin?: undefined; } | { ...; })[]; }; footer: { ...; }; }' is not assignable to type 'FlexBubble'.
+            Types of property 'type' are incompatible.
+              Type 'string' is not assignable to type '"bubble"'.
+src/middleware/authMiddleware.ts(33,16): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(this: ModelStatic<Member>, options: NonNullFindOptions<MemberAttributes>): Promise<Member>', gave the following error.
+    Object literal may only specify known properties, and 'line_uid' does not exist in type 'WhereOptions<MemberAttributes>'.
+  Overload 2 of 2, '(this: ModelStatic<Member>, options?: FindOptions<MemberAttributes> | undefined): Promise<Member | null>', gave the following error.
+    Object literal may only specify known properties, and 'line_uid' does not exist in type 'WhereOptions<MemberAttributes>'.
+src/middleware/authMiddleware.ts(70,18): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(this: ModelStatic<Member>, options: NonNullFindOptions<MemberAttributes>): Promise<Member>', gave the following error.
+    Object literal may only specify known properties, and 'line_uid' does not exist in type 'WhereOptions<MemberAttributes>'.
+  Overload 2 of 2, '(this: ModelStatic<Member>, options?: FindOptions<MemberAttributes> | undefined): Promise<Member | null>', gave the following error.
+    Object literal may only specify known properties, and 'line_uid' does not exist in type 'WhereOptions<MemberAttributes>'.
+src/scripts/test/testServiceFunctions.ts(61,73): error TS2339: Property 'line_uid' does not exist on type 'Member'.
+src/scripts/tools/fullSystemTest.ts(10,41): error TS2307: Cannot find module '../controllers/lineController' or its corresponding type declarations.
+src/scripts/tools/fullSystemTest.ts(11,43): error TS2307: Cannot find module '../controllers/memberController' or its corresponding type declarations.
+src/scripts/tools/fullSystemTest.ts(12,49): error TS2307: Cannot find module '../controllers/announcementController' or its corresponding type declarations.
+src/scripts/tools/fullSystemTest.ts(13,44): error TS2307: Cannot find module '../controllers/checkinController' or its corresponding type declarations.
+src/scripts/tools/fullSystemTest.ts(14,41): error TS2307: Cannot find module '../controllers/liffController' or its corresponding type declarations.
+src/scripts/tools/fullSystemTest.ts(24,38): error TS2307: Cannot find module '../routes/line/webhook' or its corresponding type declarations.
+src/scripts/tools/fullSystemTest.ts(25,39): error TS2307: Cannot find module '../routes/api/members' or its corresponding type declarations.
+src/scripts/tools/fullSystemTest.ts(26,45): error TS2307: Cannot find module '../routes/api/announcements' or its corresponding type declarations.
+src/scripts/tools/fullSystemTest.ts(27,40): error TS2307: Cannot find module '../routes/api/checkin' or its corresponding type declarations.
+src/scripts/tools/fullSystemTest.ts(28,37): error TS2307: Cannot find module '../routes/api/liff' or its corresponding type declarations.
+src/scripts/tools/fullSystemTest.ts(29,38): error TS2307: Cannot find module '../routes/admin' or its corresponding type declarations.
+src/scripts/tools/fullSystemTest.ts(39,38): error TS2307: Cannot find module '../services/lineService' or its corresponding type declarations.
+src/scripts/tools/fullSystemTest.ts(49,33): error TS2307: Cannot find module '../models/index' or its corresponding type declarations.
+src/scripts/tools/quickStart.ts(4,24): error TS2307: Cannot find module '../config/config' or its corresponding type declarations.
+src/scripts/tools/quickStart.ts(5,23): error TS2307: Cannot find module '../config/database' or its corresponding type declarations.
+src/scripts/tools/quickStart.ts(7,25): error TS2307: Cannot find module '../routes/admin' or its corresponding type declarations.
+src/scripts/tools/quickStart.ts(8,26): error TS2307: Cannot find module '../routes/api/members' or its corresponding type declarations.
+src/scripts/tools/quickStart.ts(9,27): error TS2307: Cannot find module '../routes/api/checkin' or its corresponding type declarations.
+src/scripts/tools/quickStart.ts(10,24): error TS2307: Cannot find module '../routes/api/liff' or its corresponding type declarations.
+src/scripts/tools/quickStart.ts(11,32): error TS2307: Cannot find module '../routes/api/announcements' or its corresponding type declarations.
+src/scripts/tools/quickStart.ts(12,25): error TS2307: Cannot find module '../routes/line/webhook' or its corresponding type declarations.
+src/scripts/tools/testLineModule.ts(3,40): error TS2307: Cannot find module '../types/line' or its corresponding type declarations.
+src/scripts/tools/testLineModule.ts(40,34): error TS2307: Cannot find module '../routes/line/webhook' or its corresponding type declarations.
+src/scripts/tools/testLineWebhook.ts(4,24): error TS2307: Cannot find module '../config/config' or its corresponding type declarations.
+src/scripts/tools/testRoutesRefactor.ts(2,30): error TS2307: Cannot find module '../controllers/memberController' or its corresponding type declarations.
+src/scripts/tools/testRoutesRefactor.ts(3,36): error TS2307: Cannot find module '../controllers/announcementController' or its corresponding type declarations.
+src/scripts/tools/testRoutesRefactor.ts(4,31): error TS2307: Cannot find module '../controllers/checkinController' or its corresponding type declarations.
+src/scripts/tools/testRoutesRefactor.ts(5,28): error TS2307: Cannot find module '../controllers/liffController' or its corresponding type declarations.
+src/scripts/tools/testRoutesRefactor.ts(24,39): error TS2307: Cannot find module '../routes/api/members' or its corresponding type declarations.
+src/scripts/tools/testRoutesRefactor.ts(25,45): error TS2307: Cannot find module '../routes/api/announcements' or its corresponding type declarations.
+src/scripts/tools/testRoutesRefactor.ts(26,40): error TS2307: Cannot find module '../routes/api/checkin' or its corresponding type declarations.
+src/scripts/tools/testRoutesRefactor.ts(27,37): error TS2307: Cannot find module '../routes/api/liff' or its corresponding type declarations.
+src/services/adminService.ts(107,11): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(this: ModelStatic<...>, options: { logging?: boolean | ((sql: string, timing?: number | undefined) => void) | undefined; col?: string | undefined; where?: WhereOptions<MemberAttributes> | undefined; ... 7 more ...; group: GroupOption; }): Promise<...>', gave the following error.
+    Type '{ line_user_id: { [OpTypes.ne]: null; }; status: string; }' is not assignable to type 'WhereOptions<MemberAttributes> | undefined'.
+      Types of property 'line_user_id' are incompatible.
+        Type '{ [OpTypes.ne]: null; }' is not assignable to type 'WhereAttributeHashValue<string | undefined>'.
+          Types of property '[Op.ne]' are incompatible.
+            Type 'null' is not assignable to type 'string | number | boolean | Date | Fn | Col | Literal | { [OpTypes.col]: string; } | Cast | Buffer<ArrayBufferLike> | { [OpTypes.all]: Literal | ... 1 more ... | { ...; }; } | { ...; } | { ...; } | { ...; } | undefined'.
+  Overload 2 of 2, '(this: ModelStatic<Member>, options?: Omit<CountOptions<MemberAttributes>, "group"> | undefined): Promise<number>', gave the following error.
+    Type '{ line_user_id: { [OpTypes.ne]: null; }; status: string; }' is not assignable to type 'WhereOptions<MemberAttributes> | undefined'.
+      Types of property 'line_user_id' are incompatible.
+        Type '{ [OpTypes.ne]: null; }' is not assignable to type 'WhereAttributeHashValue<string | undefined>'.
+          Types of property '[Op.ne]' are incompatible.
+            Type 'null' is not assignable to type 'string | number | boolean | Date | Fn | Col | Literal | { [OpTypes.col]: string; } | Cast | Buffer<ArrayBufferLike> | { [OpTypes.all]: Literal | ... 1 more ... | { ...; }; } | { ...; } | { ...; } | { ...; } | undefined'.
+src/services/index.ts(7,40): error TS2307: Cannot find module './lineService' or its corresponding type declarations.
+src/types/index.ts(82,1): error TS2308: Module './registration' has already exported a member named 'PaymentStatus'. Consider explicitly re-exporting to resolve the ambiguity.
+src/types/role.ts(67,37): error TS2345: Argument of type 'Role' is not assignable to parameter of type 'Role.President | Role.Admin'.
+src/utils/diagnostics/index.ts(3,10): error TS2305: Module '"./envCheck"' has no exported member 'checkEnvironment'.
+src/utils/diagnostics/index.ts(8,10): error TS2724: '"./systemHealth"' has no exported member named 'SystemHealthChecker'. Did you mean 'runSystemHealthCheck'?
+src/utils/diagnostics/index.ts(13,10): error TS2305: Module '"./liffDiagnostics"' has no exported member 'default'.
+src/utils/diagnostics/index.ts(16,10): error TS2305: Module '"./troubleshoot"' has no exported member 'generateTroubleshootReport'.
+src/utils/diagnostics/index.ts(17,10): error TS2305: Module '"./troubleshootReport"' has no exported member 'createTroubleshootReport'.
+src/utils/diagnostics/index.ts(18,10): error TS2305: Module '"./detailedTroubleshootReport"' has no exported member 'generateDetailedReport'.
+src/utils/diagnostics/index.ts(45,28): error TS2304: Cannot find name 'SystemDiagnostics'.
+src/utils/diagnostics/index.ts(46,26): error TS2304: Cannot find name 'LiffDiagnostics'.
+src/utils/diagnostics/index.ts(47,31): error TS2552: Cannot find name 'SystemHealthChecker'. Did you mean 'healthChecker'?
+src/utils/diagnostics/troubleshoot.ts(279,53): error TS2307: Cannot find module '../tools/systemHealth' or its corresponding type declarations.
+src/utils/index.ts(7,38): error TS2307: Cannot find module './envCheck' or its corresponding type declarations.
+src/utils/index.ts(8,37): error TS2307: Cannot find module './envValidation' or its corresponding type declarations.
+
+✅ src/routes/upload.ts 檢查通過
+✅ src/routes/admin.ts 檢查通過
+✅ src/routes/line/webhook.ts 檢查通過
+✅ src/routes/api/role-test.ts 檢查通過
+✅ src/routes/api/registration.ts 檢查通過
+✅ src/routes/api/members.ts 檢查通過
+⚠️ src/routes/api/liff.ts: 使用環境變數但未載入 dotenv: process.env.LIFF_APP_ID
+✅ src/routes/api/files.ts 檢查通過
+✅ src/routes/api/checkin.ts 檢查通過
+✅ src/routes/api/auth-example.ts 檢查通過
+✅ src/routes/api/announcements.ts 檢查通過
+✅ src/routes/admin/summary.ts 檢查通過
+✅ src/routes/admin/reports.ts 檢查通過
+✅ src/routes/admin/dashboard.ts 檢查通過
+✅ src/controllers/registrationController.ts 檢查通過
+✅ src/controllers/memberController.ts 檢查通過
+✅ src/controllers/lineController.ts 檢查通過
+✅ src/controllers/liffController.ts 檢查通過
+✅ src/controllers/index.ts 檢查通過
+✅ src/controllers/checkinController.ts 檢查通過
+✅ src/controllers/announcementController.ts 檢查通過
+✅ src/controllers/adminController.ts 檢查通過
+✅ src/middleware/roleMiddleware.ts 檢查通過
+✅ src/middleware/errorHandler.ts 檢查通過
+✅ src/middleware/authMiddleware.ts 檢查通過
+✅ src/middleware/AuthError.ts 檢查通過
+✅ src/models/registration.ts 檢查通過
+✅ src/models/payment.ts 檢查通過
+✅ src/models/messageLog.ts 檢查通過
+✅ src/models/member.ts 檢查通過
+✅ src/models/liffSession.ts 檢查通過
+✅ src/models/index.ts 檢查通過
+✅ src/models/file.ts 檢查通過
+✅ src/models/event.ts 檢查通過
+✅ src/models/checkin.ts 檢查通過
+✅ src/models/announcement.ts 檢查通過
+✅ src/utils/validationUtils.ts 檢查通過
+✅ src/utils/stringUtils.ts 檢查通過
+✅ src/utils/index.ts 檢查通過
+✅ src/utils/formatUtils.ts 檢查通過
+⚠️ src/utils/diagnostics/troubleshootReport.ts: 使用環境變數但未載入 dotenv: process.env.PORT
+✅ src/utils/diagnostics/troubleshoot.ts 檢查通過
+✅ src/utils/diagnostics/systemHealth.ts 檢查通過
+✅ src/utils/diagnostics/systemDiagnostics.ts 檢查通過
+✅ src/utils/diagnostics/systemCheck.ts 檢查通過
+✅ src/utils/diagnostics/runner.ts 檢查通過
+⚠️ src/utils/diagnostics/liffDiagnostics.ts: 使用環境變數但未載入 dotenv: process.env.LIFF_APP_ID, process.env.LINE_CHANNEL_ACCESS_TOKEN, process.env.LINE_CHANNEL_SECRET
+⚠️ src/utils/diagnostics/index.ts: async 函數缺少錯誤處理
+⚠️ src/utils/diagnostics/fullSystemDiagnostics.ts: 使用環境變數但未載入 dotenv: process.env.PORT
+⚠️ src/utils/diagnostics/envValidation.ts: 使用環境變數但未載入 dotenv: process.env.NODE_ENV, process.env.NODE_ENV, process.env.NODE_ENV
+✅ src/utils/diagnostics/envCheck.ts 檢查通過
+✅ src/utils/diagnostics/diagnostics.ts 檢查通過
+✅ src/utils/diagnostics/detailedTroubleshootReport.ts 檢查通過
+🔍 開始系統問題排查...
+
+📁 1. 掃描 /src 目錄檔案...
+🔧 2. 檢查環境變數...
+🎨 3. 檢查前端檔案...
+🏥 4. 執行 Health Check...
+🔍 北大獅子會系統完整問題排查報告
+================================================================================
+
+📁 步驟 1: 掃描 /src 目錄錯誤...
+❌ TypeScript 編譯錯誤
+📋 掃描 Routes: 14 個檔案
+📋 掃描 Controllers: 8 個檔案
+📋 掃描 Middleware: 4 個檔案
+[dotenv@17.2.0] injecting env (0) from .env (tip: ⚙️  override existing env vars with { override: true })
+✅ 所有環境變數已設定: [
+  'NODE_ENV',
+  'LINE_CHANNEL_ACCESS_TOKEN',
+  'LINE_CHANNEL_SECRET',
+  'DATABASE_URL',
+  'PORT'
+]
+
+2️⃣ 檢查環境變數...
+✅ .env 檔案存在
+✅ 環境變數檢查通過
+📋 已設定變數: LINE_CHANNEL_SECRET, LINE_CHANNEL_ACCESS_TOKEN, DATABASE_URL, NODE_ENV, PORT, CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, LIFF_ID, LIFF_APP_ID
+
+🔧 步驟 2: 檢查環境變數...
+✅ 所有必要環境變數已設定
+
+3️⃣ 檢查前端檔案...
+✅ 發現前端目錄: public
+✅ public/register.html 包含必要資源
+✅ public/liff.html 包含必要資源
+✅ 發現前端目錄: client/src
+📦 檢查前端套件...
+✅ 前端套件正常
+✅ 發現前端目錄: client
+✅ client/index.html 包含必要資源
+✅ client/node_modules/tslib/tslib.html 包含必要資源
+✅ client/node_modules/tslib/tslib.es6.html 包含必要資源
+✅ client/node_modules/tiny-sha256/index.html 包含必要資源
+✅ client/node_modules/tiny-sha256/templates/index.html 包含必要資源
+✅ client/dist/index.html 包含必要資源
+📦 檢查前端套件...
+✅ 前端套件正常
+
+🎨 步驟 3: 檢查前端檔案...
+📋 找到 2 個 HTML 檔案
+📋 檢查 React 前端...
+✅ 前端專案: peida-lions-client
+
+4️⃣ 執行 Health Check...
+
+🏥 步驟 4: 執行 Health Check...
+❌ Health check 逾時 (5秒)
+🗄️ 5. 測試資料庫連線...
+
+================================================================================
+🦁 北大獅子會系統問題排查報告
+================================================================================
+✅ 通過項目: 74個
+⚠️ 警告項目: 24個
+❌ 錯誤項目: 1個
+
+❌ 錯誤項目 (1個):
+1. [Health Check] Health check 逾時
+   建議: 檢查伺服器回應時間, 確認網路連線
+
+
+⚠️ 警告項目 (24個):
+1. [Source Files] src/routes/line/webhook.ts: 可能有未使用的 import: middleware
+   建議: 移除未使用的 import, 檢查程式碼使用情況
+
+2. [Source Files] src/middleware/roleMiddleware.ts: 可能有未使用的 import: roleRank
+   建議: 移除未使用的 import, 檢查程式碼使用情況
+
+3. [Source Files] src/middleware/authMiddleware.ts: 使用 any 型別可能導致型別安全問題
+   建議: 明確定義型別, 使用具體的介面
+
+4. [Source Files] src/middleware/authMiddleware.ts: 可能有未使用的 import: Role
+   建議: 移除未使用的 import, 檢查程式碼使用情況
+
+5. [Source Files] src/services/registrationService.ts: 使用 any 型別可能導致型別安全問題
+   建議: 明確定義型別, 使用具體的介面
+
+6. [Source Files] src/services/registrationService.ts: 可能有未使用的 import: RegistrationCreationAttributes
+   建議: 移除未使用的 import, 檢查程式碼使用情況
+
+7. [Source Files] src/services/memberService.ts: 使用 any 型別可能導致型別安全問題
+   建議: 明確定義型別, 使用具體的介面
+
+8. [Source Files] src/services/fileService.ts: 使用 any 型別可能導致型別安全問題
+   建議: 明確定義型別, 使用具體的介面
+
+9. [Source Files] src/services/eventService.ts: 使用 any 型別可能導致型別安全問題
+   建議: 明確定義型別, 使用具體的介面
+
+10. [Source Files] src/services/checkinService.ts: 使用 any 型別可能導致型別安全問題
+   建議: 明確定義型別, 使用具體的介面
+
+11. [Source Files] src/services/announcementService.ts: 使用 any 型別可能導致型別安全問題
+   建議: 明確定義型別, 使用具體的介面
+
+12. [Source Files] src/services/announcementService.ts: 可能有未使用的 import: AnnouncementAttributes
+   建議: 移除未使用的 import, 檢查程式碼使用情況
+
+13. [Source Files] src/services/adminService.ts: 使用 any 型別可能導致型別安全問題
+   建議: 明確定義型別, 使用具體的介面
+
+14. [Source Files] src/utils/diagnostics/troubleshootReport.ts: 使用 any 型別可能導致型別安全問題
+   建議: 明確定義型別, 使用具體的介面
+
+15. [Source Files] src/utils/diagnostics/troubleshoot.ts: 使用 any 型別可能導致型別安全問題
+   建議: 明確定義型別, 使用具體的介面
+
+16. [Source Files] src/utils/diagnostics/systemCheck.ts: 可能有未使用的 import: Member
+   建議: 移除未使用的 import, 檢查程式碼使用情況
+
+17. [Source Files] src/utils/diagnostics/systemCheck.ts: 可能有未使用的 import: Event
+   建議: 移除未使用的 import, 檢查程式碼使用情況
+
+18. [Source Files] src/utils/diagnostics/systemCheck.ts: 可能有未使用的 import: Registration
+   建議: 移除未使用的 import, 檢查程式碼使用情況
+
+19. [Source Files] src/utils/diagnostics/systemCheck.ts: 可能有未使用的 import: Checkin
+   建議: 移除未使用的 import, 檢查程式碼使用情況
+
+20. [Source Files] src/utils/diagnostics/index.ts: async 函數缺少錯誤處理
+   建議: 添加 try-catch 區塊, 使用 .catch() 處理 Promise 錯誤
+
+21. [Source Files] src/utils/diagnostics/fullSystemDiagnostics.ts: 使用 any 型別可能導致型別安全問題
+   建議: 明確定義型別, 使用具體的介面
+
+22. [Source Files] src/utils/diagnostics/diagnostics.ts: 可能有未使用的 import: execSync
+   建議: 移除未使用的 import, 檢查程式碼使用情況
+
+23. [Source Files] src/utils/diagnostics/detailedTroubleshootReport.ts: 使用 any 型別可能導致型別安全問題
+   建議: 明確定義型別, 使用具體的介面
+
+24. [Source Files] src/utils/diagnostics/detailedTroubleshootReport.ts: 可能有未使用的 import: runSystemHealthCheck
+   建議: 移除未使用的 import, 檢查程式碼使用情況
+
+
+💡 總結建議:
+1. 優先修正所有錯誤項目，這些可能導致系統無法正常運作
+2. 檢視警告項目，提升程式碼品質和穩定性
+3. 定期執行此診斷工具，確保系統健康
+4. 建議設定 CI/CD 流程，自動化品質檢查
+
+📄 詳細報告已儲存至: troubleshoot_report.json
+❌ 無法連接到 health check 端點: socket hang up
+💡 請確認伺服器是否在 5000 埠執行
+✅ Health check 成功 (狀態: 200)
+📋 回應: {"status":"healthy","timestamp":"2025-07-18T14:48:28.259Z","version":"4.0","uptime":1306.330600287,"database":"connected","services":{"line":"configured","routes":["admin","checkin","members","webhook"]}}
+
+5️⃣ 檢查資料庫連線...
+❌ 資料庫檢查失敗: Cannot find module '/home/runner/workspace/src/utils/tools/systemHealth' imported from /home/runner/workspace/src/utils/diagnostics/troubleshoot.ts
+
+============================================================
+📋 系統問題排查報告
+============================================================
+
+🚨 錯誤項目 (2個):
+❌ [TypeScript編譯] TypeScript 編譯錯誤
+   詳細: src/controllers/checkinController.ts(20,54): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(this: ModelStatic<Member>, options: NonNullFindOptions<MemberAttributes>): Promise<Member>', gave the following error.
+    Object literal may only specify known properties, and 'line_uid' does not exist in type 'WhereOptions<MemberAttributes>'.
+  Overload 2 of 2, '(this: ModelStatic<Member>, options?: FindOptions<MemberAttributes> | undefined): Promise<Member | null>', gave the following error.
+    Object literal may only specify known properties, and 'line_uid' does not exist in type 'WhereOptions<MemberAttributes>'.
+src/controllers/checkinController.ts(98,54): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(this: ModelStatic<Member>, options: NonNullFindOptions<MemberAttributes>): Promise<Member>', gave the following error.
+    Object literal may only specify known properties, and 'line_uid' does not exist in type 'WhereOptions<MemberAttributes>'.
+  Overload 2 of 2, '(this: ModelStatic<Member>, options?: FindOptions<MemberAttributes> | undefined): Promise<Member | null>', gave the following error.
+    Object literal may only specify known properties, and 'line_uid' does not exist in type 'WhereOptions<MemberAttributes>'.
+src/controllers/checkinController.ts(116,27): error TS2339: Property 'line_uid' does not exist on type 'Member'.
+src/controllers/registrationController.ts(50,18): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(this: ModelStatic<Member>, options: NonNullFindOptions<MemberAttributes>): Promise<Member>', gave the following error.
+    Object literal may only specify known properties, and 'line_uid' does not exist in type 'WhereOptions<MemberAttributes>'.
+  Overload 2 of 2, '(this: ModelStatic<Member>, options?: FindOptions<MemberAttributes> | undefined): Promise<Member | null>', gave the following error.
+    Object literal may only specify known properties, and 'line_uid' does not exist in type 'WhereOptions<MemberAttributes>'.
+src/controllers/registrationController.ts(71,9): error TS2353: Object literal may only specify known properties, and 'line_uid' does not exist in type 'MemberCreationAttributes'.
+src/controllers/registrationController.ts(121,18): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(this: ModelStatic<Member>, options: NonNullFindOptions<MemberAttributes>): Promise<Member>', gave the following error.
+    Object literal may only specify known properties, and 'line_uid' does not exist in type 'WhereOptions<MemberAttributes>'.
+  Overload 2 of 2, '(this: ModelStatic<Member>, options?: FindOptions<MemberAttributes> | undefined): Promise<Member | null>', gave the following error.
+    Object literal may only specify known properties, and 'line_uid' does not exist in type 'WhereOptions<MemberAttributes>'.
+src/integrations/line/lineService.ts(79,16): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(this: ModelStatic<Member>, options: NonNullFindOptions<MemberAttributes>): Promise<Member>', gave the following error.
+    Object literal may only specify known properties, and 'line_uid' does not exist in type 'WhereOptions<MemberAttributes>'.
+  Overload 2 of 2, '(this: ModelStatic<Member>, options?: FindOptions<MemberAttributes> | undefined): Promise<Member | null>', gave the following error.
+    Object literal may only specify known properties, and 'line_uid' does not exist in type 'WhereOptions<MemberAttributes>'.
+src/integrations/line/lineService.ts(92,64): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/integrations/line/lineService.ts(170,50): error TS2345: Argument of type '{ type: "flex"; altText: string; contents: { type: string; body: { type: string; layout: string; contents: ({ type: string; text: string; weight: string; size: string; color: string; margin?: undefined; wrap?: undefined; } | { ...; } | { ...; })[]; }; footer: { ...; }; }; }' is not assignable to parameter of type 'Message | Message[]'.
+  Type '{ type: "flex"; altText: string; contents: { type: string; body: { type: string; layout: string; contents: ({ type: string; text: string; weight: string; size: string; color: string; margin?: undefined; wrap?: undefined; } | { ...; } | { ...; })[]; }; footer: { ...; }; }; }' is not assignable to type 'FlexMessage'.
+    Type '{ type: "flex"; altText: string; contents: { type: string; body: { type: string; layout: string; contents: ({ type: string; text: string; weight: string; size: string; color: string; margin?: undefined; wrap?: undefined; } | { ...; } | { ...; })[]; }; footer: { ...; }; }; }' is not assignable to type '{ type: "flex"; altText: string; contents: FlexContainer; }'.
+      Types of property 'contents' are incompatible.
+        Type '{ type: string; body: { type: string; layout: string; contents: ({ type: string; text: string; weight: string; size: string; color: string; margin?: undefined; wrap?: undefined; } | { type: string; text: string; ... 4 more ...; wrap?: undefined; } | { ...; })[]; }; footer: { ...; }; }' is not assignable to type 'FlexContainer'.
+          Type '{ type: string; body: { type: string; layout: string; contents: ({ type: string; text: string; weight: string; size: string; color: string; margin?: undefined; wrap?: undefined; } | { type: string; text: string; ... 4 more ...; wrap?: undefined; } | { ...; })[]; }; footer: { ...; }; }' is not assignable to type 'FlexBubble'.
+            Types of property 'type' are incompatible.
+              Type 'string' is not assignable to type '"bubble"'.
+src/integrations/line/lineService.ts(192,16): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(this: ModelStatic<Member>, options: NonNullFindOptions<MemberAttributes>): Promise<Member>', gave the following error.
+    Object literal may only specify known properties, and 'line_uid' does not exist in type 'WhereOptions<MemberAttributes>'.
+  Overload 2 of 2, '(this: ModelStatic<Member>, options?: FindOptions<MemberAttributes> | undefined): Promise<Member | null>', gave the following error.
+    Object literal may only specify known properties, and 'line_uid' does not exist in type 'WhereOptions<MemberAttributes>'.
+src/integrations/line/lineService.ts(256,49): error TS2345: Argument of type '{ type: "flex"; altText: string; contents: { type: string; body: { type: string; layout: string; contents: ({ type: string; text: string; weight: string; size: string; color: string; wrap?: undefined; margin?: undefined; } | { ...; } | { ...; })[]; }; footer: { ...; }; }; }' is not assignable to parameter of type 'Message | Message[]'.
+  Type '{ type: "flex"; altText: string; contents: { type: string; body: { type: string; layout: string; contents: ({ type: string; text: string; weight: string; size: string; color: string; wrap?: undefined; margin?: undefined; } | { ...; } | { ...; })[]; }; footer: { ...; }; }; }' is not assignable to type 'FlexMessage'.
+    Type '{ type: "flex"; altText: string; contents: { type: string; body: { type: string; layout: string; contents: ({ type: string; text: string; weight: string; size: string; color: string; wrap?: undefined; margin?: undefined; } | { ...; } | { ...; })[]; }; footer: { ...; }; }; }' is not assignable to type '{ type: "flex"; altText: string; contents: FlexContainer; }'.
+      Types of property 'contents' are incompatible.
+        Type '{ type: string; body: { type: string; layout: string; contents: ({ type: string; text: string; weight: string; size: string; color: string; wrap?: undefined; margin?: undefined; } | { type: string; text: string; ... 4 more ...; margin?: undefined; } | { ...; })[]; }; footer: { ...; }; }' is not assignable to type 'FlexContainer'.
+          Type '{ type: string; body: { type: string; layout: string; contents: ({ type: string; text: string; weight: string; size: string; color: string; wrap?: undefined; margin?: undefined; } | { type: string; text: string; ... 4 more ...; margin?: undefined; } | { ...; })[]; }; footer: { ...; }; }' is not assignable to type 'FlexBubble'.
+            Types of property 'type' are incompatible.
+              Type 'string' is not assignable to type '"bubble"'.
+src/middleware/authMiddleware.ts(33,16): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(this: ModelStatic<Member>, options: NonNullFindOptions<MemberAttributes>): Promise<Member>', gave the following error.
+    Object literal may only specify known properties, and 'line_uid' does not exist in type 'WhereOptions<MemberAttributes>'.
+  Overload 2 of 2, '(this: ModelStatic<Member>, options?: FindOptions<MemberAttributes> | undefined): Promise<Member | null>', gave the following error.
+    Object literal may only specify known properties, and 'line_uid' does not exist in type 'WhereOptions<MemberAttributes>'.
+src/middleware/authMiddleware.ts(70,18): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(this: ModelStatic<Member>, options: NonNullFindOptions<MemberAttributes>): Promise<Member>', gave the following error.
+    Object literal may only specify known properties, and 'line_uid' does not exist in type 'WhereOptions<MemberAttributes>'.
+  Overload 2 of 2, '(this: ModelStatic<Member>, options?: FindOptions<MemberAttributes> | undefined): Promise<Member | null>', gave the following error.
+    Object literal may only specify known properties, and 'line_uid' does not exist in type 'WhereOptions<MemberAttributes>'.
+src/scripts/test/testServiceFunctions.ts(61,73): error TS2339: Property 'line_uid' does not exist on type 'Member'.
+src/scripts/tools/fullSystemTest.ts(10,41): error TS2307: Cannot find module '../controllers/lineController' or its corresponding type declarations.
+src/scripts/tools/fullSystemTest.ts(11,43): error TS2307: Cannot find module '../controllers/memberController' or its corresponding type declarations.
+src/scripts/tools/fullSystemTest.ts(12,49): error TS2307: Cannot find module '../controllers/announcementController' or its corresponding type declarations.
+src/scripts/tools/fullSystemTest.ts(13,44): error TS2307: Cannot find module '../controllers/checkinController' or its corresponding type declarations.
+src/scripts/tools/fullSystemTest.ts(14,41): error TS2307: Cannot find module '../controllers/liffController' or its corresponding type declarations.
+src/scripts/tools/fullSystemTest.ts(24,38): error TS2307: Cannot find module '../routes/line/webhook' or its corresponding type declarations.
+src/scripts/tools/fullSystemTest.ts(25,39): error TS2307: Cannot find module '../routes/api/members' or its corresponding type declarations.
+src/scripts/tools/fullSystemTest.ts(26,45): error TS2307: Cannot find module '../routes/api/announcements' or its corresponding type declarations.
+src/scripts/tools/fullSystemTest.ts(27,40): error TS2307: Cannot find module '../routes/api/checkin' or its corresponding type declarations.
+src/scripts/tools/fullSystemTest.ts(28,37): error TS2307: Cannot find module '../routes/api/liff' or its corresponding type declarations.
+src/scripts/tools/fullSystemTest.ts(29,38): error TS2307: Cannot find module '../routes/admin' or its corresponding type declarations.
+src/scripts/tools/fullSystemTest.ts(39,38): error TS2307: Cannot find module '../services/lineService' or its corresponding type declarations.
+src/scripts/tools/fullSystemTest.ts(49,33): error TS2307: Cannot find module '../models/index' or its corresponding type declarations.
+src/scripts/tools/quickStart.ts(4,24): error TS2307: Cannot find module '../config/config' or its corresponding type declarations.
+src/scripts/tools/quickStart.ts(5,23): error TS2307: Cannot find module '../config/database' or its corresponding type declarations.
+src/scripts/tools/quickStart.ts(7,25): error TS2307: Cannot find module '../routes/admin' or its corresponding type declarations.
+src/scripts/tools/quickStart.ts(8,26): error TS2307: Cannot find module '../routes/api/members' or its corresponding type declarations.
+src/scripts/tools/quickStart.ts(9,27): error TS2307: Cannot find module '../routes/api/checkin' or its corresponding type declarations.
+src/scripts/tools/quickStart.ts(10,24): error TS2307: Cannot find module '../routes/api/liff' or its corresponding type declarations.
+src/scripts/tools/quickStart.ts(11,32): error TS2307: Cannot find module '../routes/api/announcements' or its corresponding type declarations.
+src/scripts/tools/quickStart.ts(12,25): error TS2307: Cannot find module '../routes/line/webhook' or its corresponding type declarations.
+src/scripts/tools/testLineModule.ts(3,40): error TS2307: Cannot find module '../types/line' or its corresponding type declarations.
+src/scripts/tools/testLineModule.ts(40,34): error TS2307: Cannot find module '../routes/line/webhook' or its corresponding type declarations.
+src/scripts/tools/testLineWebhook.ts(4,24): error TS2307: Cannot find module '../config/config' or its corresponding type declarations.
+src/scripts/tools/testRoutesRefactor.ts(2,30): error TS2307: Cannot find module '../controllers/memberController' or its corresponding type declarations.
+src/scripts/tools/testRoutesRefactor.ts(3,36): error TS2307: Cannot find module '../controllers/announcementController' or its corresponding type declarations.
+src/scripts/tools/testRoutesRefactor.ts(4,31): error TS2307: Cannot find module '../controllers/checkinController' or its corresponding type declarations.
+src/scripts/tools/testRoutesRefactor.ts(5,28): error TS2307: Cannot find module '../controllers/liffController' or its corresponding type declarations.
+src/scripts/tools/testRoutesRefactor.ts(24,39): error TS2307: Cannot find module '../routes/api/members' or its corresponding type declarations.
+src/scripts/tools/testRoutesRefactor.ts(25,45): error TS2307: Cannot find module '../routes/api/announcements' or its corresponding type declarations.
+src/scripts/tools/testRoutesRefactor.ts(26,40): error TS2307: Cannot find module '../routes/api/checkin' or its corresponding type declarations.
+src/scripts/tools/testRoutesRefactor.ts(27,37): error TS2307: Cannot find module '../routes/api/liff' or its corresponding type declarations.
+src/services/adminService.ts(107,11): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(this: ModelStatic<...>, options: { logging?: boolean | ((sql: string, timing?: number | undefined) => void) | undefined; col?: string | undefined; where?: WhereOptions<MemberAttributes> | undefined; ... 7 more ...; group: GroupOption; }): Promise<...>', gave the following error.
+    Type '{ line_user_id: { [OpTypes.ne]: null; }; status: string; }' is not assignable to type 'WhereOptions<MemberAttributes> | undefined'.
+      Types of property 'line_user_id' are incompatible.
+        Type '{ [OpTypes.ne]: null; }' is not assignable to type 'WhereAttributeHashValue<string | undefined>'.
+          Types of property '[Op.ne]' are incompatible.
+            Type 'null' is not assignable to type 'string | number | boolean | Date | Fn | Col | Literal | { [OpTypes.col]: string; } | Cast | Buffer<ArrayBufferLike> | { [OpTypes.all]: Literal | ... 1 more ... | { ...; }; } | { ...; } | { ...; } | { ...; } | undefined'.
+  Overload 2 of 2, '(this: ModelStatic<Member>, options?: Omit<CountOptions<MemberAttributes>, "group"> | undefined): Promise<number>', gave the following error.
+    Type '{ line_user_id: { [OpTypes.ne]: null; }; status: string; }' is not assignable to type 'WhereOptions<MemberAttributes> | undefined'.
+      Types of property 'line_user_id' are incompatible.
+        Type '{ [OpTypes.ne]: null; }' is not assignable to type 'WhereAttributeHashValue<string | undefined>'.
+          Types of property '[Op.ne]' are incompatible.
+            Type 'null' is not assignable to type 'string | number | boolean | Date | Fn | Col | Literal | { [OpTypes.col]: string; } | Cast | Buffer<ArrayBufferLike> | { [OpTypes.all]: Literal | ... 1 more ... | { ...; }; } | { ...; } | { ...; } | { ...; } | undefined'.
+src/services/index.ts(7,40): error TS2307: Cannot find module './lineService' or its corresponding type declarations.
+src/types/index.ts(82,1): error TS2308: Module './registration' has already exported a member named 'PaymentStatus'. Consider explicitly re-exporting to resolve the ambiguity.
+src/types/role.ts(67,37): error TS2345: Argument of type 'Role' is not assignable to parameter of type 'Role.President | Role.Admin'.
+src/utils/diagnostics/index.ts(3,10): error TS2305: Module '"./envCheck"' has no exported member 'checkEnvironment'.
+src/utils/diagnostics/index.ts(8,10): error TS2724: '"./systemHealth"' has no exported member named 'SystemHealthChecker'. Did you mean 'runSystemHealthCheck'?
+src/utils/diagnostics/index.ts(13,10): error TS2305: Module '"./liffDiagnostics"' has no exported member 'default'.
+src/utils/diagnostics/index.ts(16,10): error TS2305: Module '"./troubleshoot"' has no exported member 'generateTroubleshootReport'.
+src/utils/diagnostics/index.ts(17,10): error TS2305: Module '"./troubleshootReport"' has no exported member 'createTroubleshootReport'.
+src/utils/diagnostics/index.ts(18,10): error TS2305: Module '"./detailedTroubleshootReport"' has no exported member 'generateDetailedReport'.
+src/utils/diagnostics/index.ts(45,28): error TS2304: Cannot find name 'SystemDiagnostics'.
+src/utils/diagnostics/index.ts(46,26): error TS2304: Cannot find name 'LiffDiagnostics'.
+src/utils/diagnostics/index.ts(47,31): error TS2552: Cannot find name 'SystemHealthChecker'. Did you mean 'healthChecker'?
+src/utils/diagnostics/troubleshoot.ts(279,53): error TS2307: Cannot find module '../tools/systemHealth' or its corresponding type declarations.
+src/utils/index.ts(7,38): error TS2307: Cannot find module './envCheck' or its corresponding type declarations.
+src/utils/index.ts(8,37): error TS2307: Cannot find module './envValidation' or its corresponding type declarations.
+
+   建議: 請修正 TypeScript 語法錯誤
+❌ [資料庫] 資料庫檢查失敗
+   詳細: Cannot find module '/home/runner/workspace/src/utils/tools/systemHealth' imported from /home/runner/workspace/src/utils/diagnostics/troubleshoot.ts
+   建議: 確認資料庫配置正確
+
+⚠️ 警告項目 (6個):
+⚠️ [Routes] src/routes/api/liff.ts 有潛在問題
+   詳細: 使用環境變數但未載入 dotenv: process.env.LIFF_APP_ID
+   建議: 建議修正上述問題
+⚠️ [Utils] src/utils/diagnostics/troubleshootReport.ts 有潛在問題
+   詳細: 使用環境變數但未載入 dotenv: process.env.PORT
+   建議: 建議修正上述問題
+⚠️ [Utils] src/utils/diagnostics/liffDiagnostics.ts 有潛在問題
+   詳細: 使用環境變數但未載入 dotenv: process.env.LIFF_APP_ID, process.env.LINE_CHANNEL_ACCESS_TOKEN, process.env.LINE_CHANNEL_SECRET
+   建議: 建議修正上述問題
+⚠️ [Utils] src/utils/diagnostics/index.ts 有潛在問題
+   詳細: async 函數缺少錯誤處理
+   建議: 建議修正上述問題
+⚠️ [Utils] src/utils/diagnostics/fullSystemDiagnostics.ts 有潛在問題
+   詳細: 使用環境變數但未載入 dotenv: process.env.PORT
+   建議: 建議修正上述問題
+⚠️ [Utils] src/utils/diagnostics/envValidation.ts 有潛在問題
+   詳細: 使用環境變數但未載入 dotenv: process.env.NODE_ENV, process.env.NODE_ENV, process.env.NODE_ENV
+   建議: 建議修正上述問題
+
+✅ 正常項目 (4個):
+✅ [環境變數] 所有環境變數都已正確設定
+✅ [前端套件] 前端套件安裝正常
+✅ [前端套件] 前端套件安裝正常
+✅ [Health Check] Health check 成功
+
+💡 修正建議摘要:
+🔴 高優先級 (錯誤):
+1. 請修正 TypeScript 語法錯誤
+2. 確認資料庫配置正確
+
+🟡 中優先級 (警告):
+1. 建議修正上述問題
+2. 建議修正上述問題
+3. 建議修正上述問題
+4. 建議修正上述問題
+5. 建議修正上述問題
+6. 建議修正上述問題
+
+📊 系統健康度評分:
+33% (4/12 項目正常)
+
+============================================================
+✅ Health Check 成功
+📊 狀態: healthy
+🔌 資料庫: connected
+🛣️ 路由: admin, checkin, members, webhook
+
+📋 步驟 5: 生成完整報告...
+================================================================================
+
+🚨 嚴重錯誤 (3個):
+1. [TypeScript編譯] TypeScript 編譯錯誤
+   詳細: src/controllers/checkinController.ts(20,54): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(this: ModelStatic<Member>, options: NonNullFindOptions<MemberAttributes>): Promise<Member>', gave the following error.
+    Object literal may only specify known properties, and 'line_uid' does not exist in type 'WhereOptions<MemberAttributes>'.
+  Overload 2 of 2, '(this: ModelStatic<Member>, options?: FindOptions<MemberAttributes> | undefined): Promise<Member | null>', gave the following error.
+    Object literal may only specify known properties, and 'line_uid' does not exist in type 'WhereOptions<MemberAttributes>'.
+src/controllers/checkinController.ts(98,54): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(this: ModelStatic<Member>, options: NonNullFindOptions<MemberAttributes>): Promise<Member>', gave the following error.
+    Object literal may only specify known properties, and 'line_uid' does not exist in type 'WhereOptions<MemberAttributes>'.
+  Overload 2 of 2, '(this: ModelStatic<Member>, options?: FindOptions<MemberAttributes> | undefined): Promise<Member | null>', gave the following error.
+    Object literal may only specify known properties, and 'line_uid' does not exist in type 'WhereOptions<MemberAttributes>'.
+src/controllers/checkinController.ts(116,27): error TS2339: Property 'line_uid' does not exist on type 'Member'.
+src/controllers/registrationController.ts(50,18): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(this: ModelStatic<Member>, options: NonNullFindOptions<MemberAttributes>): Promise<Member>', gave the following error.
+    Object literal may only specify known properties, and 'line_uid' does not exist in type 'WhereOptions<MemberAttributes>'.
+  Overload 2 of 2, '(this: ModelStatic<Member>, options?: FindOptions<MemberAttributes> | undefined): Promise<Member | null>', gave the following error.
+    Object literal may only specify known properties, and 'line_uid' does not exist in type 'WhereOptions<MemberAttributes>'.
+src/controllers/registrationController.ts(71,9): error TS2353: Object literal may only specify known properties, and 'line_uid' does not exist in type 'MemberCreationAttributes'.
+src/controllers/registrationController.ts(121,18): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(this: ModelStatic<Member>, options: NonNullFindOptions<MemberAttributes>): Promise<Member>', gave the following error.
+    Object literal may only specify known properties, and 'line_uid' does not exist in type 'WhereOptions<MemberAttributes>'.
+  Overload 2 of 2, '(this: ModelStatic<Member>, options?: FindOptions<MemberAttributes> | undefined): Promise<Member | null>', gave the following error.
+    Object literal may only specify known properties, and 'line_uid' does not exist in type 'WhereOptions<MemberAttributes>'.
+src/integrations/line/lineService.ts(79,16): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(this: ModelStatic<Member>, options: NonNullFindOptions<MemberAttributes>): Promise<Member>', gave the following error.
+    Object literal may only specify known properties, and 'line_uid' does not exist in type 'WhereOptions<MemberAttributes>'.
+  Overload 2 of 2, '(this: ModelStatic<Member>, options?: FindOptions<MemberAttributes> | undefined): Promise<Member | null>', gave the following error.
+    Object literal may only specify known properties, and 'line_uid' does not exist in type 'WhereOptions<MemberAttributes>'.
+src/integrations/line/lineService.ts(92,64): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/integrations/line/lineService.ts(170,50): error TS2345: Argument of type '{ type: "flex"; altText: string; contents: { type: string; body: { type: string; layout: string; contents: ({ type: string; text: string; weight: string; size: string; color: string; margin?: undefined; wrap?: undefined; } | { ...; } | { ...; })[]; }; footer: { ...; }; }; }' is not assignable to parameter of type 'Message | Message[]'.
+  Type '{ type: "flex"; altText: string; contents: { type: string; body: { type: string; layout: string; contents: ({ type: string; text: string; weight: string; size: string; color: string; margin?: undefined; wrap?: undefined; } | { ...; } | { ...; })[]; }; footer: { ...; }; }; }' is not assignable to type 'FlexMessage'.
+    Type '{ type: "flex"; altText: string; contents: { type: string; body: { type: string; layout: string; contents: ({ type: string; text: string; weight: string; size: string; color: string; margin?: undefined; wrap?: undefined; } | { ...; } | { ...; })[]; }; footer: { ...; }; }; }' is not assignable to type '{ type: "flex"; altText: string; contents: FlexContainer; }'.
+      Types of property 'contents' are incompatible.
+        Type '{ type: string; body: { type: string; layout: string; contents: ({ type: string; text: string; weight: string; size: string; color: string; margin?: undefined; wrap?: undefined; } | { type: string; text: string; ... 4 more ...; wrap?: undefined; } | { ...; })[]; }; footer: { ...; }; }' is not assignable to type 'FlexContainer'.
+          Type '{ type: string; body: { type: string; layout: string; contents: ({ type: string; text: string; weight: string; size: string; color: string; margin?: undefined; wrap?: undefined; } | { type: string; text: string; ... 4 more ...; wrap?: undefined; } | { ...; })[]; }; footer: { ...; }; }' is not assignable to type 'FlexBubble'.
+            Types of property 'type' are incompatible.
+              Type 'string' is not assignable to type '"bubble"'.
+src/integrations/line/lineService.ts(192,16): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(this: ModelStatic<Member>, options: NonNullFindOptions<MemberAttributes>): Promise<Member>', gave the following error.
+    Object literal may only specify known properties, and 'line_uid' does not exist in type 'WhereOptions<MemberAttributes>'.
+  Overload 2 of 2, '(this: ModelStatic<Member>, options?: FindOptions<MemberAttributes> | undefined): Promise<Member | null>', gave the following error.
+    Object literal may only specify known properties, and 'line_uid' does not exist in type 'WhereOptions<MemberAttributes>'.
+src/integrations/line/lineService.ts(256,49): error TS2345: Argument of type '{ type: "flex"; altText: string; contents: { type: string; body: { type: string; layout: string; contents: ({ type: string; text: string; weight: string; size: string; color: string; wrap?: undefined; margin?: undefined; } | { ...; } | { ...; })[]; }; footer: { ...; }; }; }' is not assignable to parameter of type 'Message | Message[]'.
+  Type '{ type: "flex"; altText: string; contents: { type: string; body: { type: string; layout: string; contents: ({ type: string; text: string; weight: string; size: string; color: string; wrap?: undefined; margin?: undefined; } | { ...; } | { ...; })[]; }; footer: { ...; }; }; }' is not assignable to type 'FlexMessage'.
+    Type '{ type: "flex"; altText: string; contents: { type: string; body: { type: string; layout: string; contents: ({ type: string; text: string; weight: string; size: string; color: string; wrap?: undefined; margin?: undefined; } | { ...; } | { ...; })[]; }; footer: { ...; }; }; }' is not assignable to type '{ type: "flex"; altText: string; contents: FlexContainer; }'.
+      Types of property 'contents' are incompatible.
+        Type '{ type: string; body: { type: string; layout: string; contents: ({ type: string; text: string; weight: string; size: string; color: string; wrap?: undefined; margin?: undefined; } | { type: string; text: string; ... 4 more ...; margin?: undefined; } | { ...; })[]; }; footer: { ...; }; }' is not assignable to type 'FlexContainer'.
+          Type '{ type: string; body: { type: string; layout: string; contents: ({ type: string; text: string; weight: string; size: string; color: string; wrap?: undefined; margin?: undefined; } | { type: string; text: string; ... 4 more ...; margin?: undefined; } | { ...; })[]; }; footer: { ...; }; }' is not assignable to type 'FlexBubble'.
+            Types of property 'type' are incompatible.
+              Type 'string' is not assignable to type '"bubble"'.
+src/middleware/authMiddleware.ts(33,16): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(this: ModelStatic<Member>, options: NonNullFindOptions<MemberAttributes>): Promise<Member>', gave the following error.
+    Object literal may only specify known properties, and 'line_uid' does not exist in type 'WhereOptions<MemberAttributes>'.
+  Overload 2 of 2, '(this: ModelStatic<Member>, options?: FindOptions<MemberAttributes> | undefined): Promise<Member | null>', gave the following error.
+    Object literal may only specify known properties, and 'line_uid' does not exist in type 'WhereOptions<MemberAttributes>'.
+src/middleware/authMiddleware.ts(70,18): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(this: ModelStatic<Member>, options: NonNullFindOptions<MemberAttributes>): Promise<Member>', gave the following error.
+    Object literal may only specify known properties, and 'line_uid' does not exist in type 'WhereOptions<MemberAttributes>'.
+  Overload 2 of 2, '(this: ModelStatic<Member>, options?: FindOptions<MemberAttributes> | undefined): Promise<Member | null>', gave the following error.
+    Object literal may only specify known properties, and 'line_uid' does not exist in type 'WhereOptions<MemberAttributes>'.
+src/scripts/test/testServiceFunctions.ts(61,73): error TS2339: Property 'line_uid' does not exist on type 'Member'.
+src/scripts/tools/fullSystemTest.ts(10,41): error TS2307: Cannot find module '../controllers/lineController' or its corresponding type declarations.
+src/scripts/tools/fullSystemTest.ts(11,43): error TS2307: Cannot find module '../controllers/memberController' or its corresponding type declarations.
+src/scripts/tools/fullSystemTest.ts(12,49): error TS2307: Cannot find module '../controllers/announcementController' or its corresponding type declarations.
+src/scripts/tools/fullSystemTest.ts(13,44): error TS2307: Cannot find module '../controllers/checkinController' or its corresponding type declarations.
+src/scripts/tools/fullSystemTest.ts(14,41): error TS2307: Cannot find module '../controllers/liffController' or its corresponding type declarations.
+src/scripts/tools/fullSystemTest.ts(24,38): error TS2307: Cannot find module '../routes/line/webhook' or its corresponding type declarations.
+src/scripts/tools/fullSystemTest.ts(25,39): error TS2307: Cannot find module '../routes/api/members' or its corresponding type declarations.
+src/scripts/tools/fullSystemTest.ts(26,45): error TS2307: Cannot find module '../routes/api/announcements' or its corresponding type declarations.
+src/scripts/tools/fullSystemTest.ts(27,40): error TS2307: Cannot find module '../routes/api/checkin' or its corresponding type declarations.
+src/scripts/tools/fullSystemTest.ts(28,37): error TS2307: Cannot find module '../routes/api/liff' or its corresponding type declarations.
+src/scripts/tools/fullSystemTest.ts(29,38): error TS2307: Cannot find module '../routes/admin' or its corresponding type declarations.
+src/scripts/tools/fullSystemTest.ts(39,38): error TS2307: Cannot find module '../services/lineService' or its corresponding type declarations.
+src/scripts/tools/fullSystemTest.ts(49,33): error TS2307: Cannot find module '../models/index' or its corresponding type declarations.
+src/scripts/tools/quickStart.ts(4,24): error TS2307: Cannot find module '../config/config' or its corresponding type declarations.
+src/scripts/tools/quickStart.ts(5,23): error TS2307: Cannot find module '../config/database' or its corresponding type declarations.
+src/scripts/tools/quickStart.ts(7,25): error TS2307: Cannot find module '../routes/admin' or its corresponding type declarations.
+src/scripts/tools/quickStart.ts(8,26): error TS2307: Cannot find module '../routes/api/members' or its corresponding type declarations.
+src/scripts/tools/quickStart.ts(9,27): error TS2307: Cannot find module '../routes/api/checkin' or its corresponding type declarations.
+src/scripts/tools/quickStart.ts(10,24): error TS2307: Cannot find module '../routes/api/liff' or its corresponding type declarations.
+src/scripts/tools/quickStart.ts(11,32): error TS2307: Cannot find module '../routes/api/announcements' or its corresponding type declarations.
+src/scripts/tools/quickStart.ts(12,25): error TS2307: Cannot find module '../routes/line/webhook' or its corresponding type declarations.
+src/scripts/tools/testLineModule.ts(3,40): error TS2307: Cannot find module '../types/line' or its corresponding type declarations.
+src/scripts/tools/testLineModule.ts(40,34): error TS2307: Cannot find module '../routes/line/webhook' or its corresponding type declarations.
+src/scripts/tools/testLineWebhook.ts(4,24): error TS2307: Cannot find module '../config/config' or its corresponding type declarations.
+src/scripts/tools/testRoutesRefactor.ts(2,30): error TS2307: Cannot find module '../controllers/memberController' or its corresponding type declarations.
+src/scripts/tools/testRoutesRefactor.ts(3,36): error TS2307: Cannot find module '../controllers/announcementController' or its corresponding type declarations.
+src/scripts/tools/testRoutesRefactor.ts(4,31): error TS2307: Cannot find module '../controllers/checkinController' or its corresponding type declarations.
+src/scripts/tools/testRoutesRefactor.ts(5,28): error TS2307: Cannot find module '../controllers/liffController' or its corresponding type declarations.
+src/scripts/tools/testRoutesRefactor.ts(24,39): error TS2307: Cannot find module '../routes/api/members' or its corresponding type declarations.
+src/scripts/tools/testRoutesRefactor.ts(25,45): error TS2307: Cannot find module '../routes/api/announcements' or its corresponding type declarations.
+src/scripts/tools/testRoutesRefactor.ts(26,40): error TS2307: Cannot find module '../routes/api/checkin' or its corresponding type declarations.
+src/scripts/tools/testRoutesRefactor.ts(27,37): error TS2307: Cannot find module '../routes/api/liff' or its corresponding type declarations.
+src/services/adminService.ts(107,11): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(this: ModelStatic<...>, options: { logging?: boolean | ((sql: string, timing?: number | undefined) => void) | undefined; col?: string | undefined; where?: WhereOptions<MemberAttributes> | undefined; ... 7 more ...; group: GroupOption; }): Promise<...>', gave the following error.
+    Type '{ line_user_id: { [OpTypes.ne]: null; }; status: string; }' is not assignable to type 'WhereOptions<MemberAttributes> | undefined'.
+      Types of property 'line_user_id' are incompatible.
+        Type '{ [OpTypes.ne]: null; }' is not assignable to type 'WhereAttributeHashValue<string | undefined>'.
+          Types of property '[Op.ne]' are incompatible.
+            Type 'null' is not assignable to type 'string | number | boolean | Date | Fn | Col | Literal | { [OpTypes.col]: string; } | Cast | Buffer<ArrayBufferLike> | { [OpTypes.all]: Literal | ... 1 more ... | { ...; }; } | { ...; } | { ...; } | { ...; } | undefined'.
+  Overload 2 of 2, '(this: ModelStatic<Member>, options?: Omit<CountOptions<MemberAttributes>, "group"> | undefined): Promise<number>', gave the following error.
+    Type '{ line_user_id: { [OpTypes.ne]: null; }; status: string; }' is not assignable to type 'WhereOptions<MemberAttributes> | undefined'.
+      Types of property 'line_user_id' are incompatible.
+        Type '{ [OpTypes.ne]: null; }' is not assignable to type 'WhereAttributeHashValue<string | undefined>'.
+          Types of property '[Op.ne]' are incompatible.
+            Type 'null' is not assignable to type 'string | number | boolean | Date | Fn | Col | Literal | { [OpTypes.col]: string; } | Cast | Buffer<ArrayBufferLike> | { [OpTypes.all]: Literal | ... 1 more ... | { ...; }; } | { ...; } | { ...; } | { ...; } | undefined'.
+src/services/index.ts(7,40): error TS2307: Cannot find module './lineService' or its corresponding type declarations.
+src/types/index.ts(82,1): error TS2308: Module './registration' has already exported a member named 'PaymentStatus'. Consider explicitly re-exporting to resolve the ambiguity.
+src/types/role.ts(67,37): error TS2345: Argument of type 'Role' is not assignable to parameter of type 'Role.President | Role.Admin'.
+src/utils/diagnostics/index.ts(3,10): error TS2305: Module '"./envCheck"' has no exported member 'checkEnvironment'.
+src/utils/diagnostics/index.ts(8,10): error TS2724: '"./systemHealth"' has no exported member named 'SystemHealthChecker'. Did you mean 'runSystemHealthCheck'?
+src/utils/diagnostics/index.ts(13,10): error TS2305: Module '"./liffDiagnostics"' has no exported member 'default'.
+src/utils/diagnostics/index.ts(16,10): error TS2305: Module '"./troubleshoot"' has no exported member 'generateTroubleshootReport'.
+src/utils/diagnostics/index.ts(17,10): error TS2305: Module '"./troubleshootReport"' has no exported member 'createTroubleshootReport'.
+src/utils/diagnostics/index.ts(18,10): error TS2305: Module '"./detailedTroubleshootReport"' has no exported member 'generateDetailedReport'.
+src/utils/diagnostics/index.ts(45,28): error TS2304: Cannot find name 'SystemDiagnostics'.
+src/utils/diagnostics/index.ts(46,26): error TS2304: Cannot find name 'LiffDiagnostics'.
+src/utils/diagnostics/index.ts(47,31): error TS2552: Cannot find name 'SystemHealthChecker'. Did you mean 'healthChecker'?
+src/utils/diagnostics/troubleshoot.ts(279,53): error TS2307: Cannot find module '../tools/systemHealth' or its corresponding type declarations.
+src/utils/index.ts(7,38): error TS2307: Cannot find module './envCheck' or its corresponding type declarations.
+src/utils/index.ts(8,37): error TS2307: Cannot find module './envValidation' or its corresponding type declarations.
+
+   建議: 修正 TypeScript 語法錯誤
+
+2. [前端LIFF] LIFF App ID 未設定
+   詳細: public/liff.html 缺少 LIFF App ID
+   建議: 設定正確的 LIFF App ID
+
+3. [LIFF服務] LIFF 服務未正確配置
+   詳細: Health Check 顯示 LIFF 服務狀態異常
+   建議: 檢查 LIFF 應用程式設定
+
+
+⚠️ 警告事項 (0個):
+
+💡 資訊提示 (1個):
+1. [Routes] src/routes/api/liff.ts 使用環境變數但未載入 dotenv
+   詳細: 可能導致環境變數未正確載入
+   建議: 確認 dotenv 已在主程式載入
+
+
+📊 系統健康度評分:
+35% (3 個嚴重問題)
+
+🔧 優先修正建議:
+1. 立即修正所有嚴重錯誤
+   • 修正 TypeScript 語法錯誤
+   • 設定正確的 LIFF App ID
+   • 檢查 LIFF 應用程式設定
+
+✅ 報告已儲存至 detailed_troubleshoot_report.json
+================================================================================
+✅ 資料庫連線成功
+✅ 資料庫查詢測試成功
+
+📦 6. 檢查套件依賴...
+✅ 共 23 個套件
+✅ express: ^5.1.0
+✅ sequelize: ^6.37.7
+✅ @line/bot-sdk: ^10.0.0
+✅ dotenv: ^17.2.0
+
+============================================================
+📋 診斷完成
+============================================================
+
+💡 建議修正事項:
+1. 確保所有環境變數都已正確設定
+2. 檢查伺服器是否正常運行
+3. 確認資料庫連線設定正確
+4. 執行 npm install 確保所有依賴已安裝
+5. 檢查防火牆是
