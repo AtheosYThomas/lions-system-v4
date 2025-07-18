@@ -6,7 +6,6 @@ export { checkEnvironment } from './envCheck';
 export { SystemDiagnostics } from './systemDiagnostics';
 export { LiffDiagnostics } from './liffDiagnostics';
 export { SystemHealthChecker } from './systemHealth';
-export { DetailedTroubleshooter } from './detailedTroubleshooter';
 
 // 匯入移動過來的診斷工具
 export { runDiagnostics } from './diagnostics';
