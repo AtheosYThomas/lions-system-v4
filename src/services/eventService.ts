@@ -327,11 +327,13 @@ class EventService {
       });
 
       const maxAttendees: number | null = event.max_attendees ?? null;
-      const availableSlots: number | null = maxAttendees !== null ? maxAttendees - currentRegistrations : null;
+      const availableSlots: number | null = maxAttendees !== null
+        ? maxAttendees - currentRegistrations
+        : null;
       const isFull = event.max_attendees ? currentRegistrations >= event.max_attendees : false;
 
       return {
-        maxAttendees: event.max_attendees,
+        maxAttendees,
         currentRegistrations,
         availableSlots,
         isFull
