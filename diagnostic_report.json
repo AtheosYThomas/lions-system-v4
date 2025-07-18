@@ -1,9 +1,9 @@
 {
-  "timestamp": "2025-07-18T00:25:10.661Z",
+  "timestamp": "2025-07-18T00:31:11.699Z",
   "summary": {
     "total": 42,
-    "passed": 4,
-    "failed": 1,
+    "passed": 3,
+    "failed": 2,
     "warnings": 37
   },
   "results": [
@@ -408,22 +408,12 @@
     },
     {
       "section": "Health Check",
-      "status": "pass",
-      "message": "Health Check 測試成功",
-      "details": {
-        "status": "healthy",
-        "database": "connected",
-        "services": {
-          "line": "configured",
-          "routes": [
-            "admin",
-            "checkin",
-            "members",
-            "webhook"
-          ]
-        },
-        "uptime": 38.739852876
-      }
+      "status": "fail",
+      "message": "Health Check 連線逾時",
+      "suggestions": [
+        "檢查伺服器回應時間",
+        "確認網路連線"
+      ]
     }
   ]
 }
