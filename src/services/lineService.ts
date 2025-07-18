@@ -77,7 +77,7 @@ class LineService {
 
     // 🔍 核心邏輯：檢查用戶是否為會員
     const member = await Member.findOne({ 
-      where: { line_user_id: lineUserId } 
+      where: { line_uid: lineUserId } 
     });
 
     if (member) {
@@ -190,7 +190,7 @@ class LineService {
     
     // 檢查是否為已註冊會員
     const member = await Member.findOne({ 
-      where: { line_user_id: lineUserId } 
+      where: { line_uid: lineUserId } 
     });
 
     if (member) {

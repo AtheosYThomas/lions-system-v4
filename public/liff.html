@@ -163,8 +163,34 @@
         }, 3000);
 
       } catch (error) {
-        console.error('❌ LIFF 錯誤:', error);
-        updateStatus(`❌ 初始化失敗：${error.message}`, 'error');
+        console.error('LIFF 初始化錯誤:', error);
+
+        // 詳細錯誤處理
+        let errorMessage = '初始化失敗';
+        if (error && typeof error === 'object' && 'code' in error) {
+          const errorCode = error.code;
+          switch (errorCode) {
+            case '404':
+              errorMessage = 'LIFF App ID 無效或未設定';
+              break;
+            case '403':
+              errorMessage = 'LIFF 應用程式權限不足';
+              break;
+            default:
+              errorMessage = `初始化失敗 (錯誤代碼: ${errorCode})`;
+          }
+        }
+
+        updateStatus(`❌ ${errorMessage}，請聯繫系統管理員`, 'error');
+
+        // 提供重試選項
+        setTimeout(() => {
+          const retryBtn = document.createElement('button');
+          retryBtn.textContent = '重新嘗試';
+          retryBtn.onclick = () => location.reload();
+          retryBtn.style.cssText = 'margin-top: 10px; padding: 8px 16px; background: #1DB446; color: white; border: none; border-radius: 4px; cursor: pointer;';
+          document.getElementById('status').appendChild(retryBtn);
+        }, 2000);
       }
     }
 

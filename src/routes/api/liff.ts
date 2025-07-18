@@ -8,7 +8,16 @@ const router = express.Router();
  * 檢查 LINE 用戶是否為會員
  */
 router.post('/check-member', async (req, res) => {
-  await liffController.checkMember(req, res);
+  try {
+    await liffController.checkMember(req, res);
+  } catch (error) {
+    console.error('❌ LIFF check-member 錯誤:', error);
+    res.status(500).json({
+      success: false,
+      error: 'LIFF 服務錯誤',
+      details: error instanceof Error ? error.message : '未知錯誤'
+    });
+  }
 });
 
 /**
@@ -16,7 +25,16 @@ router.post('/check-member', async (req, res) => {
  * 註冊新會員
  */
 router.post('/register', async (req, res) => {
-  await liffController.registerMember(req, res);
+  try {
+    await liffController.registerMember(req, res);
+  } catch (error) {
+    console.error('❌ LIFF register 錯誤:', error);
+    res.status(500).json({
+      success: false,
+      error: 'LIFF 註冊服務錯誤',
+      details: error instanceof Error ? error.message : '未知錯誤'
+    });
+  }
 });
 
 // 檢查當前的 LIFF 路由實作
