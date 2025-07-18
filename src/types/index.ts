@@ -6,8 +6,8 @@ export * from './event';
 
 // Registration types
 // 全域註冊型別  
-export type { RegistrationAttributes, RegistrationCreationAttributes } from './registration';
-export { PaymentMethod, PaymentProvider, PaymentRecord, PaymentTransaction } from './payment';
+export { RegistrationStatus } from './registration';
+export { PaymentStatus, PaymentMethod } from './payment';
 
 // Announcement types
 export * from './announcement';
@@ -78,7 +78,7 @@ export * from './announcement.d';
 export * from './checkin.d';
 export * from './event.d';
 export * from './member.d';
-export * from './payment.d';
+export * from './payment';
 export * from './registration.d';
 export * from './line';
 export * from './role';

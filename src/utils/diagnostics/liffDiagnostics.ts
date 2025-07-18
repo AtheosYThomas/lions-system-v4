@@ -111,3 +111,4 @@ export class LiffDiagnostics {
   }
 }
 // LiffDiagnostics 類別已在此檔案中完整實作
+export default LiffDiagnostics;

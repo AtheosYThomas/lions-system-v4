@@ -130,41 +130,41 @@ class LineService {
             layout: 'vertical' as const,
             contents: [
               {
-                type: 'text',
+                type: 'text' as const,
                 text: '🦁 北大獅子會',
-                weight: 'bold',
-                size: 'xl',
+                weight: 'bold' as const,
+                size: 'xl' as const,
                 color: '#1DB446'
               },
               {
-                type: 'text',
+                type: 'text' as const,
                 text: '您尚未註冊會員',
-                weight: 'bold',
-                size: 'lg',
-                margin: 'md'
+                weight: 'bold' as const,
+                size: 'lg' as const,
+                margin: 'md' as const
               },
               {
-                type: 'text',
+                type: 'text' as const,
                 text: '請點擊下方按鈕完成註冊，即可享受完整的會員服務',
-                size: 'sm',
+                size: 'sm' as const,
                 color: '#666666',
                 wrap: true,
-                margin: 'sm'
+                margin: 'sm' as const
               }
             ]
           },
           footer: {
-            type: 'box',
-            layout: 'vertical',
+            type: 'box' as const,
+            layout: 'vertical' as const,
             contents: [
               {
-                type: 'button',
+                type: 'button' as const,
                 action: {
-                  type: 'uri',
+                  type: 'uri' as const,
                   label: '🚀 立即註冊',
                   uri: `https://liff.line.me/2007739371-aKePV20l`
                 },
-                style: 'primary',
+                style: 'primary' as const,
                 color: '#1DB446'
               }
             ]
@@ -217,40 +217,40 @@ class LineService {
             layout: 'vertical' as const,
             contents: [
               {
-                type: 'text',
+                type: 'text' as const,
                 text: '🎉 歡迎加入',
-                weight: 'bold',
-                size: 'xl',
+                weight: 'bold' as const,
+                size: 'xl' as const,
                 color: '#1DB446'
               },
               {
-                type: 'text',
+                type: 'text' as const,
                 text: '北大獅子會 LINE 官方帳號',
-                weight: 'bold',
-                size: 'lg'
+                weight: 'bold' as const,
+                size: 'lg' as const
               },
               {
-                type: 'text',
+                type: 'text' as const,
                 text: '請完成會員註冊，即可享受完整服務',
-                size: 'sm',
+                size: 'sm' as const,
                 color: '#666666',
                 wrap: true,
-                margin: 'md'
+                margin: 'md' as const
               }
             ]
           },
           footer: {
-            type: 'box',
-            layout: 'vertical',
+            type: 'box' as const,
+            layout: 'vertical' as const,
             contents: [
               {
-                type: 'button',
+                type: 'button' as const,
                 action: {
-                  type: 'uri',
+                  type: 'uri' as const,
                   label: '🚀 完成註冊',
                   uri: `https://liff.line.me/2007739371-aKePV20l`
                 },
-                style: 'primary',
+                style: 'primary' as const,
                 color: '#1DB446'
               }
             ]

@@ -41,20 +41,35 @@ export interface SystemReport {
 // 主要診斷工具類別
 export class DiagnosticsManager {
   static async runFullSystemCheck(): Promise<SystemReport> {
-    const { SystemDiagnostics } = await import('./systemDiagnostics');
-    const { LiffDiagnostics } = await import('./liffDiagnostics');
-    const { runSystemHealthCheck } = await import('./systemHealth');
+    try {
+      const { SystemDiagnostics } = await import('./systemDiagnostics');
+      const { LiffDiagnostics } = await import('./liffDiagnostics');
+      const { runSystemHealthCheck } = await import('./systemHealth');
 
-    const systemDiag = new SystemDiagnostics();
-    const liffDiag = new LiffDiagnostics();
+      const systemDiag = new SystemDiagnostics();
+      const liffDiag = new LiffDiagnostics();
 
-    const results = await Promise.all([
-      systemDiag.runDiagnostics(),
-      liffDiag.runDiagnostics(),
-      runSystemHealthCheck()
-    ]);
+      const results = await Promise.all([
+        systemDiag.runDiagnostics(),
+        liffDiag.runDiagnostics(),
+        runSystemHealthCheck()
+      ]);
 
-    return this.generateSystemReport(results.flat());
+      // 確保所有結果都是 DiagnosticResult 類型
+      const flatResults = results.flat().filter((result): result is DiagnosticResult => 
+        result && typeof result === 'object' && 'component' in result && 'status' in result && 'message' in result
+      );
+
+      return this.generateSystemReport(flatResults);
+    } catch (error) {
+      console.error('系統檢查失敗:', error);
+      return this.generateSystemReport([{
+        component: 'System Check',
+        status: 'fail',
+        message: '系統檢查執行失敗',
+        details: error instanceof Error ? error.message : '未知錯誤'
+      }]);
+    }
   }
 
   private static generateSystemReport(results: DiagnosticResult[]): SystemReport {

@@ -1,3 +1,10 @@
+` tags.
+
+```text
+Fixing the role type check in the isHighRankRole function.
+```
+
+<replit_final_file>
 /**
  * 系統角色定義
  */
@@ -103,4 +110,8 @@ export function hasRolePermission(userRole: Role | string, requiredRole: Role): 
 
 export function canAccessRoute(userRole: Role, requiredRole: Role.President | Role.Admin): boolean {
   return roleRank[userRole] >= roleRank[requiredRole as Role];
+}
+
+export function isHighRankRole(role: Role): boolean {
+  return isAdminRole(role as Role.President | Role.Admin) || role === Role.President;
 }

@@ -8,7 +8,7 @@ export {
   runDiagnostics,
   runFullSystemDiagnostics,
   generateTroubleshootReport,
-  createTroubleshootReport,
+  generateTroubleshootReport,
   generateDetailedReport
 } from '../utils/diagnostics';
 
