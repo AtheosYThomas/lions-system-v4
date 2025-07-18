@@ -29,30 +29,42 @@ class LiffDiagnostics {
     console.log(chalk.yellow('📱 檢查 LIFF 配置...'));
     
     // 檢查環境變數
-    const liffId = process.env.LIFF_APP_ID || '2007739371-aKePV20l';
+    const liffId = process.env.LIFF_APP_ID;
     
-    if (liffId === '2007739371-aKePV20l') {
+    if (!liffId) {
       this.addResult('LIFF Config', 'fail', 
-        'LIFF App ID 可能已失效 (404錯誤)',
-        '請到 LINE Developers Console 重新取得有效的 LIFF App ID'
+        'LIFF App ID 未設定',
+        '請在 .env 檔案中設定 LIFF_APP_ID'
       );
-    } else {
-      this.addResult('LIFF Config', 'pass', 'LIFF App ID 已設定');
-      this.addResult('LIFF Config', 'pass', 
-        `LIFF App ID: ${liffId}`
-      );
+      return;
     }
+    
+    this.addResult('LIFF Config', 'pass', 
+      `LIFF App ID 已設定: ${liffId}`
+    );
     
     // 測試 LIFF 端點可用性
     try {
       const testResponse = await fetch(`https://liff.line.me/${liffId}`);
+      
       if (testResponse.status === 404) {
         this.addResult('LIFF Config', 'fail', 
           'LIFF App ID 無效 (404)',
           '請檢查 LINE Developers Console 中的 LIFF 設定'
         );
-      } else {
+      } else if (testResponse.status === 403) {
+        this.addResult('LIFF Config', 'fail', 
+          'LIFF App 權限不足 (403)',
+          '請檢查 LIFF 應用程式是否已啟用'
+        );
+      } else if (testResponse.ok || testResponse.status === 400) {
+        // 400 是正常的，因為我們沒有提供有效的請求參數
         this.addResult('LIFF Config', 'pass', 'LIFF 端點可訪問');
+      } else {
+        this.addResult('LIFF Config', 'warning', 
+          `LIFF 端點回應異常 (${testResponse.status})`,
+          '請檢查 LIFF 設定或網路連接'
+        );
       }
     } catch (error) {
       this.addResult('LIFF Config', 'warning', 
