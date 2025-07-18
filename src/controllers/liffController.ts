@@ -69,7 +69,8 @@ class LiffController {
       console.error('❌ LIFF 檢查會員失敗:', error);
       res.status(500).json({
         success: false,
-        error: error instanceof Error ? error.message : '伺服器錯誤'
+        error: 'LIFF 服務暫時無法使用，請稍後再試',
+        details: error instanceof Error ? error.message : '未知錯誤'
       });
     }
   }

@@ -104,7 +104,7 @@
         // 初始化 LIFF
         updateStatus('正在初始化 LINE 登入...');
         await liff.init({
-          liffId: process.env.LIFF_APP_ID || '2007739371-aKePV20l' // 請替換為實際的 LIFF App ID
+          liffId: '2007739371-aKePV20l'
         });
 
         // 檢查登入狀態
@@ -164,30 +164,46 @@
 
       } catch (error) {
         console.error('LIFF 初始化錯誤:', error);
-        updateStatus('❌ LINE 登入失敗', 'error');
-
-        // 顯示詳細錯誤資訊
-        const errorInfo = document.createElement('div');
-        errorInfo.className = 'error-details';
-
+        
         let errorMessage = '';
+        let suggestion = '';
+        
         if (error.code === 404) {
           errorMessage = 'LIFF App ID 不存在或未正確配置';
+          suggestion = '請確認 LIFF App ID 是否正確，或聯繫系統管理員';
         } else if (error.code === 403) {
           errorMessage = 'LIFF 應用程式未啟用或權限不足';
+          suggestion = '請檢查 LIFF 應用程式設定';
+        } else if (error.code === 400) {
+          errorMessage = 'LIFF 初始化參數錯誤';
+          suggestion = '請檢查 LIFF App ID 格式';
         } else {
-          errorMessage = error.message || JSON.stringify(error);
+          errorMessage = error.message || '未知的 LIFF 錯誤';
+          suggestion = '請稍後再試或聯繫技術支援';
         }
-
-        errorInfo.innerHTML = `
-          <h3>錯誤詳細資訊:</h3>
-          <p><strong>錯誤代碼:</strong> ${error.code || 'N/A'}</p>
-          <p><strong>錯誤訊息:</strong> ${errorMessage}</p>
-          <p><strong>LIFF App ID:</strong> 2007739371-aKePV20l</p>
-          <p><strong>建議:</strong> 請到 LINE Developers Console 檢查 LIFF 應用設定</p>
-          <button onclick="window.location.reload()" style="margin-top: 10px; padding: 5px 10px;">重新載入</button>
+        
+        updateStatus(`❌ ${errorMessage}`, 'error');
+        
+        // 添加重試按鈕
+        const retryBtn = document.createElement('button');
+        retryBtn.textContent = '🔄 重新嘗試';
+        retryBtn.style.cssText = `
+          margin-top: 15px;
+          padding: 10px 20px;
+          background: #1976d2;
+          color: white;
+          border: none;
+          border-radius: 5px;
+          cursor: pointer;
         `;
-        document.body.appendChild(errorInfo);
+        retryBtn.onclick = () => window.location.reload();
+        statusDiv.appendChild(retryBtn);
+        
+        // 添加建議文字
+        const suggestionDiv = document.createElement('div');
+        suggestionDiv.style.cssText = 'margin-top: 10px; font-size: 0.9rem; color: #666;';
+        suggestionDiv.textContent = suggestion;
+        statusDiv.appendChild(suggestionDiv);
       }
     }
 

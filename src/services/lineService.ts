@@ -1,4 +1,3 @@
-
 import { Client, WebhookEvent, MessageEvent } from '@line/bot-sdk';
 import { config } from '../config/config';
 import Member from '../models/member';
@@ -84,7 +83,7 @@ class LineService {
       // ✅ 已註冊會員
       console.log('👤 已註冊會員:', member.name);
       await this.replyToRegisteredMember(textEvent.replyToken, member.name, userMessage);
-      
+
       // 記錄已註冊會員的訊息
       await this.saveMessageLog(textEvent, member.id);
     } else {
@@ -180,14 +179,14 @@ class LineService {
    */
   private async handleFollowEvent(event: WebhookEvent): Promise<void> {
     console.log('👋 用戶開始追蹤');
-    
+
     if (!event.source?.userId) {
       console.log('⚠️ 無法獲取用戶 ID');
       return;
     }
 
     const lineUserId = event.source.userId;
-    
+
     // 檢查是否為已註冊會員
     const member = await Member.findOne({ 
       where: { line_uid: lineUserId } 
