@@ -146,13 +146,41 @@ class LineService {
    */
   private async saveMessageLog(event: LineTextMessageEvent): Promise<void> {
     try {
-      // TODO: 根據您的 MessageLog 模型調整欄位
+      const lineUserId = event.source.userId || '';
+      
+      // 先檢查會員是否存在，如果不存在則創建基本會員記錄
+      let member = await Member.findOne({ 
+        where: { line_uid: lineUserId } 
+      });
+
+      if (!member) {
+        console.log('👤 會員不存在，創建基本會員記錄:', lineUserId);
+        
+        // 創建基本會員記錄
+        member = await Member.create({
+          id: require('crypto').randomUUID(),
+          name: `LINE用戶_${lineUserId.substring(0, 8)}`,
+          email: `${lineUserId}@temp.line`,
+          line_uid: lineUserId,
+          role: 'member',
+          birthday: '1900-01-01',
+          job_title: '待補充',
+          address: '待補充',
+          mobile: '待補充',
+          status: 'pending'
+        });
+        
+        console.log('✅ 已創建基本會員記錄');
+      }
+
+      // 儲存訊息記錄
       await MessageLog.create({
-        user_id: event.source.userId || '',
+        user_id: lineUserId,
         message_content: event.message.text,
         timestamp: new Date(event.timestamp),
         message_type: 'text'
       });
+      
       console.log('💾 訊息記錄已儲存');
     } catch (error) {
       console.error('❌ 儲存訊息記錄失敗:', error);
