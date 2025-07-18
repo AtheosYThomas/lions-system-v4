@@ -1,5 +1,9 @@
 import fs from 'fs';
 import path from 'path';
+import dotenv from 'dotenv';
+
+// 確保載入環境變數
+dotenv.config();
 import chalk from 'chalk';
 import { globSync } from 'glob';
 import http from 'http';

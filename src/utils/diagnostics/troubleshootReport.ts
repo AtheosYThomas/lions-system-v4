@@ -1,9 +1,12 @@
-
 import fs from 'fs';
 import path from 'path';
 import { globSync } from 'glob';
 import chalk from 'chalk';
 import http from 'http';
+import dotenv from 'dotenv';
+
+// 確保載入環境變數
+dotenv.config();
 
 interface TroubleshootResult {
   category: string;
@@ -90,7 +93,7 @@ class TroubleshootReporter {
     console.log(chalk.blue('🔧 2. 檢查環境變數...'));
 
     const envPath = path.resolve('.env');
-    
+
     if (!fs.existsSync(envPath)) {
       this.addResult('Environment', 'error', '缺少 .env 檔案', undefined, ['建立 .env 檔案', '複製 .env.example 為 .env']);
       return;
@@ -99,7 +102,7 @@ class TroubleshootReporter {
     try {
       const envContent = fs.readFileSync(envPath, 'utf-8');
       const envVars: Record<string, string> = {};
-      
+
       envContent.split('\n').forEach(line => {
         const [key, value] = line.split('=');
         if (key && value) {
@@ -124,7 +127,7 @@ class TroubleshootReporter {
 
       // 檢查缺少的環境變數
       const missingVars = Array.from(usedEnvVars).filter(varName => !envVars[varName]);
-      
+
       if (missingVars.length > 0) {
         this.addResult('Environment', 'error', `程式中使用但 .env 中缺少的變數: ${missingVars.join(', ')}`, undefined, ['在 .env 中添加缺少的變數', '檢查變數名稱拼寫']);
       } else {
@@ -134,7 +137,7 @@ class TroubleshootReporter {
       // 檢查重要變數
       const requiredVars = ['LINE_CHANNEL_ACCESS_TOKEN', 'LINE_CHANNEL_SECRET', 'DATABASE_URL'];
       const missingRequired = requiredVars.filter(varName => !envVars[varName]);
-      
+
       if (missingRequired.length > 0) {
         this.addResult('Environment', 'error', `缺少必要環境變數: ${missingRequired.join(', ')}`, undefined, ['設定 LINE Channel 相關變數', '確認資料庫連線字串']);
       }
@@ -161,7 +164,7 @@ class TroubleshootReporter {
         htmlFiles.forEach(file => {
           try {
             const content = fs.readFileSync(file, 'utf-8');
-            
+
             if (!content.includes('<script') && !content.includes('<link')) {
               this.addResult('Frontend', 'warning', `${file}: 未包含 JS 或 CSS 資源`, undefined, ['添加必要的 script 標籤', '引入 CSS 檔案']);
             } else {
@@ -183,7 +186,7 @@ class TroubleshootReporter {
         jsFiles.forEach(file => {
           try {
             const content = fs.readFileSync(file, 'utf-8');
-            
+
             // 簡單語法檢查
             if (content.includes('console.log') && content.includes('production')) {
               this.addResult('Frontend', 'warning', `${file}: 生產環境中包含 console.log`, undefined, ['移除 debug 程式碼', '使用條件式 logging']);
@@ -219,7 +222,7 @@ class TroubleshootReporter {
             try {
               const healthData = JSON.parse(data);
               this.addResult('Health Check', 'pass', `Health check 成功 (狀態: ${res.statusCode})`, JSON.stringify(healthData, null, 2));
-              
+
               // 檢查 health check 回應內容
               if (healthData.database === false) {
                 this.addResult('Health Check', 'error', '資料庫連線失敗', undefined, ['檢查 DATABASE_URL', '確認 PostgreSQL 服務運行']);

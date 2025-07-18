@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
 import app from './app';
-import { sequelize } from './config/database';
+import sequelize from './config/database';
 import { runDiagnostics } from './diagnosticTool';
 
 // 載入環境變數
