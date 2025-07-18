@@ -1,4 +1,3 @@
-
 import chalk from 'chalk';
 import fs from 'fs';
 import path from 'path';
@@ -13,19 +12,19 @@ export class LiffDiagnostics {
 
   async runDiagnostics(): Promise<DiagnosticResult[]> {
     console.log(chalk.cyan('🔍 LIFF 系統診斷開始...'));
-    
+
     await this.checkLiffConfig();
     await this.checkLiffHtml();
     await this.checkLineConfig();
-    
+
     return this.results;
   }
 
   private async checkLiffConfig() {
     console.log(chalk.yellow('📱 檢查 LIFF 配置...'));
-    
+
     const liffId = process.env.LIFF_APP_ID;
-    
+
     if (!liffId) {
       this.addResult('LIFF Config', 'fail', 
         'LIFF App ID 未設定',
@@ -33,14 +32,14 @@ export class LiffDiagnostics {
       );
       return;
     }
-    
+
     this.addResult('LIFF Config', 'pass', 
       `LIFF App ID 已設定: ${liffId}`
     );
-    
+
     try {
       const testResponse = await fetch(`https://liff.line.me/${liffId}`);
-      
+
       if (testResponse.status === 404) {
         this.addResult('LIFF Config', 'fail', 
           'LIFF App ID 無效 (404)',
@@ -69,24 +68,24 @@ export class LiffDiagnostics {
 
   private async checkLiffHtml() {
     console.log(chalk.yellow('🌐 檢查 LIFF HTML 檔案...'));
-    
+
     try {
       const liffHtmlPath = path.join(process.cwd(), 'public/liff.html');
       const content = fs.readFileSync(liffHtmlPath, 'utf8');
-      
+
       if (content.includes('liff.init')) {
         this.addResult('LIFF HTML', 'pass', 'LIFF 初始化程式碼存在');
       } else {
         this.addResult('LIFF HTML', 'fail', 'LIFF 初始化程式碼缺失');
       }
-      
+
       if (content.includes('2007739371-aKePV20l')) {
         this.addResult('LIFF HTML', 'warning', 
           'LIFF App ID 硬編碼在 HTML 中',
           '建議使用環境變數管理 LIFF App ID'
         );
       }
-      
+
     } catch (error) {
       this.addResult('LIFF HTML', 'fail', 
         'LIFF HTML 檔案讀取失敗',
@@ -97,10 +96,10 @@ export class LiffDiagnostics {
 
   private async checkLineConfig() {
     console.log(chalk.yellow('🔧 檢查 LINE 設定...'));
-    
+
     const accessToken = process.env.LINE_CHANNEL_ACCESS_TOKEN;
     const channelSecret = process.env.LINE_CHANNEL_SECRET;
-    
+
     if (accessToken && channelSecret) {
       this.addResult('LINE Config', 'pass', 'LINE 頻道設定完整');
     } else {
@@ -111,4 +110,5 @@ export class LiffDiagnostics {
     }
   }
 }
+// 移除錯誤的匯入，改為直接實作
 export * from '../../tools/liffDiagnostics';

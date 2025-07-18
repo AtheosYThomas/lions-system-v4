@@ -79,6 +79,16 @@ router.post('/push/:userId', async (req, res) => {
   await lineController.handlePushMessage(req, res);
 });
 
+// 測試 Flex Message 推播
+router.post('/test-push', async (req, res) => {
+  await lineController.testPushFlex(req, res);
+});
+
+// 自訂 Flex Message 推播
+router.post('/custom-flex', async (req, res) => {
+  await lineController.customFlexPush(req, res);
+});
+
 // GET 方法用於 webhook 驗證
 router.get('/', (req, res) => {
   console.log('✅ LINE webhook GET 驗證請求');

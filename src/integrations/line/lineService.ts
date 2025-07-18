@@ -1,4 +1,4 @@
-import { Client, WebhookEvent, MessageEvent } from '@line/bot-sdk';
+import { Client, WebhookEvent, MessageEvent, FlexMessage } from '@line/bot-sdk';
 import { config } from '../../config/config';
 import Member from '../../models/member';
 import MessageLog from '../../models/messageLog';
@@ -307,6 +307,197 @@ class LineService {
       console.error('❌ 推播訊息失敗:', error);
       return { success: false, error: error instanceof Error ? error.message : 'Push message failed' };
     }
+  }
+
+  /**
+   * 創建活動 Flex Message 卡片
+   */
+  createFlexEventCard(title: string, date: string, imageUrl: string): FlexMessage {
+    return {
+      type: 'flex',
+      altText: `活動通知：${title}`,
+      contents: {
+        type: 'bubble',
+        hero: {
+          type: 'image',
+          url: imageUrl,
+          size: 'full',
+          aspectRatio: '20:13',
+          aspectMode: 'cover'
+        },
+        body: {
+          type: 'box',
+          layout: 'vertical',
+          contents: [
+            {
+              type: 'text',
+              text: title,
+              weight: 'bold',
+              size: 'lg'
+            },
+            {
+              type: 'text',
+              text: `活動時間：${date}`,
+              size: 'sm',
+              color: '#666666',
+              margin: 'md'
+            }
+          ]
+        },
+        footer: {
+          type: 'box',
+          layout: 'vertical',
+          contents: [
+            {
+              type: 'button',
+              action: {
+                type: 'uri',
+                label: '查看詳情',
+                uri: `https://liff.line.me/2007739371-aKePV20l`
+              },
+              style: 'primary',
+              color: '#1DB446'
+            }
+          ]
+        }
+      }
+    };
+  }
+
+  /**
+   * 創建會員資訊 Flex Message 卡片
+   */
+  createFlexMemberCard(memberName: string, memberLevel: string, joinDate: string): FlexMessage {
+    return {
+      type: 'flex',
+      altText: `會員資訊：${memberName}`,
+      contents: {
+        type: 'bubble',
+        body: {
+          type: 'box',
+          layout: 'vertical',
+          contents: [
+            {
+              type: 'text',
+              text: '🦁 北大獅子會',
+              weight: 'bold',
+              size: 'xl',
+              color: '#1DB446'
+            },
+            {
+              type: 'text',
+              text: '會員資訊',
+              weight: 'bold',
+              size: 'lg',
+              margin: 'md'
+            },
+            {
+              type: 'separator',
+              margin: 'md'
+            },
+            {
+              type: 'box',
+              layout: 'vertical',
+              margin: 'md',
+              contents: [
+                {
+                  type: 'box',
+                  layout: 'baseline',
+                  contents: [
+                    {
+                      type: 'text',
+                      text: '姓名：',
+                      size: 'sm',
+                      color: '#666666',
+                      flex: 2
+                    },
+                    {
+                      type: 'text',
+                      text: memberName,
+                      size: 'sm',
+                      flex: 3,
+                      weight: 'bold'
+                    }
+                  ]
+                },
+                {
+                  type: 'box',
+                  layout: 'baseline',
+                  margin: 'sm',
+                  contents: [
+                    {
+                      type: 'text',
+                      text: '會員等級：',
+                      size: 'sm',
+                      color: '#666666',
+                      flex: 2
+                    },
+                    {
+                      type: 'text',
+                      text: memberLevel,
+                      size: 'sm',
+                      flex: 3,
+                      color: '#1DB446',
+                      weight: 'bold'
+                    }
+                  ]
+                },
+                {
+                  type: 'box',
+                  layout: 'baseline',
+                  margin: 'sm',
+                  contents: [
+                    {
+                      type: 'text',
+                      text: '加入日期：',
+                      size: 'sm',
+                      color: '#666666',
+                      flex: 2
+                    },
+                    {
+                      type: 'text',
+                      text: joinDate,
+                      size: 'sm',
+                      flex: 3
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    };
+  }
+
+  /**
+   * 推送 Flex Message
+   */
+  async pushFlexMessage(userId: string, flexMessage: FlexMessage): Promise<LineServiceResponse> {
+    try {
+      await this.client.pushMessage(userId, flexMessage);
+      console.log(`✅ Flex 推播成功：${userId}`);
+      return { success: true, message: 'Flex message sent successfully' };
+    } catch (error) {
+      console.error(`❌ Flex 推播失敗：${userId}`, error);
+      return { success: false, error: error instanceof Error ? error.message : 'Flex push message failed' };
+    }
+  }
+
+  /**
+   * 推送活動通知
+   */
+  async pushEventNotification(userId: string, title: string, date: string, imageUrl: string): Promise<LineServiceResponse> {
+    const flexMessage = this.createFlexEventCard(title, date, imageUrl);
+    return await this.pushFlexMessage(userId, flexMessage);
+  }
+
+  /**
+   * 推送會員資訊
+   */
+  async pushMemberInfo(userId: string, memberName: string, memberLevel: string, joinDate: string): Promise<LineServiceResponse> {
+    const flexMessage = this.createFlexMemberCard(memberName, memberLevel, joinDate);
+    return await this.pushFlexMessage(userId, flexMessage);
   }
 }
 
