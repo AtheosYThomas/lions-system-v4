@@ -2,7 +2,7 @@
 import { DataTypes, Model } from 'sequelize';
 import sequelize from '../config/database';
 
-interface EventAttributes {
+export interface IEventModel {
   id: string;
   title: string;
   description?: string;
@@ -14,7 +14,7 @@ interface EventAttributes {
   updated_at?: Date;
 }
 
-class Event extends Model<EventAttributes> implements EventAttributes {
+class Event extends Model<IEventModel> implements IEventModel {
   public id!: string;
   public title!: string;
   public description?: string;
@@ -24,6 +24,20 @@ class Event extends Model<EventAttributes> implements EventAttributes {
   public status!: string;
   public created_at!: Date;
   public updated_at?: Date;
+
+  public getPublicData(): IEventModel {
+    return {
+      id: this.id,
+      title: this.title,
+      description: this.description,
+      date: this.date,
+      location: this.location,
+      max_attendees: this.max_attendees,
+      status: this.status,
+      created_at: this.created_at,
+      updated_at: this.updated_at,
+    };
+  }
 }
 
 Event.init({
@@ -61,25 +75,9 @@ Event.init({
 }, {
   sequelize,
   tableName: 'events',
+  modelName: 'Event',
   timestamps: false
 });
-
-// 關聯設定將在 src/models/index.ts 中統一處理
-
-// Add getPublicData method to Event prototype
-Event.prototype.getPublicData = function (): any {
-  return {
-    id: this.id,
-    title: this.title,
-    description: this.description,
-    date: this.date,
-    location: this.location,
-    max_attendees: this.max_attendees,
-    status: this.status,
-    created_at: this.created_at,
-    updated_at: this.updated_at,
-  };
-};
 
 export default Event;
 export { Event };

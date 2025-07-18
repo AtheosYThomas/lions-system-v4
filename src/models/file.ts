@@ -1,8 +1,53 @@
 
-import { DataTypes } from 'sequelize';
+import { Model, DataTypes } from 'sequelize';
 import sequelize from '../config/database';
 
-const FileModel = sequelize.define('File', {
+export interface IFileModel {
+  id: number;
+  original_name: string;
+  mime_type?: string;
+  size?: number;
+  url: string;
+  usage: 'event_cover' | 'registration_attachment' | 'announcement_image' | 'profile_avatar';
+  uploaded_by?: number;
+  related_id?: number;
+  status: string;
+  created_at: Date;
+  updated_at: Date;
+}
+
+// 使用泛型擴充 Sequelize Model 類型
+class File extends Model<IFileModel> implements IFileModel {
+  public id!: number;
+  public original_name!: string;
+  public mime_type?: string;
+  public size?: number;
+  public url!: string;
+  public usage!: 'event_cover' | 'registration_attachment' | 'announcement_image' | 'profile_avatar';
+  public uploaded_by?: number;
+  public related_id?: number;
+  public status!: string;
+  public readonly created_at!: Date;
+  public readonly updated_at!: Date;
+
+  public getPublicData(): IFileModel {
+    return {
+      id: this.id,
+      original_name: this.original_name,
+      mime_type: this.mime_type,
+      size: this.size,
+      url: this.url,
+      usage: this.usage,
+      uploaded_by: this.uploaded_by,
+      related_id: this.related_id,
+      status: this.status,
+      created_at: this.created_at,
+      updated_at: this.updated_at,
+    };
+  }
+}
+
+File.init({
   id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
@@ -49,27 +94,12 @@ const FileModel = sequelize.define('File', {
     comment: '檔案狀態：active, deleted',
   },
 }, {
+  sequelize,
   tableName: 'files',
+  modelName: 'File',
   timestamps: true,
   createdAt: 'created_at',
   updatedAt: 'updated_at',
 });
 
-// Add getPublicData method to FileModel prototype
-FileModel.prototype.getPublicData = function (): any {
-  return {
-    id: this.id,
-    original_name: this.original_name,
-    mime_type: this.mime_type,
-    size: this.size,
-    url: this.url,
-    usage: this.usage,
-    uploaded_by: this.uploaded_by,
-    related_id: this.related_id,
-    status: this.status,
-    created_at: this.created_at,
-    updated_at: this.updated_at,
-  };
-};
-
-export default FileModel;
+export default File;

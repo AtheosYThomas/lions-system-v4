@@ -1,22 +1,7 @@
-import FileModel from '../models/file';
+
+import File, { IFileModel } from '../models/file';
 import Member from '../models/member';
 import { Op } from 'sequelize';
-
-// Define proper interface for FileModel instance
-interface IFileModel {
-  id?: number;
-  original_name: string;
-  mime_type?: string;
-  size?: number;
-  url: string;
-  usage: 'event_cover' | 'registration_attachment' | 'announcement_image' | 'profile_avatar';
-  uploaded_by?: number;
-  related_id?: number;
-  status?: string;
-  created_at?: Date;
-  updated_at?: Date;
-  update?: (data: any) => Promise<any>;
-}
 
 interface FileUploadData {
   original_name: string;
@@ -57,7 +42,7 @@ class FileService {
         }
       }
 
-      const file = await FileModel.create({
+      const file = await File.create({
         ...fileData,
         status: 'active'
       });
@@ -74,7 +59,7 @@ class FileService {
    */
   async getFileById(id: number): Promise<IFileModel | null> {
     try {
-      const file = await FileModel.findByPk(id, {
+      const file = await File.findByPk(id, {
         include: [
           {
             model: Member,
@@ -114,7 +99,7 @@ class FileService {
         whereClause.status = options.status;
       }
 
-      const result = await FileModel.findAndCountAll({
+      const result = await File.findAndCountAll({
         where: whereClause,
         limit: options.limit || 20,
         offset: options.offset || 0,
@@ -130,7 +115,7 @@ class FileService {
       });
 
       return {
-        files: result.rows.map((file: any) => file.getPublicData()),
+        files: result.rows.map(file => file.getPublicData()),
         total: result.count,
         limit: options.limit || 20,
         offset: options.offset || 0
@@ -146,7 +131,7 @@ class FileService {
    */
   async deleteFile(id: number): Promise<void> {
     try {
-      const file = await FileModel.findByPk(id);
+      const file = await File.findByPk(id);
 
       if (!file) {
         throw new Error('檔案不存在');
@@ -173,7 +158,7 @@ class FileService {
         whereClause.related_id = relatedId;
       }
 
-      const files = await FileModel.findAll({
+      const files = await File.findAll({
         where: whereClause,
         order: [['created_at', 'DESC']],
         include: [
@@ -186,7 +171,7 @@ class FileService {
         ]
       });
 
-      return files.map((file: any) => file.getPublicData());
+      return files.map(file => file.getPublicData());
     } catch (error) {
       console.error('根據用途獲取檔案失敗:', error);
       throw error;
@@ -198,7 +183,7 @@ class FileService {
    */
   async updateFile(id: number, updateData: Partial<FileUploadData>): Promise<IFileModel> {
     try {
-      const file = await FileModel.findByPk(id);
+      const file = await File.findByPk(id);
 
       if (!file) {
         throw new Error('檔案不存在');
@@ -218,20 +203,20 @@ class FileService {
   async getFileStats() {
     try {
       const [totalFiles, imageFiles, documentFiles, videoFiles] = await Promise.all([
-        FileModel.count({ where: { status: 'active' } }),
-        FileModel.count({ 
+        File.count({ where: { status: 'active' } }),
+        File.count({ 
           where: { 
             status: 'active',
             mime_type: { [Op.like]: 'image/%' }
           }
         }),
-        FileModel.count({ 
+        File.count({ 
           where: { 
             status: 'active',
             mime_type: { [Op.or]: ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'] }
           }
         }),
-        FileModel.count({ 
+        File.count({ 
           where: { 
             status: 'active',
             mime_type: { [Op.like]: 'video/%' }
@@ -239,7 +224,7 @@ class FileService {
         })
       ]);
 
-      const totalSize = await FileModel.sum('size', { where: { status: 'active' } }) || 0;
+      const totalSize = await File.sum('size', { where: { status: 'active' } }) || 0;
 
       return {
         totalFiles,

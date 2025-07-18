@@ -1,4 +1,5 @@
-import Event from '../models/event';
+
+import Event, { IEventModel } from '../models/event';
 import Registration from '../models/registration';
 import Checkin from '../models/checkin';
 import Payment from '../models/payment';
@@ -33,7 +34,7 @@ class EventService {
   /**
    * 創建新活動
    */
-  async createEvent(eventData: EventCreationData): Promise<Event> {
+  async createEvent(eventData: EventCreationData): Promise<IEventModel> {
     try {
       // 檢查活動時間是否有衝突
       const conflictingEvent = await Event.findOne({
@@ -54,7 +55,7 @@ class EventService {
         created_at: eventData.created_at || new Date()
       });
 
-      return (event as any).getPublicData();
+      return event.getPublicData();
     } catch (error) {
       console.error('創建活動失敗:', error);
       throw error;
@@ -64,7 +65,7 @@ class EventService {
   /**
    * 根據 ID 獲取活動
    */
-  async getEventById(id: string, includeStats: boolean = false): Promise<Event | null> {
+  async getEventById(id: string, includeStats: boolean = false): Promise<IEventModel | null> {
     try {
       const includeOptions = [];
 
@@ -92,7 +93,7 @@ class EventService {
         include: includeOptions
       });
 
-      return event ? (event as any).getPublicData() : null;
+      return event ? event.getPublicData() : null;
     } catch (error) {
       console.error('獲取活動失敗:', error);
       throw error;
@@ -148,7 +149,7 @@ class EventService {
       });
 
       return {
-        events: result.rows.map((event: any) => event.getPublicData()),
+        events: result.rows.map(event => event.getPublicData()),
         total: result.count,
         limit: options.limit || 20,
         offset: options.offset || 0
@@ -162,7 +163,7 @@ class EventService {
   /**
    * 更新活動
    */
-  async updateEvent(updateData: EventUpdateData): Promise<Event> {
+  async updateEvent(updateData: EventUpdateData): Promise<IEventModel> {
     try {
       const event = await Event.findByPk(updateData.id);
 
@@ -186,7 +187,7 @@ class EventService {
       }
 
       await event.update(updateData);
-      return (event as any).getPublicData();
+      return event.getPublicData();
     } catch (error) {
       console.error('更新活動失敗:', error);
       throw error;
@@ -251,7 +252,7 @@ class EventService {
         return {
           eventId,
           eventTitle: event?.title,
-          maxAttendees, // ← 改用轉型後變數
+          maxAttendees,
           registrations: registrationCount,
           checkins: checkinCount,
           payments: paymentCount,
@@ -289,7 +290,7 @@ class EventService {
   /**
    * 獲取即將到來的活動
    */
-  async getUpcomingEvents(limit: number = 5): Promise<Event[]> {
+  async getUpcomingEvents(limit: number = 5): Promise<IEventModel[]> {
     try {
       const events = await Event.findAll({
         where: {
@@ -308,7 +309,7 @@ class EventService {
         ]
       });
 
-      return events.map((event: any) => event.getPublicData());
+      return events.map(event => event.getPublicData());
     } catch (error) {
       console.error('獲取即將到來的活動失敗:', error);
       throw error;
