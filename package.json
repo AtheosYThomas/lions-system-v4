@@ -8,7 +8,7 @@
     "build": "tsc",
     "start": "node dist/index.js",
     "init-schema": "npx tsx src/scripts/initSchema.ts",
-    "test": "jest",
+    "test": "npx jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "test:e2e": "jest test/end_to_end.spec.ts"
