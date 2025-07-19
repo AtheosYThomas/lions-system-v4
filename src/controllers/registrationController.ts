@@ -104,6 +104,74 @@ class RegistrationController {
   }
 
   /**
+   * 活動報名
+   */
+  async registerForEvent(req: Request, res: Response): Promise<void> {
+    try {
+      const { event_id, line_user_id } = req.body;
+
+      if (!event_id || !line_user_id) {
+        res.status(400).json({
+          success: false,
+          message: '缺少必要參數：event_id 或 line_user_id'
+        });
+        return;
+      }
+
+      // 查找會員
+      const member = await Member.findOne({
+        where: { line_user_id }
+      });
+
+      if (!member) {
+        res.status(404).json({
+          success: false,
+          message: '找不到對應的會員記錄'
+        });
+        return;
+      }
+
+      // 檢查是否已經報名
+      const existingRegistration = await Registration.findOne({
+        where: {
+          event_id,
+          member_id: member.id
+        }
+      });
+
+      if (existingRegistration) {
+        res.status(409).json({
+          success: false,
+          message: '您已經報名此活動'
+        });
+        return;
+      }
+
+      // 創建報名記錄
+      const registration = await Registration.create({
+        event_id,
+        member_id: member.id,
+        status: 'confirmed',
+        registration_date: new Date()
+      });
+
+      res.status(201).json({
+        success: true,
+        message: '報名成功',
+        data: registration
+      });
+
+    } catch (error) {
+      console.error('活動報名錯誤:', error);
+      res.status(500).json({
+        success: false,
+        message: '活動報名失敗',
+        error: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  }
+
+  /**
    * 檢查會員註冊狀態
    */
   async checkRegistrationStatus(req: Request, res: Response) {
