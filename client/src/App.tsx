@@ -6,6 +6,8 @@ import Admin from './pages/Admin';
 import Checkin from './pages/Checkin';
 import CheckinConfirm from './pages/CheckinConfirm';
 import Register from './pages/Register';
+import EventManagement from './pages/EventManagement';
+import EventCheckinStats from './pages/EventCheckinStats';
 import NotFoundPage from './pages/NotFoundPage';
 import CheckinEvent from './pages/CheckinEvent'; //Import the new Component
 
@@ -15,12 +17,14 @@ function App() {
       <div className="App">
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/admin" element={<Admin />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/profile" element={<Profile />} />
           <Route path="/checkin" element={<Checkin />} />
-          <Route path="/checkin/confirm" element={<CheckinConfirm />} />
           <Route path="/checkin/:eventId" element={<CheckinEvent />} />
+          <Route path="/checkin-confirm" element={<CheckinConfirm />} />
+          <Route path="/admin" element={<Admin />} />
+          <Route path="/admin/event/:eventId/checkin" element={<EventCheckinStats />} />
+          <Route path="/events" element={<EventManagement />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </div>

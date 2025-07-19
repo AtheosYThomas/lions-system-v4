@@ -3,6 +3,7 @@ import path from 'path';
 import sequelize from './config/database';
 import './models/index'; // 載入模型關聯
 import adminRoutes from './routes/admin';
+import adminApiRoutes from './routes/api/admin';
 import memberRoutes from './routes/api/members';
 import checkinRoutes from './routes/api/checkin';
 import liffRoutes from './routes/api/liff';
