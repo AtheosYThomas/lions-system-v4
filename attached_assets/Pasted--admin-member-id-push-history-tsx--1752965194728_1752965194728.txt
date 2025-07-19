@@ -1,0 +1,104 @@
+我們接下來完成：
+
+✅ 推播紀錄查詢：會員歷史紀錄查詢功能
+建立 /admin/member/:id/push-history.tsx 頁面，可查：
+
+📋 該會員所有推播紀錄
+
+🔍 查詢成功／失敗紀錄
+
+📅 顯示推播活動、時間、狀態
+
+（可選擴充：重推單筆、按日期篩選）
+
+✅ 1️⃣ 建立 /admin/member/[id]/push-history.tsx 頁面
+tsx
+複製
+編輯
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
+
+interface PushRecord {
+  id: string;
+  event: { title: string; date: string };
+  messageType: string;
+  status: string;
+  pushedAt: string;
+}
+
+const MemberPushHistory = () => {
+  const router = useRouter();
+  const { id: memberId } = router.query;
+  const [records, setRecords] = useState<PushRecord[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!memberId || Array.isArray(memberId)) return;
+
+    const fetchRecords = async () => {
+      const res = await fetch(`/api/admin/push-records?memberId=${memberId}`);
+      const data = await res.json();
+      setRecords(data);
+      setLoading(false);
+    };
+
+    fetchRecords();
+  }, [memberId]);
+
+  return (
+    <div className="max-w-5xl mx-auto p-6">
+      <h1 className="text-2xl font-bold mb-4">📨 會員推播歷史</h1>
+
+      {loading ? (
+        <p>載入中...</p>
+      ) : records.length === 0 ? (
+        <p>尚無推播紀錄</p>
+      ) : (
+        <table className="w-full border-collapse text-sm">
+          <thead>
+            <tr className="bg-gray-100">
+              <th className="border px-2 py-1">活動名稱</th>
+              <th className="border px-2 py-1">活動日期</th>
+              <th className="border px-2 py-1">推播時間</th>
+              <th className="border px-2 py-1">狀態</th>
+              <th className="border px-2 py-1">類型</th>
+            </tr>
+          </thead>
+          <tbody>
+            {records.map((r) => (
+              <tr key={r.id}>
+                <td className="border px-2 py-1">{r.event.title}</td>
+                <td className="border px-2 py-1">{new Date(r.event.date).toLocaleDateString()}</td>
+                <td className="border px-2 py-1">{new Date(r.pushedAt).toLocaleString()}</td>
+                <td
+                  className={`border px-2 py-1 ${
+                    r.status === 'success' ? 'text-green-600' : 'text-red-600'
+                  }`}
+                >
+                  {r.status}
+                </td>
+                <td className="border px-2 py-1">{r.messageType}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </div>
+  );
+};
+
+export default MemberPushHistory;
+✅ 2️⃣ 使用方式
+你可以從會員列表 /admin/members 中加入：
+
+tsx
+複製
+編輯
+<Link
+  href={`/admin/member/${member.id}/push-history`}
+  className="text-blue-600 underline text-sm"
+>
+  查看推播紀錄
+</Link>
+或從 /admin/event/:id/push-history 的推播紀錄表格中加入跳轉連結至個別會員紀錄頁。
+
