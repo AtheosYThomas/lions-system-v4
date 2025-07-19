@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 
@@ -43,7 +42,7 @@ const MemberPushHistory = () => {
     try {
       const response = await fetch(`/api/members/${memberId}`);
       const result = await response.json();
-      
+
       if (response.ok && result.success) {
         setMember(result.data);
       }
@@ -55,7 +54,7 @@ const MemberPushHistory = () => {
   const loadPushHistory = async () => {
     try {
       setLoading(true);
-      
+
       const params = new URLSearchParams();
       if (memberId) params.append('memberId', memberId);
       if (startDate) params.append('startDate', startDate);
@@ -78,27 +77,21 @@ const MemberPushHistory = () => {
     }
   };
 
-  const handleRetryRecord = async (recordId: string, eventId: string) => {
+  const handleRetryRecord = async (recordId: string) => {
     if (!confirm('確定要重推這筆記錄嗎？')) return;
 
     try {
-      const response = await fetch('/api/push/retry', {
+      const response = await fetch('/api/admin/push/resend', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          eventId,
-          memberIds: [memberId],
-          messageType: 'manual_push'
-        })
+        body: JSON.stringify({ pushRecordIds: [recordId] }),
       });
 
-      const result = await response.json();
-
-      if (response.ok && result.success) {
-        alert(`重推完成！成功：${result.successCount}，失敗：${result.failedCount}`);
-        loadPushHistory();
+      if (response.ok) {
+        alert('重推成功');
+        window.location.reload();
       } else {
-        alert(result.error || '重推失敗');
+        alert('重推失敗');
       }
     } catch (error) {
       console.error('重推錯誤:', error);
@@ -189,7 +182,7 @@ const MemberPushHistory = () => {
       {/* 篩選器 */}
       <div className="bg-white rounded-lg shadow-md p-6 mb-8">
         <h2 className="text-xl font-semibold mb-4">📋 篩選條件</h2>
-        
+
         {/* 日期範圍查詢 */}
         <div className="border-b pb-4 mb-4">
           <h3 className="text-md font-medium text-gray-700 mb-3">📅 日期範圍查詢</h3>
@@ -302,7 +295,7 @@ const MemberPushHistory = () => {
             🔄 重新載入
           </button>
         </div>
-        
+
         {filteredRecords.length === 0 ? (
           <p className="text-gray-500 text-center py-8">
             {records.length === 0 ? '暫無推播記錄' : '沒有符合條件的記錄'}
@@ -354,7 +347,7 @@ const MemberPushHistory = () => {
                     <td className="border border-gray-200 px-4 py-2">
                       {record.status === 'failed' && (
                         <button
-                          onClick={() => handleRetryRecord(record.id, record.event.id)}
+                          onClick={() => handleRetryRecord(record.id)}
                           className="bg-orange-500 text-white px-2 py-1 rounded text-xs hover:bg-orange-600 transition-colors"
                         >
                           📤 重推

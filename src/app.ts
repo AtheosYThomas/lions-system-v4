@@ -15,6 +15,7 @@ import pushSchedulerRoutes from './routes/api/push-scheduler';
 import pushRecordsRoutes from './routes/api/push-records';
 import pushRecordsExportRoutes from './routes/api/push-records-export';
 import pushRetryRoutes from './routes/api/push-retry';
+import pushResendRoutes from './routes/api/push-resend';
 
 const app = express();
 
@@ -95,6 +96,7 @@ app.use('/api/push', pushSchedulerRoutes);
 app.use('/api/admin/push-records', pushRecordsRoutes);
 app.use('/api/admin/push-records/export', pushRecordsExportRoutes);
 app.use('/api/push/retry', pushRetryRoutes);
+app.use('/api/push/resend', pushResendRoutes);
 
 // 前端路由（提供 React 應用）
 app.get('/', (req, res) => {
