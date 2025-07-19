@@ -1,8 +1,8 @@
 {
-  "timestamp": "2025-07-19T12:34:22.330Z",
+  "timestamp": "2025-07-19T12:37:32.169Z",
   "summary": {
-    "total": 108,
-    "pass": 82,
+    "total": 110,
+    "pass": 84,
     "warning": 25,
     "error": 1
   },
@@ -75,6 +75,11 @@
       "category": "Source Files",
       "status": "pass",
       "message": "src/routes/api/announcements.ts: 語法檢查通過"
+    },
+    {
+      "category": "Source Files",
+      "status": "pass",
+      "message": "src/routes/api/admin.ts: 語法檢查通過"
     },
     {
       "category": "Source Files",
@@ -621,6 +626,11 @@
       "category": "Frontend",
       "status": "pass",
       "message": "client/src/pages/EventManagement.tsx: 語法檢查通過"
+    },
+    {
+      "category": "Frontend",
+      "status": "pass",
+      "message": "client/src/pages/EventCheckinStats.tsx: 語法檢查通過"
     },
     {
       "category": "Frontend",

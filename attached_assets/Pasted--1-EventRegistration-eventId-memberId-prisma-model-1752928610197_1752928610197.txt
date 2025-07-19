@@ -1,0 +1,159 @@
+✅ 1️⃣ 加入「未報到會員數」
+前提：
+你應有一張 報名資料表 EventRegistration（或類似）連結 eventId + memberId，如下：
+
+prisma
+複製
+編輯
+model EventRegistration {
+  id        String   @id @default(cuid())
+  eventId   String
+  memberId  String
+  createdAt DateTime @default(now())
+
+  event     Event    @relation(fields: [eventId], references: [id])
+  member    Member   @relation(fields: [memberId], references: [id])
+
+  @@unique([eventId, memberId])
+}
+接著在後端 API /api/admin/event/[id]/checkin.ts 中：
+ts
+複製
+編輯
+const registrations = await prisma.eventRegistration.findMany({
+  where: { eventId },
+  include: { member: true },
+});
+
+const checkinMap = new Map(
+  event.checkinRecords.map((r) => [r.memberId, true])
+);
+
+const notCheckedIn = registrations
+  .filter((r) => !checkinMap.has(r.memberId))
+  .map((r) => ({
+    id: r.member.id,
+    name: r.member.name,
+    email: r.member.email,
+    phone: r.member.phone,
+  }));
+將這些資料加入回傳 JSON：
+
+ts
+複製
+編輯
+res.status(200).json({
+  eventTitle: event.title,
+  attendees,
+  notCheckedIn,
+});
+✅ 2️⃣ 匯出 CSV 報表
+新增 API /api/admin/event/:id/checkin/export.ts：
+
+ts
+複製
+編輯
+// /pages/api/admin/event/[id]/checkin/export.ts
+import { prisma } from '@/lib/prisma';
+import { NextApiRequest, NextApiResponse } from 'next';
+import { stringify } from 'csv-stringify/sync';
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  const { id: eventId } = req.query;
+  if (!eventId || Array.isArray(eventId)) return res.status(400).send('Missing eventId');
+
+  const records = await prisma.checkinRecord.findMany({
+    where: { eventId },
+    include: { member: true },
+    orderBy: { checkedInAt: 'asc' },
+  });
+
+  const csv = stringify(
+    records.map((r) => ({
+      name: r.member.name,
+      email: r.member.email,
+      phone: r.member.phone,
+      checkin_time: r.checkedInAt.toISOString(),
+    })),
+    { header: true }
+  );
+
+  res.setHeader('Content-Type', 'text/csv');
+  res.setHeader('Content-Disposition', `attachment; filename=checkin_${eventId}.csv`);
+  res.send(csv);
+}
+前端加一個下載按鈕：
+
+tsx
+複製
+編輯
+<a
+  href={`/api/admin/event/${eventId}/checkin/export`}
+  target="_blank"
+  className="text-blue-600 underline"
+>
+  匯出報到資料 CSV
+</a>
+✅ 3️⃣ 顯示報到率與時間區段分析
+前端報到率計算：
+tsx
+複製
+編輯
+<p>報名人數：{totalRegistered}</p>
+<p>已報到人數：{attendees.length}</p>
+<p>報到率：{((attendees.length / totalRegistered) * 100).toFixed(1)}%</p>
+區段統計（如按時段分組）：
+你可將 checkedInAt 依時段分桶，例如：
+
+ts
+複製
+編輯
+function groupByHour(records) {
+  const result = {};
+  records.forEach(r => {
+    const hour = new Date(r.checkedInAt).getHours();
+    result[hour] = (result[hour] || 0) + 1;
+  });
+  return result;
+}
+然後轉為圖表（例如用 chart.js、recharts 等繪製柱狀圖）。
+
+✅ 4️⃣ 加入 RBAC 權限限制（僅會長／幹部）
+在頁面中加入 middleware 檢查：
+
+tsx
+複製
+編輯
+import { getSession } from 'next-auth/react';
+import { Role } from '@/types/role'; // 自訂角色 enum
+
+export async function getServerSideProps(context) {
+  const session = await getSession(context);
+  if (!session || ![Role.President, Role.Officer].includes(session.user.role)) {
+    return { redirect: { destination: '/', permanent: false } };
+  }
+
+  return { props: {} };
+}
+或若你使用 API 驗證，可在 /api/admin/ 系列加 middleware：
+
+ts
+複製
+編輯
+export function requireOfficerOrAbove(req: NextApiRequest, res: NextApiResponse, next) {
+  const user = req.session?.user;
+  if (!user || !['President', 'Officer'].includes(user.role)) {
+    return res.status(403).json({ error: '權限不足' });
+  }
+  next();
+}
+✅ 統一視覺呈現
+你可以使用：
+
+✅ 分區列表：報到成功 vs 未報到
+
+✅ 報到率百分比 + 人數
+
+✅ 匯出 CSV 按鈕
+
+✅ 報到時間區段分布圖
