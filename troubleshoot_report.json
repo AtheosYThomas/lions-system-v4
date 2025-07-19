@@ -1,8 +1,8 @@
 {
-  "timestamp": "2025-07-19T22:28:13.873Z",
+  "timestamp": "2025-07-19T22:31:43.905Z",
   "summary": {
-    "total": 120,
-    "pass": 92,
+    "total": 122,
+    "pass": 94,
     "warning": 27,
     "error": 1
   },
@@ -45,6 +45,11 @@
       "category": "Source Files",
       "status": "pass",
       "message": "src/routes/api/push-scheduler.ts: 語法檢查通過"
+    },
+    {
+      "category": "Source Files",
+      "status": "pass",
+      "message": "src/routes/api/push-retry.ts: 語法檢查通過"
     },
     {
       "category": "Source Files",
@@ -649,6 +654,11 @@
       "category": "Frontend",
       "status": "pass",
       "message": "client/src/pages/Register.tsx: 語法檢查通過"
+    },
+    {
+      "category": "Frontend",
+      "status": "pass",
+      "message": "client/src/pages/PushHistory.tsx: 語法檢查通過"
     },
     {
       "category": "Frontend",
