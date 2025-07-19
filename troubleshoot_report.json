@@ -1,8 +1,8 @@
 {
-  "timestamp": "2025-07-19T23:01:58.749Z",
+  "timestamp": "2025-07-19T23:06:21.415Z",
   "summary": {
-    "total": 124,
-    "pass": 95,
+    "total": 125,
+    "pass": 96,
     "warning": 28,
     "error": 1
   },
@@ -55,6 +55,11 @@
       "category": "Source Files",
       "status": "pass",
       "message": "src/routes/api/push-records.ts: 語法檢查通過"
+    },
+    {
+      "category": "Source Files",
+      "status": "pass",
+      "message": "src/routes/api/push-records-export.ts: 語法檢查通過"
     },
     {
       "category": "Source Files",

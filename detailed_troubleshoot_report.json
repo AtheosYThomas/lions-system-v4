@@ -1,13 +1,21 @@
 {
-  "timestamp": "2025-07-19T23:02:04.980Z",
+  "timestamp": "2025-07-19T23:06:27.644Z",
   "summary": {
-    "totalIssues": 3,
-    "errors": 0,
+    "totalIssues": 4,
+    "errors": 1,
     "warnings": 0,
     "info": 3,
-    "healthScore": 85
+    "healthScore": 65
   },
   "issues": [
+    {
+      "category": "TypeScript編譯",
+      "severity": "high",
+      "issue": "TypeScript 編譯錯誤",
+      "details": "src/routes/api/push-records-export.ts(52,33): error TS2339: Property 'event' does not exist on type 'PushRecord'.\nsrc/routes/api/push-records-export.ts(53,32): error TS2339: Property 'event' does not exist on type 'PushRecord'.\nsrc/routes/api/push-records-export.ts(54,27): error TS2339: Property 'event' does not exist on type 'PushRecord'.\n",
+      "suggestion": "修正 TypeScript 語法錯誤",
+      "status": "error"
+    },
     {
       "category": "Routes",
       "severity": "low",
