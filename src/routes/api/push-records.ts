@@ -2,7 +2,8 @@
 import express from 'express';
 import pushService from '../../services/pushService';
 import { authMiddleware } from '../../middleware/authMiddleware';
-import { roleMiddleware } from '../../middleware/roleMiddleware';
+import { requireAnyRole } from '../../middleware/roleMiddleware';
+import { Role } from '../../types/role';
 
 const router = express.Router();
 
@@ -11,7 +12,7 @@ const router = express.Router();
  * GET /api/admin/push-records
  * 支援 Query 參數：eventId, memberId, limit
  */
-router.get('/', authMiddleware, roleMiddleware(['admin', 'superadmin']), async (req, res) => {
+router.get('/', authMiddleware, requireAnyRole([Role.Admin, Role.President]), async (req, res) => {
   try {
     const { eventId, memberId, limit = '200' } = req.query;
 
@@ -46,7 +47,7 @@ router.get('/', authMiddleware, roleMiddleware(['admin', 'superadmin']), async (
       });
     }
 
-    let records;
+    let records: any[] = [];
 
     if (eventId) {
       // 查詢特定活動的推播記錄
@@ -88,7 +89,7 @@ router.get('/', authMiddleware, roleMiddleware(['admin', 'superadmin']), async (
  * 查詢推播統計 API
  * GET /api/admin/push-records/stats/:eventId
  */
-router.get('/stats/:eventId', authMiddleware, roleMiddleware(['admin', 'superadmin']), async (req, res) => {
+router.get('/stats/:eventId', authMiddleware, requireAnyRole([Role.Admin, Role.President]), async (req, res) => {
   try {
     const { eventId } = req.params;
 
