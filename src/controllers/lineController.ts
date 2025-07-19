@@ -244,11 +244,14 @@ export const handleLineWebhook = async (req: Request, res: Response): Promise<vo
       return;
     }
 
-    for (const event of events) {
-      await lineService.handleEvent(event);
+    // 修復：使用正確的方法名稱
+    const result = await lineService.handleWebhookEvents(events);
+    
+    if (result.success) {
+      res.status(200).json({ status: 'ok', message: result.message });
+    } else {
+      res.status(200).json({ status: 'error', message: result.error });
     }
-
-    res.status(200).json({ status: 'ok' });
   } catch (error) {
     console.error('❌ LINE Webhook 處理錯誤:', error);
     res.status(500).json({ error: 'Internal server error' });
