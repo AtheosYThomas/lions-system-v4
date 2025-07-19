@@ -1,10 +1,10 @@
 {
-  "timestamp": "2025-07-19T12:21:05.348Z",
+  "timestamp": "2025-07-19T12:25:14.460Z",
   "summary": {
-    "total": 104,
-    "pass": 78,
+    "total": 108,
+    "pass": 81,
     "warning": 25,
-    "error": 1
+    "error": 2
   },
   "results": [
     {
@@ -55,6 +55,11 @@
       "category": "Source Files",
       "status": "pass",
       "message": "src/routes/api/files.ts: 語法檢查通過"
+    },
+    {
+      "category": "Source Files",
+      "status": "pass",
+      "message": "src/routes/api/events.ts: 語法檢查通過"
     },
     {
       "category": "Source Files",
@@ -357,6 +362,11 @@
     {
       "category": "Source Files",
       "status": "pass",
+      "message": "src/utils/qrcode.ts: 語法檢查通過"
+    },
+    {
+      "category": "Source Files",
+      "status": "pass",
       "message": "src/utils/index.ts: 語法檢查通過"
     },
     {
@@ -549,8 +559,12 @@
     },
     {
       "category": "Environment",
-      "status": "pass",
-      "message": "所有使用的環境變數都已定義"
+      "status": "error",
+      "message": "程式中使用但 .env 中缺少的變數: BASE_URL",
+      "suggestions": [
+        "在 .env 中添加缺少的變數",
+        "檢查變數名稱拼寫"
+      ]
     },
     {
       "category": "Frontend",
@@ -606,6 +620,16 @@
       "category": "Frontend",
       "status": "pass",
       "message": "client/src/pages/Home.tsx: 語法檢查通過"
+    },
+    {
+      "category": "Frontend",
+      "status": "pass",
+      "message": "client/src/pages/EventManagement.tsx: 語法檢查通過"
+    },
+    {
+      "category": "Frontend",
+      "status": "pass",
+      "message": "client/src/pages/CheckinEvent.tsx: 語法檢查通過"
     },
     {
       "category": "Frontend",

@@ -1,0 +1,169 @@
+我們接下來建置一個簡易的 活動報到統計頁面 /admin/event/[id]/checkin.tsx，讓管理者可以：
+
+查詢指定活動的報到狀況
+
+顯示已報到會員清單
+
+顯示總報到人數、報到率（可選）
+
+✅ 1️⃣ 資料需求與假設
+我們會用以下 Prisma 資料模型結構：
+
+prisma
+複製
+編輯
+model Event {
+  id        String   @id @default(cuid())
+  title     String
+  date      DateTime
+  createdAt DateTime @default(now())
+
+  checkinRecords CheckinRecord[]
+}
+
+model CheckinRecord {
+  id           String   @id @default(cuid())
+  member       Member   @relation(fields: [memberId], references: [id])
+  memberId     String
+  eventId      String
+  checkedInAt  DateTime @default(now())
+
+  event        Event    @relation(fields: [eventId], references: [id])
+}
+
+model Member {
+  id            String   @id @default(cuid())
+  name          String?
+  email         String?  @unique
+  phone         String?
+  line_user_id  String   @unique
+}
+✅ 2️⃣ 建立頁面 /client/pages/admin/event/[id]/checkin.tsx
+tsx
+複製
+編輯
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
+
+interface Member {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  checkedInAt: string;
+}
+
+interface EventStats {
+  eventTitle: string;
+  attendees: Member[];
+}
+
+const CheckinStatsPage = () => {
+  const router = useRouter();
+  const { id: eventId } = router.query;
+  const [data, setData] = useState<EventStats | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!eventId || Array.isArray(eventId)) return;
+
+    const fetchData = async () => {
+      setLoading(true);
+      const res = await fetch(`/api/admin/event/${eventId}/checkin`);
+      const result = await res.json();
+      if (res.ok) setData(result);
+      setLoading(false);
+    };
+
+    fetchData();
+  }, [eventId]);
+
+  return (
+    <div className="max-w-3xl mx-auto py-10 px-4">
+      <h1 className="text-2xl font-bold mb-6">活動報到統計</h1>
+      {loading ? (
+        <p>載入中...</p>
+      ) : data ? (
+        <>
+          <h2 className="text-xl font-semibold mb-2">{data.eventTitle}</h2>
+          <p className="mb-4">總報到人數：{data.attendees.length} 位</p>
+          <table className="w-full border-collapse">
+            <thead>
+              <tr className="bg-gray-100">
+                <th className="border px-2 py-1">姓名</th>
+                <th className="border px-2 py-1">手機</th>
+                <th className="border px-2 py-1">Email</th>
+                <th className="border px-2 py-1">報到時間</th>
+              </tr>
+            </thead>
+            <tbody>
+              {data.attendees.map(member => (
+                <tr key={member.id}>
+                  <td className="border px-2 py-1">{member.name}</td>
+                  <td className="border px-2 py-1">{member.phone}</td>
+                  <td className="border px-2 py-1">{member.email}</td>
+                  <td className="border px-2 py-1">{new Date(member.checkedInAt).toLocaleString()}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </>
+      ) : (
+        <p>找不到活動資料</p>
+      )}
+    </div>
+  );
+};
+
+export default CheckinStatsPage;
+✅ 3️⃣ 建立 API /api/admin/event/[id]/checkin.ts
+ts
+複製
+編輯
+// /pages/api/admin/event/[id]/checkin.ts
+import { prisma } from '@/lib/prisma';
+import { NextApiRequest, NextApiResponse } from 'next';
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  const { id: eventId } = req.query;
+  if (!eventId || Array.isArray(eventId)) return res.status(400).json({ error: '缺少 eventId' });
+
+  try {
+    const event = await prisma.event.findUnique({
+      where: { id: eventId },
+      include: {
+        checkinRecords: {
+          include: { member: true },
+          orderBy: { checkedInAt: 'desc' },
+        },
+      },
+    });
+
+    if (!event) return res.status(404).json({ error: '找不到活動' });
+
+    const attendees = event.checkinRecords.map(r => ({
+      id: r.member.id,
+      name: r.member.name,
+      email: r.member.email,
+      phone: r.member.phone,
+      checkedInAt: r.checkedInAt,
+    }));
+
+    res.status(200).json({
+      eventTitle: event.title,
+      attendees,
+    });
+  } catch (err) {
+    console.error('查詢報到資料錯誤', err);
+    res.status(500).json({ error: '內部錯誤' });
+  }
+}
+✅ 頁面存取與測試
+瀏覽路徑範例：
+
+bash
+複製
+編輯
+https://service.peida.net/admin/event/clxyz123abc/checkin
+其中 clxyz123abc 為活動的 eventId。
+

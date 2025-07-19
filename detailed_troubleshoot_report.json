@@ -1,13 +1,21 @@
 {
-  "timestamp": "2025-07-19T12:21:14.577Z",
+  "timestamp": "2025-07-19T12:25:20.610Z",
   "summary": {
-    "totalIssues": 1,
+    "totalIssues": 2,
     "errors": 0,
     "warnings": 0,
-    "info": 1,
-    "healthScore": 95
+    "info": 2,
+    "healthScore": 90
   },
   "issues": [
+    {
+      "category": "Routes",
+      "severity": "low",
+      "issue": "src/routes/api/events.ts 使用環境變數但未載入 dotenv",
+      "details": "可能導致環境變數未正確載入",
+      "suggestion": "確認 dotenv 已在主程式載入",
+      "status": "info"
+    },
     {
       "category": "Controllers",
       "severity": "low",
