@@ -1,4 +1,7 @@
 
+import dotenv from 'dotenv';
+dotenv.config();
+
 import express from 'express';
 import Event from '../../models/event';
 import { generateQRCode } from '../../utils/qrcode';

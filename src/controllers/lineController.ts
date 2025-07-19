@@ -1,3 +1,6 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
 import { Request, Response } from 'express';
 import lineService from '../integrations/line/lineService';
 import { LineWebhookRequestBody } from '../types/line';

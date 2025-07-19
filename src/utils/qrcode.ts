@@ -1,4 +1,7 @@
 
+import dotenv from 'dotenv';
+dotenv.config();
+
 import QRCode from 'qrcode';
 
 export async function generateQRCode(eventId: string, baseUrl?: string): Promise<string> {
