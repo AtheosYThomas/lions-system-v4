@@ -59,7 +59,7 @@ function validateLineSignature(req: express.Request, res: express.Response, next
 }
 
 // LINE webhook POST 事件處理（使用自定義簽名驗證）
-router.post('/', 
+router.post('/',
   express.json({ limit: '10mb' }), // 增加請求大小限制
   validateLineSignature,
   async (req, res) => {
@@ -112,10 +112,10 @@ router.get('/', (req, res) => {
   res.status(200).send('LINE webhook endpoint is active');
 });
 
-router.post('/push', lineController.handlePushMessage);
-router.post('/test-push', lineController.testPushFlex);
-router.post('/custom-flex', lineController.customFlexPush);
+// AI 回覆功能
 router.post('/ai-reply', lineController.aiReply);
+
+// 活動建議功能  
 router.post('/event-suggestion', lineController.generateEventSuggestion);
 
 export default router;
