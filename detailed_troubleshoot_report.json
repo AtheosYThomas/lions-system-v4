@@ -1,21 +1,13 @@
 {
-  "timestamp": "2025-07-19T22:22:42.679Z",
+  "timestamp": "2025-07-19T22:28:20.091Z",
   "summary": {
-    "totalIssues": 4,
-    "errors": 1,
+    "totalIssues": 3,
+    "errors": 0,
     "warnings": 0,
     "info": 3,
-    "healthScore": 65
+    "healthScore": 85
   },
   "issues": [
-    {
-      "category": "TypeScript編譯",
-      "severity": "high",
-      "issue": "TypeScript 編譯錯誤",
-      "details": "src/routes/api/push-records.ts(14,48): error TS2345: Argument of type 'string[]' is not assignable to parameter of type 'Role'.\nsrc/routes/api/push-records.ts(69,14): error TS2454: Variable 'records' is used before being assigned.\nsrc/routes/api/push-records.ts(91,62): error TS2345: Argument of type 'string[]' is not assignable to parameter of type 'Role'.\n",
-      "suggestion": "修正 TypeScript 語法錯誤",
-      "status": "error"
-    },
     {
       "category": "Routes",
       "severity": "low",

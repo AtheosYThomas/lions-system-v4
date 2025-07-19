@@ -1,0 +1,200 @@
+我們來實作 步驟 2️⃣：建立 /admin/event/:id/push-history 頁面，包含：
+
+📋 推播紀錄表格
+
+📊 成功／失敗比例統計圖（使用 Recharts）
+
+📤 針對失敗名單提供「重推」功能
+
+✅ 1️⃣ 頁面路徑 /admin/event/[id]/push-history.tsx
+tsx
+複製
+編輯
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
+import {
+  PieChart, Pie, Cell, Tooltip, ResponsiveContainer,
+} from 'recharts';
+
+interface PushRecord {
+  id: string;
+  member: { name: string; phone: string };
+  status: 'success' | 'fail';
+  pushedAt: string;
+}
+
+const COLORS = ['#22c55e', '#ef4444'];
+
+const PushHistoryPage = () => {
+  const router = useRouter();
+  const { id: eventId } = router.query;
+  const [records, setRecords] = useState<PushRecord[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!eventId || Array.isArray(eventId)) return;
+
+    const fetchRecords = async () => {
+      setLoading(true);
+      const res = await fetch(`/api/admin/push-records?eventId=${eventId}`);
+      const data = await res.json();
+      setRecords(data);
+      setLoading(false);
+    };
+
+    fetchRecords();
+  }, [eventId]);
+
+  const grouped = records.reduce(
+    (acc, r) => {
+      acc[r.status === 'success' ? 0 : 1]++;
+      return acc;
+    },
+    [0, 0]
+  );
+
+  const failed = records.filter(r => r.status === 'fail');
+
+  const handleRetry = async () => {
+    const ids = failed.map(f => f.id);
+    const res = await fetch('/api/admin/push/resend', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ pushRecordIds: ids }),
+    });
+    if (res.ok) {
+      alert('已重發推播');
+      window.location.reload();
+    } else {
+      alert('重推失敗');
+    }
+  };
+
+  return (
+    <div className="max-w-6xl mx-auto px-4 py-6">
+      <h1 className="text-2xl font-bold mb-4">📨 推播紀錄分析</h1>
+
+      <div className="mb-6 h-64">
+        <h2 className="text-lg font-semibold mb-2">推播成功／失敗比例</h2>
+        <ResponsiveContainer width="100%" height="100%">
+          <PieChart>
+            <Pie
+              data={[
+                { name: '成功', value: grouped[0] },
+                { name: '失敗', value: grouped[1] },
+              ]}
+              dataKey="value"
+              nameKey="name"
+              outerRadius={80}
+              label
+            >
+              {COLORS.map((color, index) => (
+                <Cell key={index} fill={color} />
+              ))}
+            </Pie>
+            <Tooltip />
+          </PieChart>
+        </ResponsiveContainer>
+      </div>
+
+      <div className="mb-4 flex justify-between items-center">
+        <h2 className="text-lg font-semibold">詳細紀錄</h2>
+        {failed.length > 0 && (
+          <button
+            onClick={handleRetry}
+            className="bg-red-500 text-white px-4 py-2 rounded"
+          >
+            📤 對失敗名單重推 ({failed.length})
+          </button>
+        )}
+      </div>
+
+      <table className="w-full text-sm border-collapse">
+        <thead>
+          <tr className="bg-gray-100">
+            <th className="border px-2 py-1">會員</th>
+            <th className="border px-2 py-1">手機</th>
+            <th className="border px-2 py-1">狀態</th>
+            <th className="border px-2 py-1">時間</th>
+          </tr>
+        </thead>
+        <tbody>
+          {records.map(r => (
+            <tr key={r.id}>
+              <td className="border px-2 py-1">{r.member.name}</td>
+              <td className="border px-2 py-1">{r.member.phone}</td>
+              <td className={`border px-2 py-1 ${r.status === 'fail' ? 'text-red-500' : 'text-green-600'}`}>
+                {r.status}
+              </td>
+              <td className="border px-2 py-1">{new Date(r.pushedAt).toLocaleString()}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+};
+
+export default PushHistoryPage;
+✅ 2️⃣ 建立 API /api/admin/push/resend.ts
+ts
+複製
+編輯
+import { prisma } from '@/lib/prisma';
+import { lineClient } from '@/lib/line/client';
+import { createCheckinFlexMessage } from '@/lib/line/flexTemplates';
+
+export default async function handler(req, res) {
+  if (req.method !== 'POST') return res.status(405).end();
+
+  const { pushRecordIds } = req.body;
+  if (!Array.isArray(pushRecordIds) || pushRecordIds.length === 0)
+    return res.status(400).json({ error: '無效參數' });
+
+  const records = await prisma.pushRecord.findMany({
+    where: { id: { in: pushRecordIds } },
+    include: {
+      member: true,
+      event: true,
+    },
+  });
+
+  const tasks = records.map(async (r) => {
+    const message = createCheckinFlexMessage(
+      r.event.title,
+      r.event.date.toISOString().slice(0, 10),
+      r.eventId
+    );
+
+    try {
+      await lineClient.pushMessage(r.member.line_user_id, message);
+      await prisma.pushRecord.update({
+        where: { id: r.id },
+        data: { status: 'success', pushedAt: new Date() },
+      });
+    } catch {
+      await prisma.pushRecord.update({
+        where: { id: r.id },
+        data: { status: 'fail', pushedAt: new Date() },
+      });
+    }
+  });
+
+  await Promise.allSettled(tasks);
+  res.status(200).json({ success: true });
+}
+✅ 3️⃣ /admin/events 增加「推播歷史」按鈕
+tsx
+複製
+編輯
+<Link href={`/admin/event/${e.id}/push-history`} className="text-sm text-gray-600 underline">
+  🧾 推播歷史
+</Link>
+✅ 完整成效：
+🔍 /admin/event/:id/push-history 支援
+
+成功 vs 失敗比
+
+列表顯示所有推播記錄
+
+一鍵重推失敗者
