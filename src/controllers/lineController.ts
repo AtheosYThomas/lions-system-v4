@@ -100,11 +100,12 @@ class LineController {
       const { userId } = req.params;
       const { message } = req.body;
 
-      // ✅ 加入 line_user_id 格式驗證（LINE UID 應開頭為 U，後接 32 位十六進位）
-      if (!userId || !/^U[a-f0-9]{32}$/.test(userId)) {
+      // ✅ 使用驗證工具函式檢查 LINE User ID 格式
+      const validation = validateLineUserId(userId);
+      if (!validation.valid) {
         return res.status(400).json({
           success: false,
-          error: 'Invalid line_user_id format',
+          error: validation.error,
         });
       }
 
