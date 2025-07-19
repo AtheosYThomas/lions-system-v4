@@ -600,6 +600,74 @@ class LineService {
     const flexMessage = this.createFlexMemberCard(memberName, memberLevel, joinDate);
     return await this.pushFlexMessage(userId, flexMessage);
   }
+
+  /**
+   * 批量推送活動報到通知
+   */
+  async pushBulkCheckinNotification(userIds: string[], title: string, date: string, eventId: string): Promise<{
+    success: number;
+    failed: number;
+    results: Array<{ userId: string; success: boolean; error?: string }>;
+  }> {
+    const { createCheckinFlexMessage } = await import('./flexTemplates');
+    const flexMessage = createCheckinFlexMessage(title, date, eventId);
+    
+    const results: Array<{ userId: string; success: boolean; error?: string }> = [];
+    let successCount = 0;
+    let failedCount = 0;
+
+    // 批量推送，避免 API 限制
+    const batchSize = 500; // LINE API 限制
+    for (let i = 0; i < userIds.length; i += batchSize) {
+      const batch = userIds.slice(i, i + batchSize);
+      
+      const promises = batch.map(async (userId) => {
+        try {
+          await this.client.pushMessage(userId, flexMessage);
+          results.push({ userId, success: true });
+          successCount++;
+          console.log(`✅ 推播成功：${userId}`);
+        } catch (error) {
+          const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+          results.push({ userId, success: false, error: errorMessage });
+          failedCount++;
+          console.error(`❌ 推播失敗：${userId}`, errorMessage);
+        }
+      });
+
+      await Promise.allSettled(promises);
+      
+      // 避免過快推送
+      if (i + batchSize < userIds.length) {
+        await new Promise(resolve => setTimeout(resolve, 1000));
+      }
+    }
+
+    console.log(`📊 推播統計 - 成功: ${successCount}, 失敗: ${failedCount}`);
+    
+    return {
+      success: successCount,
+      failed: failedCount,
+      results
+    };
+  }
+
+  /**
+   * 推送單一活動報到通知
+   */
+  async pushCheckinNotification(userId: string, title: string, date: string, eventId: string): Promise<LineServiceResponse> {
+    try {
+      const { createCheckinFlexMessage } = await import('./flexTemplates');
+      const flexMessage = createCheckinFlexMessage(title, date, eventId);
+      
+      await this.client.pushMessage(userId, flexMessage);
+      console.log(`✅ 報到通知推播成功：${userId}`);
+      return { success: true, message: 'Checkin notification sent successfully' };
+    } catch (error) {
+      console.error(`❌ 報到通知推播失敗：${userId}`, error);
+      return { success: false, error: error instanceof Error ? error.message : 'Push notification failed' };
+    }
+  }
 }
 
 export default new LineService();

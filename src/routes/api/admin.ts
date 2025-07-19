@@ -293,4 +293,91 @@ router.get('/events', async (req, res) => {
   }
 });
 
+// 推送活動報到通知
+router.post('/event/:id/notify', async (req, res) => {
+  try {
+    const { id: eventId } = req.params;
+    const { targetType = 'all' } = req.body; // all, registered, specific
+
+    // 檢查活動是否存在
+    const event = await eventService.getEventById(eventId);
+    if (!event) {
+      return res.status(404).json({
+        error: '活動不存在',
+        code: 'EVENT_NOT_FOUND'
+      });
+    }
+
+    // 根據推播對象類型獲取會員列表
+    let targetMembers: any[] = [];
+    
+    if (targetType === 'all') {
+      // 推播給所有有 LINE ID 的會員
+      const { Op } = require('sequelize');
+      const Member = require('../../models/member').default;
+      
+      targetMembers = await Member.findAll({
+        where: {
+          line_user_id: {
+            [Op.not]: null
+          }
+        },
+        attributes: ['id', 'name', 'line_user_id']
+      });
+    } else if (targetType === 'registered') {
+      // 推播給已報名該活動的會員
+      const registrations = await checkinService.getEventRegistrations(eventId);
+      targetMembers = registrations.registrations
+        .filter((reg: any) => reg.member?.line_user_id)
+        .map((reg: any) => ({
+          id: reg.member.id,
+          name: reg.member.name,
+          line_user_id: reg.member.line_user_id
+        }));
+    }
+
+    if (targetMembers.length === 0) {
+      return res.status(400).json({
+        error: '找不到推播對象',
+        code: 'NO_TARGET_MEMBERS'
+      });
+    }
+
+    // 執行批量推播
+    const lineService = require('../../integrations/line/lineService').default;
+    const userIds = targetMembers.map((member: any) => member.line_user_id);
+    
+    const pushResult = await lineService.pushBulkCheckinNotification(
+      userIds,
+      event.title,
+      event.date.toISOString(),
+      eventId
+    );
+
+    // 記錄推播結果（可選）
+    console.log(`📢 活動通知推播完成 - ${event.title}`);
+    console.log(`📊 推播統計 - 成功: ${pushResult.success}, 失敗: ${pushResult.failed}`);
+
+    res.json({
+      success: true,
+      message: '推播完成',
+      statistics: {
+        totalTargets: targetMembers.length,
+        successCount: pushResult.success,
+        failedCount: pushResult.failed,
+        eventTitle: event.title,
+        targetType: targetType
+      },
+      details: pushResult.results
+    });
+
+  } catch (error) {
+    console.error('推播活動通知失敗:', error);
+    res.status(500).json({
+      error: '推播失敗',
+      details: error instanceof Error ? error.message : '未知錯誤'
+    });
+  }
+});
+
 export default router;

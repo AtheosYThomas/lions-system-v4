@@ -310,7 +310,7 @@ const AdminEventsList: React.FC = () => {
                       建立時間
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      操作
+                      操作 & 推播
                     </th>
                   </tr>
                 </thead>
@@ -358,6 +358,34 @@ const AdminEventsList: React.FC = () => {
                             title="查看報到統計"
                           >
                             🔗 報到
+                          </button>
+                          <button
+                            onClick={async () => {
+                              if (!confirm(`確定要推播「${event.title}」報到通知給所有會員？`)) return;
+                              
+                              try {
+                                const response = await fetch(`/api/admin/event/${event.id}/notify`, {
+                                  method: 'POST',
+                                  headers: { 'Content-Type': 'application/json' },
+                                  body: JSON.stringify({ targetType: 'all' })
+                                });
+                                
+                                const result = await response.json();
+                                
+                                if (response.ok) {
+                                  alert(`📢 推播完成！\n✅ 成功: ${result.statistics.successCount}\n❌ 失敗: ${result.statistics.failedCount}`);
+                                } else {
+                                  alert(`推播失敗：${result.error}`);
+                                }
+                              } catch (error) {
+                                alert('推播過程發生錯誤');
+                                console.error('推播錯誤:', error);
+                              }
+                            }}
+                            className="text-purple-600 hover:text-purple-900 font-medium"
+                            title="推播報到通知"
+                          >
+                            📣 推播
                           </button>
                         </div>
                       </td>
