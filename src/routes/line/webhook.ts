@@ -88,8 +88,7 @@ router.post('/webhook',
         });
       }
     }
-  }
-);
+  });
 
 // 推播訊息 API
 router.post('/push/:userId', async (req, res) => {
