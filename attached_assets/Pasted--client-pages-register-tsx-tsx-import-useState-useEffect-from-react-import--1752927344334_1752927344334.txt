@@ -1,0 +1,142 @@
+立 /client/pages/register.tsx 內建表單頁面
+tsx
+複製
+編輯
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
+
+const RegisterPage = () => {
+  const router = useRouter();
+  const [lineUserId, setLineUserId] = useState<string | null>(null);
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+  });
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    // 擷取 LINE userId
+    const initLiff = async () => {
+      await window.liff.init({ liffId: process.env.NEXT_PUBLIC_LIFF_ID! });
+      if (!window.liff.isLoggedIn()) {
+        window.liff.login();
+        return;
+      }
+
+      const userId = window.liff.getContext()?.userId;
+      setLineUserId(userId ?? null);
+    };
+
+    if (typeof window !== 'undefined' && window.liff) {
+      initLiff();
+    }
+  }, []);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!lineUserId) return alert('尚未擷取 LINE userId');
+
+    setLoading(true);
+    const res = await fetch('/api/liff/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...formData, line_user_id: lineUserId }),
+    });
+
+    const result = await res.json();
+    setLoading(false);
+
+    if (res.ok) {
+      alert('註冊成功，將導向報到頁面');
+      router.push('/checkin/confirm');
+    } else {
+      alert(`註冊失敗：${result?.error || '未知錯誤'}`);
+    }
+  };
+
+  return (
+    <div className="max-w-md mx-auto py-10 px-4">
+      <h1 className="text-xl font-bold mb-6 text-blue-700">會員註冊表單</h1>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <input
+          name="name"
+          type="text"
+          placeholder="姓名"
+          value={formData.name}
+          onChange={handleChange}
+          required
+          className="w-full border px-3 py-2 rounded"
+        />
+        <input
+          name="email"
+          type="email"
+          placeholder="Email"
+          value={formData.email}
+          onChange={handleChange}
+          required
+          className="w-full border px-3 py-2 rounded"
+        />
+        <input
+          name="phone"
+          type="tel"
+          placeholder="手機號碼"
+          value={formData.phone}
+          onChange={handleChange}
+          required
+          className="w-full border px-3 py-2 rounded"
+        />
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
+        >
+          {loading ? '提交中...' : '送出註冊'}
+        </button>
+      </form>
+    </div>
+  );
+};
+
+export default RegisterPage;
+✅ 2️⃣ 建立 /api/liff/register.ts 後端 API
+ts
+複製
+編輯
+// /pages/api/liff/register.ts
+import { NextApiRequest, NextApiResponse } from 'next';
+import { prisma } from '@/lib/prisma';
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  if (req.method !== 'POST') return res.status(405).json({ error: 'Method Not Allowed' });
+
+  const { name, email, phone, line_user_id } = req.body;
+
+  if (!line_user_id || !name || !email || !phone) {
+    return res.status(400).json({ error: '所有欄位皆為必填' });
+  }
+
+  try {
+    // 若已有資料則不重複新增
+    const existing = await prisma.member.findUnique({ where: { line_user_id } });
+    if (existing) return res.status(409).json({ error: '已註冊過' });
+
+    await prisma.member.create({
+      data: {
+        name,
+        email,
+        phone,
+        line_user_id,
+      },
+    });
+
+    res.status(200).json({ success: true });
+  } catch (err) {
+    console.error('註冊失敗:', err);
+    res.status(500).json({ error: '內部錯誤' });
+  }
+}
