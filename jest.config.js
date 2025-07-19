@@ -9,6 +9,9 @@ module.exports = {
     '**/*.spec.ts',
     '**/*.test.ts'
   ],
+  transform: {
+    '^.+\\.ts$': 'ts-jest'
+  },
   setupFilesAfterEnv: ['<rootDir>/test/setup.ts'],
   testTimeout: 30000,
   verbose: true,
@@ -18,7 +21,7 @@ module.exports = {
     '!src/tools/**',
     '!src/scripts/**'
   ],
-  moduleFileExtensions: ['ts', 'js', 'json', 'node'],
+  moduleFileExtensions: ['ts', 'js', 'json'],
   testPathIgnorePatterns: [
     '/node_modules/',
     '/dist/',
