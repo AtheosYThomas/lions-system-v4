@@ -1,0 +1,210 @@
+好的，我們先完成 🔨 活動編輯／建立 Modal 元件，讓 /admin/events 支援：
+
+新增活動（點擊「＋新增活動」）
+
+編輯活動（點擊 ✏️ 開啟 Modal 修改）
+
+✅ 功能說明
+元件名稱	功能
+<EventModal />	用於「新增或編輯活動」Modal
+props: isOpen, onClose, mode, eventData, onSuccess	
+
+✅ 1️⃣ EventModal.tsx
+tsx
+複製
+編輯
+// components/admin/EventModal.tsx
+import { useState, useEffect } from 'react';
+
+type EventData = {
+  id?: string;
+  title: string;
+  date: string;
+};
+
+interface Props {
+  isOpen: boolean;
+  mode: 'create' | 'edit';
+  eventData?: EventData;
+  onClose: () => void;
+  onSuccess: () => void;
+}
+
+const EventModal = ({ isOpen, mode, eventData, onClose, onSuccess }: Props) => {
+  const [form, setForm] = useState<EventData>({ title: '', date: '' });
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (eventData && mode === 'edit') {
+      setForm({ title: eventData.title, date: eventData.date.slice(0, 10) }); // yyyy-mm-dd
+    } else {
+      setForm({ title: '', date: '' });
+    }
+  }, [eventData, mode]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const handleSubmit = async () => {
+    setLoading(true);
+    const url =
+      mode === 'create'
+        ? '/api/admin/event/create'
+        : `/api/admin/event/${eventData?.id}/update`;
+
+    const method = mode === 'create' ? 'POST' : 'PATCH';
+
+    const res = await fetch(url, {
+      method,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(form),
+    });
+
+    setLoading(false);
+    if (res.ok) {
+      onSuccess();
+      onClose();
+    } else {
+      alert('儲存失敗');
+    }
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black/30 z-50 flex items-center justify-center">
+      <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
+        <h2 className="text-lg font-semibold mb-4">
+          {mode === 'create' ? '新增活動' : '編輯活動'}
+        </h2>
+        <div className="space-y-4">
+          <input
+            name="title"
+            value={form.title}
+            onChange={handleChange}
+            placeholder="活動標題"
+            className="w-full border px-3 py-2 rounded"
+          />
+          <input
+            name="date"
+            type="date"
+            value={form.date}
+            onChange={handleChange}
+            className="w-full border px-3 py-2 rounded"
+          />
+          <div className="flex justify-end gap-2 pt-4">
+            <button onClick={onClose} className="px-4 py-2 bg-gray-300 rounded">
+              取消
+            </button>
+            <button
+              onClick={handleSubmit}
+              disabled={loading}
+              className="px-4 py-2 bg-blue-600 text-white rounded"
+            >
+              {loading ? '儲存中...' : '儲存'}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default EventModal;
+✅ 2️⃣ 在 /admin/events.tsx 使用 <EventModal />
+在頁面中：
+
+tsx
+複製
+編輯
+import EventModal from '@/components/admin/EventModal';
+新增控制狀態：
+
+tsx
+複製
+編輯
+const [modalOpen, setModalOpen] = useState(false);
+const [editMode, setEditMode] = useState<'create' | 'edit'>('create');
+const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
+新增／編輯觸發：
+
+tsx
+複製
+編輯
+<button
+  className="bg-blue-600 text-white px-4 py-2 rounded"
+  onClick={() => {
+    setEditMode('create');
+    setSelectedEvent(null);
+    setModalOpen(true);
+  }}
+>
+  ＋ 新增活動
+</button>
+每筆活動列加上編輯按鈕：
+
+tsx
+複製
+編輯
+<button
+  className="text-sm text-blue-600"
+  onClick={() => {
+    setEditMode('edit');
+    setSelectedEvent(e);
+    setModalOpen(true);
+  }}
+>
+  ✏️ 編輯
+</button>
+掛載 Modal 元件：
+
+tsx
+複製
+編輯
+<EventModal
+  isOpen={modalOpen}
+  mode={editMode}
+  eventData={selectedEvent || undefined}
+  onClose={() => setModalOpen(false)}
+  onSuccess={() => fetchEvents()} // 重新載入活動列表
+/>
+✅ 3️⃣ 後端 API
+/api/admin/event/create.ts
+ts
+複製
+編輯
+import { prisma } from '@/lib/prisma';
+import { NextApiRequest, NextApiResponse } from 'next';
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  const { title, date } = req.body;
+  if (!title || !date) return res.status(400).json({ error: '缺少資料' });
+
+  const event = await prisma.event.create({
+    data: { title, date: new Date(date) },
+  });
+
+  res.status(200).json({ success: true, event });
+}
+/api/admin/event/[id]/update.ts
+ts
+複製
+編輯
+import { prisma } from '@/lib/prisma';
+import { NextApiRequest, NextApiResponse } from 'next';
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  const { id } = req.query;
+  const { title, date } = req.body;
+
+  if (!id || Array.isArray(id) || !title || !date)
+    return res.status(400).json({ error: '缺少資料' });
+
+  await prisma.event.update({
+    where: { id },
+    data: { title, date: new Date(date) },
+  });
+
+  res.status(200).json({ success: true });
+}
