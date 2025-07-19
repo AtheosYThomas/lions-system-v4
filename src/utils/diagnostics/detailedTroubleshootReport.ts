@@ -223,17 +223,21 @@ class DetailedTroubleshootReport {
             console.log(chalk.red('❌ Health Check 連線失敗'));
             this.addIssue(
               'Health Check',
+              'high',
               'Health Check 連線失敗',
               error.message,
-              '確認伺服器是否運行'
+              '確認伺服器是否運行',
+              'error'
             );
           } else {
             console.log(chalk.red(`❌ Health Check 錯誤: ${error.message}`));
             this.addIssue(
               'Health Check',
+              'high',
               'Health Check 錯誤',
               error.message,
-              '檢查伺服器健康狀態'
+              '檢查伺服器健康狀態',
+              'error'
             );
           }
           break;
@@ -244,31 +248,6 @@ class DetailedTroubleshootReport {
         }
       }
     }
-              if (healthData.services?.liff !== 'configured') {
-                this.addIssue('LIFF服務', 'high', 'LIFF 服務未正確配置', 'Health Check 顯示 LIFF 服務狀態異常', '檢查 LIFF 應用程式設定', 'error');
-              }
-
-            } else {
-              this.addIssue('Health Check', 'high', 'Health Check 回應異常', `狀態碼: ${res.statusCode}`, '檢查伺服器狀態', 'error');
-            }
-          } catch (error: any) {
-            this.addIssue('Health Check', 'medium', 'Health Check 回應格式錯誤', data, '檢查 health 端點實作', 'warning');
-          }
-          resolve();
-        });
-      });
-
-      req.on('error', (error) => {
-        this.addIssue('Health Check', 'high', 'Health Check 連線失敗', error.message, '確認伺服器是否運行', 'error');
-        resolve();
-      });
-
-      req.setTimeout(5000, () => {
-        this.addIssue('Health Check', 'high', 'Health Check 逾時', '5秒逾時', '檢查伺服器回應時間', 'error');
-        req.destroy();
-        resolve();
-      });
-    });
   }
 
   // 步驟 5: 生成報告
