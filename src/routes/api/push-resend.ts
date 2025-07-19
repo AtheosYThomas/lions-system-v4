@@ -64,8 +64,12 @@ router.post('/', authMiddleware, requireAnyRole([Role.Admin, Role.President]), a
         const member = record.member;
         const event = record.event;
 
-        if (!member.line_user_id) {
-          throw new Error('會員未綁定 LINE 帳號');
+        if (!member || !member.line_user_id) {
+          throw new Error('會員未綁定 LINE 帳號或會員資料不存在');
+        }
+
+        if (!event) {
+          throw new Error('活動資料不存在');
         }
 
         // 發送 LINE 推播
@@ -74,7 +78,7 @@ router.post('/', authMiddleware, requireAnyRole([Role.Admin, Role.President]), a
         await lineService.pushMessage(member.line_user_id, messageText);
 
         // 更新原記錄狀態為成功
-        await record.update({ status: 'success' });
+        await PushRecord.update({ status: 'success' }, { where: { id: record.id } });
 
         // 記錄新的推播結果
         await pushService.recordPushResult({
@@ -108,8 +112,8 @@ router.post('/', authMiddleware, requireAnyRole([Role.Admin, Role.President]), a
         results.push({
           pushRecordId: record.id,
           memberId: record.member?.id || record.member_id,
-          memberName: record.member?.name || 'Unknown',
-          eventTitle: record.event?.title || 'Unknown',
+          memberName: record.member?.name || '未知成員',
+          eventTitle: record.event?.title || '未知活動',
           status: 'failed',
           error: error instanceof Error ? error.message : '未知錯誤'
         });
