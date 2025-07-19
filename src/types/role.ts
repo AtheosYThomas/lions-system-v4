@@ -1,4 +1,3 @@
-
 /**
  * 角色相關的型別定義 - 重構版本
  * 提供型別安全的角色權限控制系統
@@ -40,7 +39,7 @@ export const roleDisplayNames: Record<Role, string> = {
   [Role.Admin]: '系統管理員'
 };
 
-// 定義角色群組（每個群組包含哪些角色）- 使用 as const 確保型別安全
+// 定義角色群組 - 使用 as const 確保型別安全
 export const roleGroups = {
   members: [Role.Member, Role.Officer, Role.Secretary, Role.Treasurer, Role.VicePresident, Role.President, Role.Admin],
   officers: [Role.Officer, Role.Secretary, Role.Treasurer, Role.VicePresident, Role.President, Role.Admin],
@@ -55,19 +54,15 @@ export type RoleGroup = keyof typeof roleGroups;
 
 /**
  * 判斷角色是否屬於某群組（型別安全）
- * @param role - 用戶角色
- * @param group - 角色群組
- * @returns 是否屬於該群組
+ * ✅ 修正重點：將陣列轉為 Role[] 類型，避免 TypeScript 過度縮小型別
  */
 export function isRoleInGroup(role: Role, group: RoleGroup): boolean {
-  return roleGroups[group].includes(role);
+  const groupRoles: Role[] = roleGroups[group];
+  return groupRoles.includes(role);
 }
 
 /**
  * 判斷是否有足夠權限（使用等級比較）
- * @param userRole - 用戶角色
- * @param requiredRole - 所需角色
- * @returns 是否有足夠權限
  */
 export function hasPermission(userRole: Role, requiredRole: Role): boolean {
   return roleRank[userRole] >= roleRank[requiredRole];
@@ -75,9 +70,6 @@ export function hasPermission(userRole: Role, requiredRole: Role): boolean {
 
 /**
  * 檢查角色是否滿足最低權限需求（向後相容）
- * @param userRole - 用戶角色（可為字串）
- * @param requiredRole - 所需角色
- * @returns 是否滿足權限要求
  */
 export function hasMinimumRole(userRole: Role | string, requiredRole: Role): boolean {
   const role = typeof userRole === 'string' ? userRole as Role : userRole;
@@ -86,9 +78,6 @@ export function hasMinimumRole(userRole: Role | string, requiredRole: Role): boo
 
 /**
  * 檢查角色是否在指定角色組中（向後相容）
- * @param userRole - 用戶角色（可為字串）
- * @param group - 角色群組
- * @returns 是否在該群組中
  */
 export function isInRoleGroup(userRole: Role | string, group: RoleGroup): boolean {
   const role = typeof userRole === 'string' ? userRole as Role : userRole;
@@ -97,8 +86,6 @@ export function isInRoleGroup(userRole: Role | string, group: RoleGroup): boolea
 
 /**
  * 取得角色的所有下級角色
- * @param role - 目標角色
- * @returns 下級角色陣列
  */
 export function getSubordinateRoles(role: Role): Role[] {
   const currentRank = roleRank[role];
@@ -107,8 +94,6 @@ export function getSubordinateRoles(role: Role): Role[] {
 
 /**
  * 取得角色的所有上級角色
- * @param role - 目標角色
- * @returns 上級角色陣列
  */
 export function getSuperiorRoles(role: Role): Role[] {
   const currentRank = roleRank[role];
@@ -117,8 +102,6 @@ export function getSuperiorRoles(role: Role): Role[] {
 
 /**
  * 檢查是否為管理級角色
- * @param role - 角色
- * @returns 是否為管理級角色
  */
 export function isAdminRole(role: Role): boolean {
   return role === Role.President || role === Role.Admin;
@@ -126,8 +109,6 @@ export function isAdminRole(role: Role): boolean {
 
 /**
  * 檢查是否為高級角色（向後相容）
- * @param role - 角色
- * @returns 是否為高級角色
  */
 export function isHighRankRole(role: Role): boolean {
   return isAdminRole(role);
@@ -135,25 +116,19 @@ export function isHighRankRole(role: Role): boolean {
 
 /**
  * 檢查角色是否有足夠權限（向後相容）
- * @param userRole - 用戶角色
- * @param requiredRole - 所需角色
- * @returns 是否有足夠權限
  */
 export function hasRolePermission(userRole: Role | string, requiredRole: Role): boolean {
   const role = typeof userRole === 'string' ? userRole as Role : userRole;
-  
+
   // Admin 總是有權限
   if (role === Role.Admin) return true;
-  
+
   // 使用等級比較
   return hasPermission(role, requiredRole);
 }
 
 /**
  * 檢查用戶是否可以訪問路由
- * @param userRole - 用戶角色
- * @param requiredRole - 所需角色
- * @returns 是否可以訪問
  */
 export function canUserAccessRoute(userRole: Role, requiredRole: Role): boolean {
   return hasPermission(userRole, requiredRole);
@@ -161,11 +136,9 @@ export function canUserAccessRoute(userRole: Role, requiredRole: Role): boolean 
 
 /**
  * 檢查管理員是否可以訪問路由
- * @param userRole - 用戶角色
- * @param requiredRole - 所需角色（限定為 President 或 Admin）
- * @returns 是否可以訪問
+ * ✅ 修正：使用 Role 聯合型別而非限定特定值
  */
-export function canAccessRoute(userRole: Role, requiredRole: Role.President | Role.Admin): boolean {
+export function canAccessRoute(userRole: Role, requiredRole: Role): boolean {
   return isAdminRole(userRole) && hasPermission(userRole, requiredRole);
 }
 
