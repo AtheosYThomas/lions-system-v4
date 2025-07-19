@@ -1,20 +1,28 @@
 {
-  "timestamp": "2025-07-19T08:59:10.876Z",
+  "timestamp": "2025-07-19T10:43:19.523Z",
   "summary": {
-    "totalIssues": 1,
+    "totalIssues": 2,
     "errors": 1,
     "warnings": 0,
-    "info": 0,
-    "healthScore": 80
+    "info": 1,
+    "healthScore": 75
   },
   "issues": [
     {
       "category": "TypeScript編譯",
       "severity": "high",
       "issue": "TypeScript 編譯錯誤",
-      "details": "src/controllers/lineController.ts(25,9): error TS2322: Type 'Response<any, Record<string, any>>' is not assignable to type 'void'.\nsrc/controllers/lineController.ts(31,9): error TS2322: Type 'Response<any, Record<string, any>>' is not assignable to type 'void'.\nsrc/controllers/lineController.ts(37,9): error TS2322: Type 'Response<any, Record<string, any>>' is not assignable to type 'void'.\nsrc/controllers/lineController.ts(57,9): error TS2322: Type 'Response<any, Record<string, any>>' is not assignable to type 'void'.\nsrc/controllers/lineController.ts(64,9): error TS2322: Type 'Response<any, Record<string, any>>' is not assignable to type 'void'.\nsrc/controllers/lineController.ts(76,7): error TS2322: Type 'Response<any, Record<string, any>>' is not assignable to type 'void'.\n",
+      "details": "src/controllers/lineController.ts(24,9): error TS2322: Type 'Response<any, Record<string, any>>' is not assignable to type 'void'.\nsrc/controllers/lineController.ts(30,9): error TS2322: Type 'Response<any, Record<string, any>>' is not assignable to type 'void'.\nsrc/controllers/lineController.ts(36,9): error TS2322: Type 'Response<any, Record<string, any>>' is not assignable to type 'void'.\nsrc/controllers/lineController.ts(56,9): error TS2322: Type 'Response<any, Record<string, any>>' is not assignable to type 'void'.\nsrc/controllers/lineController.ts(63,9): error TS2322: Type 'Response<any, Record<string, any>>' is not assignable to type 'void'.\nsrc/controllers/lineController.ts(75,7): error TS2322: Type 'Response<any, Record<string, any>>' is not assignable to type 'void'.\nsrc/controllers/lineController.ts(242,25): error TS2339: Property 'handleEvent' does not exist on type 'LineService'.\n",
       "suggestion": "修正 TypeScript 語法錯誤",
       "status": "error"
+    },
+    {
+      "category": "Controllers",
+      "severity": "low",
+      "issue": "src/controllers/lineController.ts 使用環境變數但未載入 dotenv",
+      "details": "可能導致環境變數未正確載入",
+      "suggestion": "確認 dotenv 已在主程式載入",
+      "status": "info"
     }
   ]
 }
