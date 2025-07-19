@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-07-19T12:44:31.796Z",
+  "timestamp": "2025-07-19T12:48:56.502Z",
   "summary": {
     "totalIssues": 3,
     "errors": 1,
@@ -8,6 +8,14 @@
     "healthScore": 70
   },
   "issues": [
+    {
+      "category": "TypeScript編譯",
+      "severity": "high",
+      "issue": "TypeScript 編譯錯誤",
+      "details": "src/routes/api/admin.ts(6,7): error TS2451: Cannot redeclare block-scoped variable 'router'.\nsrc/routes/api/admin.ts(25,19): error TS2339: Property 'member' does not exist on type 'Checkin'.\nsrc/routes/api/admin.ts(26,21): error TS2339: Property 'member' does not exist on type 'Checkin'.\nsrc/routes/api/admin.ts(27,22): error TS2339: Property 'member' does not exist on type 'Checkin'.\nsrc/routes/api/admin.ts(28,22): error TS2339: Property 'member' does not exist on type 'Checkin'.\nsrc/routes/api/admin.ts(37,50): error TS2339: Property 'member' does not exist on type 'Registration'.\nsrc/routes/api/admin.ts(39,17): error TS2339: Property 'member' does not exist on type 'Registration'.\nsrc/routes/api/admin.ts(40,19): error TS2339: Property 'member' does not exist on type 'Registration'.\nsrc/routes/api/admin.ts(41,20): error TS2339: Property 'member' does not exist on type 'Registration'.\nsrc/routes/api/admin.ts(42,20): error TS2339: Property 'member' does not exist on type 'Registration'.\nsrc/routes/api/admin.ts(135,30): error TS2339: Property 'member' does not exist on type 'Checkin'.\nsrc/routes/api/admin.ts(136,31): error TS2339: Property 'member' does not exist on type 'Checkin'.\nsrc/routes/api/admin.ts(137,31): error TS2339: Property 'member' does not exist on type 'Checkin'.\nsrc/routes/api/admin.ts(146,76): error TS2339: Property 'member' does not exist on type 'Checkin'.\nsrc/routes/api/admin.ts(150,41): error TS2339: Property 'member' does not exist on type 'Registration'.\nsrc/routes/api/admin.ts(151,28): error TS2339: Property 'member' does not exist on type 'Registration'.\nsrc/routes/api/admin.ts(152,29): error TS2339: Property 'member' does not exist on type 'Registration'.\nsrc/routes/api/admin.ts(153,29): error TS2339: Property 'member' does not exist on type 'Registration'.\nsrc/routes/api/admin.ts(175,16): error TS2528: A module cannot have multiple default exports.\nsrc/routes/api/admin.ts(177,7): error TS2451: Cannot redeclare block-scoped variable 'router'.\nsrc/routes/api/admin.ts(339,16): error TS2528: A module cannot have multiple default exports.\n",
+      "suggestion": "修正 TypeScript 語法錯誤",
+      "status": "error"
+    },
     {
       "category": "Routes",
       "severity": "low",
@@ -23,14 +31,6 @@
       "details": "可能導致環境變數未正確載入",
       "suggestion": "確認 dotenv 已在主程式載入",
       "status": "info"
-    },
-    {
-      "category": "Health Check",
-      "severity": "high",
-      "issue": "Health Check 連線失敗",
-      "details": "connect ECONNREFUSED 127.0.0.1:5000",
-      "suggestion": "確認伺服器是否運行",
-      "status": "error"
     }
   ]
 }
