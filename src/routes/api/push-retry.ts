@@ -57,13 +57,10 @@ router.post('/', authMiddleware, requireAnyRole([Role.Admin, Role.President]), a
     for (const member of members) {
       try {
         // 發送 LINE 推播
-        const message = {
-          type: 'text',
-          text: `🦁 北大獅子會活動提醒\n\n📅 活動：${event.title}\n⏰ 時間：${new Date(event.date).toLocaleString('zh-TW')}\n${event.location ? `📍 地點：${event.location}` : ''}\n\n請準時參加！`
-        };
+        const messageText = `🦁 北大獅子會活動提醒\n\n📅 活動：${event.title}\n⏰ 時間：${new Date(event.date).toLocaleString('zh-TW')}\n${event.location ? `📍 地點：${event.location}` : ''}\n\n請準時參加！`;
 
         if (member.line_user_id) {
-          await lineService.pushMessage(member.line_user_id, message);
+          await lineService.pushMessage(member.line_user_id, messageText);
         }
 
         // 記錄推播結果
