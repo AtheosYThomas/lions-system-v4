@@ -13,7 +13,10 @@ router.post('/', upload.single('file'), async (req, res) => {
     if (!req.file) return res.status(400).json({ error: '未提供檔案' });
 
     const stream = cloudinary.uploader.upload_stream(
-      { folder: 'uploads' },
+      { 
+        folder: 'uploads',
+        resource_type: 'auto'
+      },
       (err, result) => {
         if (err || !result) return res.status(500).json({ error: '上傳失敗', details: err });
 
