@@ -3,6 +3,7 @@ import express from 'express';
 import { authMiddleware } from '../../middleware/authMiddleware';
 import { requireAnyRole } from '../../middleware/roleMiddleware';
 import { Role } from '../../types/role';
+import { PushRecordWithRelations } from '../../types';
 import PushRecord from '../../models/pushRecord';
 import Member from '../../models/member';
 import Event from '../../models/event';
@@ -58,7 +59,7 @@ router.post('/', authMiddleware, requireAnyRole([Role.Admin, Role.President]), a
     const results = [];
 
     // 逐一重推
-    for (const record of pushRecords) {
+    for (const record of (pushRecords as PushRecordWithRelations[])) {
       try {
         const member = record.member;
         const event = record.event;
@@ -97,8 +98,8 @@ router.post('/', authMiddleware, requireAnyRole([Role.Admin, Role.President]), a
 
         // 記錄失敗結果
         await pushService.recordPushResult({
-          member_id: record.member.id,
-          event_id: record.event.id,
+          member_id: record.member?.id || record.member_id,
+          event_id: record.event?.id || record.event_id,
           message_type: 'manual_resend',
           status: 'failed'
         });
@@ -106,9 +107,9 @@ router.post('/', authMiddleware, requireAnyRole([Role.Admin, Role.President]), a
         failedCount++;
         results.push({
           pushRecordId: record.id,
-          memberId: record.member.id,
-          memberName: record.member.name,
-          eventTitle: record.event.title,
+          memberId: record.member?.id || record.member_id,
+          memberName: record.member?.name || 'Unknown',
+          eventTitle: record.event?.title || 'Unknown',
           status: 'failed',
           error: error instanceof Error ? error.message : '未知錯誤'
         });

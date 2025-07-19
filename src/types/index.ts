@@ -73,6 +73,27 @@ export interface SystemStats {
   };
 }
 
+// Push Record with relations type
+export interface PushRecordWithRelations {
+  id: string;
+  member_id: string;
+  event_id: string;
+  message_type: string;
+  status: string;
+  pushed_at: Date;
+  member?: {
+    id: string;
+    name: string;
+    line_user_id?: string;
+  };
+  event?: {
+    id: string;
+    title: string;
+    date: Date;
+    location?: string;
+  };
+}
+
 // Export all type definitions
 export * from './announcement.d';
 export * from './checkin.d';
