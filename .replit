@@ -17,6 +17,8 @@ build = ["sh", "-c", "npm run build"]
 [env]
 NODE_ENV = "production"
 
+run = "npm run dev"
+
 [workflows]
 runButton = "Start System"
 
