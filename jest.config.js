@@ -1,5 +1,5 @@
 
-/** @type {import('jest').Config} */
+/** @type {import('ts-jest').JestConfigWithTsJest} */
 module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
@@ -22,11 +22,7 @@ module.exports = {
     '!src/scripts/**'
   ],
   moduleFileExtensions: ['ts', 'js', 'json'],
-  testPathIgnorePatterns: [
-    '/node_modules/',
-    '/dist/',
-    '/client/'
-  ],
+  testPathIgnorePatterns: ['/node_modules/', '/dist/', '/client/'],
   testTimeout: 30000,
   verbose: true
 };
