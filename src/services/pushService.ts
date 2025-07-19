@@ -138,6 +138,43 @@ class PushService {
   }
 
   /**
+   * 獲取會員推播記錄
+   */
+  async getMemberPushRecords(memberId: string, options: {
+    limit?: number;
+    offset?: number;
+    messageType?: string;
+  } = {}) {
+    try {
+      const { limit = 50, offset = 0, messageType } = options;
+
+      const whereClause: any = { member_id: memberId };
+      if (messageType) {
+        whereClause.message_type = messageType;
+      }
+
+      const records = await PushRecord.findAll({
+        where: whereClause,
+        include: [
+          {
+            model: Event,
+            as: 'event',
+            attributes: ['id', 'title', 'date', 'status']
+          }
+        ],
+        order: [['pushed_at', 'DESC']],
+        limit,
+        offset
+      });
+
+      return records;
+    } catch (error) {
+      console.error('❌ 獲取會員推播記錄失敗:', error);
+      throw error;
+    }
+  }
+
+  /**
    * 獲取明日活動（用於排程推播）
    */
   async getTomorrowEvents(): Promise<Event[]> {

@@ -79,15 +79,18 @@ app.use('/webhook', lineWebhook);
 // API 路由
 app.use('/api/admin', adminRoutes);
 app.use('/api/members', memberRoutes);
-app.use('/api/announcements', announcementRoutes);
 app.use('/api/checkin', checkinRoutes);
+app.use('/api/announcements', announcementRoutes);
+app.use('/api/events', eventsRoutes);
 app.use('/api/liff', liffRoutes);
 app.use('/api/upload', uploadRouter);
-app.use('/api/events', eventsRoutes);
-
 // 排程推播路由
 import pushSchedulerRoutes from './routes/api/push-scheduler';
 app.use('/api/push', pushSchedulerRoutes);
+
+// Push Records API
+import pushRecordsRoutes from './routes/api/push-records';
+app.use('/api/admin/push-records', pushRecordsRoutes);
 
 // 前端路由（提供 React 應用）
 app.get('/', (req, res) => {
