@@ -1,5 +1,5 @@
 
-import { sequelize } from '../config/database';
+import sequelize from '../config/database';
 import { QueryInterface, DataTypes } from 'sequelize';
 
 async function createPushRecordsTable() {

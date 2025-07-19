@@ -42,7 +42,7 @@ router.post('/checkin-reminder', async (req, res) => {
     const members = await Member.findAll({
       where: {
         line_user_id: {
-          [Op.not]: null
+          [Op.ne]: null
         }
       },
       attributes: ['id', 'name', 'line_user_id']
@@ -149,14 +149,49 @@ router.post('/checkin-reminder', async (req, res) => {
  */
 router.post('/test-checkin-reminder', async (req, res) => {
   try {
-    // 重定向到實際的排程 API
+    // 設定測試用 token
     req.headers['x-cron-token'] = 'cron-secret-token';
     
-    // 呼叫排程推播邏輯
-    const reminderRequest = req;
-    reminderRequest.url = '/checkin-reminder';
+    console.log('🕐 開始執行明日活動推播提醒（測試模式）...');
+
+    // 獲取明日活動
+    const tomorrowEvents = await pushService.getTomorrowEvents();
     
-    return router.handle(reminderRequest, res, () => {});
+    if (tomorrowEvents.length === 0) {
+      console.log('📅 明日無活動，跳過推播');
+      return res.json({
+        success: true,
+        message: '明日無活動（測試模式）',
+        eventsCount: 0
+      });
+    }
+
+    console.log(`📅 發現 ${tomorrowEvents.length} 個明日活動`);
+
+    // 獲取所有有 LINE ID 的會員
+    const members = await Member.findAll({
+      where: {
+        line_user_id: {
+          [Op.ne]: null
+        }
+      },
+      attributes: ['id', 'name', 'line_user_id']
+    });
+
+    res.json({
+      success: true,
+      message: '測試推播完成（僅模擬，未實際推播）',
+      summary: {
+        eventsCount: tomorrowEvents.length,
+        membersCount: members.length,
+        mode: 'test'
+      },
+      events: tomorrowEvents.map(event => ({
+        id: event.id,
+        title: event.title,
+        date: event.date
+      }))
+    });
 
   } catch (error) {
     console.error('❌ 測試排程推播失敗:', error);
