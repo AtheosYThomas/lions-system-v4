@@ -248,20 +248,33 @@ router.patch('/event/:id/update', async (req, res) => {
 // 獲取所有活動列表
 router.get('/events', async (req, res) => {
   try {
-    const { status, limit = 50, offset = 0 } = req.query;
+    const { status, limit = 50, offset = 0, keyword = '', month = '' } = req.query;
 
     // 建立查詢條件
-    const whereClause: any = {};
+    const searchOptions: any = {
+      limit: parseInt(limit as string),
+      offset: parseInt(offset as string)
+    };
+
     if (status && status !== 'all') {
-      whereClause.status = status;
+      searchOptions.status = status;
+    }
+
+    // 搜尋關鍵字
+    if (typeof keyword === 'string' && keyword.trim()) {
+      searchOptions.title = keyword.trim();
+    }
+
+    // 月份篩選
+    if (typeof month === 'string' && /^\d{4}-\d{2}$/.test(month)) {
+      const startDate = new Date(`${month}-01T00:00:00`);
+      const endDate = new Date(`${month}-31T23:59:59`);
+      searchOptions.dateFrom = startDate;
+      searchOptions.dateTo = endDate;
     }
 
     // 獲取活動列表
-    const events = await eventService.searchEvents({
-      status: status as string,
-      limit: parseInt(limit as string),
-      offset: parseInt(offset as string)
-    });
+    const events = await eventService.searchEvents(searchOptions);
 
     res.json({
       success: true,

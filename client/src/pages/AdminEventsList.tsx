@@ -30,7 +30,16 @@ const AdminEventsList: React.FC = () => {
       setLoading(true);
       setError(null);
 
-      const response = await fetch('/api/admin/events');
+      // 建立查詢參數
+      const params = new URLSearchParams();
+      if (searchKeyword.trim()) {
+        params.append('keyword', searchKeyword.trim());
+      }
+      if (filterMonth) {
+        params.append('month', filterMonth);
+      }
+
+      const response = await fetch(`/api/admin/events?${params.toString()}`);
       const result = await response.json();
 
       if (!response.ok) {
@@ -52,7 +61,7 @@ const AdminEventsList: React.FC = () => {
 
   useEffect(() => {
     fetchEvents();
-  }, []);
+  }, [searchKeyword, filterMonth]);
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('zh-TW', {
@@ -80,14 +89,8 @@ const AdminEventsList: React.FC = () => {
     );
   };
 
-  // 過濾活動列表
-  const filteredEvents = events.filter((event) => {
-    const matchesKeyword = event.title.toLowerCase().includes(searchKeyword.toLowerCase());
-    const matchesMonth = filterMonth
-      ? new Date(event.date).toISOString().slice(0, 7) === filterMonth
-      : true;
-    return matchesKeyword && matchesMonth;
-  });
+  // 活動列表已由後端過濾，直接使用 events
+  const filteredEvents = events;
 
   if (loading) {
     return (
@@ -247,7 +250,7 @@ const AdminEventsList: React.FC = () => {
           </div>
           {(searchKeyword || filterMonth) && (
             <div className="mt-4 text-sm text-gray-600">
-              找到 {filteredEvents.length} 筆活動
+              找到 {events.length} 筆活動
               {searchKeyword && <span className="ml-2">關鍵字：「{searchKeyword}」</span>}
               {filterMonth && <span className="ml-2">月份：{filterMonth}</span>}
             </div>
