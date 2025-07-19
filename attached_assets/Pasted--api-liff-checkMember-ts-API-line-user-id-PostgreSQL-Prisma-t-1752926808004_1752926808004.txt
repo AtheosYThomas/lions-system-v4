@@ -1,0 +1,81 @@
+建立 /api/liff/checkMember.ts API
+用來接收 line_user_id，並查詢是否為會員。
+
+以下為範例實作，假設你使用的是 PostgreSQL + Prisma：
+
+ts
+複製
+編輯
+// /pages/api/liff/checkMember.ts
+import { NextApiRequest, NextApiResponse } from 'next';
+import { prisma } from '@/lib/prisma'; // ← 請依你實際 prisma client 路徑修改
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method Not Allowed' });
+  }
+
+  const { line_user_id } = req.body;
+
+  if (!line_user_id) {
+    return res.status(400).json({ error: 'line_user_id is required' });
+  }
+
+  try {
+    const member = await prisma.member.findUnique({
+      where: { line_user_id },
+    });
+
+    res.status(200).json({ isMember: !!member });
+  } catch (error) {
+    console.error('會員查詢失敗:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+}
+🔧 若你使用 其他資料庫或 ORM（如 Sequelize / TypeORM / 直接 SQL），請告訴我，我會幫你調整語法。
+
+✅ 2️⃣ 建立 /client/pages/checkin/confirm.tsx 報到成功頁
+tsx
+複製
+編輯
+const ConfirmPage = () => {
+  return (
+    <div className="flex flex-col items-center justify-center h-screen">
+      <h1 className="text-2xl font-bold text-green-600 mb-4">✅ 報到成功</h1>
+      <p className="text-gray-700">歡迎您！請洽工作人員確認入場。</p>
+    </div>
+  );
+};
+
+export default ConfirmPage;
+✅ 3️⃣ 建立 /client/pages/register.tsx 註冊引導頁
+tsx
+複製
+編輯
+const RegisterPage = () => {
+  return (
+    <div className="flex flex-col items-center justify-center h-screen">
+      <h1 className="text-2xl font-bold text-blue-600 mb-4">尚未註冊</h1>
+      <p className="text-gray-700 mb-4">請填寫註冊表單以完成會員資料</p>
+      <a
+        href="https://docs.google.com/forms/your_form_link"
+        className="bg-blue-500 text-white px-4 py-2 rounded"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        前往註冊表單
+      </a>
+    </div>
+  );
+};
+
+export default RegisterPage;
+📌 請將 href="..." 改成你的 LINE LIFF 註冊表單連結或 Softr 表單。
+
+✅ 完整流程總結
+步驟	行為說明	網頁 / API 路徑
+1️⃣	使用者開啟 /checkin	/client/pages/Checkin.tsx
+2️⃣	LIFF 初始化並取得 line_user_id	liff.getContext()?.userId
+3️⃣	呼叫 API 檢查會員身份	/api/liff/checkMember
+4️⃣	判斷結果導向	/checkin/confirm 或 /register
+
