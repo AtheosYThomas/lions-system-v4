@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-07-19T21:54:56.751Z",
+  "timestamp": "2025-07-19T22:05:18.247Z",
   "summary": {
     "totalIssues": 4,
     "errors": 1,
@@ -12,7 +12,7 @@
       "category": "TypeScript編譯",
       "severity": "high",
       "issue": "TypeScript 編譯錯誤",
-      "details": "src/routes/api/push-scheduler.ts(43,7): error TS2322: Type '{ line_user_id: { [OpTypes.not]: null; }; }' is not assignable to type 'WhereOptions<MemberAttributes> | undefined'.\n  Types of property 'line_user_id' are incompatible.\n    Type '{ [OpTypes.not]: null; }' is not assignable to type 'WhereAttributeHashValue<string | undefined>'.\n      Types of property '[Op.not]' are incompatible.\n        Type 'null' is not assignable to type 'string | number | boolean | Date | Fn | Col | Literal | { [OpTypes.col]: string; } | Cast | Buffer<ArrayBufferLike> | WhereOperators<string> | ... 10 more ... | undefined'.\nsrc/routes/api/push-scheduler.ts(159,19): error TS2339: Property 'handle' does not exist on type 'Router'.\nsrc/scripts/createPushRecordsTable.ts(2,10): error TS2614: Module '\"../config/database\"' has no exported member 'sequelize'. Did you mean to use 'import sequelize from \"../config/database\"' instead?\n",
+      "details": "src/routes/api/push-scheduler.ts(43,7): error TS2322: Type '{ line_user_id: { [OpTypes.ne]: null; }; }' is not assignable to type 'WhereOptions<MemberAttributes> | undefined'.\n  Types of property 'line_user_id' are incompatible.\n    Type '{ [OpTypes.ne]: null; }' is not assignable to type 'WhereAttributeHashValue<string | undefined>'.\n      Types of property '[Op.ne]' are incompatible.\n        Type 'null' is not assignable to type 'string | number | boolean | Date | Fn | Col | Literal | { [OpTypes.col]: string; } | Cast | Buffer<ArrayBufferLike> | { [OpTypes.all]: Literal | ... 1 more ... | { ...; }; } | { ...; } | { ...; } | { ...; } | undefined'.\nsrc/routes/api/push-scheduler.ts(173,7): error TS2322: Type '{ line_user_id: { [OpTypes.ne]: null; }; }' is not assignable to type 'WhereOptions<MemberAttributes> | undefined'.\n  Types of property 'line_user_id' are incompatible.\n    Type '{ [OpTypes.ne]: null; }' is not assignable to type 'WhereAttributeHashValue<string | undefined>'.\n      Types of property '[Op.ne]' are incompatible.\n        Type 'null' is not assignable to type 'string | number | boolean | Date | Fn | Col | Literal | { [OpTypes.col]: string; } | Cast | Buffer<ArrayBufferLike> | { [OpTypes.all]: Literal | ... 1 more ... | { ...; }; } | { ...; } | { ...; } | { ...; } | undefined'.\n",
       "suggestion": "修正 TypeScript 語法錯誤",
       "status": "error"
     },
