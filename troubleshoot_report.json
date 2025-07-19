@@ -1,9 +1,9 @@
 {
-  "timestamp": "2025-07-19T22:53:28.490Z",
+  "timestamp": "2025-07-19T22:56:13.380Z",
   "summary": {
-    "total": 123,
+    "total": 124,
     "pass": 95,
-    "warning": 27,
+    "warning": 28,
     "error": 1
   },
   "results": [
@@ -297,6 +297,15 @@
       "suggestions": [
         "明確定義型別",
         "使用具體的介面"
+      ]
+    },
+    {
+      "category": "Source Files",
+      "status": "warning",
+      "message": "src/services/pushService.ts: 可能有未使用的 import: Sequelize",
+      "suggestions": [
+        "移除未使用的 import",
+        "檢查程式碼使用情況"
       ]
     },
     {

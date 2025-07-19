@@ -1,13 +1,21 @@
 {
-  "timestamp": "2025-07-19T22:53:34.718Z",
+  "timestamp": "2025-07-19T22:56:22.609Z",
   "summary": {
-    "totalIssues": 3,
-    "errors": 0,
+    "totalIssues": 4,
+    "errors": 1,
     "warnings": 0,
     "info": 3,
-    "healthScore": 85
+    "healthScore": 65
   },
   "issues": [
+    {
+      "category": "TypeScript編譯",
+      "severity": "high",
+      "issue": "TypeScript 編譯錯誤",
+      "details": "src/routes/api/push-records.ts(72,9): error TS2353: Object literal may only specify known properties, and 'startDate' does not exist in type '{ limit?: number | undefined; offset?: number | undefined; messageType?: string | undefined; }'.\nsrc/routes/api/push-records.ts(81,9): error TS2353: Object literal may only specify known properties, and 'startDate' does not exist in type '{ limit?: number | undefined; offset?: number | undefined; messageType?: string | undefined; }'.\n",
+      "suggestion": "修正 TypeScript 語法錯誤",
+      "status": "error"
+    },
     {
       "category": "Routes",
       "severity": "low",
