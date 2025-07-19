@@ -1,10 +1,16 @@
-
 import Event, { IEventModel } from '../models/event';
 import Registration from '../models/registration';
-import Checkin from '../models/checkin';
-import Payment from '../models/payment';
-import Member from '../models/member';
+import { Member } from '../models/member';
 import { Op } from 'sequelize';
+
+interface EventInput {
+  title: string;
+  description?: string;
+  date: string;
+  location?: string;
+  max_attendees?: number;
+  status?: 'active' | 'cancelled' | 'completed';
+}
 
 interface EventCreationData {
   title: string;

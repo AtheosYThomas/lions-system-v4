@@ -1,8 +1,19 @@
-
 import { DataTypes, Model } from 'sequelize';
 import sequelize from '../config/database';
 import Member from './member';
 import Event from './event';
+
+interface PushRecordAttributes {
+  id: number;
+  member_id: string;
+  event_id: string;
+  message_type: string;
+  status: 'success' | 'failed';
+  pushed_at: Date;
+  error_message?: string;
+}
+
+interface PushRecordCreationAttributes extends Optional<PushRecordAttributes, 'id' | 'pushed_at'> {}
 
 export interface PushRecordAttributes {
   id: string;

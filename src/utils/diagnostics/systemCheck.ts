@@ -1,6 +1,5 @@
-
+import { Announcement } from '../../models/announcement';
 import sequelize from '../../config/database';
-import { Member, Event, Registration, Checkin } from '../../models';
 
 export const performSystemCheck = async () => {
   const report = {
@@ -60,7 +59,7 @@ export const performSystemCheck = async () => {
   console.log(`🗄️  資料庫: ${report.database.status}`);
   console.log(`📋 資料表: ${report.models.status} (${report.models.tables.length} 個表格)`);
   console.log(`🔧 環境變數: ${report.environment.status} (${report.environment.configured.length}/${requiredEnvVars.length})`);
-  
+
   if (report.environment.missing.length > 0) {
     console.log(`❌ 缺少環境變數: ${report.environment.missing.join(', ')}`);
   }

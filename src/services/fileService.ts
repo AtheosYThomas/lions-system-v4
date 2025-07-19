@@ -1,7 +1,14 @@
-
 import File, { IFileModel } from '../models/file';
 import Member from '../models/member';
 import { Op } from 'sequelize';
+
+interface CloudinaryUploadResult {
+  public_id: string;
+  secure_url: string;
+  format: string;
+  bytes: number;
+  [key: string]: any;
+}
 
 interface FileUploadData {
   original_name: string;
@@ -20,6 +27,18 @@ interface FileSearchOptions {
   status?: string;
   limit?: number;
   offset?: number;
+}
+
+interface UploadFile {
+  fieldname: string;
+  originalname: string;
+  encoding: string;
+  mimetype: string;
+  destination: string;
+  filename: string;
+  path: string;
+  size: number;
+  buffer?: Buffer;
 }
 
 class FileService {
