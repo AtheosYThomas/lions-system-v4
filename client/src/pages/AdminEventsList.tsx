@@ -21,34 +21,36 @@ const AdminEventsList: React.FC = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [editMode, setEditMode] = useState<'create' | 'edit'>('create');
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
+  const [searchKeyword, setSearchKeyword] = useState('');
+  const [filterMonth, setFilterMonth] = useState('');
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        setLoading(true);
-        setError(null);
+  const fetchEvents = async () => {
+    try {
+      setLoading(true);
+      setError(null);
 
-        const response = await fetch('/api/admin/events');
-        const result = await response.json();
+      const response = await fetch('/api/admin/events');
+      const result = await response.json();
 
-        if (!response.ok) {
-          throw new Error(result.error || '獲取活動列表失敗');
-        }
-
-        if (result.success) {
-          setEvents(result.events);
-        } else {
-          throw new Error(result.error || '資料格式錯誤');
-        }
-      } catch (err) {
-        setError(err instanceof Error ? err.message : '未知錯誤');
-        console.error('獲取活動列表失敗:', err);
-      } finally {
-        setLoading(false);
+      if (!response.ok) {
+        throw new Error(result.error || '獲取活動列表失敗');
       }
-    };
 
+      if (result.success) {
+        setEvents(result.events);
+      } else {
+        throw new Error(result.error || '資料格式錯誤');
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : '未知錯誤');
+      console.error('獲取活動列表失敗:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchEvents();
   }, []);
 
@@ -77,6 +79,15 @@ const AdminEventsList: React.FC = () => {
       </span>
     );
   };
+
+  // 過濾活動列表
+  const filteredEvents = events.filter((event) => {
+    const matchesKeyword = event.title.toLowerCase().includes(searchKeyword.toLowerCase());
+    const matchesMonth = filterMonth
+      ? new Date(event.date).toISOString().slice(0, 7) === filterMonth
+      : true;
+    return matchesKeyword && matchesMonth;
+  });
 
   if (loading) {
     return (
@@ -196,31 +207,84 @@ const AdminEventsList: React.FC = () => {
           </div>
         </div>
 
+        {/* 搜尋與篩選區 */}
+        <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
+          <div className="flex flex-wrap gap-4 items-center">
+            <div className="flex-1 min-w-64">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                🔍 搜尋活動名稱
+              </label>
+              <input
+                type="text"
+                placeholder="輸入關鍵字搜尋..."
+                className="w-full border border-gray-300 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                value={searchKeyword}
+                onChange={(e) => setSearchKeyword(e.target.value)}
+              />
+            </div>
+            <div className="min-w-48">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                📅 月份篩選
+              </label>
+              <input
+                type="month"
+                className="w-full border border-gray-300 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                value={filterMonth}
+                onChange={(e) => setFilterMonth(e.target.value)}
+              />
+            </div>
+            <div className="flex gap-2">
+              <button
+                onClick={() => {
+                  setSearchKeyword('');
+                  setFilterMonth('');
+                }}
+                className="bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors"
+              >
+                清除篩選
+              </button>
+            </div>
+          </div>
+          {(searchKeyword || filterMonth) && (
+            <div className="mt-4 text-sm text-gray-600">
+              找到 {filteredEvents.length} 筆活動
+              {searchKeyword && <span className="ml-2">關鍵字：「{searchKeyword}」</span>}
+              {filterMonth && <span className="ml-2">月份：{filterMonth}</span>}
+            </div>
+          )}
+        </div>
+
         {/* 活動列表 */}
         <div className="bg-white rounded-lg shadow-sm overflow-hidden">
           <div className="px-6 py-4 border-b border-gray-200">
             <h2 className="text-lg font-semibold text-gray-900">活動列表</h2>
           </div>
 
-          {events.length === 0 ? (
+          {filteredEvents.length === 0 ? (
             <div className="text-center py-12">
               <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
               </svg>
-              <h3 className="mt-2 text-sm font-medium text-gray-900">尚無活動</h3>
-              <p className="mt-1 text-sm text-gray-500">開始建立第一個活動吧！</p>
-              <div className="mt-6">
-                <button
-                  onClick={() => {
-                    setEditMode('create');
-                    setSelectedEvent(null);
-                    setModalOpen(true);
-                  }}
-                  className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-                >
-                  建立活動
-                </button>
-              </div>
+              <h3 className="mt-2 text-sm font-medium text-gray-900">
+                {events.length === 0 ? '尚無活動' : '找不到符合條件的活動'}
+              </h3>
+              <p className="mt-1 text-sm text-gray-500">
+                {events.length === 0 ? '開始建立第一個活動吧！' : '請嘗試調整搜尋條件'}
+              </p>
+              {events.length === 0 && (
+                <div className="mt-6">
+                  <button
+                    onClick={() => {
+                      setEditMode('create');
+                      setSelectedEvent(null);
+                      setModalOpen(true);
+                    }}
+                    className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                  >
+                    建立活動
+                  </button>
+                </div>
+              )}
             </div>
           ) : (
             <div className="overflow-x-auto">
@@ -248,7 +312,7 @@ const AdminEventsList: React.FC = () => {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {events.map((event) => (
+                  {filteredEvents.map((event) => (
                     <tr key={event.id} className="hover:bg-gray-50">
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div>
