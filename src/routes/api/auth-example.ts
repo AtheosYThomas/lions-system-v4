@@ -58,24 +58,20 @@ router.get('/members/directory', authMiddleware, membersOrAbove, (req, res) => {
 });
 
 // 範例 8: 多角色權限（秘書或財務）
-router.get('/admin/documents', requireRole(['admin']), (req: Request, res: Response) => {
-  res.json({ message: '管理員文件資源' });
-} 
+router.get('/admin/documents', 
   authMiddleware, 
   requireAnyRole([Role.Secretary, Role.Treasurer, Role.Admin]), 
   (req, res) => {
-    res.json({ message: '文件管理 - 秘書或財務權限' });
+    res.json({ message: '📁 文件管理系統 - 僅限秘書、財務與管理員' });
   }
 );
 
 // 範例 9: 最低副會長權限
-router.get('/admin/policy', requireRole(['admin']), (req: Request, res: Response) => {
-  res.json({ message: '管理員政策資源' });
-} 
+router.get('/admin/policy', 
   authMiddleware, 
   requireMinRole(Role.VicePresident), 
   (req, res) => {
-    res.json({ message: '政策管理 - 副會長或以上權限' });
+    res.json({ message: '📋 政策管理 - 僅限副會長以上' });
   }
 );
 
