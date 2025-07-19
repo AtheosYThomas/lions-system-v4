@@ -1,11 +1,11 @@
 {
-  "timestamp": "2025-07-19T00:06:44.862Z",
+  "timestamp": "2025-07-19T00:07:44.107Z",
   "summary": {
-    "totalIssues": 2,
-    "errors": 2,
+    "totalIssues": 1,
+    "errors": 1,
     "warnings": 0,
     "info": 0,
-    "healthScore": 60
+    "healthScore": 80
   },
   "issues": [
     {
@@ -14,14 +14,6 @@
       "issue": "TypeScript 編譯錯誤",
       "details": "src/types/role.ts(82,37): error TS2345: Argument of type 'Role' is not assignable to parameter of type 'Role.President | Role.Admin'.\n",
       "suggestion": "修正 TypeScript 語法錯誤",
-      "status": "error"
-    },
-    {
-      "category": "Health Check",
-      "severity": "high",
-      "issue": "Health Check 連線失敗",
-      "details": "connect ECONNREFUSED 0.0.0.0:5000",
-      "suggestion": "確認伺服器是否運行",
       "status": "error"
     }
   ]
