@@ -1,11 +1,11 @@
 {
-  "timestamp": "2025-07-19T13:15:16.384Z",
+  "timestamp": "2025-07-19T13:20:47.639Z",
   "summary": {
-    "totalIssues": 3,
-    "errors": 1,
+    "totalIssues": 2,
+    "errors": 0,
     "warnings": 0,
     "info": 2,
-    "healthScore": 70
+    "healthScore": 90
   },
   "issues": [
     {
@@ -23,14 +23,6 @@
       "details": "可能導致環境變數未正確載入",
       "suggestion": "確認 dotenv 已在主程式載入",
       "status": "info"
-    },
-    {
-      "category": "Health Check",
-      "severity": "high",
-      "issue": "Health Check 連線失敗",
-      "details": "connect ECONNREFUSED 127.0.0.1:5000",
-      "suggestion": "確認伺服器是否運行",
-      "status": "error"
     }
   ]
 }
