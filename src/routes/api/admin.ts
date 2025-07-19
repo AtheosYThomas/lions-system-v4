@@ -293,11 +293,21 @@ router.get('/events', async (req, res) => {
   }
 });
 
-// 推送活動報到通知
+// 推送活動報到通知 - 需要幹部權限
 router.post('/event/:id/notify', async (req, res) => {
   try {
+    // 簡化版權限檢查 - 實際部署時可使用更完整的認證
+    const authToken = req.headers['authorization'];
+    if (!authToken || authToken !== 'Bearer admin-token') {
+      return res.status(401).json({
+        error: '需要管理員權限',
+        code: 'ADMIN_REQUIRED',
+        hint: '請在 Authorization header 中提供 "Bearer admin-token"'
+      });
+    }
+
     const { id: eventId } = req.params;
-    const { targetType = 'all' } = req.body; // all, registered, specific
+    const { targetType = 'all', messageType = 'manual_push' } = req.body;
 
     // 檢查活動是否存在
     const event = await eventService.getEventById(eventId);
@@ -351,10 +361,11 @@ router.post('/event/:id/notify', async (req, res) => {
       userIds,
       event.title,
       event.date.toISOString(),
-      eventId
+      eventId,
+      messageType
     );
 
-    // 記錄推播結果（可選）
+    // 記錄推播結果
     console.log(`📢 活動通知推播完成 - ${event.title}`);
     console.log(`📊 推播統計 - 成功: ${pushResult.success}, 失敗: ${pushResult.failed}`);
 
@@ -366,15 +377,53 @@ router.post('/event/:id/notify', async (req, res) => {
         successCount: pushResult.success,
         failedCount: pushResult.failed,
         eventTitle: event.title,
-        targetType: targetType
+        targetType: targetType,
+        messageType: messageType
       },
-      details: pushResult.results
+      details: pushResult.results,
+      pushRecords: pushResult.pushRecords
     });
 
   } catch (error) {
     console.error('推播活動通知失敗:', error);
     res.status(500).json({
       error: '推播失敗',
+      details: error instanceof Error ? error.message : '未知錯誤'
+    });
+  }
+});
+
+// 獲取活動推播記錄
+router.get('/event/:id/push-records', async (req, res) => {
+  try {
+    const { id: eventId } = req.params;
+    const { limit = 50, offset = 0, messageType } = req.query;
+
+    const pushService = require('../../services/pushService').default;
+    
+    const records = await pushService.getEventPushRecords(eventId, {
+      limit: parseInt(limit as string),
+      offset: parseInt(offset as string),
+      messageType: messageType as string
+    });
+
+    const statistics = await pushService.getPushStatistics(eventId);
+
+    res.json({
+      success: true,
+      data: {
+        records: records.records,
+        total: records.total,
+        limit: records.limit,
+        offset: records.offset,
+        statistics
+      }
+    });
+
+  } catch (error) {
+    console.error('獲取推播記錄失敗:', error);
+    res.status(500).json({
+      error: '獲取推播記錄失敗',
       details: error instanceof Error ? error.message : '未知錯誤'
     });
   }
