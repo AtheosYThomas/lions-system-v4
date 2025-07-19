@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-07-19T23:17:32.896Z",
+  "timestamp": "2025-07-19T23:24:56.600Z",
   "summary": {
     "totalIssues": 4,
     "errors": 1,
@@ -12,7 +12,7 @@
       "category": "TypeScript編譯",
       "severity": "high",
       "issue": "TypeScript 編譯錯誤",
-      "details": "src/routes/api/push-resend.ts(63,31): error TS2339: Property 'member' does not exist on type 'PushRecord'.\nsrc/routes/api/push-resend.ts(64,30): error TS2339: Property 'event' does not exist on type 'PushRecord'.\nsrc/routes/api/push-resend.ts(100,29): error TS2339: Property 'member' does not exist on type 'PushRecord'.\nsrc/routes/api/push-resend.ts(101,28): error TS2339: Property 'event' does not exist on type 'PushRecord'.\nsrc/routes/api/push-resend.ts(109,28): error TS2339: Property 'member' does not exist on type 'PushRecord'.\nsrc/routes/api/push-resend.ts(110,30): error TS2339: Property 'member' does not exist on type 'PushRecord'.\nsrc/routes/api/push-resend.ts(111,30): error TS2339: Property 'event' does not exist on type 'PushRecord'.\n",
+      "details": "src/routes/api/push-resend.ts(67,14): error TS18048: 'member' is possibly 'undefined'.\nsrc/routes/api/push-resend.ts(72,54): error TS18048: 'event' is possibly 'undefined'.\nsrc/routes/api/push-resend.ts(72,84): error TS18048: 'event' is possibly 'undefined'.\nsrc/routes/api/push-resend.ts(72,124): error TS18048: 'event' is possibly 'undefined'.\nsrc/routes/api/push-resend.ts(72,150): error TS18048: 'event' is possibly 'undefined'.\nsrc/routes/api/push-resend.ts(74,39): error TS18048: 'member' is possibly 'undefined'.\nsrc/routes/api/push-resend.ts(77,22): error TS2339: Property 'update' does not exist on type 'PushRecordWithRelations'.\nsrc/routes/api/push-resend.ts(81,22): error TS18048: 'member' is possibly 'undefined'.\nsrc/routes/api/push-resend.ts(82,21): error TS18048: 'event' is possibly 'undefined'.\nsrc/routes/api/push-resend.ts(90,21): error TS18048: 'member' is possibly 'undefined'.\nsrc/routes/api/push-resend.ts(91,23): error TS18048: 'member' is possibly 'undefined'.\nsrc/routes/api/push-resend.ts(92,23): error TS18048: 'event' is possibly 'undefined'.\n",
       "suggestion": "修正 TypeScript 語法錯誤",
       "status": "error"
     },
