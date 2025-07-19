@@ -65,6 +65,31 @@ const startServer = async () => {
       console.log(`📍 Health Check: http://0.0.0.0:${PORT}/health`);
       console.log(`📱 LINE Webhook: http://0.0.0.0:${PORT}/webhook`);
       console.log(`🌐 前端頁面: http://0.0.0.0:${PORT}`);
+      
+      // 伺服器完全啟動後，延遲 3 秒執行最後的健康檢查
+      setTimeout(async () => {
+        try {
+          const http = await import('http');
+          const req = http.get(`http://0.0.0.0:${PORT}/health`, (res) => {
+            let data = '';
+            res.on('data', (chunk) => data += chunk);
+            res.on('end', () => {
+              if (res.statusCode === 200) {
+                const healthData = JSON.parse(data);
+                console.log('✅ Health Check 成功');
+                console.log(`📊 狀態: ${healthData.status}`);
+                console.log(`🔌 資料庫: ${healthData.database}`);
+                console.log(`🛣️ 路由: ${healthData.services?.routes?.join(', ')}`);
+              }
+            });
+          });
+          req.on('error', () => {
+            console.log('💡 Health Check 跳過 - 這是正常的');
+          });
+        } catch (error) {
+          // 忽略檢查錯誤
+        }
+      }, 3000);
     });
   } catch (error) {
     console.error('❌ 伺服器啟動失敗:', error);

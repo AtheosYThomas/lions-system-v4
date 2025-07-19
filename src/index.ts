@@ -1,14 +1,7 @@
 import dotenv from 'dotenv';
-import app from './app';
-import sequelize from './config/database';
-import { runDiagnostics } from './diagnosticTool';
 
 // 載入環境變數
 dotenv.config();
 
-// 延遲執行診斷，確保伺服器已完全啟動
-setTimeout(() => {
-  runDiagnostics();
-}, 10000);
-
+// 直接啟動伺服器，診斷工具將在伺服器啟動後執行
 import './server';
