@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 
 interface Event {
@@ -63,7 +62,7 @@ const EventManagement = () => {
         setMessage({ type: 'success', text: '活動建立成功！' });
         setQrCode(result.qrCode);
         setCheckinUrl(result.checkinUrl);
-        
+
         // 重置表單
         setForm({
           title: '',
@@ -120,7 +119,7 @@ const EventManagement = () => {
       {/* 建立活動表單 */}
       <div className="bg-white rounded-lg shadow-md p-6 mb-8">
         <h2 className="text-xl font-semibold mb-4">建立新活動</h2>
-        
+
         <form onSubmit={createEvent} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -280,8 +279,21 @@ const EventManagement = () => {
                     >
                       生成 QR Code
                     </button>
-                    <a
-                      href={`/admin/event/${event.id}/push-history`}
+                    
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default EventManagement;
+```<a
+                      href={`/admin/member/${event.id}/push-history`}
                       className="bg-purple-500 text-white px-3 py-1 rounded text-sm hover:bg-purple-600 transition-colors inline-block"
                     >
                       📨 推播歷史
