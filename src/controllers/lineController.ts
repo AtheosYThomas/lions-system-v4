@@ -1,6 +1,18 @@
 import { Request, Response } from 'express';
 import lineService from '../integrations/line/lineService';
 import { LineWebhookRequestBody } from '../types/line';
+import { isValidLineUserId } from '../utils/validators';
+
+// Helper function to encapsulate userId validation logic
+const validateLineUserId = (userId: string | undefined) => {
+  if (!userId) {
+    return { valid: false, error: 'line_user_id is required' };
+  }
+  if (!isValidLineUserId(userId)) {
+    return { valid: false, error: 'Invalid line_user_id format' };
+  }
+  return { valid: true, error: null };
+};
 
 class LineController {
   /**
@@ -132,11 +144,12 @@ class LineController {
     try {
       const { userId, type = 'event' } = req.body;
 
-      // ✅ 加入 line_user_id 格式驗證
-      if (!userId || !/^U[a-f0-9]{32}$/.test(userId)) {
+      // ✅ 使用驗證工具函式檢查 LINE User ID 格式
+      const validation = validateLineUserId(userId);
+      if (!validation.valid) {
         return res.status(400).json({
           success: false,
-          error: 'Invalid line_user_id format',
+          error: validation.error,
         });
       }
 
@@ -195,11 +208,12 @@ class LineController {
     try {
       const { userId, title, date, imageUrl } = req.body;
 
-      // ✅ 加入 line_user_id 格式驗證
-      if (!userId || !/^U[a-f0-9]{32}$/.test(userId)) {
+      // ✅ 使用驗證工具函式檢查 LINE User ID 格式
+      const validation = validateLineUserId(userId);
+      if (!validation.valid) {
         return res.status(400).json({
           success: false,
-          error: 'Invalid line_user_id format',
+          error: validation.error,
         });
       }
 
