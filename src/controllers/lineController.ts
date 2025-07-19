@@ -88,33 +88,39 @@ class LineController {
       const { userId } = req.params;
       const { message } = req.body;
 
-      if (!userId) {
-        res.status(400).json({ 
-          success: false, 
-          error: 'userId is required' 
+      // ✅ 加入 line_user_id 格式驗證（LINE UID 應開頭為 U，後接 32 位十六進位）
+      if (!userId || !/^U[a-f0-9]{32}$/.test(userId)) {
+        return res.status(400).json({
+          success: false,
+          error: 'Invalid line_user_id format',
         });
-        return;
+      }
+
+      if (!message) {
+        return res.status(400).json({
+          success: false,
+          error: 'Message content is required',
+        });
       }
 
       const result = await lineService.pushMessage(userId, message);
 
       if (result.success) {
-        res.json({ 
-          success: true, 
-          message: 'Push message sent successfully' 
+        res.json({
+          success: true,
+          message: 'Push message sent successfully',
         });
       } else {
-        res.status(500).json({ 
-          success: false, 
-          error: result.error 
+        res.status(500).json({
+          success: false,
+          error: result.error,
         });
       }
-
     } catch (error) {
       console.error('❌ LineController 推播處理錯誤:', error);
-      res.status(500).json({ 
-        success: false, 
-        error: error instanceof Error ? error.message : 'Internal server error' 
+      res.status(500).json({
+        success: false,
+        error: error instanceof Error ? error.message : 'Internal server error',
       });
     }
   }
@@ -126,12 +132,12 @@ class LineController {
     try {
       const { userId, type = 'event' } = req.body;
 
-      if (!userId) {
-        res.status(400).json({ 
-          success: false, 
-          error: 'userId is required' 
+      // ✅ 加入 line_user_id 格式驗證
+      if (!userId || !/^U[a-f0-9]{32}$/.test(userId)) {
+        return res.status(400).json({
+          success: false,
+          error: 'Invalid line_user_id format',
         });
-        return;
       }
 
       let result;
@@ -189,12 +195,19 @@ class LineController {
     try {
       const { userId, title, date, imageUrl } = req.body;
 
-      if (!userId || !title || !date) {
-        res.status(400).json({ 
-          success: false, 
-          error: 'userId, title, and date are required' 
+      // ✅ 加入 line_user_id 格式驗證
+      if (!userId || !/^U[a-f0-9]{32}$/.test(userId)) {
+        return res.status(400).json({
+          success: false,
+          error: 'Invalid line_user_id format',
         });
-        return;
+      }
+
+      if (!title || !date) {
+        return res.status(400).json({
+          success: false,
+          error: 'title and date are required',
+        });
       }
 
       const defaultImageUrl = 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&h=800&q=80';
