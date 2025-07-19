@@ -1,10 +1,10 @@
 {
-  "timestamp": "2025-07-19T13:15:07.436Z",
+  "timestamp": "2025-07-19T21:54:50.525Z",
   "summary": {
-    "total": 113,
-    "pass": 87,
-    "warning": 25,
-    "error": 1
+    "total": 119,
+    "pass": 90,
+    "warning": 27,
+    "error": 2
   },
   "results": [
     {
@@ -40,6 +40,11 @@
       "category": "Source Files",
       "status": "pass",
       "message": "src/routes/api/registration.ts: 語法檢查通過"
+    },
+    {
+      "category": "Source Files",
+      "status": "pass",
+      "message": "src/routes/api/push-scheduler.ts: 語法檢查通過"
     },
     {
       "category": "Source Files",
@@ -153,6 +158,11 @@
     {
       "category": "Source Files",
       "status": "pass",
+      "message": "src/middleware/pushAuthMiddleware.ts: 語法檢查通過"
+    },
+    {
+      "category": "Source Files",
+      "status": "pass",
       "message": "src/middleware/errorHandler.ts: 語法檢查通過"
     },
     {
@@ -187,6 +197,20 @@
       "category": "Source Files",
       "status": "pass",
       "message": "src/models/registration.ts: 語法檢查通過"
+    },
+    {
+      "category": "Source Files",
+      "status": "warning",
+      "message": "src/models/pushRecord.ts: 使用 any 型別可能導致型別安全問題",
+      "suggestions": [
+        "明確定義型別",
+        "使用具體的介面"
+      ]
+    },
+    {
+      "category": "Source Files",
+      "status": "pass",
+      "message": "src/models/pushRecord.ts: 語法檢查通過"
     },
     {
       "category": "Source Files",
@@ -255,6 +279,20 @@
       "category": "Source Files",
       "status": "pass",
       "message": "src/services/registrationService.ts: 語法檢查通過"
+    },
+    {
+      "category": "Source Files",
+      "status": "warning",
+      "message": "src/services/pushService.ts: 使用 any 型別可能導致型別安全問題",
+      "suggestions": [
+        "明確定義型別",
+        "使用具體的介面"
+      ]
+    },
+    {
+      "category": "Source Files",
+      "status": "pass",
+      "message": "src/services/pushService.ts: 語法檢查通過"
     },
     {
       "category": "Source Files",
@@ -564,8 +602,12 @@
     },
     {
       "category": "Environment",
-      "status": "pass",
-      "message": "所有使用的環境變數都已定義"
+      "status": "error",
+      "message": "程式中使用但 .env 中缺少的變數: CRON_TOKEN",
+      "suggestions": [
+        "在 .env 中添加缺少的變數",
+        "檢查變數名稱拼寫"
+      ]
     },
     {
       "category": "Frontend",

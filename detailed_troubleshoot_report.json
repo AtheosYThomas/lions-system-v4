@@ -1,13 +1,29 @@
 {
-  "timestamp": "2025-07-19T13:20:47.639Z",
+  "timestamp": "2025-07-19T21:54:56.751Z",
   "summary": {
-    "totalIssues": 2,
-    "errors": 0,
+    "totalIssues": 4,
+    "errors": 1,
     "warnings": 0,
-    "info": 2,
-    "healthScore": 90
+    "info": 3,
+    "healthScore": 65
   },
   "issues": [
+    {
+      "category": "TypeScript編譯",
+      "severity": "high",
+      "issue": "TypeScript 編譯錯誤",
+      "details": "src/routes/api/push-scheduler.ts(43,7): error TS2322: Type '{ line_user_id: { [OpTypes.not]: null; }; }' is not assignable to type 'WhereOptions<MemberAttributes> | undefined'.\n  Types of property 'line_user_id' are incompatible.\n    Type '{ [OpTypes.not]: null; }' is not assignable to type 'WhereAttributeHashValue<string | undefined>'.\n      Types of property '[Op.not]' are incompatible.\n        Type 'null' is not assignable to type 'string | number | boolean | Date | Fn | Col | Literal | { [OpTypes.col]: string; } | Cast | Buffer<ArrayBufferLike> | WhereOperators<string> | ... 10 more ... | undefined'.\nsrc/routes/api/push-scheduler.ts(159,19): error TS2339: Property 'handle' does not exist on type 'Router'.\nsrc/scripts/createPushRecordsTable.ts(2,10): error TS2614: Module '\"../config/database\"' has no exported member 'sequelize'. Did you mean to use 'import sequelize from \"../config/database\"' instead?\n",
+      "suggestion": "修正 TypeScript 語法錯誤",
+      "status": "error"
+    },
+    {
+      "category": "Routes",
+      "severity": "low",
+      "issue": "src/routes/api/push-scheduler.ts 使用環境變數但未載入 dotenv",
+      "details": "可能導致環境變數未正確載入",
+      "suggestion": "確認 dotenv 已在主程式載入",
+      "status": "info"
+    },
     {
       "category": "Routes",
       "severity": "low",
