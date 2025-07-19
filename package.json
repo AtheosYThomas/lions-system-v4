@@ -8,6 +8,7 @@
     "init-schema": "tsx src/scripts/initSchema.ts",
     "quick-start": "tsx src/scripts/quickStart.ts",
     "build": "tsc",
+    "build:client": "cd client && npm run build",
     "start": "node dist/index.js",
     "test": "tsx src/scripts/test/index.ts",
     "seed": "tsx src/scripts/test/seedMockData.ts",
