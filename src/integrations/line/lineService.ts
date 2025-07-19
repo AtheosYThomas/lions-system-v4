@@ -103,26 +103,10 @@ class LineService {
    */
   private async replyToRegisteredMember(replyToken: string, memberName: string, userMessage: string): Promise<void> {
     try {
-      const replyMessage = {
-        type: 'text' as const,
-        text: `👋 歡迎回來，${memberName}！\n\n您說：${userMessage}\n\n如需使用會員功能，請透過 LIFF 系統操作。`
-      };
-
-      await this.client.replyMessage(replyToken, replyMessage);
-      console.log('✅ 已回應註冊會員');
-    } catch (error) {
-      console.error('❌ 回應註冊會員失敗:', error);
-    }
-  }
-
-  /**
-   * 回應未註冊用戶 - 提供註冊連結
-   */
-  private async replyToUnregisteredUser(replyToken: string, lineUserId: string): Promise<void> {
-    try {
+      // 創建會員專用 Flex Message
       const replyMessage = {
         type: 'flex' as const,
-        altText: '請註冊會員',
+        altText: `歡迎回來，${memberName}！`,
         contents: {
           type: 'bubble' as const,
           body: {
@@ -138,14 +122,26 @@ class LineService {
               },
               {
                 type: 'text' as const,
-                text: '您尚未註冊會員',
+                text: `歡迎回來，${memberName}！`,
                 weight: 'bold' as const,
                 size: 'lg' as const,
                 margin: 'md' as const
               },
               {
+                type: 'separator' as const,
+                margin: 'md' as const
+              },
+              {
                 type: 'text' as const,
-                text: '請點擊下方按鈕完成註冊，即可享受完整的會員服務',
+                text: `您說：「${userMessage}」`,
+                size: 'sm' as const,
+                color: '#666666',
+                wrap: true,
+                margin: 'md' as const
+              },
+              {
+                type: 'text' as const,
+                text: '如需使用會員功能，請點擊下方按鈕進入 LIFF 系統',
                 size: 'sm' as const,
                 color: '#666666',
                 wrap: true,
@@ -161,7 +157,100 @@ class LineService {
                 type: 'button' as const,
                 action: {
                   type: 'uri' as const,
-                  label: '🚀 立即註冊',
+                  label: '🚀 進入會員系統',
+                  uri: `https://liff.line.me/2007739371-aKePV20l`
+                },
+                style: 'primary' as const,
+                color: '#1DB446'
+              }
+            ]
+          }
+        }
+      };
+
+      await this.client.replyMessage(replyToken, replyMessage);
+      console.log('✅ 已回應註冊會員 (Flex Message)');
+    } catch (error) {
+      console.error('❌ 回應註冊會員失敗:', error);
+      // 備用簡單文字回應
+      try {
+        const fallbackMessage = {
+          type: 'text' as const,
+          text: `👋 歡迎回來，${memberName}！\n\n如需使用會員功能，請前往 LIFF 系統。`
+        };
+        await this.client.replyMessage(replyToken, fallbackMessage);
+        console.log('✅ 已發送備用文字回應');
+      } catch (fallbackError) {
+        console.error('❌ 備用回應也失敗:', fallbackError);
+      }
+    }
+  }
+
+  /**
+   * 回應未註冊用戶 - 提供註冊連結
+   */
+  private async replyToUnregisteredUser(replyToken: string, lineUserId: string): Promise<void> {
+    try {
+      const replyMessage = {
+        type: 'flex' as const,
+        altText: '請註冊會員',
+        contents: {
+          type: 'bubble' as const,
+          hero: {
+            type: 'image' as const,
+            url: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&h=800&q=80',
+            size: 'full' as const,
+            aspectRatio: '20:13' as const,
+            aspectMode: 'cover' as const
+          },
+          body: {
+            type: 'box' as const,
+            layout: 'vertical' as const,
+            contents: [
+              {
+                type: 'text' as const,
+                text: '🦁 北大獅子會',
+                weight: 'bold' as const,
+                size: 'xl' as const,
+                color: '#1DB446'
+              },
+              {
+                type: 'text' as const,
+                text: '歡迎您的到來！',
+                weight: 'bold' as const,
+                size: 'lg' as const,
+                margin: 'md' as const
+              },
+              {
+                type: 'separator' as const,
+                margin: 'md' as const
+              },
+              {
+                type: 'text' as const,
+                text: '您尚未註冊為會員',
+                size: 'md' as const,
+                color: '#333333',
+                margin: 'md' as const
+              },
+              {
+                type: 'text' as const,
+                text: '完成註冊後，您將享受：\n• 活動優先報名\n• 會員專屬服務\n• 即時通知與資訊',
+                size: 'sm' as const,
+                color: '#666666',
+                wrap: true,
+                margin: 'sm' as const
+              }
+            ]
+          },
+          footer: {
+            type: 'box' as const,
+            layout: 'vertical' as const,
+            contents: [
+              {
+                type: 'button' as const,
+                action: {
+                  type: 'uri' as const,
+                  label: '🚀 立即註冊會員',
                   uri: `https://liff.line.me/2007739371-aKePV20l`
                 },
                 style: 'primary' as const,
@@ -176,6 +265,17 @@ class LineService {
       console.log('✅ 已回應未註冊用戶，提供註冊連結');
     } catch (error) {
       console.error('❌ 回應未註冊用戶失敗:', error);
+      // 備用簡單回應
+      try {
+        const fallbackMessage = {
+          type: 'text' as const,
+          text: `🦁 北大獅子會\n\n歡迎您！請點擊連結完成註冊：\nhttps://liff.line.me/2007739371-aKePV20l`
+        };
+        await this.client.replyMessage(replyToken, fallbackMessage);
+        console.log('✅ 已發送備用註冊回應');
+      } catch (fallbackError) {
+        console.error('❌ 備用註冊回應也失敗:', fallbackError);
+      }
     }
   }
 

@@ -11,6 +11,6 @@ router.post('/register', registrationController.registerMember);
 router.get('/status/:line_uid', registrationController.checkRegistrationStatus);
 
 // 活動報名 (使用 line_user_id)
-router.post('/', registrationController.registerForEvent);rEvent);
+router.post('/', registrationController.registerForEvent);
 
 export default router;

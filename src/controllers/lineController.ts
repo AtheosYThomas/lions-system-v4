@@ -19,51 +19,65 @@ class LineController {
       const body: LineWebhookRequestBody = req.body;
       console.log('📦 Request body:', JSON.stringify(body, null, 2));
       
+      // 處理空請求體
       if (!body) {
-        console.log('⚠️ 請求體為空');
-        res.status(200).send('OK');
-        return;
+        console.log('⚠️ 請求體為空 - 回應 OK');
+        return res.status(200).json({ status: 'ok', message: 'Empty body received' });
       }
 
+      // 處理 webhook 驗證請求
       if (!body.events) {
         console.log('✅ Webhook 驗證請求（無 events 字段）');
-        res.status(200).send('OK');
-        return;
+        return res.status(200).json({ status: 'ok', message: 'Webhook verification' });
       }
 
+      // 處理空事件陣列
       if (body.events.length === 0) {
         console.log('✅ 空事件陣列 - 可能是測試請求');
-        res.status(200).send('OK');
-        return;
+        return res.status(200).json({ status: 'ok', message: 'Empty events array' });
       }
 
       console.log(`📨 開始處理 ${body.events.length} 個事件`);
-      for (let i = 0; i < body.events.length; i++) {
-        const event = body.events[i];
-        console.log(`📨 事件 ${i + 1}:`, {
+      
+      // 記錄每個事件的詳細資訊
+      body.events.forEach((event, index) => {
+        console.log(`📨 事件 ${index + 1}:`, {
           type: event.type,
           timestamp: event.timestamp,
-          source: event.source
+          source: event.source,
+          replyToken: 'replyToken' in event ? (event.replyToken ? 'Present' : 'Missing') : 'N/A'
         });
-      }
+      });
 
+      // 處理事件
       const result = await lineService.handleWebhookEvents(body.events);
 
       if (!result.success) {
         console.error('❌ LINE 服務處理失敗:', result.error);
+        return res.status(200).json({ 
+          status: 'error', 
+          message: 'Event processing failed',
+          error: result.error
+        });
       } else {
         console.log('✅ LINE webhook 處理成功:', result.message);
+        return res.status(200).json({ 
+          status: 'ok', 
+          message: result.message,
+          processed: body.events.length
+        });
       }
-
-      // LINE webhook 必須回傳 200 狀態碼
-      console.log('📤 回應 LINE Platform: 200 OK');
-      res.status(200).send('OK');
       
     } catch (error) {
       console.error('❌ LineController webhook 處理錯誤:', error);
       console.error('❌ 錯誤堆疊:', error instanceof Error ? error.stack : 'No stack trace');
+      
       // LINE webhook 必須回傳 200，否則會重複發送
-      res.status(200).send('OK');
+      return res.status(200).json({ 
+        status: 'error', 
+        message: 'Internal processing error',
+        error: error instanceof Error ? error.message : 'Unknown error'
+      });
     }
   }
 
