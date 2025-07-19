@@ -52,6 +52,7 @@ class LiffController {
         res.json({
           success: true,
           is_member: true,
+          isMember: true, // 新增相容性欄位
           member_name: member.name,
           member_id: member.id,
           message: `歡迎回來，${member.name}！`
@@ -61,6 +62,7 @@ class LiffController {
         res.json({
           success: true,
           is_member: false,
+          isMember: false, // 新增相容性欄位
           message: '您尚未註冊會員，請完成註冊程序'
         });
       }
