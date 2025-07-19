@@ -1,30 +1,8 @@
-import { DataTypes, Model } from 'sequelize';
+import { DataTypes, Model, Optional } from 'sequelize';
 import sequelize from '../config/database';
 import Member from './member';
 import Event from './event';
-
-interface PushRecordAttributes {
-  id: number;
-  member_id: string;
-  event_id: string;
-  message_type: string;
-  status: 'success' | 'failed';
-  pushed_at: Date;
-  error_message?: string;
-}
-
-interface PushRecordCreationAttributes extends Optional<PushRecordAttributes, 'id' | 'pushed_at'> {}
-
-export interface PushRecordAttributes {
-  id: string;
-  member_id: string;
-  event_id: string;
-  message_type: string;
-  status: string;
-  pushed_at: Date;
-}
-
-export interface PushRecordCreationAttributes extends Omit<PushRecordAttributes, 'id' | 'pushed_at'> {}
+import { PushRecordAttributes, PushRecordCreationAttributes } from '../types/entities';
 
 class PushRecord extends Model<PushRecordAttributes, PushRecordCreationAttributes> 
   implements PushRecordAttributes {
@@ -32,8 +10,9 @@ class PushRecord extends Model<PushRecordAttributes, PushRecordCreationAttribute
   public member_id!: string;
   public event_id!: string;
   public message_type!: string;
-  public status!: string;
+  public status!: 'success' | 'failed';
   public pushed_at!: Date;
+  public error_message?: string;
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
@@ -74,6 +53,10 @@ PushRecord.init(
     pushed_at: {
       type: DataTypes.DATE,
       defaultValue: DataTypes.NOW,
+    },
+    error_message: {
+      type: DataTypes.TEXT,
+      allowNull: true,
     },
   },
   {

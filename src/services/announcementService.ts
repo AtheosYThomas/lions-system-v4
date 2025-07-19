@@ -1,14 +1,10 @@
 import { Announcement } from '../models/announcement';
 import { Member } from '../models/member';
+import Event from '../models/event';
 import { Op } from 'sequelize';
+import { AnnouncementInput } from '../types/entities';
 
-interface AnnouncementInput {
-  title: string;
-  content: string;
-  type: 'general' | 'urgent' | 'event';
-  author_id: string;
-  published_at?: Date;
-}
+
 
 interface AnnouncementCreationData {
   title: string;

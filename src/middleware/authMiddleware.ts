@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { Member } from '../models/member';
 import { AuthError } from './AuthError';
-import { Role } from '../types/role';
 
 // 擴展 Request 介面以包含 member 屬性
 declare global {

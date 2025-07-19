@@ -1,5 +1,6 @@
 
-import { Member, MemberAttributes, MemberCreationAttributes } from '../models/member';
+import { Member, MemberCreationAttributes } from '../models/member';
+import { MemberAttributes } from '../types/entities';
 import { Op } from 'sequelize';
 
 interface MemberSearchOptions {

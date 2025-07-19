@@ -1,15 +1,11 @@
 import Checkin from '../models/checkin';
 import { Member } from '../models/member';
 import Event from '../models/event';
+import Registration from '../models/registration';
 import { Op } from 'sequelize';
+import { CheckinRecord } from '../types/entities';
 
-interface CheckinRecord {
-  id: number;
-  member_id: string;
-  event_id: string;
-  checked_in_at: Date;
-  qr_code?: string;
-}
+
 
 interface CheckinData {
   member_id: string;
