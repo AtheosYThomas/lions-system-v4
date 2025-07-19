@@ -377,6 +377,45 @@ class CheckinService {
       throw error;
     }
   }
+
+  /**
+   * 獲取活動的報名記錄
+   */
+  async getEventRegistrations(eventId: string, options: Partial<CheckinSearchOptions> = {}) {
+    try {
+      const whereClause: any = { event_id: eventId };
+
+      if (options.dateFrom || options.dateTo) {
+        whereClause.created_at = {};
+        if (options.dateFrom) {
+          whereClause.created_at[Op.gte] = options.dateFrom;
+        }
+        if (options.dateTo) {
+          whereClause.created_at[Op.lte] = options.dateTo;
+        }
+      }
+
+      const result = await Registration.findAndCountAll({
+        where: whereClause,
+        include: [
+          { model: Member, as: 'member', attributes: ['id', 'name', 'email', 'phone'] }
+        ],
+        order: [['created_at', 'ASC']],
+        limit: options.limit || 1000,
+        offset: options.offset || 0
+      });
+
+      return {
+        registrations: result.rows,
+        total: result.count,
+        limit: options.limit || 1000,
+        offset: options.offset || 0
+      };
+    } catch (error) {
+      console.error('獲取活動報名記錄失敗:', error);
+      throw error;
+    }
+  }
 }
 
 export default new CheckinService();

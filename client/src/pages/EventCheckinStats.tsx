@@ -1,4 +1,5 @@
 
+
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
@@ -7,7 +8,8 @@ interface Member {
   name: string;
   email: string;
   phone: string;
-  checkedInAt: string;
+  checkedInAt?: string;
+  registeredAt?: string;
   deviceInfo?: string;
 }
 
@@ -17,9 +19,17 @@ interface EventCheckinData {
   eventDate: string;
   eventLocation?: string;
   totalCheckins: number;
+  totalRegistrations: number;
   attendanceRate: number;
   maxAttendees?: number;
   attendees: Member[];
+  notCheckedIn: Member[];
+  hourlyDistribution: { [hour: string]: number };
+  statistics: {
+    onTimeCheckins: number;
+    lateCheckins: number;
+    earlyCheckins: number;
+  };
 }
 
 interface ApiResponse {
@@ -34,6 +44,7 @@ const EventCheckinStats: React.FC = () => {
   const [data, setData] = useState<EventCheckinData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<'checkin' | 'not-checkin' | 'analytics'>('checkin');
 
   useEffect(() => {
     if (!eventId) {
@@ -77,29 +88,51 @@ const EventCheckinStats: React.FC = () => {
     });
   };
 
-  const exportToCsv = () => {
-    if (!data) return;
-
-    const csvContent = [
-      ['姓名', '手機', 'Email', '報到時間', '裝置資訊'],
-      ...data.attendees.map(member => [
-        member.name,
-        member.phone,
-        member.email,
-        formatDateTime(member.checkedInAt),
-        member.deviceInfo || ''
-      ])
-    ].map(row => row.map(field => `"${field}"`).join(',')).join('\n');
-
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const exportToCsv = (type: 'checkin' | 'not-checkin' = 'checkin') => {
+    if (!eventId) return;
+    
+    const url = `/api/admin/event/${eventId}/checkin/export?type=${type}`;
     const link = document.createElement('a');
-    const url = URL.createObjectURL(blob);
-    link.setAttribute('href', url);
-    link.setAttribute('download', `${data.eventTitle}_報到名單.csv`);
-    link.style.visibility = 'hidden';
+    link.href = url;
+    link.download = '';
+    link.style.display = 'none';
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+  };
+
+  const renderHourlyChart = () => {
+    if (!data || !data.hourlyDistribution) return null;
+
+    const hours = Object.keys(data.hourlyDistribution).sort();
+    const maxCount = Math.max(...Object.values(data.hourlyDistribution));
+
+    return (
+      <div className="bg-white rounded-lg shadow-md p-6">
+        <h3 className="text-lg font-semibold text-gray-800 mb-4">報到時間分布</h3>
+        <div className="space-y-2">
+          {hours.map(hour => {
+            const count = data.hourlyDistribution[hour];
+            const percentage = maxCount > 0 ? (count / maxCount) * 100 : 0;
+            
+            return (
+              <div key={hour} className="flex items-center">
+                <div className="w-12 text-sm text-gray-600">{hour}:00</div>
+                <div className="flex-1 mx-3">
+                  <div className="bg-gray-200 rounded-full h-4 relative">
+                    <div 
+                      className="bg-blue-500 rounded-full h-4"
+                      style={{ width: `${percentage}%` }}
+                    ></div>
+                  </div>
+                </div>
+                <div className="w-8 text-sm text-gray-800 font-medium">{count}</div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    );
   };
 
   if (loading) {
@@ -144,7 +177,7 @@ const EventCheckinStats: React.FC = () => {
   }
 
   return (
-    <div className="max-w-6xl mx-auto py-8 px-4">
+    <div className="max-w-7xl mx-auto py-8 px-4">
       {/* 頁面標題 */}
       <div className="mb-6">
         <button 
@@ -160,99 +193,280 @@ const EventCheckinStats: React.FC = () => {
       <div className="bg-white rounded-lg shadow-md p-6 mb-6">
         <h2 className="text-2xl font-semibold text-blue-600 mb-4">{data.eventTitle}</h2>
         
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+        <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-4 mb-4">
           <div className="bg-blue-50 rounded-lg p-4">
             <div className="text-2xl font-bold text-blue-600">{data.totalCheckins}</div>
-            <div className="text-sm text-gray-600">總報到人數</div>
+            <div className="text-sm text-gray-600">已報到人數</div>
           </div>
           
-          {data.maxAttendees && (
-            <div className="bg-green-50 rounded-lg p-4">
-              <div className="text-2xl font-bold text-green-600">{data.attendanceRate.toFixed(1)}%</div>
-              <div className="text-sm text-gray-600">報到率</div>
-            </div>
-          )}
+          <div className="bg-orange-50 rounded-lg p-4">
+            <div className="text-2xl font-bold text-orange-600">{data.notCheckedIn.length}</div>
+            <div className="text-sm text-gray-600">未報到人數</div>
+          </div>
+          
+          <div className="bg-green-50 rounded-lg p-4">
+            <div className="text-2xl font-bold text-green-600">{data.attendanceRate.toFixed(1)}%</div>
+            <div className="text-sm text-gray-600">報到率</div>
+          </div>
           
           <div className="bg-purple-50 rounded-lg p-4">
-            <div className="text-sm font-medium text-purple-600">活動時間</div>
-            <div className="text-sm text-gray-600">{formatDateTime(data.eventDate)}</div>
+            <div className="text-sm font-medium text-purple-600">報名總數</div>
+            <div className="text-xl font-bold text-purple-600">{data.totalRegistrations}</div>
           </div>
           
-          {data.eventLocation && (
-            <div className="bg-orange-50 rounded-lg p-4">
-              <div className="text-sm font-medium text-orange-600">活動地點</div>
-              <div className="text-sm text-gray-600">{data.eventLocation}</div>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* 操作按鈕 */}
-      <div className="mb-6">
-        <button
-          onClick={exportToCsv}
-          className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors"
-        >
-          📊 匯出 CSV
-        </button>
-      </div>
-
-      {/* 報到會員清單 */}
-      <div className="bg-white rounded-lg shadow-md overflow-hidden">
-        <div className="px-6 py-4 bg-gray-50 border-b">
-          <h3 className="text-lg font-semibold text-gray-800">
-            報到會員清單 ({data.attendees.length} 位)
-          </h3>
-        </div>
-
-        {data.attendees.length === 0 ? (
-          <div className="text-center py-12">
-            <div className="text-gray-400 text-6xl mb-4">👥</div>
-            <p className="text-gray-500">尚無會員報到</p>
+          <div className="bg-gray-50 rounded-lg p-4">
+            <div className="text-sm font-medium text-gray-600">活動時間</div>
+            <div className="text-sm text-gray-600">{formatDateTime(data.eventDate)}</div>
           </div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    姓名
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    手機
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Email
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    報到時間
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {data.attendees.map((member, index) => (
-                  <tr key={member.id} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-gray-900">{member.name}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">{member.phone || '-'}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">{member.email || '-'}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">{formatDateTime(member.checkedInAt)}</div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+        </div>
+
+        {data.eventLocation && (
+          <div className="mt-4 p-3 bg-gray-50 rounded">
+            <span className="text-sm font-medium text-gray-600">活動地點：</span>
+            <span className="text-sm text-gray-800">{data.eventLocation}</span>
           </div>
         )}
       </div>
+
+      {/* 標籤頁導航 */}
+      <div className="mb-6">
+        <nav className="flex space-x-8">
+          <button
+            onClick={() => setActiveTab('checkin')}
+            className={`py-2 px-1 border-b-2 font-medium text-sm ${
+              activeTab === 'checkin'
+                ? 'border-blue-500 text-blue-600'
+                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+            }`}
+          >
+            已報到名單 ({data.attendees.length})
+          </button>
+          <button
+            onClick={() => setActiveTab('not-checkin')}
+            className={`py-2 px-1 border-b-2 font-medium text-sm ${
+              activeTab === 'not-checkin'
+                ? 'border-orange-500 text-orange-600'
+                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+            }`}
+          >
+            未報到名單 ({data.notCheckedIn.length})
+          </button>
+          <button
+            onClick={() => setActiveTab('analytics')}
+            className={`py-2 px-1 border-b-2 font-medium text-sm ${
+              activeTab === 'analytics'
+                ? 'border-purple-500 text-purple-600'
+                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+            }`}
+          >
+            統計分析
+          </button>
+        </nav>
+      </div>
+
+      {/* 操作按鈕 */}
+      <div className="mb-6 flex gap-3">
+        <button
+          onClick={() => exportToCsv('checkin')}
+          className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors"
+        >
+          📊 匯出已報到 CSV
+        </button>
+        <button
+          onClick={() => exportToCsv('not-checkin')}
+          className="px-4 py-2 bg-orange-500 text-white rounded hover:bg-orange-600 transition-colors"
+        >
+          📋 匯出未報到 CSV
+        </button>
+      </div>
+
+      {/* 標籤頁內容 */}
+      {activeTab === 'checkin' && (
+        <div className="bg-white rounded-lg shadow-md overflow-hidden">
+          <div className="px-6 py-4 bg-gray-50 border-b">
+            <h3 className="text-lg font-semibold text-gray-800">
+              已報到會員名單 ({data.attendees.length} 位)
+            </h3>
+          </div>
+
+          {data.attendees.length === 0 ? (
+            <div className="text-center py-12">
+              <div className="text-gray-400 text-6xl mb-4">👥</div>
+              <p className="text-gray-500">尚無會員報到</p>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      姓名
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      手機
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Email
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      報到時間
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {data.attendees.map((member, index) => (
+                    <tr key={member.id} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm font-medium text-gray-900">{member.name}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-900">{member.phone || '-'}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-900">{member.email || '-'}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-900">
+                          {member.checkedInAt && formatDateTime(member.checkedInAt)}
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      )}
+
+      {activeTab === 'not-checkin' && (
+        <div className="bg-white rounded-lg shadow-md overflow-hidden">
+          <div className="px-6 py-4 bg-gray-50 border-b">
+            <h3 className="text-lg font-semibold text-gray-800">
+              未報到會員名單 ({data.notCheckedIn.length} 位)
+            </h3>
+          </div>
+
+          {data.notCheckedIn.length === 0 ? (
+            <div className="text-center py-12">
+              <div className="text-green-400 text-6xl mb-4">✅</div>
+              <p className="text-green-600 font-medium">所有報名會員都已報到！</p>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      姓名
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      手機
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Email
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      報名時間
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      狀態
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {data.notCheckedIn.map((member, index) => (
+                    <tr key={member.id} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm font-medium text-gray-900">{member.name}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-900">{member.phone || '-'}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-900">{member.email || '-'}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-900">
+                          {member.registeredAt && formatDateTime(member.registeredAt)}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                          未報到
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      )}
+
+      {activeTab === 'analytics' && (
+        <div className="space-y-6">
+          {renderHourlyChart()}
+          
+          <div className="grid md:grid-cols-2 gap-6">
+            <div className="bg-white rounded-lg shadow-md p-6">
+              <h3 className="text-lg font-semibold text-gray-800 mb-4">報到統計摘要</h3>
+              <div className="space-y-3">
+                <div className="flex justify-between">
+                  <span className="text-gray-600">總報名人數：</span>
+                  <span className="font-medium">{data.totalRegistrations} 人</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">已報到人數：</span>
+                  <span className="font-medium text-green-600">{data.totalCheckins} 人</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">未報到人數：</span>
+                  <span className="font-medium text-red-600">{data.notCheckedIn.length} 人</span>
+                </div>
+                <div className="flex justify-between border-t pt-3">
+                  <span className="text-gray-600">報到率：</span>
+                  <span className="font-bold text-blue-600">{data.attendanceRate.toFixed(1)}%</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-lg shadow-md p-6">
+              <h3 className="text-lg font-semibold text-gray-800 mb-4">報到狀態分布</h3>
+              <div className="space-y-4">
+                <div className="relative">
+                  <div className="flex justify-between text-sm mb-1">
+                    <span>已報到</span>
+                    <span>{data.attendanceRate.toFixed(1)}%</span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-3">
+                    <div 
+                      className="bg-green-500 h-3 rounded-full"
+                      style={{ width: `${data.attendanceRate}%` }}
+                    ></div>
+                  </div>
+                </div>
+                <div className="relative">
+                  <div className="flex justify-between text-sm mb-1">
+                    <span>未報到</span>
+                    <span>{(100 - data.attendanceRate).toFixed(1)}%</span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-3">
+                    <div 
+                      className="bg-red-500 h-3 rounded-full"
+                      style={{ width: `${100 - data.attendanceRate}%` }}
+                    ></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
 export default EventCheckinStats;
+
