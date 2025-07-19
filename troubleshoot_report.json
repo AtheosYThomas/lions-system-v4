@@ -1,8 +1,8 @@
 {
-  "timestamp": "2025-07-19T13:03:06.110Z",
+  "timestamp": "2025-07-19T13:07:52.016Z",
   "summary": {
-    "total": 111,
-    "pass": 85,
+    "total": 113,
+    "pass": 87,
     "warning": 25,
     "error": 1
   },
@@ -656,6 +656,16 @@
       "category": "Frontend",
       "status": "pass",
       "message": "client/src/pages/Admin.tsx: 語法檢查通過"
+    },
+    {
+      "category": "Frontend",
+      "status": "pass",
+      "message": "client/src/components/admin/index.ts: 語法檢查通過"
+    },
+    {
+      "category": "Frontend",
+      "status": "pass",
+      "message": "client/src/components/admin/EventModal.tsx: 語法檢查通過"
     },
     {
       "category": "Health Check",
