@@ -24,6 +24,23 @@ router.post('/check-member', async (req, res) => {
 });
 
 /**
+ * POST /api/liff/checkMember
+ * 檢查會員身份（別名路由，相容性支援）
+ */
+router.post('/checkMember', async (req, res) => {
+  try {
+    await liffController.checkMember(req, res);
+  } catch (error) {
+    console.error('❌ LIFF checkMember 錯誤:', error);
+    res.status(500).json({
+      success: false,
+      error: 'LIFF 服務錯誤',
+      details: error instanceof Error ? error.message : '未知錯誤'
+    });
+  }
+});
+
+/**
  * POST /api/liff/register
  * 註冊新會員
  */
