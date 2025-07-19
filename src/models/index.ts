@@ -1,3 +1,4 @@
+
 import Event from './event';
 import Member from './member';
 import Registration from './registration';
@@ -249,16 +250,3 @@ Member (會員):
   - SET NULL: 主記錄刪除時相關欄位設為 NULL
   - LINE UID 關聯: Member.line_uid <-> MessageLog.user_id
 */
-export { 
-  sequelize, 
-  Member, 
-  Event, 
-  Registration, 
-  Checkin, 
-  Payment, 
-  MessageLog, 
-  LiffSession, 
-  Announcement,
-  File,
-  PushRecord
-};

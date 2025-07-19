@@ -366,22 +366,16 @@ const AdminEventsList: React.FC = () => {
                               try {
                                 const response = await fetch(`/api/admin/event/${event.id}/notify`, {
                                   method: 'POST',
-                                  headers: { 
-                                    'Content-Type': 'application/json',
-                                    'Authorization': 'Bearer admin-token'
-                                  },
-                                  body: JSON.stringify({ 
-                                    targetType: 'all',
-                                    messageType: 'manual_push'
-                                  })
+                                  headers: { 'Content-Type': 'application/json' },
+                                  body: JSON.stringify({ targetType: 'all' })
                                 });
                                 
                                 const result = await response.json();
                                 
                                 if (response.ok) {
-                                  alert(`📢 推播完成！\n✅ 成功: ${result.statistics.successCount}\n❌ 失敗: ${result.statistics.failedCount}\n📊 推播記錄: ${result.pushRecords.length} 筆`);
+                                  alert(`📢 推播完成！\n✅ 成功: ${result.statistics.successCount}\n❌ 失敗: ${result.statistics.failedCount}`);
                                 } else {
-                                  alert(`推播失敗：${result.error}${result.hint ? '\n提示：' + result.hint : ''}`);
+                                  alert(`推播失敗：${result.error}`);
                                 }
                               } catch (error) {
                                 alert('推播過程發生錯誤');

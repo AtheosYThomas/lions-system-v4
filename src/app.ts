@@ -85,10 +85,6 @@ app.use('/api/liff', liffRoutes);
 app.use('/api/upload', uploadRouter);
 app.use('/api/events', eventsRoutes);
 
-// 排程推播路由
-import pushSchedulerRoutes from './routes/api/push-scheduler';
-app.use('/api/push', pushSchedulerRoutes);
-
 // 前端路由（提供 React 應用）
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../client/dist/index.html'));
