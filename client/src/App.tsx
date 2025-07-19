@@ -11,6 +11,7 @@ import EventCheckinStats from './pages/EventCheckinStats';
 import AdminEventsList from './pages/AdminEventsList';
 import NotFoundPage from './pages/NotFoundPage';
 import CheckinEvent from './pages/CheckinEvent'; //Import the new Component
+import PushHistory from './pages/PushHistory';
 
 function App() {
   return (
@@ -25,7 +26,9 @@ function App() {
           <Route path="/checkin-confirm" element={<CheckinConfirm />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/admin/events" element={<AdminEventsList />} />
-          <Route path="/admin/event/:eventId/checkin" element={<EventCheckinStats />} />
+          <Route path="/admin/event/:eventId/checkin" element={<CheckinEvent />} />
+          <Route path="/admin/event/:eventId/stats" element={<EventCheckinStats />} />
+          <Route path="/admin/event/:eventId/push-history" element={<PushHistory />} />
           <Route path="/events" element={<EventManagement />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>

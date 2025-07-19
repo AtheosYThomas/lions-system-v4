@@ -273,12 +273,20 @@ const EventManagement = () => {
                       <p className="text-sm text-gray-500">最大參與人數：{event.max_attendees}</p>
                     )}
                   </div>
-                  <button
-                    onClick={() => generateQRForEvent(event.id)}
-                    className="bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600 transition-colors"
-                  >
-                    生成 QR Code
-                  </button>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => generateQRForEvent(event.id)}
+                      className="bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600 transition-colors"
+                    >
+                      生成 QR Code
+                    </button>
+                    <a
+                      href={`/admin/event/${event.id}/push-history`}
+                      className="bg-purple-500 text-white px-3 py-1 rounded text-sm hover:bg-purple-600 transition-colors inline-block"
+                    >
+                      📨 推播歷史
+                    </a>
+                  </div>
                 </div>
               </div>
             ))}
