@@ -59,7 +59,7 @@ function validateLineSignature(req: express.Request, res: express.Response, next
 }
 
 // LINE webhook POST 事件處理（使用自定義簽名驗證）
-router.post('/',
+router.post('/webhook',
   express.json({ limit: '10mb' }), // 增加請求大小限制
   validateLineSignature,
   async (req, res) => {
