@@ -28,6 +28,7 @@ app.use((req, res, next) => {
   }
 });
 
+// React 前端靜態文件服務
 app.use(express.static(path.join(__dirname, '../client/dist')));
 
 // Health Check 路由
@@ -67,10 +68,6 @@ app.get('/api/system/status', (req, res) => {
   });
 });
 
-// 靜態檔案服務（需要在其他路由之前）
-app.use('/public', express.static(path.join(__dirname, '../public')));
-app.use(express.static(path.join(__dirname, '../public')));
-
 // LINE Webhook 路由（優先處理）
 app.use('/webhook', lineWebhook);
 
@@ -90,6 +87,22 @@ app.get('/', (req, res) => {
 // 其他靜態路由 - 支援 SPA 路由
 app.get(['/admin', '/register', '/checkin', '/profile'], (req, res) => {
   res.sendFile(path.join(__dirname, '../client/dist/index.html'));
+});
+
+// SPA 路由支援 - 所有非 API 路由都返回 React 應用
+app.get('*', (req, res) => {
+  // 排除 API 路由
+  if (req.path.startsWith('/api/') || req.path.startsWith('/webhook')) {
+    return res.status(404).json({ error: 'API route not found' });
+  }
+
+  // 返回 React 應用的 index.html
+  res.sendFile(path.join(__dirname, '../client/dist/index.html'));
+});
+
+// API 404 處理
+app.use('/api/*', (req, res) => {
+  res.status(404).json({ error: 'API route not found' });
 });
 
 // 錯誤處理

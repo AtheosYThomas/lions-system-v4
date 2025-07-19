@@ -7,6 +7,7 @@ import Profile from './pages/Profile';
 import Checkin from './pages/Checkin';
 import Admin from './pages/Admin';
 import NotFoundPage from './pages/NotFoundPage';
+import LiffPage from './pages/LiffPage';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/liff" element={<LiffPage />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/checkin" element={<Checkin />} />
           <Route path="/admin" element={<Admin />} />
