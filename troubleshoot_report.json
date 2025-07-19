@@ -1,8 +1,8 @@
 {
-  "timestamp": "2025-07-19T12:59:39.889Z",
+  "timestamp": "2025-07-19T13:03:06.110Z",
   "summary": {
-    "total": 110,
-    "pass": 84,
+    "total": 111,
+    "pass": 85,
     "warning": 25,
     "error": 1
   },
@@ -646,6 +646,11 @@
       "category": "Frontend",
       "status": "pass",
       "message": "client/src/pages/Checkin.tsx: 語法檢查通過"
+    },
+    {
+      "category": "Frontend",
+      "status": "pass",
+      "message": "client/src/pages/AdminEventsList.tsx: 語法檢查通過"
     },
     {
       "category": "Frontend",
