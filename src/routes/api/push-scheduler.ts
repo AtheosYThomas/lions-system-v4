@@ -1,4 +1,3 @@
-
 import express from 'express';
 import pushService from '../../services/pushService';
 import lineService from '../../integrations/line/lineService';
@@ -26,7 +25,7 @@ router.post('/checkin-reminder', async (req, res) => {
 
     // 獲取明日活動
     const tomorrowEvents = await pushService.getTomorrowEvents();
-    
+
     if (tomorrowEvents.length === 0) {
       console.log('📅 明日無活動，跳過推播');
       return res.json({
@@ -42,7 +41,9 @@ router.post('/checkin-reminder', async (req, res) => {
     const members = await Member.findAll({
       where: {
         line_user_id: {
-          [Op.ne]: null
+          [Op.not]: {
+            [Op.is]: null
+          }
         }
       },
       attributes: ['id', 'name', 'line_user_id']
@@ -151,12 +152,12 @@ router.post('/test-checkin-reminder', async (req, res) => {
   try {
     // 設定測試用 token
     req.headers['x-cron-token'] = 'cron-secret-token';
-    
+
     console.log('🕐 開始執行明日活動推播提醒（測試模式）...');
 
     // 獲取明日活動
     const tomorrowEvents = await pushService.getTomorrowEvents();
-    
+
     if (tomorrowEvents.length === 0) {
       console.log('📅 明日無活動，跳過推播');
       return res.json({
@@ -172,7 +173,9 @@ router.post('/test-checkin-reminder', async (req, res) => {
     const members = await Member.findAll({
       where: {
         line_user_id: {
-          [Op.ne]: null
+          [Op.not]: {
+            [Op.is]: null
+          }
         }
       },
       attributes: ['id', 'name', 'line_user_id']
