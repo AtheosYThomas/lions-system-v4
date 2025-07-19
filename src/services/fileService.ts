@@ -29,7 +29,17 @@ interface FileSearchOptions {
   offset?: number;
 }
 
-import { UploadFile } from '../types/entities';
+interface UploadFile {
+  fieldname: string;
+  originalname: string;
+  encoding: string;
+  mimetype: string;
+  destination: string;
+  filename: string;
+  path: string;
+  size: number;
+  buffer?: Buffer;
+}
 
 class FileService {
   /**

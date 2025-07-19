@@ -1,10 +1,14 @@
 import { Announcement } from '../models/announcement';
 import { Member } from '../models/member';
-import EventModel from '../models/event';
 import { Op } from 'sequelize';
-import { AnnouncementInput } from '../types/entities';
 
-
+interface AnnouncementInput {
+  title: string;
+  content: string;
+  type: 'general' | 'urgent' | 'event';
+  author_id: string;
+  published_at?: Date;
+}
 
 interface AnnouncementCreationData {
   title: string;
@@ -54,7 +58,7 @@ class AnnouncementService {
 
       // 驗證相關活動是否存在（如果提供）
       if (announcementData.related_event_id) {
-        const event = await EventModel.findByPk(announcementData.related_event_id);
+        const event = await Event.findByPk(announcementData.related_event_id);
         if (!event) {
           throw new Error('相關活動不存在');
         }
@@ -91,7 +95,7 @@ class AnnouncementService {
       return await Announcement.findByPk(announcement.id, {
         include: [
           { model: Member, as: 'creator', attributes: ['id', 'name', 'email'] },
-          { model: EventModel, as: 'relatedEvent', attributes: ['id', 'title', 'date', 'location'] }
+          { model: Event, as: 'relatedEvent', attributes: ['id', 'title', 'date', 'location'] }
         ]
       }) as Announcement;
 
@@ -109,7 +113,7 @@ class AnnouncementService {
       return await Announcement.findByPk(id, {
         include: [
           { model: Member, as: 'creator', attributes: ['id', 'name', 'email'] },
-          { model: EventModel, as: 'relatedEvent', attributes: ['id', 'title', 'date', 'location'] }
+          { model: Event, as: 'relatedEvent', attributes: ['id', 'title', 'date', 'location'] }
         ]
       });
     } catch (error) {
@@ -175,7 +179,7 @@ class AnnouncementService {
         where: whereClause,
         include: [
           { model: Member, as: 'creator', attributes: ['id', 'name', 'email'], required: false },
-          { model: EventModel, as: 'relatedEvent', attributes: ['id', 'title', 'date', 'location'], required: false }
+          { model: Event, as: 'relatedEvent', attributes: ['id', 'title', 'date', 'location'], required: false }
         ],
         order: [
           ['published_at', 'DESC'],
@@ -210,7 +214,7 @@ class AnnouncementService {
 
       // 驗證相關活動是否存在（如果要更新）
       if (updateData.related_event_id) {
-        const event = await EventModel.findByPk(updateData.related_event_id);
+        const event = await Event.findByPk(updateData.related_event_id);
         if (!event) {
           throw new Error('相關活動不存在');
         }
@@ -239,7 +243,7 @@ class AnnouncementService {
       return await Announcement.findByPk(announcement.id, {
         include: [
           { model: Member, as: 'creator', attributes: ['id', 'name', 'email'] },
-          { model: EventModel, as: 'relatedEvent', attributes: ['id', 'title', 'date', 'location'] }
+          { model: Event, as: 'relatedEvent', attributes: ['id', 'title', 'date', 'location'] }
         ]
       }) as Announcement;
 
@@ -352,7 +356,7 @@ class AnnouncementService {
       const announcements = await Announcement.findAll({
         where: whereClause,
         include: [
-          { model: EventModel, as: 'relatedEvent', attributes: ['id', 'title', 'date', 'location'], required: false }
+          { model: Event, as: 'relatedEvent', attributes: ['id', 'title', 'date', 'location'], required: false }
         ],
         order: [['published_at', 'DESC']],
         limit
@@ -378,7 +382,7 @@ class AnnouncementService {
           is_visible: true
         },
         include: [
-          { model: EventModel, as: 'relatedEvent', attributes: ['id', 'title', 'date'], required: false }
+          { model: Event, as: 'relatedEvent', attributes: ['id', 'title', 'date'], required: false }
         ],
         order: [['published_at', 'DESC']],
         limit
@@ -486,8 +490,7 @@ class AnnouncementService {
           is_visible: true
         },
         include: [
-          { model: Member, as: 'creator', attributes: ['id', 'name'] },
-          { model: EventModel, as: 'relatedEvent', attributes: ['id', 'title', 'date', 'location'], required: false }
+          { model: Member, as: 'creator', attributes: ['id', 'name'] }
         ],
         order: [['published_at', 'DESC']]
       });

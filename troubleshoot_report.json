@@ -1,9 +1,9 @@
 {
-  "timestamp": "2025-07-19T23:55:48.927Z",
+  "timestamp": "2025-07-19T23:53:08.221Z",
   "summary": {
-    "total": 118,
+    "total": 122,
     "pass": 97,
-    "warning": 20,
+    "warning": 24,
     "error": 1
   },
   "results": [
@@ -359,6 +359,15 @@
     },
     {
       "category": "Source Files",
+      "status": "warning",
+      "message": "src/services/announcementService.ts: 可能有未使用的 import: AnnouncementAttributes",
+      "suggestions": [
+        "移除未使用的 import",
+        "檢查程式碼使用情況"
+      ]
+    },
+    {
+      "category": "Source Files",
       "status": "pass",
       "message": "src/services/announcementService.ts: 語法檢查通過"
     },
@@ -456,7 +465,34 @@
     {
       "category": "Source Files",
       "status": "warning",
-      "message": "src/utils/diagnostics/systemCheck.ts: 可能有未使用的 import: Announcement",
+      "message": "src/utils/diagnostics/systemCheck.ts: 可能有未使用的 import: Member",
+      "suggestions": [
+        "移除未使用的 import",
+        "檢查程式碼使用情況"
+      ]
+    },
+    {
+      "category": "Source Files",
+      "status": "warning",
+      "message": "src/utils/diagnostics/systemCheck.ts: 可能有未使用的 import: Event",
+      "suggestions": [
+        "移除未使用的 import",
+        "檢查程式碼使用情況"
+      ]
+    },
+    {
+      "category": "Source Files",
+      "status": "warning",
+      "message": "src/utils/diagnostics/systemCheck.ts: 可能有未使用的 import: Registration",
+      "suggestions": [
+        "移除未使用的 import",
+        "檢查程式碼使用情況"
+      ]
+    },
+    {
+      "category": "Source Files",
+      "status": "warning",
+      "message": "src/utils/diagnostics/systemCheck.ts: 可能有未使用的 import: Checkin",
       "suggestions": [
         "移除未使用的 import",
         "檢查程式碼使用情況"

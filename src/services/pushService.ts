@@ -10,13 +10,18 @@ interface PushStatistics {
   successRate: number;
 }
 
-import { PushRecordCreationAttributes } from '../types/entities';
+interface PushRecordData {
+  member_id: string;
+  event_id: string;
+  message_type: string;
+  status: 'success' | 'failed';
+}
 
 class PushService {
   /**
    * 記錄推播結果
    */
-  async recordPushResult(data: PushRecordCreationAttributes): Promise<PushRecord> {
+  async recordPushResult(data: PushRecordData): Promise<PushRecord> {
     try {
       return await PushRecord.create(data);
     } catch (error) {
@@ -28,7 +33,7 @@ class PushService {
   /**
    * 批量記錄推播結果
    */
-  async recordBulkPushResults(records: PushRecordCreationAttributes[]): Promise<PushRecord[]> {
+  async recordBulkPushResults(records: PushRecordData[]): Promise<PushRecord[]> {
     try {
       return await PushRecord.bulkCreate(records);
     } catch (error) {

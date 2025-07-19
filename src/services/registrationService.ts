@@ -1,7 +1,6 @@
 import { Registration } from '../models/registration';
 import Event from '../models/event';
 import { Member } from '../models/member';
-import { RegistrationInput } from '../types/entities';
 import { Op } from 'sequelize';
 
 interface RegistrationData {
