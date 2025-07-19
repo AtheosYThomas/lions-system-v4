@@ -1,8 +1,8 @@
 {
-  "timestamp": "2025-07-19T12:18:03.744Z",
+  "timestamp": "2025-07-19T12:21:05.348Z",
   "summary": {
-    "total": 102,
-    "pass": 76,
+    "total": 104,
+    "pass": 78,
     "warning": 25,
     "error": 1
   },
@@ -570,6 +570,11 @@
     {
       "category": "Frontend",
       "status": "pass",
+      "message": "public/checkin-confirm.html: 包含必要資源"
+    },
+    {
+      "category": "Frontend",
+      "status": "pass",
       "message": "發現前端目錄: client/src"
     },
     {
@@ -601,6 +606,11 @@
       "category": "Frontend",
       "status": "pass",
       "message": "client/src/pages/Home.tsx: 語法檢查通過"
+    },
+    {
+      "category": "Frontend",
+      "status": "pass",
+      "message": "client/src/pages/CheckinConfirm.tsx: 語法檢查通過"
     },
     {
       "category": "Frontend",

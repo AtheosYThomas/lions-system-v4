@@ -1,0 +1,156 @@
+擴充架構總覽
+功能	說明
+eventId 傳入與報到綁定	每場活動唯一編號 eventId
+checkinRecord 限制每會員每場活動只能報到一次	
+建立活動 /create-event 並生成 QR Code（含 eventId）	
+報到頁 /checkin/[eventId].tsx 動態顯示報到狀況	
+
+✅ 1️⃣ Prisma 模型已支援 eventId（前面已設定）
+prisma
+複製
+編輯
+@@unique([memberId, eventId])
+✅ 2️⃣ 動態報到頁 /client/pages/checkin/[eventId].tsx
+tsx
+複製
+編輯
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
+
+const DynamicCheckin = () => {
+  const router = useRouter();
+  const { eventId } = router.query;
+  const [status, setStatus] = useState<'checking' | 'success' | 'already' | 'error'>('checking');
+  const [message, setMessage] = useState('');
+
+  useEffect(() => {
+    const checkin = async () => {
+      if (!eventId || Array.isArray(eventId)) return;
+
+      try {
+        await window.liff.init({ liffId: process.env.NEXT_PUBLIC_LIFF_ID! });
+        if (!window.liff.isLoggedIn()) {
+          window.liff.login();
+          return;
+        }
+
+        const lineUserId = window.liff.getContext()?.userId;
+        if (!lineUserId) {
+          setStatus('error');
+          setMessage('無法取得 LINE 使用者資訊');
+          return;
+        }
+
+        const res = await fetch('/api/liff/checkin', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ line_user_id: lineUserId, eventId }),
+        });
+
+        const result = await res.json();
+        if (res.ok) {
+          setStatus('success');
+        } else if (res.status === 409) {
+          setStatus('already');
+        } else {
+          setStatus('error');
+          setMessage(result?.error || '報到失敗');
+        }
+      } catch (err) {
+        setStatus('error');
+        setMessage('發生錯誤，請稍後再試');
+      }
+    };
+
+    if (eventId) checkin();
+  }, [eventId]);
+
+  return (
+    <div className="flex flex-col items-center justify-center h-screen text-center px-4">
+      {status === 'checking' && <p>正在驗證報到...</p>}
+      {status === 'success' && <h1 className="text-2xl text-green-600">✅ 報到成功</h1>}
+      {status === 'already' && <h1 className="text-2xl text-yellow-600">⚠️ 已完成報到</h1>}
+      {status === 'error' && (
+        <>
+          <h1 className="text-2xl text-red-600">❌ 報到失敗</h1>
+          <p>{message}</p>
+        </>
+      )}
+    </div>
+  );
+};
+
+export default DynamicCheckin;
+✅ 3️⃣ API /api/liff/checkin.ts 已支援 eventId（前面已實作）
+✅ 4️⃣ 產生活動 QR Code（內嵌 /checkin/{eventId}）
+安裝套件（若尚未安裝）：
+
+bash
+複製
+編輯
+npm install qrcode
+建立後端產生報到用連結的 QR Code：
+
+ts
+複製
+編輯
+// utils/qrcode.ts
+import QRCode from 'qrcode';
+
+export async function generateQRCode(eventId: string) {
+  const url = `https://service.peida.net/checkin/${eventId}`;
+  return await QRCode.toDataURL(url);
+}
+✅ 5️⃣ 建立 /api/event/create.ts（建立活動與回傳 QR Code）
+ts
+複製
+編輯
+// /pages/api/event/create.ts
+import { NextApiRequest, NextApiResponse } from 'next';
+import { prisma } from '@/lib/prisma';
+import { generateQRCode } from '@/utils/qrcode';
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  if (req.method !== 'POST') return res.status(405).json({ error: 'Method Not Allowed' });
+
+  const { title, date } = req.body;
+  if (!title || !date) return res.status(400).json({ error: '缺少資料' });
+
+  try {
+    const newEvent = await prisma.event.create({
+      data: { title, date: new Date(date) },
+    });
+
+    const qr = await generateQRCode(newEvent.id);
+    res.status(200).json({ event: newEvent, qrCodeDataUrl: qr });
+  } catch (err) {
+    res.status(500).json({ error: '建立活動失敗' });
+  }
+}
+✨ 你可以將 QR code Data URL 回傳給管理者下載、印出或整合 LINE Flex Message 發送。
+
+✅ 6️⃣ 活動資料表（如尚未建立）
+若你尚未建活動資料表，請加入：
+
+prisma
+複製
+編輯
+model Event {
+  id        String   @id @default(cuid())
+  title     String
+  date      DateTime
+  createdAt DateTime @default(now())
+
+  checkinRecords CheckinRecord[]
+}
+並執行：
+
+bash
+複製
+編輯
+npx prisma migrate dev --name add_event_table
+✅ 測試流程
+操作	說明
+建立活動 /api/event/create	傳入 title + date
+回傳 eventId + QR Code	QR code 指向 /checkin/{eventId}
+使用者掃碼報到	執行 /api/liff/checkin 寫入資料
