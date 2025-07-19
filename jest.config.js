@@ -13,13 +13,7 @@ module.exports = {
     '!src/tools/**',
     '!src/scripts/**'
   ],
-  transform: {
-    '^.+\\.ts$': ['ts-jest', {
-      tsconfig: 'tsconfig.json'
-    }]
-  },
   moduleFileExtensions: ['ts', 'js', 'json'],
-  extensionsToTreatAsEsm: [],
   testPathIgnorePatterns: [
     '/node_modules/',
     '/dist/'
