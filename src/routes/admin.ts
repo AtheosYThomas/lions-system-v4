@@ -5,6 +5,11 @@ import reportsRoutes from './admin/reports';
 
 const router = express.Router();
 
+// 健康檢查
+router.get('/health', (req, res) => {
+  res.json({ status: 'admin routes ok' });
+});
+
 // 📊 系統總覽路由
 router.use('/summary', summaryRoutes);
 

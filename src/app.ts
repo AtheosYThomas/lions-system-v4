@@ -85,7 +85,27 @@ app.get('/', (req, res) => {
 });
 
 // 其他靜態路由 - 支援 SPA 路由
-app.get(['/admin', '/register', '/checkin', '/profile'], (req, res) => {
+app.get('/admin', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/dist/index.html'));
+});
+
+app.get('/register', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/dist/index.html'));
+});
+
+app.get('/checkin', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/dist/index.html'));
+});
+
+app.get('/profile', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/dist/index.html'));
+});
+
+app.get('/liff', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/dist/index.html'));
+});
+
+app.get('/home', (req, res) => {
   res.sendFile(path.join(__dirname, '../client/dist/index.html'));
 });
 
