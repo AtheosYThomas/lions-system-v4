@@ -51,6 +51,11 @@ class CheckinController {
         member: {
           name: member.name,
           role: member.role
+        },
+        event: {
+          id: event.id,
+          title: event.title,
+          date: event.date
         }
       });
     } catch (err) {

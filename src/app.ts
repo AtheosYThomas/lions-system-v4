@@ -9,6 +9,7 @@ import liffRoutes from './routes/api/liff';
 import announcementRoutes from './routes/api/announcements';
 import lineWebhook from './routes/line/webhook';
 import uploadRouter from './routes/upload';
+import eventsRoutes from './routes/api/events';
 
 const app = express();
 
@@ -81,6 +82,7 @@ app.use('/api/announcements', announcementRoutes);
 app.use('/api/checkin', checkinRoutes);
 app.use('/api/liff', liffRoutes);
 app.use('/api/upload', uploadRouter);
+app.use('/api/events', eventsRoutes);
 
 // 前端路由（提供 React 應用）
 app.get('/', (req, res) => {

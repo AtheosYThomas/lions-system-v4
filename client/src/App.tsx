@@ -7,6 +7,7 @@ import Checkin from './pages/Checkin';
 import CheckinConfirm from './pages/CheckinConfirm';
 import Register from './pages/Register';
 import NotFoundPage from './pages/NotFoundPage';
+import CheckinEvent from './pages/CheckinEvent'; //Import the new Component
 
 function App() {
   return (
@@ -16,9 +17,10 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/admin" element={<Admin />} />
+          <Route path="/register" element={<Register />} />
           <Route path="/checkin" element={<Checkin />} />
           <Route path="/checkin/confirm" element={<CheckinConfirm />} />
-          <Route path="/register" element={<Register />} />
+          <Route path="/checkin/:eventId" element={<CheckinEvent />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </div>
