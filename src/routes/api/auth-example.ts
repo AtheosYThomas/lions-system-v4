@@ -58,7 +58,9 @@ router.get('/members/directory', authMiddleware, membersOrAbove, (req, res) => {
 });
 
 // 範例 8: 多角色權限（秘書或財務）
-router.get('/admin/documents', 
+router.get('/admin/documents', requireRole(['admin']), (req: Request, res: Response) => {
+  res.json({ message: '管理員文件資源' });
+} 
   authMiddleware, 
   requireAnyRole([Role.Secretary, Role.Treasurer, Role.Admin]), 
   (req, res) => {
@@ -67,7 +69,9 @@ router.get('/admin/documents',
 );
 
 // 範例 9: 最低副會長權限
-router.get('/admin/policy', 
+router.get('/admin/policy', requireRole(['admin']), (req: Request, res: Response) => {
+  res.json({ message: '管理員政策資源' });
+} 
   authMiddleware, 
   requireMinRole(Role.VicePresident), 
   (req, res) => {

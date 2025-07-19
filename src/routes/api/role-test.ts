@@ -43,7 +43,9 @@ router.get('/financial-access', authMiddleware, financialAccess, (req, res) => {
 });
 
 // 🔥 測試彈性角色函數
-router.get('/require-officer', 
+router.get('/require-officer', requireRole(['officer']), (req: Request, res: Response) => {
+  res.json({ message: '僅限幹部訪問的資源' });
+} 
   authMiddleware, 
   requireMinRole(Role.Officer), 
   (req, res) => {
@@ -51,7 +53,9 @@ router.get('/require-officer',
   }
 );
 
-router.get('/secretary-or-treasurer', 
+router.get('/secretary-or-treasurer', requireRole(['secretary', 'treasurer']), (req: Request, res: Response) => {
+  res.json({ message: '僅限秘書或財務訪問的資源' });
+} 
   authMiddleware, 
   requireAnyRole([Role.Secretary, Role.Treasurer]), 
   (req, res) => {
