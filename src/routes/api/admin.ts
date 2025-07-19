@@ -1,4 +1,3 @@
-
 import express from 'express';
 import checkinService from '../../services/checkinService';
 import eventService from '../../services/eventService';
@@ -8,7 +7,7 @@ const router = express.Router();
 // 獲取指定活動的報到統計
 router.get('/event/:eventId/checkin', async (req, res) => {
   const { eventId } = req.params;
-  
+
   try {
     // 獲取活動資訊
     const event = await eventService.getEventById(eventId);
@@ -105,7 +104,7 @@ router.get('/event/:eventId/checkin', async (req, res) => {
 router.get('/event/:eventId/checkin/export', async (req, res) => {
   const { eventId } = req.params;
   const { type = 'checkin' } = req.query;
-  
+
   try {
     const event = await eventService.getEventById(eventId);
     if (!event) {
@@ -128,36 +127,33 @@ router.get('/event/:eventId/checkin/export', async (req, res) => {
     } else if (type === 'not-checkin') {
       const registrationData = await checkinService.getEventRegistrations(eventId);
       const checkinData = await checkinService.getEventCheckins(eventId, { limit: 1000 });
-      
+
       const checkinMap = new Map(
         checkinData.checkins.map((checkin: any) => [checkin.member?.id, true])
       );
 
-      const notCheckedIn = registrationData.registrations
-        .filter((reg: any) => !checkinMap.has(reg.member?.id));
-
-      csvData = notCheckedIn.map((reg: any) => ({
-        '姓名': reg.member?.name || '',
-        '手機': reg.member?.phone || '',
-        'Email': reg.member?.email || '',
-        '報名時間': new Date(reg.created_at).toLocaleString('zh-TW'),
-        '狀態': '未報到'
-      }));
+      csvData = registrationData.registrations
+        .filter((reg: any) => !checkinMap.has(reg.member?.id))
+        .map((reg: any) => ({
+          '姓名': reg.member?.name || '',
+          '手機': reg.member?.phone || '',
+          'Email': reg.member?.email || '',
+          '報名時間': new Date(reg.created_at).toLocaleString('zh-TW'),
+          '狀態': '未報到'
+        }));
       filename = `${event.title}_未報到名單.csv`;
     }
 
-    // 生成 CSV
-    const headers = Object.keys(csvData[0] || {});
-    const csvContent = [
-      headers.join(','),
-      ...csvData.map(row => 
-        headers.map(header => `"${row[header] || ''}"`).join(',')
-      )
-    ].join('\n');
+    // 使用 csv-stringify 產生 CSV
+    const { stringify } = require('csv-stringify/sync');
+    const csvString = stringify(csvData, {
+      header: true,
+      bom: true // 支援中文字符
+    });
 
     res.setHeader('Content-Type', 'text/csv; charset=utf-8');
     res.setHeader('Content-Disposition', `attachment; filename="${encodeURIComponent(filename)}"`);
-    res.send('\uFEFF' + csvContent); // 加入 BOM 支援中文
+    res.send(csvString);
 
   } catch (error) {
     console.error('匯出 CSV 失敗:', error);

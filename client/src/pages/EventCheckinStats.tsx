@@ -1,7 +1,22 @@
 
-
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
+  LineChart,
+  Line,
+  Area,
+  AreaChart
+} from 'recharts';
 
 interface Member {
   id: string;
@@ -38,6 +53,8 @@ interface ApiResponse {
   error?: string;
 }
 
+const COLORS = ['#10B981', '#F59E0B', '#EF4444', '#8B5CF6'];
+
 const EventCheckinStats: React.FC = () => {
   const { eventId } = useParams<{ eventId: string }>();
   const navigate = useNavigate();
@@ -45,6 +62,7 @@ const EventCheckinStats: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'checkin' | 'not-checkin' | 'analytics'>('checkin');
+  const [selectedChart, setSelectedChart] = useState<'hourly' | 'status' | 'timeline'>('hourly');
 
   useEffect(() => {
     if (!eventId) {
@@ -101,38 +119,105 @@ const EventCheckinStats: React.FC = () => {
     document.body.removeChild(link);
   };
 
-  const renderHourlyChart = () => {
-    if (!data || !data.hourlyDistribution) return null;
+  const getHourlyChartData = () => {
+    if (!data || !data.hourlyDistribution) return [];
 
-    const hours = Object.keys(data.hourlyDistribution).sort();
-    const maxCount = Math.max(...Object.values(data.hourlyDistribution));
+    const hours = Array.from({ length: 24 }, (_, i) => i.toString().padStart(2, '0'));
+    return hours.map(hour => ({
+      hour: `${hour}:00`,
+      count: data.hourlyDistribution[hour] || 0
+    })).filter(item => item.count > 0);
+  };
 
-    return (
-      <div className="bg-white rounded-lg shadow-md p-6">
-        <h3 className="text-lg font-semibold text-gray-800 mb-4">報到時間分布</h3>
-        <div className="space-y-2">
-          {hours.map(hour => {
-            const count = data.hourlyDistribution[hour];
-            const percentage = maxCount > 0 ? (count / maxCount) * 100 : 0;
-            
-            return (
-              <div key={hour} className="flex items-center">
-                <div className="w-12 text-sm text-gray-600">{hour}:00</div>
-                <div className="flex-1 mx-3">
-                  <div className="bg-gray-200 rounded-full h-4 relative">
-                    <div 
-                      className="bg-blue-500 rounded-full h-4"
-                      style={{ width: `${percentage}%` }}
-                    ></div>
-                  </div>
-                </div>
-                <div className="w-8 text-sm text-gray-800 font-medium">{count}</div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    );
+  const getStatusPieData = () => {
+    if (!data) return [];
+
+    return [
+      { name: '已報到', value: data.totalCheckins, color: '#10B981' },
+      { name: '未報到', value: data.notCheckedIn.length, color: '#EF4444' }
+    ];
+  };
+
+  const getTimelinessData = () => {
+    if (!data) return [];
+
+    const { statistics } = data;
+    return [
+      { name: '提早報到', value: statistics.earlyCheckins, color: '#8B5CF6' },
+      { name: '準時報到', value: statistics.onTimeCheckins, color: '#10B981' },
+      { name: '遲到報到', value: statistics.lateCheckins, color: '#F59E0B' }
+    ];
+  };
+
+  const renderChart = () => {
+    if (!data) return null;
+
+    switch (selectedChart) {
+      case 'hourly':
+        return (
+          <div className="bg-white rounded-lg shadow-md p-6">
+            <h3 className="text-lg font-semibold text-gray-800 mb-4">📊 報到時間分布</h3>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={getHourlyChartData()}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="hour" />
+                <YAxis allowDecimals={false} />
+                <Tooltip />
+                <Bar dataKey="count" fill="#3B82F6" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        );
+
+      case 'status':
+        return (
+          <div className="bg-white rounded-lg shadow-md p-6">
+            <h3 className="text-lg font-semibold text-gray-800 mb-4">🥧 報到狀態分布</h3>
+            <ResponsiveContainer width="100%" height={300}>
+              <PieChart>
+                <Pie
+                  data={getStatusPieData()}
+                  cx="50%"
+                  cy="50%"
+                  labelLine={false}
+                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                  outerRadius={80}
+                  fill="#8884d8"
+                  dataKey="value"
+                >
+                  {getStatusPieData().map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+        );
+
+      case 'timeline':
+        return (
+          <div className="bg-white rounded-lg shadow-md p-6">
+            <h3 className="text-lg font-semibold text-gray-800 mb-4">⏰ 報到時間性分析</h3>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={getTimelinessData()} layout="horizontal">
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis type="number" allowDecimals={false} />
+                <YAxis type="category" dataKey="name" />
+                <Tooltip />
+                <Bar dataKey="value" fill="#8884d8">
+                  {getTimelinessData().map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        );
+
+      default:
+        return null;
+    }
   };
 
   if (loading) {
@@ -268,19 +353,111 @@ const EventCheckinStats: React.FC = () => {
       <div className="mb-6 flex gap-3">
         <button
           onClick={() => exportToCsv('checkin')}
-          className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors"
+          className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors flex items-center gap-2"
         >
           📊 匯出已報到 CSV
         </button>
         <button
           onClick={() => exportToCsv('not-checkin')}
-          className="px-4 py-2 bg-orange-500 text-white rounded hover:bg-orange-600 transition-colors"
+          className="px-4 py-2 bg-orange-500 text-white rounded hover:bg-orange-600 transition-colors flex items-center gap-2"
         >
           📋 匯出未報到 CSV
         </button>
+        <button
+          onClick={() => window.location.reload()}
+          className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors flex items-center gap-2"
+        >
+          🔄 重新整理資料
+        </button>
       </div>
 
-      {/* 標籤頁內容 */}
+      {/* 統計分析標籤頁 */}
+      {activeTab === 'analytics' && (
+        <div className="space-y-6">
+          {/* 圖表選擇器 */}
+          <div className="bg-white rounded-lg shadow-md p-6">
+            <h3 className="text-lg font-semibold text-gray-800 mb-4">選擇統計圖表</h3>
+            <div className="flex space-x-4">
+              <button
+                onClick={() => setSelectedChart('hourly')}
+                className={`px-4 py-2 rounded transition-colors ${
+                  selectedChart === 'hourly'
+                    ? 'bg-blue-500 text-white'
+                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                }`}
+              >
+                📊 時段分布
+              </button>
+              <button
+                onClick={() => setSelectedChart('status')}
+                className={`px-4 py-2 rounded transition-colors ${
+                  selectedChart === 'status'
+                    ? 'bg-blue-500 text-white'
+                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                }`}
+              >
+                🥧 狀態分布
+              </button>
+              <button
+                onClick={() => setSelectedChart('timeline')}
+                className={`px-4 py-2 rounded transition-colors ${
+                  selectedChart === 'timeline'
+                    ? 'bg-blue-500 text-white'
+                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                }`}
+              >
+                ⏰ 時間性分析
+              </button>
+            </div>
+          </div>
+
+          {renderChart()}
+          
+          <div className="grid md:grid-cols-2 gap-6">
+            <div className="bg-white rounded-lg shadow-md p-6">
+              <h3 className="text-lg font-semibold text-gray-800 mb-4">報到統計摘要</h3>
+              <div className="space-y-3">
+                <div className="flex justify-between">
+                  <span className="text-gray-600">總報名人數：</span>
+                  <span className="font-medium">{data.totalRegistrations} 人</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">已報到人數：</span>
+                  <span className="font-medium text-green-600">{data.totalCheckins} 人</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">未報到人數：</span>
+                  <span className="font-medium text-red-600">{data.notCheckedIn.length} 人</span>
+                </div>
+                <div className="flex justify-between border-t pt-3">
+                  <span className="text-gray-600">報到率：</span>
+                  <span className="font-bold text-blue-600">{data.attendanceRate.toFixed(1)}%</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-lg shadow-md p-6">
+              <h3 className="text-lg font-semibold text-gray-800 mb-4">報到時間分析</h3>
+              <div className="space-y-3">
+                <div className="flex justify-between">
+                  <span className="text-gray-600">提早報到：</span>
+                  <span className="font-medium text-purple-600">{data.statistics.earlyCheckins} 人</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">準時報到：</span>
+                  <span className="font-medium text-green-600">{data.statistics.onTimeCheckins} 人</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">遲到報到：</span>
+                  <span className="font-medium text-orange-600">{data.statistics.lateCheckins} 人</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 已報到名單 */}
       {activeTab === 'checkin' && (
         <div className="bg-white rounded-lg shadow-md overflow-hidden">
           <div className="px-6 py-4 bg-gray-50 border-b">
@@ -300,6 +477,9 @@ const EventCheckinStats: React.FC = () => {
                 <thead className="bg-gray-50">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      #
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       姓名
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -316,6 +496,9 @@ const EventCheckinStats: React.FC = () => {
                 <tbody className="bg-white divide-y divide-gray-200">
                   {data.attendees.map((member, index) => (
                     <tr key={member.id} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {index + 1}
+                      </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm font-medium text-gray-900">{member.name}</div>
                       </td>
@@ -339,6 +522,7 @@ const EventCheckinStats: React.FC = () => {
         </div>
       )}
 
+      {/* 未報到名單 */}
       {activeTab === 'not-checkin' && (
         <div className="bg-white rounded-lg shadow-md overflow-hidden">
           <div className="px-6 py-4 bg-gray-50 border-b">
@@ -357,6 +541,9 @@ const EventCheckinStats: React.FC = () => {
               <table className="w-full">
                 <thead className="bg-gray-50">
                   <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      #
+                    </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       姓名
                     </th>
@@ -377,6 +564,9 @@ const EventCheckinStats: React.FC = () => {
                 <tbody className="bg-white divide-y divide-gray-200">
                   {data.notCheckedIn.map((member, index) => (
                     <tr key={member.id} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {index + 1}
+                      </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm font-medium text-gray-900">{member.name}</div>
                       </td>
@@ -404,69 +594,8 @@ const EventCheckinStats: React.FC = () => {
           )}
         </div>
       )}
-
-      {activeTab === 'analytics' && (
-        <div className="space-y-6">
-          {renderHourlyChart()}
-          
-          <div className="grid md:grid-cols-2 gap-6">
-            <div className="bg-white rounded-lg shadow-md p-6">
-              <h3 className="text-lg font-semibold text-gray-800 mb-4">報到統計摘要</h3>
-              <div className="space-y-3">
-                <div className="flex justify-between">
-                  <span className="text-gray-600">總報名人數：</span>
-                  <span className="font-medium">{data.totalRegistrations} 人</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">已報到人數：</span>
-                  <span className="font-medium text-green-600">{data.totalCheckins} 人</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">未報到人數：</span>
-                  <span className="font-medium text-red-600">{data.notCheckedIn.length} 人</span>
-                </div>
-                <div className="flex justify-between border-t pt-3">
-                  <span className="text-gray-600">報到率：</span>
-                  <span className="font-bold text-blue-600">{data.attendanceRate.toFixed(1)}%</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-lg shadow-md p-6">
-              <h3 className="text-lg font-semibold text-gray-800 mb-4">報到狀態分布</h3>
-              <div className="space-y-4">
-                <div className="relative">
-                  <div className="flex justify-between text-sm mb-1">
-                    <span>已報到</span>
-                    <span>{data.attendanceRate.toFixed(1)}%</span>
-                  </div>
-                  <div className="w-full bg-gray-200 rounded-full h-3">
-                    <div 
-                      className="bg-green-500 h-3 rounded-full"
-                      style={{ width: `${data.attendanceRate}%` }}
-                    ></div>
-                  </div>
-                </div>
-                <div className="relative">
-                  <div className="flex justify-between text-sm mb-1">
-                    <span>未報到</span>
-                    <span>{(100 - data.attendanceRate).toFixed(1)}%</span>
-                  </div>
-                  <div className="w-full bg-gray-200 rounded-full h-3">
-                    <div 
-                      className="bg-red-500 h-3 rounded-full"
-                      style={{ width: `${100 - data.attendanceRate}%` }}
-                    ></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
 
 export default EventCheckinStats;
-
