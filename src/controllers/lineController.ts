@@ -21,19 +21,22 @@ class LineController {
       // 處理空請求體
       if (!body) {
         console.log('⚠️ 請求體為空 - 回應 OK');
-        return res.status(200).json({ status: 'ok', message: 'Empty body received' });
+        res.status(200).json({ status: 'ok', message: 'Empty body received' });
+        return;
       }
 
       // 處理 webhook 驗證請求
       if (!body.events) {
         console.log('✅ Webhook 驗證請求（無 events 字段）');
-        return res.status(200).json({ status: 'ok', message: 'Webhook verification' });
+        res.status(200).json({ status: 'ok', message: 'Webhook verification' });
+        return;
       }
 
       // 處理空事件陣列
       if (body.events.length === 0) {
         console.log('✅ 空事件陣列 - 可能是測試請求');
-        return res.status(200).json({ status: 'ok', message: 'Empty events array' });
+        res.status(200).json({ status: 'ok', message: 'Empty events array' });
+        return;
       }
 
       console.log(`📨 開始處理 ${body.events.length} 個事件`);
@@ -53,18 +56,20 @@ class LineController {
 
       if (!result.success) {
         console.error('❌ LINE 服務處理失敗:', result.error);
-        return res.status(200).json({ 
+        res.status(200).json({ 
           status: 'error', 
           message: 'Event processing failed',
           error: result.error
         });
+        return;
       } else {
         console.log('✅ LINE webhook 處理成功:', result.message);
-        return res.status(200).json({ 
+        res.status(200).json({ 
           status: 'ok', 
           message: result.message,
           processed: body.events.length
         });
+        return;
       }
 
     } catch (error) {
@@ -72,11 +77,12 @@ class LineController {
       console.error('❌ 錯誤堆疊:', error instanceof Error ? error.stack : 'No stack trace');
 
       // LINE webhook 必須回傳 200，否則會重複發送
-      return res.status(200).json({ 
+      res.status(200).json({ 
         status: 'error', 
         message: 'Internal processing error',
         error: error instanceof Error ? error.message : 'Unknown error'
       });
+      return;
     }
   }
 
