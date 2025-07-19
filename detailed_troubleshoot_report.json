@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-07-19T08:37:22.904Z",
+  "timestamp": "2025-07-19T08:38:49.522Z",
   "summary": {
     "totalIssues": 1,
     "errors": 1,
@@ -12,7 +12,7 @@
       "category": "TypeScript編譯",
       "severity": "high",
       "issue": "TypeScript 編譯錯誤",
-      "details": "src/routes/api/registration.ts(14,41): error TS2339: Property 'registerForEvent' does not exist on type 'RegistrationController'.\n",
+      "details": "src/routes/api/registration.ts(14,59): error TS1434: Unexpected keyword or identifier.\nsrc/routes/api/registration.ts(14,65): error TS1128: Declaration or statement expected.\n",
       "suggestion": "修正 TypeScript 語法錯誤",
       "status": "error"
     }
