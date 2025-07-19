@@ -1,0 +1,155 @@
+好了！我們來完成一套完整的「活動報到管理後台介面」，包含：
+
+🎯 管理功能總覽 /admin/event/[id]/checkin.tsx
+模組	說明
+✅ 報到總覽統計	報名人數、已報到、未報到、報到率
+✅ 資料表格	顯示已報到／未報到名單
+✅ 匯出報表	產出報到 CSV
+✅ 報到時間區段圖表	利用 Recharts 畫出報到人潮分布
+✅ 權限驗證	僅限會長／幹部登入查看（RBAC）
+
+✅ 1️⃣ 安裝 Recharts
+若尚未安裝，請在專案執行：
+
+bash
+複製
+編輯
+npm install recharts
+✅ 2️⃣ 完整介面 /admin/event/[id]/checkin.tsx
+tsx
+複製
+編輯
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
+import {
+  BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid,
+} from 'recharts';
+
+const CheckinStatsPage = () => {
+  const router = useRouter();
+  const { id: eventId } = router.query;
+
+  const [data, setData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!eventId || Array.isArray(eventId)) return;
+
+    const fetchData = async () => {
+      setLoading(true);
+      const res = await fetch(`/api/admin/event/${eventId}/checkin`);
+      const result = await res.json();
+      setData(result);
+      setLoading(false);
+    };
+
+    fetchData();
+  }, [eventId]);
+
+  const groupByHour = (attendees = []) => {
+    const result: { hour: string; count: number }[] = [];
+
+    const hourly = attendees.reduce((acc, item) => {
+      const date = new Date(item.checkedInAt);
+      const hour = `${date.getHours()}:00`;
+      acc[hour] = (acc[hour] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+
+    for (const hour of Object.keys(hourly).sort()) {
+      result.push({ hour, count: hourly[hour] });
+    }
+
+    return result;
+  };
+
+  if (loading) return <div className="p-4">載入中...</div>;
+  if (!data) return <div className="p-4">找不到資料</div>;
+
+  const { eventTitle, attendees, notCheckedIn } = data;
+  const total = attendees.length + notCheckedIn.length;
+  const checkinRate = ((attendees.length / total) * 100).toFixed(1);
+
+  return (
+    <div className="p-6 max-w-6xl mx-auto">
+      <h1 className="text-2xl font-bold mb-2">{eventTitle} - 報到統計</h1>
+      <p className="mb-4 text-gray-600">
+        報名人數：{total}，已報到：{attendees.length}，未報到：{notCheckedIn.length}，報到率：{checkinRate}%
+      </p>
+
+      <div className="mb-6">
+        <a
+          href={`/api/admin/event/${eventId}/checkin/export`}
+          className="text-blue-600 underline"
+          target="_blank"
+        >
+          匯出報到資料（CSV）
+        </a>
+      </div>
+
+      <div className="h-64 mb-10">
+        <h2 className="text-lg font-semibold mb-2">📊 報到時段分布</h2>
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart data={groupByHour(attendees)}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="hour" />
+            <YAxis allowDecimals={false} />
+            <Tooltip />
+            <Bar dataKey="count" fill="#3b82f6" />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+
+      <div className="grid grid-cols-2 gap-8">
+        <div>
+          <h3 className="text-lg font-semibold mb-2">✅ 已報到名單</h3>
+          <table className="w-full border-collapse text-sm">
+            <thead>
+              <tr className="bg-gray-100">
+                <th className="border px-2 py-1">姓名</th>
+                <th className="border px-2 py-1">手機</th>
+                <th className="border px-2 py-1">報到時間</th>
+              </tr>
+            </thead>
+            <tbody>
+              {attendees.map((m: any) => (
+                <tr key={m.id}>
+                  <td className="border px-2 py-1">{m.name}</td>
+                  <td className="border px-2 py-1">{m.phone}</td>
+                  <td className="border px-2 py-1">
+                    {new Date(m.checkedInAt).toLocaleString()}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <div>
+          <h3 className="text-lg font-semibold mb-2">❌ 未報到名單</h3>
+          <table className="w-full border-collapse text-sm">
+            <thead>
+              <tr className="bg-gray-100">
+                <th className="border px-2 py-1">姓名</th>
+                <th className="border px-2 py-1">手機</th>
+              </tr>
+            </thead>
+            <tbody>
+              {notCheckedIn.map((m: any) => (
+                <tr key={m.id}>
+                  <td className="border px-2 py-1">{m.name}</td>
+                  <td className="border px-2 py-1">{m.phone}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default CheckinStatsPage;
+✅ 3️⃣ 小提醒：權限驗證（RBAC）
+你可搭配 getServerSideProps 加上角色驗證（前述已說明），也可整合你既有的 session.user.role 或 JWT 解碼驗證。
+
