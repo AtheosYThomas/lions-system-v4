@@ -1,6 +1,6 @@
 
 import { DataTypes, Model } from 'sequelize';
-import { sequelize } from '../config/database';
+import sequelize from '../config/database';
 import Member from './member';
 import Event from './event';
 
