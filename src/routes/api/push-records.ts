@@ -14,7 +14,7 @@ const router = express.Router();
  */
 router.get('/', authMiddleware, requireAnyRole([Role.Admin, Role.President]), async (req, res) => {
   try {
-    const { eventId, memberId, limit = '200' } = req.query;
+    const { eventId, memberId, startDate, endDate, limit = '200' } = req.query;
 
     // 驗證參數
     if (!eventId && !memberId) {
@@ -39,6 +39,21 @@ router.get('/', authMiddleware, requireAnyRole([Role.Admin, Role.President]), as
       });
     }
 
+    // 驗證日期參數
+    if (startDate && typeof startDate !== 'string') {
+      return res.status(400).json({
+        error: 'startDate 必須是字串',
+        code: 'INVALID_START_DATE'
+      });
+    }
+
+    if (endDate && typeof endDate !== 'string') {
+      return res.status(400).json({
+        error: 'endDate 必須是字串',
+        code: 'INVALID_END_DATE'
+      });
+    }
+
     const limitNum = parseInt(limit as string);
     if (isNaN(limitNum) || limitNum <= 0 || limitNum > 1000) {
       return res.status(400).json({
@@ -53,14 +68,18 @@ router.get('/', authMiddleware, requireAnyRole([Role.Admin, Role.President]), as
       // 查詢特定活動的推播記錄
       const result = await pushService.getEventPushRecords(eventId as string, {
         limit: limitNum,
-        offset: 0
+        offset: 0,
+        startDate: startDate as string,
+        endDate: endDate as string
       });
       records = result.records;
     } else if (memberId) {
       // 查詢特定會員的推播記錄
       records = await pushService.getMemberPushRecords(memberId as string, {
         limit: limitNum,
-        offset: 0
+        offset: 0,
+        startDate: startDate as string,
+        endDate: endDate as string
       });
     }
 
@@ -71,6 +90,8 @@ router.get('/', authMiddleware, requireAnyRole([Role.Admin, Role.President]), as
       query: {
         eventId: eventId || null,
         memberId: memberId || null,
+        startDate: startDate || null,
+        endDate: endDate || null,
         limit: limitNum
       }
     });

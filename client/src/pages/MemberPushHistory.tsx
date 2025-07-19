@@ -30,6 +30,8 @@ const MemberPushHistory = () => {
   const [error, setError] = useState<string>('');
   const [dateFilter, setDateFilter] = useState<string>('');
   const [statusFilter, setStatusFilter] = useState<string>('');
+  const [startDate, setStartDate] = useState<string>('');
+  const [endDate, setEndDate] = useState<string>('');
 
   useEffect(() => {
     if (!memberId) return;
@@ -53,7 +55,14 @@ const MemberPushHistory = () => {
   const loadPushHistory = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`/api/push-records?memberId=${memberId}&limit=1000`);
+      
+      const params = new URLSearchParams();
+      if (memberId) params.append('memberId', memberId);
+      if (startDate) params.append('startDate', startDate);
+      if (endDate) params.append('endDate', endDate);
+      params.append('limit', '1000');
+
+      const response = await fetch(`/api/push-records?${params.toString()}`);
       const result = await response.json();
 
       if (response.ok && result.success) {
@@ -180,42 +189,96 @@ const MemberPushHistory = () => {
       {/* 篩選器 */}
       <div className="bg-white rounded-lg shadow-md p-6 mb-8">
         <h2 className="text-xl font-semibold mb-4">📋 篩選條件</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              推播日期
-            </label>
-            <input
-              type="date"
-              value={dateFilter}
-              onChange={(e) => setDateFilter(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
+        
+        {/* 日期範圍查詢 */}
+        <div className="border-b pb-4 mb-4">
+          <h3 className="text-md font-medium text-gray-700 mb-3">📅 日期範圍查詢</h3>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                起始日期
+              </label>
+              <input
+                type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                結束日期
+              </label>
+              <input
+                type="date"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+            <div className="flex items-end">
+              <button
+                onClick={loadPushHistory}
+                className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors"
+              >
+                🔍 查詢
+              </button>
+            </div>
+            <div className="flex items-end">
+              <button
+                onClick={() => {
+                  setStartDate('');
+                  setEndDate('');
+                  loadPushHistory();
+                }}
+                className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 transition-colors"
+              >
+                清除日期
+              </button>
+            </div>
           </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              推播狀態
-            </label>
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="">全部狀態</option>
-              <option value="success">成功</option>
-              <option value="failed">失敗</option>
-            </select>
-          </div>
-          <div className="flex items-end">
-            <button
-              onClick={() => {
-                setDateFilter('');
-                setStatusFilter('');
-              }}
-              className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 transition-colors"
-            >
-              清除篩選
-            </button>
+        </div>
+
+        {/* 本地篩選 */}
+        <div>
+          <h3 className="text-md font-medium text-gray-700 mb-3">🔧 本地篩選</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                特定日期
+              </label>
+              <input
+                type="date"
+                value={dateFilter}
+                onChange={(e) => setDateFilter(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                推播狀態
+              </label>
+              <select
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">全部狀態</option>
+                <option value="success">成功</option>
+                <option value="failed">失敗</option>
+              </select>
+            </div>
+            <div className="flex items-end">
+              <button
+                onClick={() => {
+                  setDateFilter('');
+                  setStatusFilter('');
+                }}
+                className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 transition-colors"
+              >
+                清除本地篩選
+              </button>
+            </div>
           </div>
         </div>
       </div>

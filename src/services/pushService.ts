@@ -1,8 +1,7 @@
-
+import { Sequelize, Op } from 'sequelize';
 import PushRecord from '../models/pushRecord';
 import Member from '../models/member';
 import Event from '../models/event';
-import { Op } from 'sequelize';
 
 interface PushStatistics {
   total: number;
