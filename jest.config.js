@@ -1,4 +1,5 @@
 
+/** @type {import('jest').Config} */
 module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
@@ -6,15 +7,14 @@ module.exports = {
   testMatch: [
     '**/test/**/*.spec.ts',
     '**/test/**/*.test.ts',
-    '**/*.spec.ts',
-    '**/*.test.ts'
+    '**/__tests__/**/*.ts',
+    '**/*.test.ts',
+    '**/*.spec.ts'
   ],
   transform: {
     '^.+\\.ts$': 'ts-jest'
   },
   setupFilesAfterEnv: ['<rootDir>/test/setup.ts'],
-  testTimeout: 30000,
-  verbose: true,
   collectCoverageFrom: [
     'src/**/*.ts',
     '!src/**/*.d.ts',
@@ -26,5 +26,7 @@ module.exports = {
     '/node_modules/',
     '/dist/',
     '/client/'
-  ]
+  ],
+  testTimeout: 30000,
+  verbose: true
 };
