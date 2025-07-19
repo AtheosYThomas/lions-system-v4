@@ -1,4 +1,5 @@
-import express, { Request, Response } from 'express';
+
+import express from 'express';
 import { middleware } from '@line/bot-sdk';
 import { config } from '../../config/config';
 import lineController from '../../controllers/lineController';
@@ -59,13 +60,13 @@ function validateLineSignature(req: express.Request, res: express.Response, next
 }
 
 // LINE webhook POST 事件處理（使用自定義簽名驗證）
-router.post('/',
+router.post('/', 
   express.json({ limit: '10mb' }), // 增加請求大小限制
   validateLineSignature,
   async (req, res) => {
     try {
       console.log('📨 Webhook 路由收到請求');
-
+      
       // 確保請求有正確的 Content-Type
       if (!req.is('application/json')) {
         console.log('⚠️ 非 JSON 請求格式');
@@ -78,7 +79,7 @@ router.post('/',
       await lineController.handleWebhook(req, res);
     } catch (error) {
       console.error('❌ LINE webhook 路由處理錯誤:', error);
-
+      
       // 確保總是回傳正確的 JSON 格式
       if (!res.headersSent) {
         return res.status(200).json({ 
@@ -88,7 +89,8 @@ router.post('/',
         });
       }
     }
-  });
+  }
+);
 
 // 推播訊息 API
 router.post('/push/:userId', async (req, res) => {
@@ -110,11 +112,5 @@ router.get('/', (req, res) => {
   console.log('✅ LINE webhook GET 驗證請求');
   res.status(200).send('LINE webhook endpoint is active');
 });
-
-// AI 回覆功能
-router.post('/ai-reply', lineController.aiReply);
-
-// 活動建議功能  
-router.post('/event-suggestion', lineController.generateEventSuggestion);
 
 export default router;

@@ -62,7 +62,7 @@ router.get('/admin/documents',
   authMiddleware, 
   requireAnyRole([Role.Secretary, Role.Treasurer, Role.Admin]), 
   (req, res) => {
-    res.json({ message: '📁 文件管理系統 - 僅限秘書、財務與管理員' });
+    res.json({ message: '文件管理 - 秘書或財務權限' });
   }
 );
 
@@ -71,7 +71,7 @@ router.get('/admin/policy',
   authMiddleware, 
   requireMinRole(Role.VicePresident), 
   (req, res) => {
-    res.json({ message: '📋 政策管理 - 僅限副會長以上' });
+    res.json({ message: '政策管理 - 副會長或以上權限' });
   }
 );
 

@@ -1,19 +1,6 @@
 import { Request, Response } from 'express';
 import lineService from '../integrations/line/lineService';
 import { LineWebhookRequestBody } from '../types/line';
-import { isValidLineUserId } from '../utils/validators';
-import openaiService from '../integrations/openai/openaiService';
-
-// Helper function to encapsulate userId validation logic
-const validateLineUserId = (userId: string | undefined) => {
-  if (!userId) {
-    return { valid: false, error: 'line_user_id is required' };
-  }
-  if (!isValidLineUserId(userId)) {
-    return { valid: false, error: 'Invalid line_user_id format' };
-  }
-  return { valid: true, error: null };
-};
 
 class LineController {
   /**
@@ -101,40 +88,33 @@ class LineController {
       const { userId } = req.params;
       const { message } = req.body;
 
-      // ✅ 使用驗證工具函式檢查 LINE User ID 格式
-      const validation = validateLineUserId(userId);
-      if (!validation.valid) {
-        return res.status(400).json({
-          success: false,
-          error: validation.error,
+      if (!userId) {
+        res.status(400).json({ 
+          success: false, 
+          error: 'userId is required' 
         });
-      }
-
-      if (!message) {
-        return res.status(400).json({
-          success: false,
-          error: 'Message content is required',
-        });
+        return;
       }
 
       const result = await lineService.pushMessage(userId, message);
 
       if (result.success) {
-        res.json({
-          success: true,
-          message: 'Push message sent successfully',
+        res.json({ 
+          success: true, 
+          message: 'Push message sent successfully' 
         });
       } else {
-        res.status(500).json({
-          success: false,
-          error: result.error,
+        res.status(500).json({ 
+          success: false, 
+          error: result.error 
         });
       }
+
     } catch (error) {
       console.error('❌ LineController 推播處理錯誤:', error);
-      res.status(500).json({
-        success: false,
-        error: error instanceof Error ? error.message : 'Internal server error',
+      res.status(500).json({ 
+        success: false, 
+        error: error instanceof Error ? error.message : 'Internal server error' 
       });
     }
   }
@@ -146,13 +126,12 @@ class LineController {
     try {
       const { userId, type = 'event' } = req.body;
 
-      // ✅ 使用驗證工具函式檢查 LINE User ID 格式
-      const validation = validateLineUserId(userId);
-      if (!validation.valid) {
-        return res.status(400).json({
-          success: false,
-          error: validation.error,
+      if (!userId) {
+        res.status(400).json({ 
+          success: false, 
+          error: 'userId is required' 
         });
+        return;
       }
 
       let result;
@@ -204,101 +183,18 @@ class LineController {
   }
 
   /**
-   * AI 智能回覆
+   * 自訂 Flex Message 推播
    */
-  async aiReply(req: Request, res: Response) {
-    try {
-      const { userId, message, context } = req.body;
-
-      // ✅ 使用驗證工具函式檢查 LINE User ID 格式
-      const validation = validateLineUserId(userId);
-      if (!validation.valid) {
-        return res.status(400).json({
-          success: false,
-          error: validation.error,
-        });
-      }
-
-      if (!message) {
-        return res.status(400).json({
-          success: false,
-          error: 'Message is required',
-        });
-      }
-
-      // 使用 OpenAI 生成智能回覆
-      const aiReply = await openaiService.generateLineReply(message, context);
-
-      // 發送回覆訊息
-      await lineService.pushMessage(userId, {
-        type: 'text',
-        text: aiReply,
-      });
-
-      res.json({
-        success: true,
-        message: 'AI reply sent successfully',
-        aiResponse: aiReply,
-      });
-    } catch (error) {
-      console.error('AI Reply error:', error);
-      res.status(500).json({
-        success: false,
-        error: 'Failed to generate AI reply',
-      });
-    }
-  }
-
-  /**
-   * 生成活動建議
-   */
-  async generateEventSuggestion(req: Request, res: Response) {
-    try {
-      const { theme } = req.body;
-
-      if (!theme) {
-        return res.status(400).json({
-          success: false,
-          error: 'Theme is required',
-        });
-      }
-
-      const suggestion = await openaiService.generateEventSuggestion(theme);
-
-      res.json({
-        success: true,
-        suggestion,
-      });
-    } catch (error) {
-      console.error('Event suggestion error:', error);
-      res.status(500).json({
-        success: false,
-        error: 'Failed to generate event suggestion',
-      });
-    }
-  }
-
-  /**
-   * 處理客製化 Flex 推播
-   */
-  async customFlexPush(req: Request, res: Response) {
+  async customFlexPush(req: Request, res: Response): Promise<void> {
     try {
       const { userId, title, date, imageUrl } = req.body;
 
-      // ✅ 使用驗證工具函式檢查 LINE User ID 格式
-      const validation = validateLineUserId(userId);
-      if (!validation.valid) {
-        return res.status(400).json({
-          success: false,
-          error: validation.error,
+      if (!userId || !title || !date) {
+        res.status(400).json({ 
+          success: false, 
+          error: 'userId, title, and date are required' 
         });
-      }
-
-      if (!title || !date) {
-        return res.status(400).json({
-          success: false,
-          error: 'title and date are required',
-        });
+        return;
       }
 
       const defaultImageUrl = 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&h=800&q=80';

@@ -1,0 +1,751 @@
+
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <title>北大獅子會 - 會員註冊</title>
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 500px;
+      margin: 0 auto;
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .logo {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+    }
+    .title {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 10px;
+    }
+    .subtitle {
+      color: #666;
+      font-size: 0.9rem;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+      color: #333;
+    }
+    .required {
+      color: #dc3545;
+    }
+    input {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      box-sizing: border-box;
+      font-size: 16px;
+      transition: border-color 0.3s;
+    }
+    input:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+    input:required:invalid {
+      border-color: #dc3545;
+    }
+    button {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    button:hover {
+      transform: translateY(-2px);
+    }
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+    .status {
+      padding: 15px;
+      border-radius: 10px;
+      margin: 20px 0;
+      text-align: center;
+    }
+    .loading {
+      background: #e3f2fd;
+      color: #1976d2;
+      border: 1px solid #bbdefb;
+    }
+    .success {
+      background: #e8f5e8;
+      color: #2e7d32;
+      border: 1px solid #c8e6c9;
+    }
+    .error {
+      background: #ffebee;
+      color: #c62828;
+      border: 1px solid #ffcdd2;
+    }
+    .spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #1976d2;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-right: 10px;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .form-row {
+      display: flex;
+      gap: 15px;
+    }
+    .form-row .form-group {
+      flex: 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="logo">🦁</div>
+      <div class="title">北大獅子會</div>
+      <div class="subtitle">會員註冊系統</div>
+    </div>
+    
+    <div id="status" class="status loading">
+      <div class="spinner"></div>
+      正在初始化 LINE 登入...
+    </div>
+
+    <form id="registerForm" style="display: none;">
+      <input type="hidden" id="line_user_id" name="line_user_id" required>
+      
+      <div class="form-group">
+        <label for="name">中文姓名 <span class="required">*</span></label>
+        <input type="text" id="name" name="name" required placeholder="請輸入您的中文姓名">
+      </div>
+      
+      <div class="form-group">
+        <label for="english_name">英文姓名</label>
+        <input type="text" id="english_name" name="english_name" placeholder="請輸入您的英文姓名">
+      </div>
+      
+      <div class="form-group">
+        <label for="birthday">生日 <span class="required">*</span></label>
+        <input type="date" id="birthday" name="birthday" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="job_title">職業 <span class="required">*</span></label>
+        <input type="text" id="job_title" name="job_title" required placeholder="請輸入您的職業">
+      </div>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label for="mobile">手機號碼 <span class="required">*</span></label>
+          <input type="tel" id="mobile" name="mobile" required placeholder="0912-345-678">
+        </div>
+        <div class="form-group">
+          <label for="phone">市話</label>
+          <input type="tel" id="phone" name="phone" placeholder="02-2345-6789">
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="fax">傳真</label>
+        <input type="tel" id="fax" name="fax" placeholder="02-2345-6789">
+      </div>
+      
+      <div class="form-group">
+        <label for="address">地址 <span class="required">*</span></label>
+        <input type="text" id="address" name="address" required placeholder="請輸入您的完整地址">
+      </div>
+      
+      <div class="form-group">
+        <label for="email">Email <span class="required">*</span></label>
+        <input type="email" id="email" name="email" required placeholder="example@email.com">
+      </div>
+      
+      <button type="submit" id="submitBtn">
+        🎯 完成註冊
+      </button>
+    </form>
+  </div>
+
+  <script>
+    const statusDiv = document.getElementById('status');
+    const form = document.getElementById('registerForm');
+    const submitBtn = document.getElementById('submitBtn');
+    let currentProfile = null;
+
+    function updateStatus(message, type = 'loading') {
+      statusDiv.className = `status ${type}`;
+      statusDiv.innerHTML = type === 'loading' ? 
+        `<div class="spinner"></div>${message}` : 
+        message;
+    }
+
+    async function main() {
+      try {
+        // 檢查是否在 LINE 環境中
+        if (!window.liff) {
+          updateStatus('❌ 此頁面需要在 LINE 應用程式中開啟', 'error');
+          return;
+        }
+
+        // 取得 LIFF 配置
+        updateStatus('正在載入 LIFF 配置...');
+        const configResponse = await fetch('/api/liff/config');
+        const config = await configResponse.json();
+        
+        if (!config.success) {
+          throw new Error('無法載入 LIFF 配置');
+        }
+        
+        // 即使是預設 LIFF ID 也嘗試初始化
+        if (config.isDefault) {
+          console.log('⚠️ 使用預設 LIFF ID');
+        }
+        
+        // 初始化 LIFF
+        updateStatus('正在初始化 LINE 登入...');
+        await liff.init({ 
+          liffId: config.liffId
+        });
+        
+        console.log('✅ LIFF 初始化成功');
+        console.log('📱 LIFF 環境:', {
+          isLoggedIn: liff.isLoggedIn(),
+          isInClient: liff.isInClient(),
+          os: liff.getOS(),
+          language: liff.getLanguage(),
+          version: liff.getVersion()
+        });
+        
+        // 檢查登入狀態
+        if (!liff.isLoggedIn()) {
+          updateStatus('請登入 LINE 帳號...');
+          liff.login();
+          return;
+        }
+
+        // 獲取用戶資料
+        updateStatus('正在取得用戶資料...');
+        currentProfile = await liff.getProfile();
+        
+        console.log('📱 用戶資料:', {
+          userId: currentProfile.userId,
+          displayName: currentProfile.displayName,
+          pictureUrl: currentProfile.pictureUrl
+        });
+
+        // 設定隱藏欄位
+        document.getElementById('line_user_id').value = currentProfile.userId;
+
+        // 檢查是否已經是會員
+        updateStatus('正在檢查會員狀態...');
+        const checkRes = await fetch('/api/liff/check-member', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            line_user_id: currentProfile.userId,
+            display_name: currentProfile.displayName,
+            picture_url: currentProfile.pictureUrl
+          })
+        });
+
+        if (!checkRes.ok) {
+          throw new Error(`伺服器錯誤: ${checkRes.status}`);
+        }
+
+        const checkResult = await checkRes.json();
+        
+        if (checkResult.success) {
+          if (checkResult.is_member) {
+            updateStatus(`✅ ${checkResult.message}`, 'success');
+            setTimeout(() => {
+              if (liff.isInClient()) {
+                liff.closeWindow();
+              }
+            }, 3000);
+          } else {
+            statusDiv.style.display = 'none';
+            form.style.display = 'block';
+            
+            // 預填顯示名稱
+            document.getElementById('name').value = currentProfile.displayName || '';
+          }
+        } else {
+          updateStatus(`❌ 檢查失敗：${checkResult.error || '未知錯誤'}`, 'error');
+        }
+
+      } catch (error) {
+        console.error('❌ LIFF 錯誤:', error);
+        updateStatus(`❌ 初始化失敗：${error.message}`, 'error');
+      }
+    }
+
+    // 表單提交處理
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      if (!currentProfile) {
+        updateStatus('❌ 用戶資料未取得', 'error');
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<div class="spinner"></div>註冊中...';
+      
+      const formData = new FormData(e.target);
+      const registerData = Object.fromEntries(formData.entries());
+
+      // 移除空值
+      Object.keys(registerData).forEach(key => {
+        if (registerData[key] === '') {
+          delete registerData[key];
+        }
+      });
+
+      console.log('📝 註冊資料:', registerData);
+
+      try {
+        const res = await fetch('/api/liff/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(registerData)
+        });
+
+        const result = await res.json();
+        
+        if (result.success) {
+          form.style.display = 'none';
+          statusDiv.style.display = 'block';
+          updateStatus(`🎉 ${result.message}`, 'success');
+          
+          setTimeout(() => {
+            if (liff.isInClient()) {
+              liff.closeWindow();
+            }
+          }, 3000);
+        } else {
+          updateStatus(`❌ ${result.error}`, 'error');
+          statusDiv.style.display = 'block';
+        }
+
+      } catch (err) {
+        console.error('註冊錯誤:', err);
+        updateStatus('❌ 註冊失敗，請稍後再試', 'error');
+        statusDiv.style.display = 'block';
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '🎯 完成註冊';
+      }
+    });
+
+    main();
+  </script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <title>北大獅子會 - 會員註冊</title>
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 500px;
+      margin: 0 auto;
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .logo {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+    }
+    .title {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 10px;
+    }
+    .subtitle {
+      color: #666;
+      font-size: 0.9rem;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+      color: #333;
+    }
+    .required {
+      color: #dc3545;
+    }
+    input {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      box-sizing: border-box;
+      font-size: 16px;
+      transition: border-color 0.3s;
+    }
+    input:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+    input:required:invalid {
+      border-color: #dc3545;
+    }
+    button {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    button:hover {
+      transform: translateY(-2px);
+    }
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+    .status {
+      padding: 15px;
+      border-radius: 10px;
+      margin: 20px 0;
+      text-align: center;
+    }
+    .loading {
+      background: #e3f2fd;
+      color: #1976d2;
+      border: 1px solid #bbdefb;
+    }
+    .success {
+      background: #e8f5e8;
+      color: #2e7d32;
+      border: 1px solid #c8e6c9;
+    }
+    .error {
+      background: #ffebee;
+      color: #c62828;
+      border: 1px solid #ffcdd2;
+    }
+    .spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #1976d2;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-right: 10px;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .form-row {
+      display: flex;
+      gap: 15px;
+    }
+    .form-row .form-group {
+      flex: 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="logo">🦁</div>
+      <div class="title">北大獅子會</div>
+      <div class="subtitle">會員註冊系統</div>
+    </div>
+    
+    <div id="status" class="status loading">
+      <div class="spinner"></div>
+      正在初始化 LINE 登入...
+    </div>
+
+    <form id="registerForm" style="display: none;">
+      <input type="hidden" id="line_user_id" name="line_user_id" required>
+      
+      <div class="form-group">
+        <label for="name">中文姓名 <span class="required">*</span></label>
+        <input type="text" id="name" name="name" required placeholder="請輸入您的中文姓名">
+      </div>
+      
+      <div class="form-group">
+        <label for="english_name">英文姓名</label>
+        <input type="text" id="english_name" name="english_name" placeholder="請輸入您的英文姓名">
+      </div>
+      
+      <div class="form-group">
+        <label for="birthday">生日 <span class="required">*</span></label>
+        <input type="date" id="birthday" name="birthday" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="job_title">職業 <span class="required">*</span></label>
+        <input type="text" id="job_title" name="job_title" required placeholder="請輸入您的職業">
+      </div>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label for="mobile">手機號碼 <span class="required">*</span></label>
+          <input type="tel" id="mobile" name="mobile" required placeholder="0912-345-678">
+        </div>
+        <div class="form-group">
+          <label for="phone">市話</label>
+          <input type="tel" id="phone" name="phone" placeholder="02-2345-6789">
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="fax">傳真</label>
+        <input type="tel" id="fax" name="fax" placeholder="02-2345-6789">
+      </div>
+      
+      <div class="form-group">
+        <label for="address">地址 <span class="required">*</span></label>
+        <input type="text" id="address" name="address" required placeholder="請輸入您的完整地址">
+      </div>
+      
+      <div class="form-group">
+        <label for="email">Email <span class="required">*</span></label>
+        <input type="email" id="email" name="email" required placeholder="example@email.com">
+      </div>
+      
+      <button type="submit" id="submitBtn">
+        🎯 完成註冊
+      </button>
+    </form>
+  </div>
+
+  <script>
+    const statusDiv = document.getElementById('status');
+    const form = document.getElementById('registerForm');
+    const submitBtn = document.getElementById('submitBtn');
+    let currentProfile = null;
+
+    function updateStatus(message, type = 'loading') {
+      statusDiv.className = `status ${type}`;
+      statusDiv.innerHTML = type === 'loading' ? 
+        `<div class="spinner"></div>${message}` : 
+        message;
+    }
+
+    async function main() {
+      try {
+        // 檢查是否在 LINE 環境中
+        if (!window.liff) {
+          updateStatus('❌ 此頁面需要在 LINE 應用程式中開啟', 'error');
+          return;
+        }
+
+        // 取得 LIFF 配置
+        updateStatus('正在載入 LIFF 配置...');
+        const configResponse = await fetch('/api/liff/config');
+        const config = await configResponse.json();
+        
+        if (!config.success) {
+          throw new Error('無法載入 LIFF 配置');
+        }
+        
+        // 即使是預設 LIFF ID 也嘗試初始化
+        if (config.isDefault) {
+          console.log('⚠️ 使用預設 LIFF ID');
+        }
+        
+        // 初始化 LIFF
+        updateStatus('正在初始化 LINE 登入...');
+        await liff.init({ 
+          liffId: config.liffId
+        });
+        
+        console.log('✅ LIFF 初始化成功');
+        console.log('📱 LIFF 環境:', {
+          isLoggedIn: liff.isLoggedIn(),
+          isInClient: liff.isInClient(),
+          os: liff.getOS(),
+          language: liff.getLanguage(),
+          version: liff.getVersion()
+        });
+        
+        // 檢查登入狀態
+        if (!liff.isLoggedIn()) {
+          updateStatus('請登入 LINE 帳號...');
+          liff.login();
+          return;
+        }
+
+        // 獲取用戶資料
+        updateStatus('正在取得用戶資料...');
+        currentProfile = await liff.getProfile();
+        
+        console.log('📱 用戶資料:', {
+          userId: currentProfile.userId,
+          displayName: currentProfile.displayName,
+          pictureUrl: currentProfile.pictureUrl
+        });
+
+        // 設定隱藏欄位
+        document.getElementById('line_user_id').value = currentProfile.userId;
+
+        // 檢查是否已經是會員
+        updateStatus('正在檢查會員狀態...');
+        const checkRes = await fetch('/api/liff/check-member', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            line_user_id: currentProfile.userId,
+            display_name: currentProfile.displayName,
+            picture_url: currentProfile.pictureUrl
+          })
+        });
+
+        if (!checkRes.ok) {
+          throw new Error(`伺服器錯誤: ${checkRes.status}`);
+        }
+
+        const checkResult = await checkRes.json();
+        
+        if (checkResult.success) {
+          if (checkResult.is_member) {
+            updateStatus(`✅ ${checkResult.message}`, 'success');
+            setTimeout(() => {
+              if (liff.isInClient()) {
+                liff.closeWindow();
+              }
+            }, 3000);
+          } else {
+            statusDiv.style.display = 'none';
+            form.style.display = 'block';
+            
+            // 預填顯示名稱
+            document.getElementById('name').value = currentProfile.displayName || '';
+          }
+        } else {
+          updateStatus(`❌ 檢查失敗：${checkResult.error || '未知錯誤'}`, 'error');
+        }
+
+      } catch (error) {
+        console.error('❌ LIFF 錯誤:', error);
+        updateStatus(`❌ 初始化失敗：${error.message}`, 'error');
+      }
+    }
+
+    // 表單提交處理
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      if (!currentProfile) {
+        updateStatus('❌ 用戶資料未取得', 'error');
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<div class="spinner"></div>註冊中...';
+      
+      const formData = new FormData(e.target);
+      const registerData = Object.fromEntries(formData.entries());
+
+      // 移除空值
+      Object.keys(registerData).forEach(key => {
+        if (registerData[key] === '') {
+          delete registerData[key];
+        }
+      });
+
+      console.log('📝 註冊資料:', registerData);
+
+      try {
+        const res = await fetch('/api/liff/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(registerData)
+        });
+
+        const result = await res.json();
+        
+        if (result.success) {
+          form.style.display = 'none';
+          statusDiv.style.display = 'block';
+          updateStatus(`🎉 ${result.message}`, 'success');
+          
+          setTimeout(() => {
+            if (liff.isInClient()) {
+              liff.closeWindow();
+            }
+          }, 3000);
+        } else {
+          updateStatus(`❌ ${result.error}`, 'error');
+          statusDiv.style.display = 'block';
+        }
+
+      } catch (err) {
+        console.error('註冊錯誤:', err);
+        updateStatus('❌ 註冊失敗，請稍後再試', 'error');
+        statusDiv.style.display = 'block';
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '🎯 完成註冊';
+      }
+    });
+
+    main();
+  </script>
+</body>
+</html>

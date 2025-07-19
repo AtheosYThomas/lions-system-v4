@@ -1,3 +1,4 @@
+
 import express from 'express';
 import { authMiddleware } from '../../middleware/authMiddleware';
 import { 
@@ -46,14 +47,7 @@ router.get('/require-officer',
   authMiddleware, 
   requireMinRole(Role.Officer), 
   (req, res) => {
-    res.json({ 
-      message: '✅ 幹部權限驗證通過！',
-      user: {
-        id: (req as any).user.id,
-        role: (req as any).user.role,
-        name: (req as any).user.name
-      }
-    });
+    res.json({ message: '✅ 需要幹部或以上權限', role: req.member!.role });
   }
 );
 
@@ -61,14 +55,7 @@ router.get('/secretary-or-treasurer',
   authMiddleware, 
   requireAnyRole([Role.Secretary, Role.Treasurer]), 
   (req, res) => {
-    res.json({ 
-      message: '✅ 秘書/財務權限驗證通過！',
-      user: {
-        id: (req as any).user.id,
-        role: (req as any).user.role,
-        name: (req as any).user.name
-      }
-    });
+    res.json({ message: '✅ 秘書或財務權限', role: req.member!.role });
   }
 );
 
@@ -76,7 +63,7 @@ router.get('/secretary-or-treasurer',
 router.get('/role-info', authMiddleware, (req, res) => {
   const member = req.member!;
   const userRole = member.role as Role;
-
+  
   res.json({
     message: '📊 角色系統資訊',
     user: {
