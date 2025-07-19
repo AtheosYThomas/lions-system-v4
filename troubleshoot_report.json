@@ -1,9 +1,9 @@
 {
-  "timestamp": "2025-07-19T23:50:02.755Z",
+  "timestamp": "2025-07-19T23:53:08.221Z",
   "summary": {
-    "total": 126,
+    "total": 122,
     "pass": 97,
-    "warning": 28,
+    "warning": 24,
     "error": 1
   },
   "results": [
@@ -16,15 +16,6 @@
       "category": "Source Files",
       "status": "pass",
       "message": "src/routes/admin.ts: 語法檢查通過"
-    },
-    {
-      "category": "Source Files",
-      "status": "warning",
-      "message": "src/routes/line/webhook.ts: 可能有未使用的 import: middleware",
-      "suggestions": [
-        "移除未使用的 import",
-        "檢查程式碼使用情況"
-      ]
     },
     {
       "category": "Source Files",
@@ -163,15 +154,6 @@
     },
     {
       "category": "Source Files",
-      "status": "warning",
-      "message": "src/middleware/roleMiddleware.ts: 可能有未使用的 import: roleRank",
-      "suggestions": [
-        "移除未使用的 import",
-        "檢查程式碼使用情況"
-      ]
-    },
-    {
-      "category": "Source Files",
       "status": "pass",
       "message": "src/middleware/roleMiddleware.ts: 語法檢查通過"
     },
@@ -288,15 +270,6 @@
     },
     {
       "category": "Source Files",
-      "status": "warning",
-      "message": "src/services/registrationService.ts: 可能有未使用的 import: RegistrationCreationAttributes",
-      "suggestions": [
-        "移除未使用的 import",
-        "檢查程式碼使用情況"
-      ]
-    },
-    {
-      "category": "Source Files",
       "status": "pass",
       "message": "src/services/registrationService.ts: 語法檢查通過"
     },
@@ -307,15 +280,6 @@
       "suggestions": [
         "明確定義型別",
         "使用具體的介面"
-      ]
-    },
-    {
-      "category": "Source Files",
-      "status": "warning",
-      "message": "src/services/pushService.ts: 可能有未使用的 import: Sequelize",
-      "suggestions": [
-        "移除未使用的 import",
-        "檢查程式碼使用情況"
       ]
     },
     {

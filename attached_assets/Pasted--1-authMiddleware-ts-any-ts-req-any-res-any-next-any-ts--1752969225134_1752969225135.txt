@@ -1,0 +1,194 @@
+ 1. authMiddleware.ts 使用 any 型別
+問題：
+
+ts
+複製
+編輯
+(req: any, res: any, next: any) => { ... }
+修正：
+
+ts
+複製
+編輯
+import { Request, Response, NextFunction } from 'express';
+
+export function authMiddleware(req: Request, res: Response, next: NextFunction): void {
+  // 檢查權限、Token 等
+  next();
+}
+✅ 2. authMiddleware.ts 未使用 Role
+問題：
+
+ts
+複製
+編輯
+import { Role } from '@/types/role'; // 未使用
+修正建議：
+若整份檔案中未用到 Role，直接刪除這行 import。
+
+✅ 3. pushRecord.ts 使用 any
+問題：
+
+ts
+複製
+編輯
+const record: any = await PushRecord.findOne();
+修正方式：
+建立對應型別，例如：
+
+ts
+複製
+編輯
+interface PushRecordAttributes {
+  id: number;
+  line_user_id: string;
+  message: string;
+  status: 'success' | 'fail';
+  created_at: Date;
+}
+
+const record: PushRecordAttributes | null = await PushRecord.findOne();
+✅ 4. registrationService.ts 使用 any
+問題：
+
+ts
+複製
+編輯
+export const createRegistration = async (data: any) => { ... }
+修正方式：
+
+ts
+複製
+編輯
+import { RegistrationCreationAttributes } from '@/models/registration';
+
+export const createRegistration = async (data: RegistrationCreationAttributes) => {
+  return await Registration.create(data);
+};
+✅ 5. pushService.ts 使用 any
+問題：
+
+ts
+複製
+編輯
+export const sendPush = async (payload: any) => { ... }
+修正方式：
+
+ts
+複製
+編輯
+interface PushPayload {
+  userId: string;
+  content: string;
+  timestamp: number;
+}
+
+export const sendPush = async (payload: PushPayload) => {
+  // 使用 payload 內容
+};
+✅ 6. memberService.ts 使用 any
+問題：
+
+ts
+複製
+編輯
+const member: any = await Member.findOne();
+修正方式：
+
+ts
+複製
+編輯
+interface MemberAttributes {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+}
+
+const member: MemberAttributes | null = await Member.findOne();
+✅ 7. fileService.ts 使用 any
+問題：
+
+ts
+複製
+編輯
+export const uploadFile = (file: any) => { ... }
+修正方式：
+
+ts
+複製
+編輯
+interface UploadFile {
+  filename: string;
+  mimetype: string;
+  size: number;
+  buffer: Buffer;
+}
+
+export const uploadFile = (file: UploadFile) => {
+  // 上傳邏輯
+};
+✅ 8. eventService.ts 使用 any
+問題：
+
+ts
+複製
+編輯
+export const createEvent = (event: any) => { ... }
+修正方式：
+
+ts
+複製
+編輯
+interface EventInput {
+  title: string;
+  description: string;
+  date: string;
+  location: string;
+}
+
+export const createEvent = (event: EventInput) => {
+  // 儲存事件資料
+};
+✅ 9. checkinService.ts 使用 any
+問題：
+
+ts
+複製
+編輯
+const checkin: any = await Checkin.findOne();
+修正方式：
+
+ts
+複製
+編輯
+interface CheckinRecord {
+  id: number;
+  memberId: string;
+  eventId: string;
+  time: Date;
+}
+
+const checkin: CheckinRecord | null = await Checkin.findOne();
+✅ 10. announcementService.ts 使用 any
+問題：
+
+ts
+複製
+編輯
+export const publishAnnouncement = (data: any) => { ... }
+修正方式：
+
+ts
+複製
+編輯
+interface AnnouncementInput {
+  title: string;
+  content: string;
+  publishDate: string;
+  authorId: string;
+}
+
+export const publishAnnouncement = (data: AnnouncementInput) => {
+  // 發佈邏輯
+};
