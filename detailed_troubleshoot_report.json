@@ -1,13 +1,21 @@
 {
-  "timestamp": "2025-07-19T23:14:57.217Z",
+  "timestamp": "2025-07-19T23:17:32.896Z",
   "summary": {
-    "totalIssues": 3,
-    "errors": 0,
+    "totalIssues": 4,
+    "errors": 1,
     "warnings": 0,
     "info": 3,
-    "healthScore": 85
+    "healthScore": 65
   },
   "issues": [
+    {
+      "category": "TypeScript編譯",
+      "severity": "high",
+      "issue": "TypeScript 編譯錯誤",
+      "details": "src/routes/api/push-resend.ts(63,31): error TS2339: Property 'member' does not exist on type 'PushRecord'.\nsrc/routes/api/push-resend.ts(64,30): error TS2339: Property 'event' does not exist on type 'PushRecord'.\nsrc/routes/api/push-resend.ts(100,29): error TS2339: Property 'member' does not exist on type 'PushRecord'.\nsrc/routes/api/push-resend.ts(101,28): error TS2339: Property 'event' does not exist on type 'PushRecord'.\nsrc/routes/api/push-resend.ts(109,28): error TS2339: Property 'member' does not exist on type 'PushRecord'.\nsrc/routes/api/push-resend.ts(110,30): error TS2339: Property 'member' does not exist on type 'PushRecord'.\nsrc/routes/api/push-resend.ts(111,30): error TS2339: Property 'event' does not exist on type 'PushRecord'.\n",
+      "suggestion": "修正 TypeScript 語法錯誤",
+      "status": "error"
+    },
     {
       "category": "Routes",
       "severity": "low",
