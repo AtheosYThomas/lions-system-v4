@@ -80,13 +80,26 @@ class PushService {
     limit?: number;
     offset?: number;
     messageType?: string;
+    startDate?: string;
+    endDate?: string;
   } = {}) {
     try {
-      const { limit = 50, offset = 0, messageType } = options;
+      const { limit = 50, offset = 0, messageType, startDate, endDate } = options;
 
       const whereClause: any = { event_id: eventId };
       if (messageType) {
         whereClause.message_type = messageType;
+      }
+
+      // 加入日期篩選
+      if (startDate || endDate) {
+        whereClause.pushed_at = {};
+        if (startDate) {
+          whereClause.pushed_at[Op.gte] = new Date(startDate);
+        }
+        if (endDate) {
+          whereClause.pushed_at[Op.lte] = new Date(endDate + 'T23:59:59');
+        }
       }
 
       const records = await PushRecord.findAndCountAll({
@@ -143,13 +156,26 @@ class PushService {
     limit?: number;
     offset?: number;
     messageType?: string;
+    startDate?: string;
+    endDate?: string;
   } = {}) {
     try {
-      const { limit = 50, offset = 0, messageType } = options;
+      const { limit = 50, offset = 0, messageType, startDate, endDate } = options;
 
       const whereClause: any = { member_id: memberId };
       if (messageType) {
         whereClause.message_type = messageType;
+      }
+
+      // 加入日期篩選
+      if (startDate || endDate) {
+        whereClause.pushed_at = {};
+        if (startDate) {
+          whereClause.pushed_at[Op.gte] = new Date(startDate);
+        }
+        if (endDate) {
+          whereClause.pushed_at[Op.lte] = new Date(endDate + 'T23:59:59');
+        }
       }
 
       const records = await PushRecord.findAll({
