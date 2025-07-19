@@ -54,10 +54,10 @@ export type RoleGroup = keyof typeof roleGroups;
 
 /**
  * 判斷角色是否屬於某群組（型別安全）
- * ✅ 修正重點：將陣列轉為 Role[] 類型，避免 TypeScript 過度縮小型別
+ * ✅ 修正重點：使用展開運算符轉為可變陣列，避免 TypeScript 只讀型別錯誤
  */
 export function isRoleInGroup(role: Role, group: RoleGroup): boolean {
-  const groupRoles: Role[] = roleGroups[group];
+  const groupRoles = [...roleGroups[group]]; // 轉為可變陣列
   return groupRoles.includes(role);
 }
 
