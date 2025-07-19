@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
@@ -14,12 +13,12 @@ function App() {
     <Router>
       <div className="App">
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Admin />} />
+          <Route path="/home" element={<Home />} />
           <Route path="/register" element={<Register />} />
           <Route path="/liff" element={<LiffPage />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/checkin" element={<Checkin />} />
-          <Route path="/admin" element={<Admin />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </div>
