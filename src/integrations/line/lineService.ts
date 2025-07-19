@@ -604,17 +604,42 @@ class LineService {
   /**
    * 批量推送活動報到通知
    */
-  async pushBulkCheckinNotification(userIds: string[], title: string, date: string, eventId: string): Promise<{
+  async pushBulkCheckinNotification(
+    userIds: string[], 
+    title: string, 
+    date: string, 
+    eventId: string,
+    messageType: string = 'manual_push'
+  ): Promise<{
     success: number;
     failed: number;
     results: Array<{ userId: string; success: boolean; error?: string }>;
+    pushRecords: Array<{ userId: string; memberId?: string; status: 'success' | 'failed' }>;
   }> {
     const { createCheckinFlexMessage } = await import('./flexTemplates');
     const flexMessage = createCheckinFlexMessage(title, date, eventId);
     
     const results: Array<{ userId: string; success: boolean; error?: string }> = [];
+    const pushRecords: Array<{ userId: string; memberId?: string; status: 'success' | 'failed' }> = [];
     let successCount = 0;
     let failedCount = 0;
+
+    // 獲取會員資料用於記錄
+    const Member = (await import('../../models/member')).default;
+    const memberMap = new Map();
+    
+    try {
+      const members = await Member.findAll({
+        where: { line_user_id: userIds },
+        attributes: ['id', 'line_user_id']
+      });
+      
+      members.forEach((member: any) => {
+        memberMap.set(member.line_user_id, member.id);
+      });
+    } catch (error) {
+      console.error('❌ 獲取會員資料失敗:', error);
+    }
 
     // 批量推送，避免 API 限制
     const batchSize = 500; // LINE API 限制
@@ -622,14 +647,18 @@ class LineService {
       const batch = userIds.slice(i, i + batchSize);
       
       const promises = batch.map(async (userId) => {
+        const memberId = memberMap.get(userId);
+        
         try {
           await this.client.pushMessage(userId, flexMessage);
           results.push({ userId, success: true });
+          pushRecords.push({ userId, memberId, status: 'success' });
           successCount++;
           console.log(`✅ 推播成功：${userId}`);
         } catch (error) {
           const errorMessage = error instanceof Error ? error.message : 'Unknown error';
           results.push({ userId, success: false, error: errorMessage });
+          pushRecords.push({ userId, memberId, status: 'failed' });
           failedCount++;
           console.error(`❌ 推播失敗：${userId}`, errorMessage);
         }
@@ -643,12 +672,33 @@ class LineService {
       }
     }
 
+    // 記錄推播結果到資料庫
+    try {
+      const pushService = (await import('../../services/pushService')).default;
+      const recordsToSave = pushRecords
+        .filter(record => record.memberId)
+        .map(record => ({
+          member_id: record.memberId!,
+          event_id: eventId,
+          message_type: messageType,
+          status: record.status
+        }));
+
+      if (recordsToSave.length > 0) {
+        await pushService.recordBulkPushResults(recordsToSave);
+        console.log(`💾 已記錄 ${recordsToSave.length} 筆推播記錄`);
+      }
+    } catch (error) {
+      console.error('❌ 記錄推播結果失敗:', error);
+    }
+
     console.log(`📊 推播統計 - 成功: ${successCount}, 失敗: ${failedCount}`);
     
     return {
       success: successCount,
       failed: failedCount,
-      results
+      results,
+      pushRecords
     };
   }
 
