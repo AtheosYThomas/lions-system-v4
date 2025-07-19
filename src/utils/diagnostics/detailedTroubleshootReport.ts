@@ -120,10 +120,20 @@ class DetailedTroubleshootReport {
               this.addIssue('前端LIFF', 'high', 'LIFF 初始化程式碼缺失', `${file} 缺少 liff.init()`, '加入正確的 LIFF 初始化程式碼', 'error');
             }
 
-            // 檢查 LIFF App ID
-            const liffIdMatch = content.match(/liff\.init\(\s*{\s*liffId:\s*['"]([^'"]+)['"]/);
-            if (!liffIdMatch) {
-              this.addIssue('前端LIFF', 'high', 'LIFF App ID 未設定', `${file} 缺少 LIFF App ID`, '設定正確的 LIFF App ID', 'error');
+            // 新的檢查邏輯：檢查是否有 liff.init 和動態配置 API
+            const liffIdMatch = content.match(/liff\.init\(\s*\{\s*liffId:\s*.*\}/);
+            const usesLiffApiConfig = content.includes('/api/liff/config');
+
+            if (!liffIdMatch && !usesLiffApiConfig) {
+              this.addIssue(
+                '前端LIFF',
+                'LIFF 配置未設定',
+                'public/liff.html 缺少 LIFF 配置方式',
+                '設定 LIFF ID 或使用 /api/liff/config 動態配置'
+              );
+            } else if (usesLiffApiConfig) {
+              // 如果使用動態配置，則為正常狀態，不需要報告錯誤
+              console.log('✅ LIFF 使用動態配置 API，配置正常');
             }
           }
 
