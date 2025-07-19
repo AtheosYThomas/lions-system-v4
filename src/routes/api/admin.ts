@@ -165,6 +165,86 @@ router.get('/event/:eventId/checkin/export', async (req, res) => {
   }
 });
 
+// 建立新活動
+router.post('/event/create', async (req, res) => {
+  try {
+    const { title, description, date, location, max_attendees } = req.body;
+
+    // 驗證必要欄位
+    if (!title || !date) {
+      return res.status(400).json({
+        error: '缺少必要欄位',
+        details: '活動標題和日期為必填項目'
+      });
+    }
+
+    // 建立活動
+    const eventData = {
+      title: title.trim(),
+      description: description?.trim() || null,
+      date: new Date(date),
+      location: location?.trim() || null,
+      max_attendees: max_attendees || null
+    };
+
+    const event = await eventService.createEvent(eventData);
+
+    res.json({
+      success: true,
+      event,
+      message: '活動建立成功'
+    });
+
+  } catch (error) {
+    console.error('建立活動失敗:', error);
+    res.status(500).json({
+      error: '建立活動失敗',
+      details: error instanceof Error ? error.message : '未知錯誤'
+    });
+  }
+});
+
+// 更新活動
+router.patch('/event/:id/update', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { title, description, date, location, max_attendees } = req.body;
+
+    // 驗證必要欄位
+    if (!title || !date) {
+      return res.status(400).json({
+        error: '缺少必要欄位',
+        details: '活動標題和日期為必填項目'
+      });
+    }
+
+    // 更新活動
+    const updateData = {
+      id,
+      title: title.trim(),
+      description: description?.trim() || null,
+      date: new Date(date),
+      location: location?.trim() || null,
+      max_attendees: max_attendees || null
+    };
+
+    const event = await eventService.updateEvent(updateData);
+
+    res.json({
+      success: true,
+      event,
+      message: '活動更新成功'
+    });
+
+  } catch (error) {
+    console.error('更新活動失敗:', error);
+    res.status(500).json({
+      error: '更新活動失敗',
+      details: error instanceof Error ? error.message : '未知錯誤'
+    });
+  }
+});
+
 // 獲取所有活動列表
 router.get('/events', async (req, res) => {
   try {

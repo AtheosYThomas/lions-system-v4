@@ -1,6 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import EventModal from '../components/admin/EventModal';
 
 interface Event {
   id: string;
@@ -17,6 +18,9 @@ const AdminEventsList: React.FC = () => {
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [editMode, setEditMode] = useState<'create' | 'edit'>('create');
+  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -115,10 +119,14 @@ const AdminEventsList: React.FC = () => {
               <p className="text-gray-600 mt-2">管理所有活動與查看報到統計</p>
             </div>
             <button
-              onClick={() => navigate('/events')}
+              onClick={() => {
+                setEditMode('create');
+                setSelectedEvent(null);
+                setModalOpen(true);
+              }}
               className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
             >
-              建立新活動
+              ＋ 新增活動
             </button>
           </div>
         </div>
@@ -203,7 +211,11 @@ const AdminEventsList: React.FC = () => {
               <p className="mt-1 text-sm text-gray-500">開始建立第一個活動吧！</p>
               <div className="mt-6">
                 <button
-                  onClick={() => navigate('/events')}
+                  onClick={() => {
+                    setEditMode('create');
+                    setSelectedEvent(null);
+                    setModalOpen(true);
+                  }}
                   className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
                 >
                   建立活動
@@ -261,18 +273,26 @@ const AdminEventsList: React.FC = () => {
                         {formatDate(event.created_at)}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <button
-                          onClick={() => navigate(`/admin/event/${event.id}/checkin`)}
-                          className="text-blue-600 hover:text-blue-900 mr-4"
-                        >
-                          查看報到
-                        </button>
-                        <button
-                          onClick={() => navigate(`/events/${event.id}`)}
-                          className="text-gray-600 hover:text-gray-900"
-                        >
-                          編輯
-                        </button>
+                        <div className="flex space-x-2">
+                          <button
+                            onClick={() => {
+                              setEditMode('edit');
+                              setSelectedEvent(event);
+                              setModalOpen(true);
+                            }}
+                            className="text-blue-600 hover:text-blue-900 font-medium"
+                            title="編輯活動"
+                          >
+                            ✏️ 編輯
+                          </button>
+                          <button
+                            onClick={() => navigate(`/admin/event/${event.id}/checkin`)}
+                            className="text-green-600 hover:text-green-900 font-medium"
+                            title="查看報到統計"
+                          >
+                            🔗 報到
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -281,6 +301,18 @@ const AdminEventsList: React.FC = () => {
             </div>
           )}
         </div>
+
+        {/* Event Modal */}
+        <EventModal
+          isOpen={modalOpen}
+          mode={editMode}
+          eventData={selectedEvent || undefined}
+          onClose={() => setModalOpen(false)}
+          onSuccess={() => {
+            fetchEvents(); // 重新載入活動列表
+            setModalOpen(false);
+          }}
+        />
       </div>
     </div>
   );
