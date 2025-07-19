@@ -3,7 +3,12 @@ module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
   roots: ['<rootDir>/src', '<rootDir>/test'],
-  testMatch: ['**/test/**/*.spec.ts', '**/src/**/*.test.ts'],
+  testMatch: [
+    '**/test/**/*.spec.ts',
+    '**/test/**/*.test.ts',
+    '**/*.spec.ts',
+    '**/*.test.ts'
+  ],
   setupFilesAfterEnv: ['<rootDir>/test/setup.ts'],
   testTimeout: 30000,
   verbose: true,
@@ -13,9 +18,10 @@ module.exports = {
     '!src/tools/**',
     '!src/scripts/**'
   ],
-  moduleFileExtensions: ['ts', 'js', 'json'],
+  moduleFileExtensions: ['ts', 'js', 'json', 'node'],
   testPathIgnorePatterns: [
     '/node_modules/',
-    '/dist/'
+    '/dist/',
+    '/client/'
   ]
 };
