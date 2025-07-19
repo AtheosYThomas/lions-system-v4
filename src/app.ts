@@ -11,6 +11,10 @@ import announcementRoutes from './routes/api/announcements';
 import lineWebhook from './routes/line/webhook';
 import uploadRouter from './routes/upload';
 import eventsRoutes from './routes/api/events';
+import pushSchedulerRoutes from './routes/api/push-scheduler';
+import pushRecordsRoutes from './routes/api/push-records';
+import pushRecordsExportRoutes from './routes/api/push-records-export';
+import pushRetryRoutes from './routes/api/push-retry';
 
 const app = express();
 
@@ -85,12 +89,12 @@ app.use('/api/events', eventsRoutes);
 app.use('/api/liff', liffRoutes);
 app.use('/api/upload', uploadRouter);
 // 排程推播路由
-import pushSchedulerRoutes from './routes/api/push-scheduler';
 app.use('/api/push', pushSchedulerRoutes);
 
 // Push Records API
-import pushRecordsRoutes from './routes/api/push-records';
 app.use('/api/admin/push-records', pushRecordsRoutes);
+app.use('/api/admin/push-records/export', pushRecordsExportRoutes);
+app.use('/api/push/retry', pushRetryRoutes);
 
 // 前端路由（提供 React 應用）
 app.get('/', (req, res) => {

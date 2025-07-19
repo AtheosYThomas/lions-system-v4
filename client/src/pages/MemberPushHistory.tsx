@@ -216,13 +216,21 @@ const MemberPushHistory = () => {
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
-            <div className="flex items-end">
+            <div className="flex items-end space-x-2">
               <button
                 onClick={loadPushHistory}
                 className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors"
               >
                 🔍 查詢
               </button>
+              <a
+                href={`/api/push-records/export?memberId=${memberId}${startDate ? `&startDate=${startDate}` : ''}${endDate ? `&endDate=${endDate}` : ''}`}
+                className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors inline-block text-center"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                📄 匯出 CSV
+              </a>
             </div>
             <div className="flex items-end">
               <button
