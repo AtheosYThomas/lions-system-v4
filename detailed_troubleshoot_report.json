@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-07-19T08:40:51.429Z",
+  "timestamp": "2025-07-19T08:43:20.116Z",
   "summary": {
     "totalIssues": 1,
     "errors": 1,
@@ -12,7 +12,7 @@
       "category": "TypeScript編譯",
       "severity": "high",
       "issue": "TypeScript 編譯錯誤",
-      "details": "src/routes/api/registration.ts(14,59): error TS1434: Unexpected keyword or identifier.\nsrc/routes/api/registration.ts(14,65): error TS1128: Declaration or statement expected.\n",
+      "details": "src/controllers/lineController.ts(25,9): error TS2322: Type 'Response<any, Record<string, any>>' is not assignable to type 'void'.\nsrc/controllers/lineController.ts(31,9): error TS2322: Type 'Response<any, Record<string, any>>' is not assignable to type 'void'.\nsrc/controllers/lineController.ts(37,9): error TS2322: Type 'Response<any, Record<string, any>>' is not assignable to type 'void'.\nsrc/controllers/lineController.ts(57,9): error TS2322: Type 'Response<any, Record<string, any>>' is not assignable to type 'void'.\nsrc/controllers/lineController.ts(64,9): error TS2322: Type 'Response<any, Record<string, any>>' is not assignable to type 'void'.\nsrc/controllers/lineController.ts(76,7): error TS2322: Type 'Response<any, Record<string, any>>' is not assignable to type 'void'.\n",
       "suggestion": "修正 TypeScript 語法錯誤",
       "status": "error"
     }
