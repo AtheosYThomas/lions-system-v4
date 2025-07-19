@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import lineService from '../integrations/line/lineService';
 import { LineWebhookRequestBody } from '../types/line';
 import { isValidLineUserId } from '../utils/validators';
+import openaiService from '../integrations/openai/openaiService';
 
 // Helper function to encapsulate userId validation logic
 const validateLineUserId = (userId: string | undefined) => {
@@ -203,9 +204,84 @@ class LineController {
   }
 
   /**
-   * 自訂 Flex Message 推播
+   * AI 智能回覆
    */
-  async customFlexPush(req: Request, res: Response): Promise<void> {
+  async aiReply(req: Request, res: Response) {
+    try {
+      const { userId, message, context } = req.body;
+
+      // ✅ 使用驗證工具函式檢查 LINE User ID 格式
+      const validation = validateLineUserId(userId);
+      if (!validation.valid) {
+        return res.status(400).json({
+          success: false,
+          error: validation.error,
+        });
+      }
+
+      if (!message) {
+        return res.status(400).json({
+          success: false,
+          error: 'Message is required',
+        });
+      }
+
+      // 使用 OpenAI 生成智能回覆
+      const aiReply = await openaiService.generateLineReply(message, context);
+
+      // 發送回覆訊息
+      await lineService.pushMessage(userId, {
+        type: 'text',
+        text: aiReply,
+      });
+
+      res.json({
+        success: true,
+        message: 'AI reply sent successfully',
+        aiResponse: aiReply,
+      });
+    } catch (error) {
+      console.error('AI Reply error:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Failed to generate AI reply',
+      });
+    }
+  }
+
+  /**
+   * 生成活動建議
+   */
+  async generateEventSuggestion(req: Request, res: Response) {
+    try {
+      const { theme } = req.body;
+
+      if (!theme) {
+        return res.status(400).json({
+          success: false,
+          error: 'Theme is required',
+        });
+      }
+
+      const suggestion = await openaiService.generateEventSuggestion(theme);
+
+      res.json({
+        success: true,
+        suggestion,
+      });
+    } catch (error) {
+      console.error('Event suggestion error:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Failed to generate event suggestion',
+      });
+    }
+  }
+
+  /**
+   * 處理客製化 Flex 推播
+   */
+  async customFlexPush(req: Request, res: Response) {
     try {
       const { userId, title, date, imageUrl } = req.body;
 
