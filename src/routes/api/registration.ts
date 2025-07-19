@@ -4,9 +4,6 @@ import registrationController from '../../controllers/registrationController';
 
 const router = express.Router();
 
-// 活動報名
-router.post('/', registrationController.registerForEvent);
-
 // 會員註冊
 router.post('/register', registrationController.registerMember);
 
