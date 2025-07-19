@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
-import Member from '../models/member';
+import { Member } from '../models/member';
+import { Registration } from '../models/registration';
 import memberService from '../services/memberService';
 
 interface RegisterRequest extends Request {
