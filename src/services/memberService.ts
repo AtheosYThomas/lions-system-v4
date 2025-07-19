@@ -95,7 +95,7 @@ class MemberService {
    */
   async searchMembers(options: MemberSearchOptions) {
     try {
-      const whereClause: any = {};
+      const whereClause: Record<string, any> = {};
 
       if (options.name) {
         whereClause.name = {

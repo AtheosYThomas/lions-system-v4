@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { AuthError } from './AuthError';
-import { Role, roleRank, roleDisplayNames, hasMinimumRole, isInRoleGroup, RoleGroup } from '../types/role';
+import { Role, roleDisplayNames, hasMinimumRole, isInRoleGroup, RoleGroup } from '../types/role';
 
 /**
  * 基礎角色權限中間件

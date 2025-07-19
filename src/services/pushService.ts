@@ -1,4 +1,4 @@
-import { Sequelize, Op } from 'sequelize';
+import { Op } from 'sequelize';
 import PushRecord from '../models/pushRecord';
 import Member from '../models/member';
 import Event from '../models/event';
@@ -86,7 +86,7 @@ class PushService {
     try {
       const { limit = 50, offset = 0, messageType, startDate, endDate } = options;
 
-      const whereClause: any = { event_id: eventId };
+      const whereClause: Record<string, any> = { event_id: eventId };
       if (messageType) {
         whereClause.message_type = messageType;
       }
@@ -162,7 +162,7 @@ class PushService {
     try {
       const { limit = 50, offset = 0, messageType, startDate, endDate } = options;
 
-      const whereClause: any = { member_id: memberId };
+      const whereClause: Record<string, any> = { member_id: memberId };
       if (messageType) {
         whereClause.message_type = messageType;
       }

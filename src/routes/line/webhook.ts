@@ -1,6 +1,5 @@
 
 import express from 'express';
-import { middleware } from '@line/bot-sdk';
 import { config } from '../../config/config';
 import lineController from '../../controllers/lineController';
 import crypto from 'crypto';
