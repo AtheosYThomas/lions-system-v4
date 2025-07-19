@@ -1,0 +1,157 @@
+功能概述
+每位會員報到時：
+
+依據 line_user_id 產生報到紀錄
+
+僅允許 每場活動一次報到
+
+報到成功後導向成功頁面，或提示已報到
+
+✅ 1️⃣ 在 prisma/schema.prisma 新增 CheckinRecord 資料模型
+prisma
+複製
+編輯
+model CheckinRecord {
+  id           String   @id @default(cuid())
+  member       Member   @relation(fields: [memberId], references: [id])
+  memberId     String
+  eventId      String   // 可選：若需支援多活動報到
+  checkedInAt  DateTime @default(now())
+
+  @@unique([memberId, eventId]) // 確保同一會員對同一活動只能報到一次
+}
+若目前尚未有活動系統，eventId 可先固定為某值（如 "default"）或日後支援多場報到。
+
+✅ 2️⃣ 執行資料表建立指令
+bash
+複製
+編輯
+npx prisma migrate dev --name add_checkin_record
+✅ 3️⃣ 建立 API：/api/liff/checkin.ts
+ts
+複製
+編輯
+// /pages/api/liff/checkin.ts
+import { NextApiRequest, NextApiResponse } from 'next';
+import { prisma } from '@/lib/prisma';
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  if (req.method !== 'POST') return res.status(405).json({ error: 'Method Not Allowed' });
+
+  const { line_user_id, eventId = 'default' } = req.body;
+  if (!line_user_id) return res.status(400).json({ error: '缺少 line_user_id' });
+
+  try {
+    const member = await prisma.member.findUnique({ where: { line_user_id } });
+    if (!member) return res.status(404).json({ error: '找不到會員資料' });
+
+    const existing = await prisma.checkinRecord.findUnique({
+      where: {
+        memberId_eventId: {
+          memberId: member.id,
+          eventId,
+        },
+      },
+    });
+
+    if (existing) {
+      return res.status(409).json({ error: '已完成報到' });
+    }
+
+    const newCheckin = await prisma.checkinRecord.create({
+      data: {
+        memberId: member.id,
+        eventId,
+      },
+    });
+
+    return res.status(200).json({ success: true, checkin: newCheckin });
+  } catch (err) {
+    console.error('報到錯誤:', err);
+    return res.status(500).json({ error: '內部伺服器錯誤' });
+  }
+}
+✅ 4️⃣ 建立 /client/pages/checkin/confirm.tsx 報到觸發頁面
+tsx
+複製
+編輯
+import { useEffect, useState } from 'react';
+
+const ConfirmPage = () => {
+  const [status, setStatus] = useState<'checking' | 'success' | 'already' | 'error'>('checking');
+  const [message, setMessage] = useState('');
+
+  useEffect(() => {
+    const checkin = async () => {
+      try {
+        await window.liff.init({ liffId: process.env.NEXT_PUBLIC_LIFF_ID! });
+        if (!window.liff.isLoggedIn()) {
+          window.liff.login();
+          return;
+        }
+
+        const lineUserId = window.liff.getContext()?.userId;
+        if (!lineUserId) {
+          setStatus('error');
+          setMessage('無法取得 LINE 使用者資訊');
+          return;
+        }
+
+        const res = await fetch('/api/liff/checkin', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ line_user_id: lineUserId }),
+        });
+
+        const result = await res.json();
+        if (res.ok) {
+          setStatus('success');
+        } else if (res.status === 409) {
+          setStatus('already');
+        } else {
+          setStatus('error');
+          setMessage(result?.error || '報到失敗');
+        }
+      } catch (err) {
+        console.error('報到失敗:', err);
+        setStatus('error');
+        setMessage('發生錯誤，請稍後再試');
+      }
+    };
+
+    checkin();
+  }, []);
+
+  return (
+    <div className="flex flex-col items-center justify-center h-screen text-center px-4">
+      {status === 'checking' && <p>正在確認報到資訊...</p>}
+      {status === 'success' && (
+        <>
+          <h1 className="text-2xl font-bold text-green-600 mb-4">✅ 報到成功</h1>
+          <p className="text-gray-700">請向工作人員出示此畫面</p>
+        </>
+      )}
+      {status === 'already' && (
+        <>
+          <h1 className="text-2xl font-bold text-yellow-600 mb-4">⚠️ 已報到過</h1>
+          <p className="text-gray-700">您已完成報到，無需重複操作</p>
+        </>
+      )}
+      {status === 'error' && (
+        <>
+          <h1 className="text-2xl font-bold text-red-600 mb-4">❌ 報到失敗</h1>
+          <p className="text-gray-700">{message}</p>
+        </>
+      )}
+    </div>
+  );
+};
+
+export default ConfirmPage;
+✅ 整體流程總結
+階段	動作	實作
+1️⃣	LIFF 擷取 userId	/checkin/confirm.tsx
+2️⃣	檢查並寫入報到紀錄	/api/liff/checkin.ts
+3️⃣	防止重複報到	@@unique([memberId, eventId])
+4️⃣	顯示不同狀態 UI	success / already / error
+
