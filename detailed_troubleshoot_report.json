@@ -1,21 +1,13 @@
 {
-  "timestamp": "2025-07-19T11:39:31.581Z",
+  "timestamp": "2025-07-19T11:43:26.621Z",
   "summary": {
-    "totalIssues": 2,
-    "errors": 1,
+    "totalIssues": 1,
+    "errors": 0,
     "warnings": 0,
     "info": 1,
-    "healthScore": 75
+    "healthScore": 95
   },
   "issues": [
-    {
-      "category": "TypeScript編譯",
-      "severity": "high",
-      "issue": "TypeScript 編譯錯誤",
-      "details": "src/controllers/lineController.ts(248,25): error TS2339: Property 'handleEvent' does not exist on type 'LineService'.\n",
-      "suggestion": "修正 TypeScript 語法錯誤",
-      "status": "error"
-    },
     {
       "category": "Controllers",
       "severity": "low",
