@@ -1,20 +1,11 @@
 {
-  "timestamp": "2025-07-19T00:19:56.172Z",
+  "timestamp": "2025-07-19T00:21:17.123Z",
   "summary": {
-    "totalIssues": 1,
-    "errors": 1,
+    "totalIssues": 0,
+    "errors": 0,
     "warnings": 0,
     "info": 0,
-    "healthScore": 80
+    "healthScore": 100
   },
-  "issues": [
-    {
-      "category": "TypeScript編譯",
-      "severity": "high",
-      "issue": "TypeScript 編譯錯誤",
-      "details": "src/types/role.ts(85,37): error TS2345: Argument of type 'Role' is not assignable to parameter of type 'Role.President | Role.Admin'.\n",
-      "suggestion": "修正 TypeScript 語法錯誤",
-      "status": "error"
-    }
-  ]
+  "issues": []
 }
