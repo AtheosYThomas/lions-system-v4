@@ -1,4 +1,3 @@
-
 import { Request, Response } from 'express';
 import lineService from '../integrations/line/lineService';
 import { LineWebhookRequestBody } from '../types/line';
@@ -18,7 +17,7 @@ class LineController {
 
       const body: LineWebhookRequestBody = req.body;
       console.log('📦 Request body:', JSON.stringify(body, null, 2));
-      
+
       // 處理空請求體
       if (!body) {
         console.log('⚠️ 請求體為空 - 回應 OK');
@@ -38,7 +37,7 @@ class LineController {
       }
 
       console.log(`📨 開始處理 ${body.events.length} 個事件`);
-      
+
       // 記錄每個事件的詳細資訊
       body.events.forEach((event, index) => {
         console.log(`📨 事件 ${index + 1}:`, {
@@ -67,11 +66,11 @@ class LineController {
           processed: body.events.length
         });
       }
-      
+
     } catch (error) {
       console.error('❌ LineController webhook 處理錯誤:', error);
       console.error('❌ 錯誤堆疊:', error instanceof Error ? error.stack : 'No stack trace');
-      
+
       // LINE webhook 必須回傳 200，否則會重複發送
       return res.status(200).json({ 
         status: 'error', 
@@ -110,7 +109,7 @@ class LineController {
           error: result.error 
         });
       }
-      
+
     } catch (error) {
       console.error('❌ LineController 推播處理錯誤:', error);
       res.status(500).json({ 
@@ -173,7 +172,7 @@ class LineController {
           error: result.error 
         });
       }
-      
+
     } catch (error) {
       console.error('❌ LineController Flex 推播處理錯誤:', error);
       res.status(500).json({ 
@@ -217,7 +216,7 @@ class LineController {
           error: result.error 
         });
       }
-      
+
     } catch (error) {
       console.error('❌ LineController 自訂 Flex 推播處理錯誤:', error);
       res.status(500).json({ 
@@ -229,3 +228,37 @@ class LineController {
 }
 
 export default new LineController();
+
+export const handleLineWebhook = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const events = req.body.events || [];
+
+    if (events.length === 0) {
+      res.status(200).json({ status: 'ok', message: 'No events' });
+      return;
+    }
+
+    for (const event of events) {
+      await lineService.handleEvent(event);
+    }
+
+    res.status(200).json({ status: 'ok' });
+  } catch (error) {
+    console.error('❌ LINE Webhook 處理錯誤:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+export const getLiffConfig = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const liffId = process.env.LIFF_ID;
+    if (!liffId) {
+      res.status(500).json({ error: 'LIFF ID not configured' });
+      return;
+    }
+
+    res.json({ liffId });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to get LIFF config' });
+  }
+};
