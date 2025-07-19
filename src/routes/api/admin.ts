@@ -165,4 +165,39 @@ router.get('/event/:eventId/checkin/export', async (req, res) => {
   }
 });
 
+// 獲取所有活動列表
+router.get('/events', async (req, res) => {
+  try {
+    const { status, limit = 50, offset = 0 } = req.query;
+
+    // 建立查詢條件
+    const whereClause: any = {};
+    if (status && status !== 'all') {
+      whereClause.status = status;
+    }
+
+    // 獲取活動列表
+    const events = await eventService.searchEvents({
+      status: status as string,
+      limit: parseInt(limit as string),
+      offset: parseInt(offset as string)
+    });
+
+    res.json({
+      success: true,
+      events: events.events,
+      total: events.total,
+      limit: events.limit,
+      offset: events.offset
+    });
+
+  } catch (error) {
+    console.error('獲取活動列表失敗:', error);
+    res.status(500).json({ 
+      error: '獲取活動列表失敗',
+      details: error instanceof Error ? error.message : '未知錯誤'
+    });
+  }
+});
+
 export default router;

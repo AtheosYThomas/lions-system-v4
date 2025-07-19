@@ -128,6 +128,24 @@ const Admin: React.FC = () => {
           >
             🎪 活動管理
           </a>
+          <a 
+            href="/admin/events" 
+            style={{ 
+              display: 'block', 
+              padding: '10px', 
+              backgroundColor: '#fff', 
+              border: '1px solid #ddd', 
+              borderRadius: '5px',
+              textDecoration: 'none',
+              color: '#333',
+              textAlign: 'center',
+              transition: 'background-color 0.3s'
+            }}
+            onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#f5f5f5'}
+            onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#fff'}
+          >
+            📋 活動總覽
+          </a>
           <button
             onClick={() => {
               const eventId = prompt('請輸入活動 ID 查看報到統計:');
