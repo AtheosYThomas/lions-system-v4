@@ -191,85 +191,86 @@ class LineService {
    */
   private async replyToUnregisteredUser(replyToken: string, lineUserId: string): Promise<void> {
     try {
-      const replyMessage = {
-        type: 'flex' as const,
-        altText: '請註冊會員',
-        contents: {
-          type: 'bubble' as const,
-          hero: {
-            type: 'image' as const,
-            url: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&h=800&q=80',
-            size: 'full' as const,
-            aspectRatio: '20:13' as const,
-            aspectMode: 'cover' as const
-          },
-          body: {
-            type: 'box' as const,
-            layout: 'vertical' as const,
-            contents: [
-              {
-                type: 'text' as const,
-                text: '🦁 北大獅子會',
-                weight: 'bold' as const,
-                size: 'xl' as const,
-                color: '#1DB446'
-              },
-              {
-                type: 'text' as const,
-                text: '歡迎您的到來！',
-                weight: 'bold' as const,
-                size: 'lg' as const,
-                margin: 'md' as const
-              },
-              {
-                type: 'separator' as const,
-                margin: 'md' as const
-              },
-              {
-                type: 'text' as const,
-                text: '您尚未註冊為會員',
-                size: 'md' as const,
-                color: '#333333',
-                margin: 'md' as const
-              },
-              {
-                type: 'text' as const,
-                text: '完成註冊後，您將享受：\n• 活動優先報名\n• 會員專屬服務\n• 即時通知與資訊',
-                size: 'sm' as const,
-                color: '#666666',
-                wrap: true,
-                margin: 'sm' as const
-              }
-            ]
-          },
-          footer: {
-            type: 'box' as const,
-            layout: 'vertical' as const,
-            contents: [
-              {
-                type: 'button' as const,
-                action: {
-                  type: 'uri' as const,
-                  label: '🚀 立即註冊會員',
-                  uri: `https://liff.line.me/2007739371-aKePV20l`
+      // 發送註冊邀請 - 直接導向 register.html
+        const replyMessage = {
+          type: 'flex' as const,
+          altText: '請註冊會員',
+          contents: {
+            type: 'bubble' as const,
+            hero: {
+              type: 'image' as const,
+              url: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&h=800&q=80',
+              size: 'full' as const,
+              aspectRatio: '20:13' as const,
+              aspectMode: 'cover' as const
+            },
+            body: {
+              type: 'box' as const,
+              layout: 'vertical' as const,
+              contents: [
+                {
+                  type: 'text' as const,
+                  text: '🦁 北大獅子會',
+                  weight: 'bold' as const,
+                  size: 'xl' as const,
+                  color: '#1DB446' as const
                 },
-                style: 'primary' as const,
-                color: '#1DB446'
-              }
-            ]
+                {
+                  type: 'text' as const,
+                  text: '歡迎您的到來！',
+                  weight: 'bold' as const,
+                  size: 'lg' as const,
+                  margin: 'md' as const
+                },
+                {
+                  type: 'separator' as const,
+                  margin: 'md' as const
+                },
+                {
+                  type: 'text' as const,
+                  text: '您尚未註冊為會員',
+                  size: 'md' as const,
+                  color: '#333333' as const,
+                  margin: 'md' as const
+                },
+                {
+                  type: 'text' as const,
+                  text: '完成註冊後，您將享受：\n• 活動優先報名\n• 會員專屬服務\n• 即時通知與資訊',
+                  size: 'sm' as const,
+                  color: '#666666' as const,
+                  wrap: true,
+                  margin: 'sm' as const
+                }
+              ]
+            },
+            footer: {
+              type: 'box' as const,
+              layout: 'vertical' as const,
+              contents: [
+                {
+                  type: 'button' as const,
+                  action: {
+                    type: 'uri' as const,
+                    label: '🚀 立即註冊會員',
+                    uri: 'https://27c2bd66-3314-4d8d-8f5c-37d849710371-00-24lnnmpbcx8cg.sisko.replit.dev:5000/register.html'
+                  },
+                  style: 'primary' as const,
+                  color: '#1DB446' as const
+                }
+              ]
+            }
           }
-        }
-      };
-
+        };
       await this.client.replyMessage(replyToken, replyMessage);
       console.log('✅ 已回應未註冊用戶，提供註冊連結');
     } catch (error) {
       console.error('❌ 回應未註冊用戶失敗:', error);
       // 備用簡單回應
       try {
+        // 如果 Flex Message 失敗，發送簡單文字訊息
         const fallbackMessage = {
           type: 'text' as const,
-          text: `🦁 北大獅子會\n\n歡迎您！請點擊連結完成註冊：\nhttps://liff.line.me/2007739371-aKePV20l`
+          text: `🦁 北大獅子會\n\n歡迎您！請點擊連結完成註冊：\nhttps://27c2bd66-3314-4d8d-8f5c-37d849710371-00-24lnnmpbcx8cg.sisko.replit.dev:5000/register.html`
         };
         await this.client.replyMessage(replyToken, fallbackMessage);
         console.log('✅ 已發送備用註冊回應');
@@ -306,57 +307,57 @@ class LineService {
 
       await this.client.pushMessage(lineUserId, welcomeMessage);
     } else {
-      // 新用戶歡迎 + 註冊邀請
-      const welcomeMessage = {
-        type: 'flex' as const,
-        altText: '歡迎加入北大獅子會',
-        contents: {
-          type: 'bubble' as const,
-          body: {
-            type: 'box' as const,
-            layout: 'vertical' as const,
-            contents: [
-              {
-                type: 'text' as const,
-                text: '🎉 歡迎加入',
-                weight: 'bold' as const,
-                size: 'xl' as const,
-                color: '#1DB446'
-              },
-              {
-                type: 'text' as const,
-                text: '北大獅子會 LINE 官方帳號',
-                weight: 'bold' as const,
-                size: 'lg' as const
-              },
-              {
-                type: 'text' as const,
-                text: '請完成會員註冊，即可享受完整服務',
-                size: 'sm' as const,
-                color: '#666666',
-                wrap: true,
-                margin: 'md' as const
-              }
-            ]
-          },
-          footer: {
-            type: 'box' as const,
-            layout: 'vertical' as const,
-            contents: [
-              {
-                type: 'button' as const,
-                action: {
-                  type: 'uri' as const,
-                  label: '🚀 完成註冊',
-                  uri: `https://liff.line.me/2007739371-aKePV20l`
+      // 發送註冊邀請 - 直接導向 register.html
+        const welcomeMessage = {
+          type: 'flex' as const,
+          altText: '請註冊會員',
+          contents: {
+            type: 'bubble' as const,
+            body: {
+              type: 'box' as const,
+              layout: 'vertical' as const,
+              contents: [
+                {
+                  type: 'text' as const,
+                  text: '🎉 歡迎加入',
+                  weight: 'bold' as const,
+                  size: 'xl' as const,
+                  color: '#1DB446' as const
                 },
-                style: 'primary' as const,
-                color: '#1DB446'
-              }
-            ]
+                {
+                  type: 'text' as const,
+                  text: '北大獅子會 LINE 官方帳號',
+                  weight: 'bold' as const,
+                  size: 'lg' as const
+                },
+                {
+                  type: 'text' as const,
+                  text: '請完成會員註冊，即可享受完整服務',
+                  size: 'sm' as const,
+                  color: '#666666' as const,
+                  wrap: true,
+                  margin: 'md' as const
+                }
+              ]
+            },
+            footer: {
+              type: 'box' as const,
+              layout: 'vertical' as const,
+              contents: [
+                {
+                  type: 'button' as const,
+                  action: {
+                    type: 'uri' as const,
+                    label: '🚀 完成註冊',
+                    uri: 'https://27c2bd66-3314-4d8d-8f5c-37d849710371-00-24lnnmpbcx8cg.sisko.replit.dev:5000/register.html'
+                  },
+                  style: 'primary' as const,
+                  color: '#1DB446' as const
+                }
+              ]
+            }
           }
-        }
-      };
+        };
 
       await this.client.pushMessage(lineUserId, welcomeMessage);
     }
