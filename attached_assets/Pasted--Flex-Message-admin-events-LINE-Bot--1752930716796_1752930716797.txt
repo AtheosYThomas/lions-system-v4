@@ -1,0 +1,149 @@
+太好了，我們來實作 📣 Flex Message 報到通知推播功能，讓管理者可直接在 /admin/events 點擊「推播通知」，透過 LINE Bot 發送活動報到提醒（含活動資訊與報到連結）。
+
+✅ 功能總覽
+功能	說明
+🔘 「推播通知」按鈕	每筆活動列出一個推播按鈕
+📬 呼叫後端 API /api/admin/event/:id/notify	
+🤖 後端使用 LINE Bot Push API 推送 Flex Message	
+🔗 Flex Message 內容含：活動名稱、日期、報到連結（/checkin/:eventId）	
+🔒 僅會長／幹部有權操作（可加 RBAC 驗證）	
+
+✅ 1️⃣ Flex Message 樣板（活動通知）
+ts
+複製
+編輯
+export const createCheckinFlexMessage = (title: string, date: string, eventId: string) => ({
+  type: 'flex',
+  altText: `📢 報到通知｜${title}`,
+  contents: {
+    type: 'bubble',
+    size: 'mega',
+    hero: {
+      type: 'image',
+      url: 'https://example.com/banner.jpg', // 可自訂報到用圖
+      size: 'full',
+      aspectRatio: '16:9',
+      aspectMode: 'cover',
+    },
+    body: {
+      type: 'box',
+      layout: 'vertical',
+      spacing: 'md',
+      contents: [
+        {
+          type: 'text',
+          text: `📢 ${title}`,
+          weight: 'bold',
+          size: 'xl',
+          wrap: true,
+        },
+        {
+          type: 'text',
+          text: `📅 日期：${date}`,
+          size: 'sm',
+          color: '#555555',
+        },
+        {
+          type: 'text',
+          text: `📝 請點選下方報到`,
+          size: 'sm',
+          color: '#777777',
+        },
+      ],
+    },
+    footer: {
+      type: 'box',
+      layout: 'vertical',
+      contents: [
+        {
+          type: 'button',
+          style: 'primary',
+          action: {
+            type: 'uri',
+            label: '立即報到',
+            uri: `https://service.peida.net/checkin/${eventId}`,
+          },
+        },
+      ],
+    },
+  },
+});
+✅ 2️⃣ 建立後端 API /pages/api/admin/event/[id]/notify.ts
+ts
+複製
+編輯
+import { prisma } from '@/lib/prisma';
+import { createCheckinFlexMessage } from '@/lib/line/flexTemplates';
+import { lineClient } from '@/lib/line/client'; // LINE SDK 初始化
+import { NextApiRequest, NextApiResponse } from 'next';
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  const { id: eventId } = req.query;
+  if (!eventId || Array.isArray(eventId)) return res.status(400).json({ error: '缺少活動 ID' });
+
+  try {
+    const event = await prisma.event.findUnique({ where: { id: eventId } });
+    if (!event) return res.status(404).json({ error: '找不到活動' });
+
+    const message = createCheckinFlexMessage(event.title, event.date.toISOString().slice(0, 10), event.id);
+
+    // 推播對象：所有會員（或特定 group/userId）
+    const members = await prisma.member.findMany({ where: { line_user_id: { not: null } } });
+
+    const pushList = members
+      .filter((m) => m.line_user_id)
+      .map((m) => lineClient.pushMessage(m.line_user_id, message));
+
+    await Promise.allSettled(pushList);
+
+    res.status(200).json({ success: true });
+  } catch (err) {
+    console.error('推播錯誤:', err);
+    res.status(500).json({ error: '推播失敗' });
+  }
+}
+✅ 3️⃣ LINE Bot 初始化 lib/line/client.ts
+ts
+複製
+編輯
+import { Client } from '@line/bot-sdk';
+
+export const lineClient = new Client({
+  channelAccessToken: process.env.LINE_CHANNEL_ACCESS_TOKEN!,
+  channelSecret: process.env.LINE_CHANNEL_SECRET!,
+});
+📦 請記得設定 .env：
+
+ini
+複製
+編輯
+LINE_CHANNEL_ACCESS_TOKEN=你的長效 token
+LINE_CHANNEL_SECRET=你的 secret
+✅ 4️⃣ 前端 /admin/events 加入「📣 推播通知」按鈕
+tsx
+複製
+編輯
+<button
+  className="text-sm text-green-600"
+  onClick={async () => {
+    if (!confirm(`確定要推播「${e.title}」報到通知？`)) return;
+
+    const res = await fetch(`/api/admin/event/${e.id}/notify`, { method: 'POST' });
+    if (res.ok) {
+      alert('推播完成');
+    } else {
+      alert('推播失敗');
+    }
+  }}
+>
+  📣 推播
+</button>
+✅ 成果示意
+Flex Message 將會發送至會員 LINE，包括：
+
+活動標題
+
+日期
+
+報到按鈕（導向 /checkin/:eventId）
+
