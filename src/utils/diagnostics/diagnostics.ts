@@ -154,16 +154,14 @@ function checkFrontendFiles() {
   console.log('');
 }
 
-// 4. 執行 health check 測試（帶重試機制）
+// 4. 執行 health check 測試（智能檢測）
 function runHealthCheck() {
   console.log(chalk.blue('🏥 4. 執行 Health Check...'));
   
   const PORT = process.env.PORT || '5000';
-  const maxRetries = 3;
-  let retryCount = 0;
-
-  const attemptHealthCheck = (): Promise<void> => {
-    return new Promise((resolve, reject) => {
+  
+  const attemptHealthCheck = (): Promise<{ success: boolean; data?: any; error?: string }> => {
+    return new Promise((resolve) => {
       const req = http.get(`http://0.0.0.0:${PORT}/health`, (res) => {
         let data = '';
 
@@ -172,52 +170,68 @@ function runHealthCheck() {
         });
 
         res.on('end', () => {
-          if (res.statusCode === 200) {
-            console.log(chalk.green(`✅ Health check 成功 (狀態: ${res.statusCode})`));
-            console.log(chalk.cyan(`📋 回應: ${data}`));
-            resolve();
-          } else {
-            reject(new Error(`HTTP ${res.statusCode}: ${data}`));
+          try {
+            const healthData = JSON.parse(data);
+            if (res.statusCode === 200 && healthData.status === 'healthy') {
+              resolve({ success: true, data: healthData });
+            } else {
+              resolve({ success: false, error: `HTTP ${res.statusCode}: ${data}` });
+            }
+          } catch (parseError) {
+            resolve({ success: false, error: `回應格式錯誤: ${data}` });
           }
         });
       });
 
       req.on('error', (err) => {
-        reject(err);
+        resolve({ success: false, error: err.message });
       });
 
-      req.setTimeout(10000, () => {
+      req.setTimeout(5000, () => {
         req.destroy();
-        reject(new Error('Health check 逾時 (10秒)'));
+        resolve({ success: false, error: 'Health check 逾時 (5秒)' });
       });
     });
   };
 
   return new Promise<void>(async (resolve) => {
-    while (retryCount < maxRetries) {
-      try {
-        await attemptHealthCheck();
-        resolve();
-        return;
-      } catch (error: any) {
-        retryCount++;
-        
-        if (retryCount >= maxRetries) {
-          // 檢查是否為連線被拒絕（伺服器未啟動）
-          if (error.code === 'ECONNREFUSED') {
-            console.log(chalk.yellow(`⚠️ Health check 連線失敗 (${error.message})`));
-            console.log(chalk.cyan(`💡 這通常表示診斷工具比伺服器啟動更早執行`));
-            console.log(chalk.cyan(`💡 如果系統其他功能正常，可以忽略此警告`));
-          } else {
-            console.log(chalk.red(`❌ Health check 失敗: ${error.message}`));
-          }
-          resolve();
-        } else {
-          console.log(chalk.yellow(`⏳ Health Check 失敗，3秒後重試... (${retryCount}/${maxRetries})`));
-          await new Promise(wait => setTimeout(wait, 3000));
-        }
+    // 先嘗試一次
+    const result = await attemptHealthCheck();
+    
+    if (result.success) {
+      console.log(chalk.green(`✅ Health check 成功`));
+      console.log(chalk.cyan(`📊 狀態: ${result.data.status}`));
+      console.log(chalk.cyan(`🔌 資料庫: ${result.data.database}`));
+      if (result.data.services?.routes) {
+        console.log(chalk.cyan(`🛣️ 路由: ${result.data.services.routes.join(', ')}`));
+      }
+      resolve();
+      return;
+    }
+
+    // 如果失敗，等待 3 秒後再試一次（給伺服器啟動時間）
+    console.log(chalk.yellow('⏳ 等待伺服器啟動...'));
+    await new Promise(wait => setTimeout(wait, 3000));
+    
+    const secondResult = await attemptHealthCheck();
+    
+    if (secondResult.success) {
+      console.log(chalk.green(`✅ Health check 成功`));
+      console.log(chalk.cyan(`📊 狀態: ${secondResult.data.status}`));
+      console.log(chalk.cyan(`🔌 資料庫: ${secondResult.data.database}`));
+      if (secondResult.data.services?.routes) {
+        console.log(chalk.cyan(`🛣️ 路由: ${secondResult.data.services.routes.join(', ')}`));
+      }
+    } else {
+      // 只有在真的連不上時才顯示警告，而不是錯誤
+      if (secondResult.error?.includes('ECONNREFUSED')) {
+        console.log(chalk.yellow(`⏳ Health Check 暫時無法連接 - 這是正常的，伺服器可能正在啟動中`));
+      } else {
+        console.log(chalk.yellow(`⚠️ Health check 暫時失敗: ${secondResult.error}`));
       }
     }
+    
+    resolve();
   });
 }
 

@@ -300,8 +300,3 @@ class AutoBootDiagnostics {
 
 export { AutoBootDiagnostics };
 export default AutoBootDiagnostics;
-// 延遲診斷執行，讓伺服器先完全啟動
-    setTimeout(async () => {
-      const diagnostics = new AutoBootDiagnostics();
-      await diagnostics.runBootDiagnostics();
-    }, 5000);
