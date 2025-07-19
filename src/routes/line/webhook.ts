@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import { middleware } from '@line/bot-sdk';
 import { config } from '../../config/config';
 import lineController from '../../controllers/lineController';
@@ -59,15 +59,7 @@ function validateLineSignature(req: express.Request, res: express.Response, next
 }
 
 // LINE webhook POST 事件處理（使用自定義簽名驗證）
-router.post('/', async (req: Request, res: Response) => {
-  try {
-    // LINE webhook 處理邏輯
-    res.status(200).send('OK');
-  } catch (error) {
-    console.error('Webhook error:', error);
-    res.status(500).send('Internal Server Error');
-  }
-}
+router.post('/',
   express.json({ limit: '10mb' }), // 增加請求大小限制
   validateLineSignature,
   async (req, res) => {
