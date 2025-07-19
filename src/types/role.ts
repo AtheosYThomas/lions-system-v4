@@ -59,12 +59,12 @@ export const roleDisplayNames: Record<Role, string> = {
 /**
  * 角色組定義
  */
-export const roleGroups = {
+export const roleGroups: Record<string, Role[]> = {
   officers: [Role.Officer, Role.Secretary, Role.Treasurer, Role.VicePresident, Role.President, Role.Admin],
   leadership: [Role.VicePresident, Role.President, Role.Admin],
   financial: [Role.Treasurer, Role.President, Role.Admin],
   all: Object.values(Role)
-} as const;
+};
 
 export type RoleGroupKey = keyof typeof roleGroups;
 
