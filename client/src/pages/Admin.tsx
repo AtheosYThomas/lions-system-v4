@@ -95,9 +95,60 @@ const Admin: React.FC = () => {
           <li>✅ 系統健康檢查 - 正常運行</li>
           <li>✅ 會員管理功能 - 正常運行</li>
           <li>✅ 活動管理功能 - 正常運行</li>
+          <li>✅ 活動報到統計 - 正常運行</li>
           <li>✅ LINE Bot 整合 - 正常運行</li>
           <li>⏸️ 統計資料載入 - 已暫停</li>
         </ul>
+      </div>
+
+      <div style={{
+        marginTop: '20px',
+        padding: '15px',
+        backgroundColor: '#e3f2fd',
+        border: '1px solid #bbdefb',
+        borderRadius: '5px'
+      }}>
+        <h3 style={{ marginTop: 0, color: '#1565c0' }}>🚀 快速操作</h3>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '10px' }}>
+          <a 
+            href="/events" 
+            style={{ 
+              display: 'block', 
+              padding: '10px', 
+              backgroundColor: '#fff', 
+              border: '1px solid #ddd', 
+              borderRadius: '5px',
+              textDecoration: 'none',
+              color: '#333',
+              textAlign: 'center',
+              transition: 'background-color 0.3s'
+            }}
+            onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#f5f5f5'}
+            onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#fff'}
+          >
+            🎪 活動管理
+          </a>
+          <button
+            onClick={() => {
+              const eventId = prompt('請輸入活動 ID 查看報到統計:');
+              if (eventId) {
+                window.open(`/admin/event/${eventId}/checkin`, '_blank');
+              }
+            }}
+            style={{ 
+              padding: '10px', 
+              backgroundColor: '#fff', 
+              border: '1px solid #ddd', 
+              borderRadius: '5px',
+              cursor: 'pointer',
+              transition: 'background-color 0.3s'
+            }}
+            onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#f5f5f5'}
+            onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#fff'}
+          >
+            📊 報到統計
+          </button>
+        </div>
       </div>
     </div>
   );

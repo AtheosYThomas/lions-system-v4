@@ -63,6 +63,8 @@ const EventCheckinStats: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'checkin' | 'not-checkin' | 'analytics'>('checkin');
   const [selectedChart, setSelectedChart] = useState<'hourly' | 'status' | 'timeline'>('hourly');
+  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [showActions, setShowActions] = useState(false);
 
   useEffect(() => {
     if (!eventId) {
@@ -149,6 +151,18 @@ const EventCheckinStats: React.FC = () => {
     ];
   };
 
+  const filterMembers = (members: Member[]) => {
+    if (!searchTerm) return members;
+    return members.filter(member => 
+      member.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (member.phone && member.phone.includes(searchTerm)) ||
+      (member.email && member.email.toLowerCase().includes(searchTerm.toLowerCase()))
+    );
+  };
+
+  const filteredAttendees = data ? filterMembers(data.attendees) : [];
+  const filteredNotCheckedIn = data ? filterMembers(data.notCheckedIn) : [];
+
   const renderChart = () => {
     if (!data) return null;
 
@@ -157,15 +171,30 @@ const EventCheckinStats: React.FC = () => {
         return (
           <div className="bg-white rounded-lg shadow-md p-6">
             <h3 className="text-lg font-semibold text-gray-800 mb-4">📊 報到時間分布</h3>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={getHourlyChartData()}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="hour" />
-                <YAxis allowDecimals={false} />
-                <Tooltip />
-                <Bar dataKey="count" fill="#3B82F6" radius={[4, 4, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
+            {getHourlyChartData().length === 0 ? (
+              <div className="text-center py-8 text-gray-500">
+                <div className="text-4xl mb-2">📊</div>
+                <p>尚無報到資料</p>
+              </div>
+            ) : (
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={getHourlyChartData()}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="hour" />
+                  <YAxis allowDecimals={false} />
+                  <Tooltip 
+                    formatter={(value) => [`${value} 人`, '報到人數']}
+                    labelFormatter={(label) => `時段: ${label}`}
+                  />
+                  <Bar 
+                    dataKey="count" 
+                    fill="#3B82F6" 
+                    radius={[4, 4, 0, 0]}
+                    name="報到人數"
+                  />
+                </BarChart>
+              </ResponsiveContainer>
+            )}
           </div>
         );
 
@@ -173,25 +202,47 @@ const EventCheckinStats: React.FC = () => {
         return (
           <div className="bg-white rounded-lg shadow-md p-6">
             <h3 className="text-lg font-semibold text-gray-800 mb-4">🥧 報到狀態分布</h3>
-            <ResponsiveContainer width="100%" height={300}>
-              <PieChart>
-                <Pie
-                  data={getStatusPieData()}
-                  cx="50%"
-                  cy="50%"
-                  labelLine={false}
-                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                  outerRadius={80}
-                  fill="#8884d8"
-                  dataKey="value"
-                >
+            <div className="flex flex-col lg:flex-row items-center">
+              <div className="w-full lg:w-1/2">
+                <ResponsiveContainer width="100%" height={300}>
+                  <PieChart>
+                    <Pie
+                      data={getStatusPieData()}
+                      cx="50%"
+                      cy="50%"
+                      labelLine={false}
+                      label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                      outerRadius={80}
+                      fill="#8884d8"
+                      dataKey="value"
+                    >
+                      {getStatusPieData().map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                    <Tooltip formatter={(value) => [`${value} 人`, '']} />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+              <div className="w-full lg:w-1/2 lg:pl-6 mt-4 lg:mt-0">
+                <div className="space-y-3">
                   {getStatusPieData().map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
+                    <div key={index} className="flex items-center justify-between p-3 rounded-lg border">
+                      <div className="flex items-center">
+                        <div 
+                          className="w-4 h-4 rounded mr-3"
+                          style={{ backgroundColor: entry.color }}
+                        ></div>
+                        <span className="font-medium">{entry.name}</span>
+                      </div>
+                      <span className="text-lg font-bold" style={{ color: entry.color }}>
+                        {entry.value} 人
+                      </span>
+                    </div>
                   ))}
-                </Pie>
-                <Tooltip />
-              </PieChart>
-            </ResponsiveContainer>
+                </div>
+              </div>
+            </div>
           </div>
         );
 
@@ -199,19 +250,26 @@ const EventCheckinStats: React.FC = () => {
         return (
           <div className="bg-white rounded-lg shadow-md p-6">
             <h3 className="text-lg font-semibold text-gray-800 mb-4">⏰ 報到時間性分析</h3>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={getTimelinessData()} layout="horizontal">
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis type="number" allowDecimals={false} />
-                <YAxis type="category" dataKey="name" />
-                <Tooltip />
-                <Bar dataKey="value" fill="#8884d8">
-                  {getTimelinessData().map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
+            {getTimelinessData().every(item => item.value === 0) ? (
+              <div className="text-center py-8 text-gray-500">
+                <div className="text-4xl mb-2">⏰</div>
+                <p>尚無報到資料</p>
+              </div>
+            ) : (
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={getTimelinessData()} layout="vertical">
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis type="number" allowDecimals={false} />
+                  <YAxis type="category" dataKey="name" width={100} />
+                  <Tooltip formatter={(value) => [`${value} 人`, '報到人數']} />
+                  <Bar dataKey="value" fill="#8884d8">
+                    {getTimelinessData().map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            )}
           </div>
         );
 
@@ -349,26 +407,80 @@ const EventCheckinStats: React.FC = () => {
         </nav>
       </div>
 
-      {/* 操作按鈕 */}
-      <div className="mb-6 flex gap-3">
-        <button
-          onClick={() => exportToCsv('checkin')}
-          className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors flex items-center gap-2"
-        >
-          📊 匯出已報到 CSV
-        </button>
-        <button
-          onClick={() => exportToCsv('not-checkin')}
-          className="px-4 py-2 bg-orange-500 text-white rounded hover:bg-orange-600 transition-colors flex items-center gap-2"
-        >
-          📋 匯出未報到 CSV
-        </button>
-        <button
-          onClick={() => window.location.reload()}
-          className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors flex items-center gap-2"
-        >
-          🔄 重新整理資料
-        </button>
+      {/* 搜尋和操作區域 */}
+      <div className="mb-6 space-y-4">
+        {/* 搜尋框 */}
+        <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+          <div className="flex-1 max-w-md">
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="搜尋姓名、手機或 Email..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <span className="text-gray-400">🔍</span>
+              </div>
+              {searchTerm && (
+                <button
+                  onClick={() => setSearchTerm('')}
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                >
+                  <span className="text-gray-400 hover:text-gray-600">✕</span>
+                </button>
+              )}
+            </div>
+          </div>
+          
+          <button
+            onClick={() => setShowActions(!showActions)}
+            className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors flex items-center gap-2"
+          >
+            ⚙️ 操作選單
+          </button>
+        </div>
+
+        {/* 操作按鈕 */}
+        {showActions && (
+          <div className="flex flex-wrap gap-3 p-4 bg-gray-50 rounded-lg">
+            <button
+              onClick={() => exportToCsv('checkin')}
+              className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors flex items-center gap-2"
+            >
+              📊 匯出已報到 CSV
+            </button>
+            <button
+              onClick={() => exportToCsv('not-checkin')}
+              className="px-4 py-2 bg-orange-500 text-white rounded hover:bg-orange-600 transition-colors flex items-center gap-2"
+            >
+              📋 匯出未報到 CSV
+            </button>
+            <button
+              onClick={() => window.location.reload()}
+              className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors flex items-center gap-2"
+            >
+              🔄 重新整理資料
+            </button>
+            <button
+              onClick={() => {
+                if (confirm('確定要重新載入所有統計資料嗎？')) {
+                  window.location.reload();
+                }
+              }}
+              className="px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600 transition-colors flex items-center gap-2"
+            >
+              🔄 強制重整
+            </button>
+          </div>
+        )}
+
+        {searchTerm && (
+          <div className="text-sm text-gray-600 bg-blue-50 p-3 rounded-lg">
+            🔍 搜尋結果: 已報到 {filteredAttendees.length} 位，未報到 {filteredNotCheckedIn.length} 位
+          </div>
+        )}
       </div>
 
       {/* 統計分析標籤頁 */}
@@ -462,14 +574,19 @@ const EventCheckinStats: React.FC = () => {
         <div className="bg-white rounded-lg shadow-md overflow-hidden">
           <div className="px-6 py-4 bg-gray-50 border-b">
             <h3 className="text-lg font-semibold text-gray-800">
-              已報到會員名單 ({data.attendees.length} 位)
+              已報到會員名單 ({filteredAttendees.length} 位 
+              {searchTerm ? `/ 共 ${data.attendees.length} 位` : ''})
             </h3>
           </div>
 
-          {data.attendees.length === 0 ? (
+          {filteredAttendees.length === 0 ? (
             <div className="text-center py-12">
-              <div className="text-gray-400 text-6xl mb-4">👥</div>
-              <p className="text-gray-500">尚無會員報到</p>
+              <div className="text-gray-400 text-6xl mb-4">
+                {searchTerm ? '🔍' : '👥'}
+              </div>
+              <p className="text-gray-500">
+                {searchTerm ? '沒有符合搜尋條件的會員' : '尚無會員報到'}
+              </p>
             </div>
           ) : (
             <div className="overflow-x-auto">
@@ -494,7 +611,7 @@ const EventCheckinStats: React.FC = () => {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {data.attendees.map((member, index) => (
+                  {filteredAttendees.map((member, index) => (
                     <tr key={member.id} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         {index + 1}
@@ -527,14 +644,19 @@ const EventCheckinStats: React.FC = () => {
         <div className="bg-white rounded-lg shadow-md overflow-hidden">
           <div className="px-6 py-4 bg-gray-50 border-b">
             <h3 className="text-lg font-semibold text-gray-800">
-              未報到會員名單 ({data.notCheckedIn.length} 位)
+              未報到會員名單 ({filteredNotCheckedIn.length} 位
+              {searchTerm ? `/ 共 ${data.notCheckedIn.length} 位` : ''})
             </h3>
           </div>
 
-          {data.notCheckedIn.length === 0 ? (
+          {filteredNotCheckedIn.length === 0 ? (
             <div className="text-center py-12">
-              <div className="text-green-400 text-6xl mb-4">✅</div>
-              <p className="text-green-600 font-medium">所有報名會員都已報到！</p>
+              <div className="text-green-400 text-6xl mb-4">
+                {searchTerm ? '🔍' : '✅'}
+              </div>
+              <p className="text-green-600 font-medium">
+                {searchTerm ? '沒有符合搜尋條件的會員' : '所有報名會員都已報到！'}
+              </p>
             </div>
           ) : (
             <div className="overflow-x-auto">
@@ -562,7 +684,7 @@ const EventCheckinStats: React.FC = () => {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {data.notCheckedIn.map((member, index) => (
+                  {filteredNotCheckedIn.map((member, index) => (
                     <tr key={member.id} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         {index + 1}
