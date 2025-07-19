@@ -84,3 +84,74 @@ export interface AnnouncementInput {
   audience?: 'all' | 'officers' | 'members';
   category?: 'event' | 'system' | 'personnel';
 }
+// ✅ Interface 建立區（src/types/entities.ts）
+import { Request } from 'express';
+
+export interface AuthRequest extends Request {
+  user?: {
+    id: string;
+    role: string;
+  };
+}
+
+export interface PushRecordAttributes {
+  id: string;
+  member_id: string;
+  event_id: string;
+  message_type: string;
+  status: 'success' | 'failed';
+  pushed_at: Date;
+  error_message?: string;
+}
+
+export interface PushRecordCreationAttributes extends Omit<PushRecordAttributes, 'id' | 'pushed_at'> {}
+
+export interface RegistrationInput {
+  memberId: string;
+  eventId: string;
+  name: string;
+  companions?: number;
+  shuttle?: boolean;
+}
+
+export interface PushPayload {
+  userId: string;
+  content: string;
+  timestamp: number;
+}
+
+export interface MemberAttributes {
+  id: string;
+  name: string;
+  email?: string;
+  phone?: string;
+  role: string;
+}
+
+export interface UploadFile {
+  filename: string;
+  mimetype: string;
+  size: number;
+  buffer: Buffer;
+}
+
+export interface EventInput {
+  title: string;
+  description: string;
+  date: string;
+  location: string;
+}
+
+export interface CheckinRecord {
+  id: string;
+  member_id: string;
+  event_id: string;
+  checkin_time: Date;
+}
+
+export interface AnnouncementInput {
+  title: string;
+  content: string;
+  publishDate: string;
+  authorId: string;
+}

@@ -1,8 +1,20 @@
+
 import { DataTypes, Model, Optional } from 'sequelize';
 import sequelize from '../config/database';
 import Member from './member';
 import Event from './event';
-import { PushRecordAttributes, PushRecordCreationAttributes } from '../types/entities';
+
+interface PushRecordAttributes {
+  id: string;
+  member_id: string;
+  event_id: string;
+  message_type: string;
+  status: 'success' | 'failed';
+  pushed_at: Date;
+  error_message?: string;
+}
+
+interface PushRecordCreationAttributes extends Omit<PushRecordAttributes, 'id' | 'pushed_at'> {}
 
 class PushRecord extends Model<PushRecordAttributes, PushRecordCreationAttributes> 
   implements PushRecordAttributes {
