@@ -7,6 +7,7 @@ import LiffSession from './liffSession';
 import Checkin from './checkin';
 import Announcement from './announcement';
 import File from './file';
+import PushRecord from './pushRecord';
 import sequelize from '../config/database';
 
 // ===================================
@@ -215,7 +216,8 @@ export {
   MessageLog, 
   LiffSession, 
   Announcement,
-  File 
+  File,
+  PushRecord
 };
 
 // ===================================
@@ -249,16 +251,3 @@ Member (會員):
   - SET NULL: 主記錄刪除時相關欄位設為 NULL
   - LINE UID 關聯: Member.line_uid <-> MessageLog.user_id
 */
-export { 
-  sequelize, 
-  Member, 
-  Event, 
-  Registration, 
-  Checkin, 
-  Payment, 
-  MessageLog, 
-  LiffSession, 
-  Announcement,
-  File,
-  PushRecord
-};
