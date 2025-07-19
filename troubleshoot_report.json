@@ -1,8 +1,8 @@
 {
-  "timestamp": "2025-07-19T22:46:29.362Z",
+  "timestamp": "2025-07-19T22:53:28.490Z",
   "summary": {
-    "total": 122,
-    "pass": 94,
+    "total": 123,
+    "pass": 95,
     "warning": 27,
     "error": 1
   },
@@ -669,6 +669,11 @@
       "category": "Frontend",
       "status": "pass",
       "message": "client/src/pages/NotFoundPage.tsx: 語法檢查通過"
+    },
+    {
+      "category": "Frontend",
+      "status": "pass",
+      "message": "client/src/pages/MemberPushHistory.tsx: 語法檢查通過"
     },
     {
       "category": "Frontend",
