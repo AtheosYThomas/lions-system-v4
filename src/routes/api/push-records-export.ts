@@ -4,6 +4,13 @@ import pushService from '../../services/pushService';
 import { authMiddleware } from '../../middleware/authMiddleware';
 import { requireAnyRole } from '../../middleware/roleMiddleware';
 import { Role } from '../../types/role';
+import PushRecord from '../../models/pushRecord';
+import Event from '../../models/event';
+
+// 定義包含 event 關聯的 PushRecord 型別
+type PushRecordWithEvent = PushRecord & {
+  event: Event | null;
+};
 
 const router = express.Router();
 
@@ -73,7 +80,7 @@ router.get('/', authMiddleware, requireAnyRole([Role.Admin, Role.President]), as
 
     // 轉換為 CSV 格式
     const csvHeader = '活動名稱,活動日期,推播時間,狀態,類型\n';
-    const csvRows = records.map(record => {
+    const csvRows = records.map((record: PushRecordWithEvent) => {
       const eventTitle = record.event?.title || 'N/A';
       const eventDate = record.event?.date 
         ? new Date(record.event.date).toISOString().split('T')[0]
