@@ -66,6 +66,8 @@ export const roleGroups = {
   all: Object.values(Role)
 } as const;
 
+export type RoleGroupKey = keyof typeof roleGroups;
+
 /**
  * 檢查角色是否滿足最低權限需求
  */
@@ -78,8 +80,9 @@ export function hasMinimumRole(userRole: Role | string, requiredRole: Role): boo
 /**
  * 檢查角色是否在指定角色組中
  */
-export function isInRoleGroup(userRole: Role | string, group: keyof typeof roleGroups): boolean {
-  return roleGroups[group].includes(userRole as Role);
+export function isInRoleGroup(userRole: Role | string, group: RoleGroupKey): boolean {
+  const role = typeof userRole === 'string' ? userRole as Role : userRole;
+  return roleGroups[group].includes(role);
 }
 
 /**
@@ -98,7 +101,7 @@ export function getSuperiorRoles(role: Role): Role[] {
   return Object.values(Role).filter(r => roleRank[r] > currentRank);
 }
 
-export type RoleGroup = keyof typeof roleGroups;
+export type RoleGroup = RoleGroupKey;
 
 /**
  * 檢查角色是否有足夠權限
