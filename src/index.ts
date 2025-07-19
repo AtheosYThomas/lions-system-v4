@@ -6,6 +6,9 @@ import { runDiagnostics } from './diagnosticTool';
 // 載入環境變數
 dotenv.config();
 
-// 啟動時自動執行診斷
-runDiagnostics();
+// 延遲執行診斷，確保伺服器已啟動
+setTimeout(() => {
+  runDiagnostics();
+}, 5000);
+
 import './server';

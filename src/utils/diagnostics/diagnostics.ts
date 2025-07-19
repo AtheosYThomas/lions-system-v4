@@ -154,42 +154,70 @@ function checkFrontendFiles() {
   console.log('');
 }
 
-// 4. 執行 health check 測試
+// 4. 執行 health check 測試（帶重試機制）
 function runHealthCheck() {
   console.log(chalk.blue('🏥 4. 執行 Health Check...'));
   
   const PORT = process.env.PORT || '5000';
+  const maxRetries = 3;
+  let retryCount = 0;
 
-  return new Promise((resolve) => {
-    const req = http.get(`http://0.0.0.0:${PORT}/health`, (res) => {
-      let data = '';
+  const attemptHealthCheck = (): Promise<void> => {
+    return new Promise((resolve, reject) => {
+      const req = http.get(`http://0.0.0.0:${PORT}/health`, (res) => {
+        let data = '';
 
-      res.on('data', (chunk) => {
-        data += chunk;
+        res.on('data', (chunk) => {
+          data += chunk;
+        });
+
+        res.on('end', () => {
+          if (res.statusCode === 200) {
+            console.log(chalk.green(`✅ Health check 成功 (狀態: ${res.statusCode})`));
+            console.log(chalk.cyan(`📋 回應: ${data}`));
+            resolve();
+          } else {
+            reject(new Error(`HTTP ${res.statusCode}: ${data}`));
+          }
+        });
       });
 
-      res.on('end', () => {
-        if (res.statusCode === 200) {
-          console.log(chalk.green(`✅ Health check 成功 (狀態: ${res.statusCode})`));
-          console.log(chalk.cyan(`📋 回應: ${data}`));
+      req.on('error', (err) => {
+        reject(err);
+      });
+
+      req.setTimeout(10000, () => {
+        req.destroy();
+        reject(new Error('Health check 逾時 (10秒)'));
+      });
+    });
+  };
+
+  return new Promise<void>(async (resolve) => {
+    while (retryCount < maxRetries) {
+      try {
+        await attemptHealthCheck();
+        resolve();
+        return;
+      } catch (error: any) {
+        retryCount++;
+        
+        if (retryCount >= maxRetries) {
+          // 檢查是否為連線被拒絕（伺服器未啟動）
+          if (error.code === 'ECONNREFUSED') {
+            console.log(chalk.yellow(`⚠️ Health check 連線失敗 (${error.message})`));
+            console.log(chalk.cyan(`💡 這通常表示診斷工具比伺服器啟動更早執行`));
+            console.log(chalk.cyan(`💡 如果系統其他功能正常，可以忽略此警告`));
+          } else {
+            console.log(chalk.red(`❌ Health check 失敗: ${error.message}`));
+          }
+          resolve();
         } else {
-          console.log(chalk.red(`❌ Health check 失敗 (狀態: ${res.statusCode})`));
+          console.log(chalk.yellow(`⏳ Health Check 失敗，3秒後重試... (${retryCount}/${maxRetries})`));
+          await new Promise(wait => setTimeout(wait, 3000));
         }
-        resolve(null);
-      });
-    });
-
-    req.on('error', (err) => {
-      console.log(chalk.red(`❌ 無法連接到 health check 端點: ${err.message}`));
-      console.log(chalk.yellow(`💡 請確認伺服器是否在 ${PORT} 埠執行`));
-      resolve(null);
-    });
-
-    req.setTimeout(5000, () => {
-      console.log(chalk.red('❌ Health check 逾時 (5秒)'));
-      req.destroy();
-      resolve(null);
-    });
+      }
+    }
   });
 }
 
