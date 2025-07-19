@@ -127,9 +127,11 @@ class DetailedTroubleshootReport {
             if (!liffIdMatch && !usesLiffApiConfig) {
               this.addIssue(
                 '前端LIFF',
+                'high',
                 'LIFF 配置未設定',
                 'public/liff.html 缺少 LIFF 配置方式',
-                '設定 LIFF ID 或使用 /api/liff/config 動態配置'
+                '設定 LIFF ID 或使用 /api/liff/config 動態配置',
+                'error'
               );
             } else if (usesLiffApiConfig) {
               // 如果使用動態配置，則為正常狀態，不需要報告錯誤
@@ -165,26 +167,83 @@ class DetailedTroubleshootReport {
     console.log(chalk.yellow('\n🏥 步驟 4: 執行 Health Check...'));
 
     const PORT = process.env.PORT || 5000;
+    const maxRetries = 3;
+    let retryCount = 0;
 
-    return new Promise<void>((resolve) => {
-      const req = http.get(`http://0.0.0.0:${PORT}/health`, (res) => {
-        let data = '';
+    const performHealthCheck = (): Promise<void> => {
+      return new Promise((resolve, reject) => {
+        const req = http.get(`http://0.0.0.0:${PORT}/health`, (res) => {
+          let data = '';
 
-        res.on('data', (chunk) => {
-          data += chunk;
+          res.on('data', (chunk) => {
+            data += chunk;
+          });
+
+          res.on('end', () => {
+            try {
+              const healthData = JSON.parse(data);
+
+              if (res.statusCode === 200) {
+                console.log(chalk.green('✅ Health Check 成功'));
+                console.log(chalk.cyan(`📊 狀態: ${healthData.status}`));
+                console.log(chalk.cyan(`🔌 資料庫: ${healthData.database}`));
+                console.log(chalk.cyan(`🛣️ 路由: ${healthData.services?.routes?.join(', ')}`));
+                resolve();
+              } else {
+                reject(new Error(`HTTP ${res.statusCode}: ${data}`));
+              }
+            } catch (error) {
+              reject(new Error(`JSON 解析錯誤: ${error}`));
+            }
+          });
         });
 
-        res.on('end', () => {
-          try {
-            const healthData = JSON.parse(data);
+        req.on('error', (error) => {
+          reject(error);
+        });
 
-            if (res.statusCode === 200) {
-              console.log(chalk.green('✅ Health Check 成功'));
-              console.log(chalk.cyan(`📊 狀態: ${healthData.status}`));
-              console.log(chalk.cyan(`🔌 資料庫: ${healthData.database}`));
-              console.log(chalk.cyan(`🛣️ 路由: ${healthData.services?.routes?.join(', ')}`));
+        req.setTimeout(10000, () => {
+          req.destroy();
+          reject(new Error('請求逾時'));
+        });
+      });
+    };
 
-              // 檢查 LIFF 相關錯誤
+    // 重試邏輯
+    while (retryCount < maxRetries) {
+      try {
+        await performHealthCheck();
+        return; // 成功時直接返回
+      } catch (error: any) {
+        retryCount++;
+        
+        if (retryCount >= maxRetries) {
+          // 最後一次嘗試失敗
+          if (error.code === 'ECONNREFUSED') {
+            console.log(chalk.red('❌ Health Check 連線失敗'));
+            this.addIssue(
+              'Health Check',
+              'Health Check 連線失敗',
+              error.message,
+              '確認伺服器是否運行'
+            );
+          } else {
+            console.log(chalk.red(`❌ Health Check 錯誤: ${error.message}`));
+            this.addIssue(
+              'Health Check',
+              'Health Check 錯誤',
+              error.message,
+              '檢查伺服器健康狀態'
+            );
+          }
+          break;
+        } else {
+          // 還有重試機會，等待後重試
+          console.log(chalk.yellow(`⏳ Health Check 失敗，${2}秒後重試... (${retryCount}/${maxRetries})`));
+          await new Promise(resolve => setTimeout(resolve, 2000));
+        }
+      }
+    }
               if (healthData.services?.liff !== 'configured') {
                 this.addIssue('LIFF服務', 'high', 'LIFF 服務未正確配置', 'Health Check 顯示 LIFF 服務狀態異常', '檢查 LIFF 應用程式設定', 'error');
               }
