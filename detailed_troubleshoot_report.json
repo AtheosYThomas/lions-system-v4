@@ -1,27 +1,19 @@
 {
-  "timestamp": "2025-07-18T23:52:15.558Z",
+  "timestamp": "2025-07-19T00:03:00.103Z",
   "summary": {
-    "totalIssues": 3,
-    "errors": 3,
+    "totalIssues": 2,
+    "errors": 2,
     "warnings": 0,
     "info": 0,
-    "healthScore": 40
+    "healthScore": 60
   },
   "issues": [
     {
       "category": "TypeScript編譯",
       "severity": "high",
       "issue": "TypeScript 編譯錯誤",
-      "details": "src/types/role.ts(82,37): error TS2345: Argument of type 'Role' is not assignable to parameter of type 'Role.President | Role.Admin'.\n",
+      "details": "src/types/role.ts(82,37): error TS2345: Argument of type 'Role' is not assignable to parameter of type 'Role.President | Role.Admin'.\nsrc/utils/diagnostics/detailedTroubleshootReport.ts(128,20): error TS2554: Expected 5-6 arguments, but got 4.\n",
       "suggestion": "修正 TypeScript 語法錯誤",
-      "status": "error"
-    },
-    {
-      "category": "前端LIFF",
-      "severity": "high",
-      "issue": "LIFF App ID 未設定",
-      "details": "public/liff.html 缺少 LIFF App ID",
-      "suggestion": "設定正確的 LIFF App ID",
       "status": "error"
     },
     {
