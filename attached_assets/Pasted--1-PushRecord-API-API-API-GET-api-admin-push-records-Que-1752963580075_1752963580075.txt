@@ -1,0 +1,96 @@
+我們先完成 步驟 1️⃣：建立 PushRecord 查詢 API（活動／會員用）。
+
+✅ 查詢 API 功能規格
+API 路徑：GET /api/admin/push-records
+
+支援 Query 參數：
+
+參數	說明	範例
+eventId	查詢某活動的推播紀錄	/api/admin/push-records?eventId=evt123
+memberId	查詢某會員的推播紀錄	/api/admin/push-records?memberId=mem456
+limit（可選）	限制筆數	/api/admin/push-records?eventId=evt123&limit=100
+
+✅ Prisma 模型回顧（你應已建立）
+prisma
+複製
+編輯
+model PushRecord {
+  id           String   @id @default(cuid())
+  member       Member   @relation(fields: [memberId], references: [id])
+  memberId     String
+  event        Event    @relation(fields: [eventId], references: [id])
+  eventId      String
+  messageType  String   // e.g. 'checkin_reminder'
+  status       String   // 'success' or 'fail'
+  pushedAt     DateTime @default(now())
+}
+✅ 建立 API /pages/api/admin/push-records.ts
+ts
+複製
+編輯
+import { prisma } from '@/lib/prisma';
+import { NextApiRequest, NextApiResponse } from 'next';
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  const { eventId, memberId, limit = 200 } = req.query;
+
+  if (!eventId && !memberId) {
+    return res.status(400).json({ error: '請提供 eventId 或 memberId 查詢' });
+  }
+
+  const where: any = {};
+  if (typeof eventId === 'string') where.eventId = eventId;
+  if (typeof memberId === 'string') where.memberId = memberId;
+
+  try {
+    const records = await prisma.pushRecord.findMany({
+      where,
+      include: {
+        member: true,
+        event: true,
+      },
+      orderBy: { pushedAt: 'desc' },
+      take: Number(limit),
+    });
+
+    res.status(200).json(records);
+  } catch (err) {
+    console.error('查詢推播紀錄錯誤:', err);
+    res.status(500).json({ error: '查詢失敗' });
+  }
+}
+✅ 回傳資料格式範例（JSON）
+json
+複製
+編輯
+[
+  {
+    "id": "push_123",
+    "eventId": "evt_001",
+    "memberId": "mem_999",
+    "messageType": "checkin_reminder",
+    "status": "success",
+    "pushedAt": "2025-07-19T12:34:00Z",
+    "member": {
+      "name": "楊文豪",
+      "phone": "0912xxx"
+    },
+    "event": {
+      "title": "例會一",
+      "date": "2025-07-20T00:00:00Z"
+    }
+  }
+]
+✅ 測試範例
+查詢活動：
+
+pgsql
+複製
+編輯
+GET /api/admin/push-records?eventId=clxyz123abc
+查詢會員：
+
+pgsql
+複製
+編輯
+GET /api/admin/push-records?memberId=clmem456def
