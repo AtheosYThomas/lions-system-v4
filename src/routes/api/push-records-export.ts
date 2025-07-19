@@ -38,12 +38,37 @@ router.get('/', authMiddleware, requireAnyRole([Role.Admin, Role.President]), as
       });
     }
 
-    // 獲取會員推播記錄
-    const records = await pushService.getMemberPushRecords(memberId as string, {
-      limit: 10000, // 匯出時不限制筆數
-      offset: 0,
-      startDate: startDate as string,
-      endDate: endDate as string
+    // 獲取會員推播記錄 (直接查詢以包含關聯)
+    const { Op } = require('sequelize');
+    const PushRecord = require('../../models/pushRecord').default;
+    const Event = require('../../models/event').default;
+    
+    const whereClause: any = {
+      member_id: memberId
+    };
+
+    // 加入日期篩選
+    if (startDate || endDate) {
+      whereClause.pushed_at = {};
+      if (startDate) {
+        whereClause.pushed_at[Op.gte] = new Date(startDate);
+      }
+      if (endDate) {
+        whereClause.pushed_at[Op.lte] = new Date(endDate + ' 23:59:59');
+      }
+    }
+
+    const records = await PushRecord.findAll({
+      where: whereClause,
+      include: [
+        {
+          model: Event,
+          as: 'event',
+          required: false
+        }
+      ],
+      order: [['pushed_at', 'DESC']],
+      limit: 10000
     });
 
     // 轉換為 CSV 格式
