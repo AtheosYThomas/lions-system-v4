@@ -73,4 +73,8 @@ const startServer = async () => {
   }
 };
 
-startServer();
+// 立即執行伺服器啟動
+startServer().catch((error) => {
+  console.error('❌ 伺服器啟動失敗:', error);
+  process.exit(1);
+});

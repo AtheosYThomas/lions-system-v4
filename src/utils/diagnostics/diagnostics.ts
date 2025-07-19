@@ -157,9 +157,11 @@ function checkFrontendFiles() {
 // 4. 執行 health check 測試
 function runHealthCheck() {
   console.log(chalk.blue('🏥 4. 執行 Health Check...'));
+  
+  const PORT = process.env.PORT || '5000';
 
   return new Promise((resolve) => {
-    const req = http.get(`http://localhost:${PORT}/health`, (res) => {
+    const req = http.get(`http://0.0.0.0:${PORT}/health`, (res) => {
       let data = '';
 
       res.on('data', (chunk) => {
