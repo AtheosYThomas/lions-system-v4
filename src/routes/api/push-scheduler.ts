@@ -44,7 +44,7 @@ router.post('/checkin-reminder', async (req, res) => {
           [Op.not]: {
             [Op.is]: null
           }
-        }
+        } as any
       },
       attributes: ['id', 'name', 'line_user_id']
     });
@@ -176,7 +176,7 @@ router.post('/test-checkin-reminder', async (req, res) => {
           [Op.not]: {
             [Op.is]: null
           }
-        }
+        } as any
       },
       attributes: ['id', 'name', 'line_user_id']
     });
