@@ -170,9 +170,13 @@ class DetailedTroubleshootReport {
     const maxRetries = 3;
     let retryCount = 0;
 
+    // 等待伺服器啟動
+    console.log(chalk.cyan('⏳ 等待伺服器啟動...'));
+    await new Promise(resolve => setTimeout(resolve, 3000));
+
     const performHealthCheck = (): Promise<void> => {
       return new Promise((resolve, reject) => {
-        const req = http.get(`http://0.0.0.0:${PORT}/health`, (res) => {
+        const req = http.get(`http://localhost:${PORT}/health`, (res) => {
           let data = '';
 
           res.on('data', (chunk) => {
@@ -202,7 +206,7 @@ class DetailedTroubleshootReport {
           reject(error);
         });
 
-        req.setTimeout(10000, () => {
+        req.setTimeout(15000, () => {
           req.destroy();
           reject(new Error('請求逾時'));
         });
@@ -243,8 +247,8 @@ class DetailedTroubleshootReport {
           break;
         } else {
           // 還有重試機會，等待後重試
-          console.log(chalk.yellow(`⏳ Health Check 失敗，${2}秒後重試... (${retryCount}/${maxRetries})`));
-          await new Promise(resolve => setTimeout(resolve, 2000));
+          console.log(chalk.yellow(`⏳ Health Check 失敗，${3}秒後重試... (${retryCount}/${maxRetries})`));
+          await new Promise(resolve => setTimeout(resolve, 3000));
         }
       }
     }
