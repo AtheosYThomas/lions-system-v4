@@ -1,4 +1,3 @@
-
 import request from 'supertest';
 import app from '../src/app';
 import { TestUtils } from './utils';
@@ -135,6 +134,59 @@ describe('🦁 V4.0 北大獅子會系統完整流程測試', () => {
   });
 
   describe('📝 報名與簽到流程', () => {
+    it('4️⃣ 建立測試活動', async () => {
+    const res = await request(app).post('/api/admin/events').send({
+      title: '測試活動',
+      description: '這是一個測試活動',
+      date: '2024-12-31',
+      location: '測試地點',
+      max_attendees: 50,
+    });
+
+    expect(res.status).toBe(201);
+    expect(res.body.title).toBe('測試活動');
+    expect(res.body.max_attendees).toBe(50);
+
+    eventId = res.body.id;
+  });
+
+  let registrationId: string;
+
+  it('5️⃣ 會員報名活動', async () => {
+    const res = await request(app).post('/api/registration').send({
+      event_id: eventId,
+      line_user_id: testLineUserId,
+      num_attendees: 2,
+      notes: '我會帶朋友來',
+    });
+
+    expect(res.status).toBe(200);
+    expect(res.body.event_id).toBe(eventId);
+    expect(res.body.member_id).toBeDefined();
+    expect(res.body.num_attendees).toBe(2);
+
+    registrationId = res.body.id;
+  });
+
+  it('6️⃣ 現場掃碼簽到', async () => {
+    const res = await request(app).post('/api/checkin').send({
+      event_id: eventId,
+      line_user_id: testLineUserId,
+    });
+
+    expect(res.status).toBe(200);
+    expect(res.body.checked_in).toBe(true);
+  });
+
+  it('6️⃣-2 重複簽到應提示已簽到', async () => {
+    const res = await request(app).post('/api/checkin').send({
+      event_id: eventId,
+      line_user_id: testLineUserId,
+    });
+
+    expect(res.status).toBe(400);
+    expect(res.body.message).toMatch(/已簽到|重複/);
+  });
     it('7️⃣ 會員報名活動', async () => {
       const response = await request(app)
         .post('/api/registration')
@@ -256,3 +308,5 @@ describe('🦁 V4.0 北大獅子會系統完整流程測試', () => {
     });
   });
 });
+let eventId: string;
+let lineUserId: string;

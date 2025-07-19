@@ -3,12 +3,13 @@ import path from 'path';
 import sequelize from './config/database';
 import './models/index'; // 載入模型關聯
 import adminRoutes from './routes/admin';
+import uploadRouter from './routes/upload';
+import liffRoutes from './routes/api/liff';
 import memberRoutes from './routes/api/members';
 import checkinRoutes from './routes/api/checkin';
-import liffRoutes from './routes/api/liff';
+import registrationRoutes from './routes/api/registration';
 import announcementRoutes from './routes/api/announcements';
 import lineWebhook from './routes/line/webhook';
-import uploadRouter from './routes/upload';
 
 const app = express();
 
@@ -42,7 +43,7 @@ app.get('/health', async (req, res) => {
       database: 'connected',
       services: {
         line: process.env.LINE_CHANNEL_ACCESS_TOKEN ? 'configured' : 'missing_token',
-        routes: ['admin', 'checkin', 'members', 'webhook']
+        routes: ['admin', 'checkin', 'members', 'webhook', 'registration']
       }
     });
   } catch (error) {
@@ -81,6 +82,7 @@ app.use('/api/announcements', announcementRoutes);
 app.use('/api/checkin', checkinRoutes);
 app.use('/api/liff', liffRoutes);
 app.use('/api/upload', uploadRouter);
+app.use('/api/registration', registrationRoutes);
 
 // 前端路由（提供 React 應用）
 app.get('/', (req, res) => {

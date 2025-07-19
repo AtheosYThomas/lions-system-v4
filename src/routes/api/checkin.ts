@@ -4,6 +4,9 @@ import checkinController from '../../controllers/checkinController';
 
 const router = express.Router();
 
+// 活動簽到 (支援 line_user_id)
+router.post('/', checkinController.checkinWithLineUserId);
+
 // 活動簽到
 router.post('/checkin/:eventId', checkinController.checkinToEvent);
 
