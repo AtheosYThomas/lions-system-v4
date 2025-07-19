@@ -1,10 +1,9 @@
-
 import { DataTypes, Model, Optional } from 'sequelize';
 import sequelize from '../config/database';
 
 export interface LiffSessionAttributes {
   id: string;
-  line_uid: string;
+  line_user_id: string;
   display_name?: string;
   picture_url?: string;
   event_id?: string;
@@ -17,7 +16,7 @@ export type LiffSessionCreationAttributes = Optional<LiffSessionAttributes, 'id'
 
 export class LiffSession extends Model<LiffSessionAttributes, LiffSessionCreationAttributes> implements LiffSessionAttributes {
   public id!: string;
-  public line_uid!: string;
+  public line_user_id!: string;
   public display_name?: string;
   public picture_url?: string;
   public event_id?: string;
@@ -32,10 +31,10 @@ LiffSession.init({
     primaryKey: true,
     defaultValue: DataTypes.UUIDV4
   },
-  line_uid: {
+  line_user_id: {
     type: DataTypes.STRING,
     allowNull: false,
-    field: 'line_uid'
+    field: 'line_user_id'
   },
   display_name: {
     type: DataTypes.STRING

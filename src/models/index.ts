@@ -85,9 +85,9 @@ Member.hasMany(Payment, {
 // 一個會員可以有多個訊息記錄 (使用 LINE UID 關聯)
 Member.hasMany(MessageLog, { 
   foreignKey: 'user_id', 
-  sourceKey: 'line_user_id', // 使用正確的欄位名稱
+  sourceKey: 'line_user_id',
   as: 'messageLogs',
-  onDelete: 'CASCADE' // 刪除會員時一併刪除相關訊息記錄
+  onDelete: 'CASCADE'
 });
 
 // Member -> Announcement (一對多)
@@ -148,7 +148,7 @@ Payment.belongsTo(Member, {
 // 每個訊息記錄屬於一個會員 (使用 LINE UID 關聯)
 MessageLog.belongsTo(Member, { 
   foreignKey: 'user_id', 
-  targetKey: 'line_user_id', // 使用正確的欄位名稱
+  targetKey: 'line_user_id',
   as: 'member' 
 });
 
