@@ -1,0 +1,116 @@
+我們來建立 /admin/events 頁面作為「活動總覽清單」，功能包括：
+
+✅ 功能說明
+功能	說明
+📋 列出所有活動	顯示標題、日期、建立時間
+🔗 每筆活動點選連結 → 導向 /admin/event/:id/checkin 報到統計	
+🔐 僅限會長／幹部登入可見（RBAC 可加）	
+
+✅ 1️⃣ 建立頁面 /client/pages/admin/events.tsx
+tsx
+複製
+編輯
+import Link from 'next/link';
+import { useEffect, useState } from 'react';
+
+interface Event {
+  id: string;
+  title: string;
+  date: string;
+  createdAt: string;
+}
+
+const EventsPage = () => {
+  const [events, setEvents] = useState<Event[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      const res = await fetch('/api/admin/events');
+      const result = await res.json();
+      if (res.ok) setEvents(result);
+      setLoading(false);
+    };
+    fetchEvents();
+  }, []);
+
+  return (
+    <div className="p-6 max-w-4xl mx-auto">
+      <h1 className="text-2xl font-bold mb-4">活動總覽</h1>
+      {loading ? (
+        <p>載入中...</p>
+      ) : events.length === 0 ? (
+        <p>目前尚無活動</p>
+      ) : (
+        <table className="w-full border-collapse text-sm">
+          <thead>
+            <tr className="bg-gray-100">
+              <th className="border px-2 py-1 text-left">活動名稱</th>
+              <th className="border px-2 py-1">活動日期</th>
+              <th className="border px-2 py-1">建立時間</th>
+              <th className="border px-2 py-1">操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            {events.map((e) => (
+              <tr key={e.id}>
+                <td className="border px-2 py-1">{e.title}</td>
+                <td className="border px-2 py-1">
+                  {new Date(e.date).toLocaleDateString()}
+                </td>
+                <td className="border px-2 py-1">
+                  {new Date(e.createdAt).toLocaleString()}
+                </td>
+                <td className="border px-2 py-1">
+                  <Link
+                    href={`/admin/event/${e.id}/checkin`}
+                    className="text-blue-600 underline"
+                  >
+                    查看報到
+                  </Link>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </div>
+  );
+};
+
+export default EventsPage;
+✅ 2️⃣ 建立後端 API /pages/api/admin/events.ts
+ts
+複製
+編輯
+import { prisma } from '@/lib/prisma';
+import { NextApiRequest, NextApiResponse } from 'next';
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  try {
+    const events = await prisma.event.findMany({
+      orderBy: { date: 'desc' },
+    });
+
+    res.status(200).json(events);
+  } catch (err) {
+    res.status(500).json({ error: '無法取得活動清單' });
+  }
+}
+✅ 3️⃣ （可選）加入 getServerSideProps 做 RBAC 權限驗證
+如你已有 session.user.role：
+
+tsx
+複製
+編輯
+export async function getServerSideProps(context) {
+  const session = await getSession(context);
+  const allowed = ['President', 'Officer', 'Secretary'];
+  if (!session || !allowed.includes(session.user.role)) {
+    return { redirect: { destination: '/', permanent: false } };
+  }
+  return { props: {} };
+}
+✅ 頁面效果範例
+活動名稱	活動日期	建立時間	操作
+2025 年 8 月理監事會	2025/08/12	2025/07/10 14:33
