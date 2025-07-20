@@ -1,0 +1,102 @@
+🎨 2️⃣ 在 /src/integrations/line/flexTemplates.ts 中新增以下模板：
+ts
+複製
+編輯
+export const flexTemplates = {
+  checkinCard: (userName: string) => ({
+    type: 'bubble',
+    hero: {
+      type: 'image',
+      url: 'https://your-domain.com/assets/checkin.jpg',
+      size: 'full',
+      aspectRatio: '20:13',
+      aspectMode: 'cover'
+    },
+    body: {
+      type: 'box',
+      layout: 'vertical',
+      contents: [
+        { type: 'text', text: `您好，${userName}！`, weight: 'bold', size: 'xl' },
+        { type: 'text', text: '歡迎使用簽到服務', size: 'md', color: '#aaaaaa' }
+      ]
+    },
+    footer: {
+      type: 'box',
+      layout: 'vertical',
+      spacing: 'sm',
+      contents: [
+        {
+          type: 'button',
+          style: 'primary',
+          action: {
+            type: 'uri',
+            label: '立即簽到',
+            uri: 'https://service.peida.net/checkin'
+          }
+        }
+      ]
+    }
+  }),
+
+  memberCenterCard: (member: any) => ({
+    type: 'bubble',
+    body: {
+      type: 'box',
+      layout: 'vertical',
+      contents: [
+        { type: 'text', text: `👤 ${member?.name || '未知會員'}`, weight: 'bold', size: 'lg' },
+        { type: 'text', text: '點選下方按鈕查看會員資料', size: 'sm', color: '#999999' }
+      ]
+    },
+    footer: {
+      type: 'box',
+      layout: 'vertical',
+      contents: [
+        {
+          type: 'button',
+          style: 'link',
+          action: {
+            type: 'uri',
+            label: '會員中心',
+            uri: 'https://service.peida.net/profile'
+          }
+        }
+      ]
+    }
+  }),
+
+  eventOverviewCard: (events: any[]) => ({
+    type: 'bubble',
+    header: {
+      type: 'box',
+      layout: 'vertical',
+      contents: [{ type: 'text', text: '📅 最新活動', weight: 'bold', size: 'lg' }]
+    },
+    body: {
+      type: 'box',
+      layout: 'vertical',
+      spacing: 'sm',
+      contents: events.slice(0, 3).map(e => ({
+        type: 'box',
+        layout: 'vertical',
+        spacing: 'xs',
+        contents: [
+          { type: 'text', text: e.title || '活動標題', weight: 'bold', size: 'md' },
+          { type: 'text', text: e.date || '活動時間', size: 'sm', color: '#aaaaaa' },
+          {
+            type: 'button',
+            style: 'primary',
+            height: 'sm',
+            action: {
+              type: 'uri',
+              label: '查看活動',
+              uri: `https://service.peida.net/event/${e.id}`
+            }
+          }
+        ]
+      }))
+    }
+  })
+};
+
+export default flexTemplates;
