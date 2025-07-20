@@ -1,0 +1,82 @@
+第一步】建立 /client/pages/Checkin.tsx 畫面
+🔧 功能需求：
+初始化 LIFF 並擷取 userId
+
+呼叫 /api/liff/checkMember → 確認是否為會員
+
+若為會員： 顯示歡迎訊息與可報名活動清單
+
+若不是會員： 自動導向 /register 頁面填寫表單
+
+📁 你應在 /client/pages/Checkin.tsx 建立以下程式碼：
+tsx
+複製
+編輯
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { useNavigate } from "wouter";
+
+export default function Checkin() {
+  const [lineUserId, setLineUserId] = useState<string | null>(null);
+  const [member, setMember] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (window.liff) {
+      window.liff.init({ liffId: import.meta.env.VITE_LIFF_ID })
+        .then(() => {
+          if (!window.liff.isLoggedIn()) {
+            window.liff.login();
+          } else {
+            const userId = window.liff.getContext()?.userId;
+            setLineUserId(userId);
+          }
+        })
+        .catch(console.error);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (lineUserId) {
+      axios.post("/api/liff/checkMember", { lineUserId })
+        .then(res => {
+          if (res.data?.member) {
+            setMember(res.data.member);
+          } else {
+            navigate("/register");
+          }
+        })
+        .catch(err => {
+          console.error("Check member failed:", err);
+          navigate("/register");
+        })
+        .finally(() => setLoading(false));
+    }
+  }, [lineUserId]);
+
+  if (loading) return <div className="p-4">載入中...</div>;
+
+  return (
+    <div className="p-4">
+      <h1 className="text-xl font-bold mb-2">您好，{member.name}！</h1>
+      <p className="mb-4">以下是您可參加的活動：</p>
+      <ul className="list-disc pl-5">
+        {(member?.events || []).map((event: any) => (
+          <li key={event.id}>
+            {event.name}（{event.date}）<br />
+            {event.status === "checked_in" ? "✅ 已簽到" : "⏳ 尚未簽到"}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+📡 後端對應 API（已建議過）：
+/api/liff/checkMember：接收 lineUserId，回傳會員資訊與活動清單
+
+ts
+複製
+編輯
+// Body: { lineUserId: string }
+// Response: { member: { name: string, events: Event[] } | null }
