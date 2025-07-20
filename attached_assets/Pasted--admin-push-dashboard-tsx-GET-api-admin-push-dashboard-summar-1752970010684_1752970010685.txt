@@ -1,0 +1,157 @@
+我們現在建立 /admin/push-dashboard.tsx 頁面，整合圖表與摘要分析模組。
+
+✅ 使用資料來源（已建好）
+GET /api/admin/push-dashboard-summary
+
+回傳格式（範例）：
+
+json
+複製
+編輯
+{
+  "trend": [
+    { "date": "2025-07-13", "success": 10, "fail": 2 },
+    { "date": "2025-07-14", "success": 12, "fail": 1 }
+  ],
+  "summary": [
+    { "status": "success", "_count": 120 },
+    { "status": "fail", "_count": 8 }
+  ],
+  "topEvents": [
+    { "eventId": "evt123", "status": "success", "_count": 30 },
+    { "eventId": "evt123", "status": "fail", "_count": 5 }
+  ]
+}
+✅ 1️⃣ 建立 /admin/push-dashboard.tsx
+tsx
+複製
+編輯
+import { useEffect, useState } from 'react';
+import {
+  LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend,
+  PieChart, Pie, Cell, CartesianGrid,
+} from 'recharts';
+
+const COLORS = ['#22c55e', '#ef4444'];
+
+const PushDashboard = () => {
+  const [trend, setTrend] = useState([]);
+  const [summary, setSummary] = useState([]);
+  const [topEvents, setTopEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('/api/admin/push-dashboard-summary')
+      .then(res => res.json())
+      .then(data => {
+        setTrend(data.trend);
+        setSummary(data.summary);
+        setTopEvents(data.topEvents);
+        setLoading(false);
+      });
+  }, []);
+
+  const summaryData = summary.map((s: any) => ({
+    name: s.status === 'success' ? '成功' : '失敗',
+    value: s._count,
+  }));
+
+  // 整理活動統計
+  const eventMap: Record<string, any> = {};
+  topEvents.forEach((r: any) => {
+    if (!eventMap[r.eventId]) eventMap[r.eventId] = { eventId: r.eventId, success: 0, fail: 0 };
+    eventMap[r.eventId][r.status] = r._count;
+  });
+
+  const topEventList = Object.values(eventMap)
+    .slice(0, 5)
+    .map((e: any) => ({
+      ...e,
+      total: e.success + e.fail,
+    }));
+
+  return (
+    <div className="max-w-6xl mx-auto p-6">
+      <h1 className="text-2xl font-bold mb-6">📊 推播統計 Dashboard</h1>
+
+      {loading ? (
+        <p>載入中...</p>
+      ) : (
+        <>
+          {/* 折線圖 */}
+          <div className="mb-10">
+            <h2 className="text-lg font-semibold mb-2">📈 每日推播趨勢</h2>
+            <ResponsiveContainer width="100%" height={300}>
+              <LineChart data={trend}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="date" />
+                <YAxis allowDecimals={false} />
+                <Tooltip />
+                <Legend />
+                <Line type="monotone" dataKey="success" stroke="#22c55e" name="成功" />
+                <Line type="monotone" dataKey="fail" stroke="#ef4444" name="失敗" />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* 圓餅圖 */}
+          <div className="mb-10">
+            <h2 className="text-lg font-semibold mb-2">🥧 推播成功率</h2>
+            <ResponsiveContainer width="100%" height={250}>
+              <PieChart>
+                <Pie
+                  data={summaryData}
+                  dataKey="value"
+                  nameKey="name"
+                  label
+                  outerRadius={80}
+                >
+                  {summaryData.map((_, i) => (
+                    <Cell key={i} fill={COLORS[i]} />
+                  ))}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* 活動摘要 */}
+          <div>
+            <h2 className="text-lg font-semibold mb-2">📋 近期活動推播表現</h2>
+            <table className="w-full border-collapse text-sm">
+              <thead>
+                <tr className="bg-gray-100">
+                  <th className="border px-2 py-1">活動 ID</th>
+                  <th className="border px-2 py-1">成功</th>
+                  <th className="border px-2 py-1">失敗</th>
+                  <th className="border px-2 py-1">總數</th>
+                </tr>
+              </thead>
+              <tbody>
+                {topEventList.map((e: any) => (
+                  <tr key={e.eventId}>
+                    <td className="border px-2 py-1">{e.eventId}</td>
+                    <td className="border px-2 py-1 text-green-600">{e.success}</td>
+                    <td className="border px-2 py-1 text-red-600">{e.fail}</td>
+                    <td className="border px-2 py-1">{e.total}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
+      )}
+    </div>
+  );
+};
+
+export default PushDashboard;
+✅ 成果總結
+你現在可透過 /admin/push-dashboard 頁面檢視：
+
+📈 每日推播變化（LineChart）
+
+🥧 成功 vs 失敗比率（PieChart）
+
+📋 活動推播統計（表格）
+
