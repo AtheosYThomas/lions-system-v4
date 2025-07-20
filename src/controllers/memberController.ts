@@ -322,7 +322,7 @@ class MemberController {
         }),
         prisma.member.count({
           where: { 
-            line_user_id: { not: null },
+            NOT: { line_user_id: null },
             status: 'active'
           }
         })
