@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import AceEditor from "react-ace";
 import "ace-builds/src-noconflict/mode-json";
 import "ace-builds/src-noconflict/theme-github";
@@ -311,6 +311,34 @@ const PushTemplatePage = () => {
   const [testUserId, setTestUserId] = useState("");
   const [testType, setTestType] = useState<'user_id' | 'member_search'>('user_id');
   const [isSaving, setIsSaving] = useState(false);
+  const [templateList, setTemplateList] = useState<any[]>([]);
+  const [isLoadingTemplates, setIsLoadingTemplates] = useState(false);
+
+  // 載入已儲存的樣板清單
+  useEffect(() => {
+    const loadTemplates = async () => {
+      setIsLoadingTemplates(true);
+      try {
+        const response = await fetch('/api/push-template/list', {
+          method: 'GET',
+          headers: {
+            'Authorization': 'Bearer admin-token'
+          }
+        });
+        
+        if (response.ok) {
+          const result = await response.json();
+          setTemplateList(result.templates || []);
+        }
+      } catch (error) {
+        console.error('載入樣板清單失敗:', error);
+      } finally {
+        setIsLoadingTemplates(false);
+      }
+    };
+
+    loadTemplates();
+  }, []);
 
   const handleChange = (value: string) => {
     setJsonText(value);
@@ -328,6 +356,18 @@ const PushTemplatePage = () => {
     setJsonText(templateJson);
     setParsed(template);
     setError("");
+  };
+
+  const loadSavedTemplate = (templateId: string) => {
+    const selected = templateList.find(t => t.id === templateId);
+    if (selected) {
+      setTemplateName(selected.name);
+      setTemplateDesc(selected.description || "");
+      const formatted = JSON.stringify(selected.json, null, 2);
+      setJsonText(formatted);
+      setParsed(selected.json);
+      setError("");
+    }
   };
 
   const formatJson = () => {
@@ -413,6 +453,17 @@ const PushTemplatePage = () => {
         alert("✅ 樣板儲存成功！");
         setTemplateName("");
         setTemplateDesc("");
+        // 重新載入樣板清單
+        const response = await fetch('/api/push-template/list', {
+          method: 'GET',
+          headers: {
+            'Authorization': 'Bearer admin-token'
+          }
+        });
+        if (response.ok) {
+          const listResult = await response.json();
+          setTemplateList(listResult.templates || []);
+        }
       } else {
         alert("❌ 樣板儲存失敗：" + (result.error || "未知錯誤"));
       }
@@ -456,9 +507,34 @@ const PushTemplatePage = () => {
           </div>
         </div>
 
-        {/* 樣板選擇 */}
+        {/* 已儲存樣板選擇 */}
+        <div className="mt-4 p-4 bg-green-50 rounded-lg border border-green-200">
+          <label className="block text-sm font-medium text-green-800 mb-2">📚 載入已儲存樣板：</label>
+          <div className="flex items-center gap-3">
+            <select
+              className="flex-1 border border-green-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 bg-white"
+              onChange={(e) => e.target.value && loadSavedTemplate(e.target.value)}
+              disabled={isLoadingTemplates}
+            >
+              <option value="">
+                {isLoadingTemplates ? "載入中..." : templateList.length > 0 ? "請選擇樣板" : "尚無已儲存樣板"}
+              </option>
+              {templateList.map((template) => (
+                <option key={template.id} value={template.id}>
+                  {template.name} ({new Date(template.created_at).toLocaleString('zh-TW')})
+                  {template.description && ` - ${template.description}`}
+                </option>
+              ))}
+            </select>
+            <div className="text-sm text-green-600">
+              {templateList.length} 個已儲存樣板
+            </div>
+          </div>
+        </div>
+
+        {/* 預設樣板選擇 */}
         <div className="mt-4">
-          <label className="block text-sm font-medium text-gray-700 mb-2">📋 快速載入樣板：</label>
+          <label className="block text-sm font-medium text-gray-700 mb-2">📋 快速載入預設樣板：</label>
           <div className="flex gap-2">
             {templateOptions.map((option, index) => (
               <button
