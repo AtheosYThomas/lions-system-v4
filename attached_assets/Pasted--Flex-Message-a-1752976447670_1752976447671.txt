@@ -1,0 +1,135 @@
+我們接下來將完成 ✅「樣板套用至活動推播流程」，讓會長／幹部在每場活動中快速選擇並套用 Flex Message 樣板用於報到通知推播。
+
+✅ 功能目標
+模組	功能
+🧩 選擇樣板	在活動管理頁 /admin/events → 點擊「推播通知」時彈出樣板選單
+📄 套用樣板	選擇後將對應 JSON 套用為推播內容
+📤 發送推播	使用 LINE Bot 發送 Flex Message 給報名會員
+
+✅ Step 1：樣板查詢 API（限定類型為 checkin_reminder）
+建立 /api/admin/push-template/by-type.ts：
+
+ts
+複製
+編輯
+import { prisma } from "@/lib/prisma";
+import { NextApiRequest, NextApiResponse } from "next";
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  const { type } = req.query;
+  if (!type) return res.status(400).json({ error: "缺少 type 參數" });
+
+  const templates = await prisma.pushTemplate.findMany({
+    where: { type: type as string },
+    orderBy: { createdAt: "desc" },
+  });
+
+  res.status(200).json({ templates });
+}
+✅ Step 2：活動管理頁 Push 按鈕彈出「樣板選單」Modal
+UI 範例（簡化）
+tsx
+複製
+編輯
+const [showPushModal, setShowPushModal] = useState(false);
+const [templateOptions, setTemplateOptions] = useState([]);
+const [selectedTemplateId, setSelectedTemplateId] = useState("");
+
+useEffect(() => {
+  if (showPushModal) {
+    fetch("/api/admin/push-template/by-type?type=checkin_reminder")
+      .then(res => res.json())
+      .then(data => setTemplateOptions(data.templates));
+  }
+}, [showPushModal]);
+Modal 內容
+tsx
+複製
+編輯
+{showPushModal && (
+  <div className="fixed inset-0 bg-black bg-opacity-30 flex justify-center items-center">
+    <div className="bg-white p-6 rounded shadow w-[500px]">
+      <h2 className="text-lg font-bold mb-3">📣 推播樣板選擇</h2>
+      <select
+        className="border px-2 py-1 rounded w-full mb-4"
+        value={selectedTemplateId}
+        onChange={(e) => setSelectedTemplateId(e.target.value)}
+      >
+        <option value="">請選擇樣板</option>
+        {templateOptions.map((tpl) => (
+          <option key={tpl.id} value={tpl.id}>
+            {tpl.name}
+          </option>
+        ))}
+      </select>
+      <div className="text-right">
+        <button onClick={() => setShowPushModal(false)} className="mr-2 px-3 py-1 rounded border">取消</button>
+        <button
+          className="bg-blue-600 text-white px-4 py-1 rounded"
+          onClick={async () => {
+            const tpl = templateOptions.find(t => t.id === selectedTemplateId);
+            if (!tpl) return;
+
+            const res = await fetch(`/api/admin/push/checkin`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                eventId,
+                templateJson: tpl.json,
+              }),
+            });
+
+            if (res.ok) {
+              alert("✅ 推播成功");
+              setShowPushModal(false);
+            } else {
+              alert("❌ 推播失敗");
+            }
+          }}
+        >
+          發送推播
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+✅ Step 3：建立推播 API /api/admin/push/checkin.ts
+ts
+複製
+編輯
+import { client } from "@/lib/lineClient";
+import { prisma } from "@/lib/prisma";
+import { NextApiRequest, NextApiResponse } from "next";
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  const { eventId, templateJson } = req.body;
+
+  if (!eventId || !templateJson) {
+    return res.status(400).json({ error: "缺少參數" });
+  }
+
+  const signups = await prisma.signup.findMany({
+    where: { eventId },
+    select: {
+      member: { select: { lineUserId: true } }
+    }
+  });
+
+  const results = await Promise.allSettled(
+    signups
+      .filter(s => !!s.member?.lineUserId)
+      .map(s => client.pushMessage(s.member.lineUserId!, {
+        type: "flex",
+        altText: "📣 活動報到通知",
+        contents: templateJson,
+      }))
+  );
+
+  res.status(200).json({ success: true, results });
+}
+✅ 完整成果
+模組	狀態
+📋 樣板查詢 API	✅ /api/admin/push-template/by-type
+🎛 推播 UI 選單	✅ 活動管理頁按鈕彈出樣板選擇
+📤 發送 API 整合	✅ 套用樣板後即推播所有報名會員
+

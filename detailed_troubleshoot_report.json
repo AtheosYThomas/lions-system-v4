@@ -1,20 +1,11 @@
 {
-  "timestamp": "2025-07-20T01:43:59.504Z",
+  "timestamp": "2025-07-20T01:46:45.061Z",
   "summary": {
-    "totalIssues": 1,
-    "errors": 1,
+    "totalIssues": 0,
+    "errors": 0,
     "warnings": 0,
     "info": 0,
-    "healthScore": 80
+    "healthScore": 100
   },
-  "issues": [
-    {
-      "category": "TypeScript編譯",
-      "severity": "high",
-      "issue": "TypeScript 編譯錯誤",
-      "details": "src/controllers/memberController.ts(327,17): error TS2322: Type 'null' is not assignable to type 'string | FieldRef<\"Member\", \"String\"> | undefined'.\nsrc/services/memberService.ts(286,17): error TS2322: Type 'null' is not assignable to type 'string | FieldRef<\"Member\", \"String\"> | undefined'.\n",
-      "suggestion": "修正 TypeScript 語法錯誤",
-      "status": "error"
-    }
-  ]
+  "issues": []
 }
