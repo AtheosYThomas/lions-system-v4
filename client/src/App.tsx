@@ -1,3 +1,6 @@
+The code adds a new route for the PushTemplate page to the App component.
+```
+```replit_final_file
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
@@ -13,7 +16,8 @@ import NotFoundPage from './pages/NotFoundPage';
 import CheckinEvent from './pages/CheckinEvent'; //Import the new Component
 import PushHistory from './pages/PushHistory';
 import MemberPushHistory from './pages/MemberPushHistory';
-import PushDashboard from './pages/PushDashboard'; // Import PushDashboard
+import PushDashboard from './pages/PushDashboard';
+import PushTemplate from './pages/PushTemplate';
 
 function App() {
   return (
@@ -33,6 +37,7 @@ function App() {
           <Route path="/admin/event/:eventId/push-history" element={<PushHistory />} />
         <Route path="/admin/member/:memberId/push-history" element={<MemberPushHistory />} />
           <Route path="/admin/push-dashboard" element={<PushDashboard />} />
+          <Route path="/admin/push-template" element={<PushTemplate />} />
         </Routes>
       </div>
     </Router>
