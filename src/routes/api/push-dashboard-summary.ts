@@ -1,4 +1,3 @@
-
 import express from 'express';
 import { authMiddleware } from '../../middleware/authMiddleware';
 import { requireAnyRole } from '../../middleware/roleMiddleware';
@@ -65,7 +64,7 @@ router.get('/', authMiddleware, requireAnyRole([Role.Admin, Role.President]), as
       raw: true
     }) as any[];
 
-    // 3. 熱門活動統計
+    // 3. 活動推播統計 - 各活動成功/失敗數量
     const topEventsResult = await PushRecord.findAll({
       where,
       attributes: [
@@ -78,6 +77,31 @@ router.get('/', authMiddleware, requireAnyRole([Role.Admin, Role.President]), as
       limit: 20,
       raw: true
     }) as any[];
+
+    // 獲取失敗推播的詳細 ID 列表
+    const failedPushRecords = await PushRecord.findAll({
+      where: {
+        ...where,
+        status: 'failed'
+      },
+      attributes: ['id', 'event_id'],
+      raw: true
+    }) as any[];
+
+    // 將失敗 ID 按活動分組
+    const failedIdsByEvent = failedPushRecords.reduce((acc: any, record: any) => {
+      if (!acc[record.event_id]) {
+        acc[record.event_id] = [];
+      }
+      acc[record.event_id].push(record.id);
+      return acc;
+    }, {});
+
+    // 為每個 topEvent 添加 pushRecordIds
+    const topEventsWithIds = topEventsResult.map((event: any) => ({
+      ...event,
+      pushRecordIds: event.status === 'failed' ? (failedIdsByEvent[event.event_id] || []) : []
+    }));
 
     // 格式化回傳資料
     const trend = trendResult.map((item: any) => ({
@@ -104,7 +128,7 @@ router.get('/', authMiddleware, requireAnyRole([Role.Admin, Role.President]), as
       data: {
         trend,
         summary,
-        topEvents
+        topEvents: topEventsWithIds
       },
       filters: {
         startDate: startDate || null,
