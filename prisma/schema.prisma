@@ -30,6 +30,20 @@ model Member {
   @@map("members")
 }
 
+model Event {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  date        DateTime
+  location    String?
+  max_attendees Int?
+  status      String?  @default("active")
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  @@map("events")
+}
+
 model PushTemplate {
   id          String   @id @default(cuid())
   name        String
