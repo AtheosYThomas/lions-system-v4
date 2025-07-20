@@ -12,10 +12,6 @@
     "test:webhook": "npx tsx src/scripts/testLineWebhook.ts",
     "init-schema": "tsx src/scripts/initSchema.ts",
     "quick-start": "tsx src/scripts/quickStart.ts",
-    "build": "tsc",
-    "build:client": "cd client && npm run build",
-    "start": "node dist/index.js",
-    "test": "tsx src/scripts/test/index.ts",
     "seed": "tsx src/scripts/test/seedMockData.ts",
     "diagnose": "tsx src/utils/diagnostics/runner.ts",
     "quick": "tsx src/scripts/tools/quickStart.ts",
@@ -26,7 +22,9 @@
     "diagnostic": "tsx src/utils/diagnostics/diagnostics.ts",
     "full-diagnostic": "tsx src/utils/diagnostics/fullSystemDiagnostics.ts",
     "system-report": "tsx src/utils/diagnostics/systemReport.ts",
-    "troubleshoot": "tsx src/utils/diagnostics/troubleshoot.ts"
+    "troubleshoot": "tsx src/utils/diagnostics/troubleshoot.ts",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "keywords": [],
   "author": "",
