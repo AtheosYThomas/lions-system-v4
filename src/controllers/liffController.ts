@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import Member from '../models/member';
+import { getMemberWithEventsByLineUserId } from '../services/liffService';
 
 interface LiffCheckMemberRequest {
   line_user_id: string;
@@ -22,58 +23,27 @@ interface LiffRegisterMemberRequest {
 
 class LiffController {
   /**
-   * 檢查 LINE 用戶是否為會員
+   * 檢查 LINE 用戶是否為會員 - V4.0 修正版
    */
   async checkMember(req: Request, res: Response): Promise<void> {
+    const { lineUserId } = req.body;
+
+    if (!lineUserId) {
+      res.status(400).json({ error: "lineUserId is required" });
+      return;
+    }
+
     try {
-      const { line_user_id, display_name, picture_url }: LiffCheckMemberRequest = req.body;
-
-      console.log('📱 LIFF 檢查會員請求:', {
-        line_user_id,
-        display_name,
-        picture_url: picture_url ? 'Present' : 'None'
-      });
-
-      if (!line_user_id) {
-        res.status(400).json({
-          success: false,
-          error: '缺少 line_user_id 參數'
-        });
+      const member = await getMemberWithEventsByLineUserId(lineUserId);
+      if (!member) {
+        res.status(200).json({ member: null }); // 未註冊
         return;
       }
 
-      // 查詢會員資料
-      const member = await Member.findOne({
-        where: { line_user_id }
-      });
-
-      if (member) {
-        console.log('✅ 找到會員:', member.name);
-        res.json({
-          success: true,
-          is_member: true,
-          isMember: true, // 新增相容性欄位
-          member_name: member.name,
-          member_id: member.id,
-          message: `歡迎回來，${member.name}！`
-        });
-      } else {
-        console.log('❌ 未找到會員，需要註冊');
-        res.json({
-          success: true,
-          is_member: false,
-          isMember: false, // 新增相容性欄位
-          message: '您尚未註冊會員，請完成註冊程序'
-        });
-      }
-
-    } catch (error) {
-      console.error('❌ LIFF 檢查會員失敗:', error);
-      res.status(500).json({
-        success: false,
-        error: 'LIFF 服務暫時無法使用，請稍後再試',
-        details: error instanceof Error ? error.message : '未知錯誤'
-      });
+      res.json({ member });
+    } catch (err) {
+      console.error("checkMember error:", err);
+      res.status(500).json({ error: "Server error" });
     }
   }
 

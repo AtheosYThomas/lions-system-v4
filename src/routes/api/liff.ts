@@ -25,7 +25,9 @@ router.post('/check-member', async (req, res) => {
 
 /**
  * POST /api/liff/checkMember
- * 檢查會員身份（別名路由，相容性支援）
+ * 檢查會員身份 - V4.0 修正版
+ * 請求格式: { "lineUserId": "Uxxxxxxxxxxxxxxxxxxxx" }
+ * 回應格式: { "member": { "name": "...", "email": "...", "events": [...] } } 或 { "member": null }
  */
 router.post('/checkMember', async (req, res) => {
   try {
@@ -33,8 +35,7 @@ router.post('/checkMember', async (req, res) => {
   } catch (error) {
     console.error('❌ LIFF checkMember 錯誤:', error);
     res.status(500).json({
-      success: false,
-      error: 'LIFF 服務錯誤',
+      error: 'Server error',
       details: error instanceof Error ? error.message : '未知錯誤'
     });
   }
@@ -66,7 +67,7 @@ router.get('/config', (req, res) => {
     // 統一使用 LIFF_ID 環境變數
     const liffId = process.env.LIFF_ID || '2007739371-aKePV20l';
     console.log('📱 LIFF 配置請求:', { liffId, isDefault: liffId === '2007739371-aKePV20l' });
-    
+
     res.json({
       success: true,
       liffId: liffId,
