@@ -44,6 +44,9 @@ const PushDashboard = () => {
   const [topEvents, setTopEvents] = useState<TopEventData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>('');
+  const [startDate, setStartDate] = useState<string>('');
+  const [endDate, setEndDate] = useState<string>('');
+  const [messageType, setMessageType] = useState<string>('');
 
   useEffect(() => {
     loadDashboardData();
@@ -52,15 +55,21 @@ const PushDashboard = () => {
   const loadDashboardData = async () => {
     try {
       setLoading(true);
-      const response = await fetch('/api/admin/push-dashboard-summary');
-      const data: DashboardData = await response.json();
+      const params = new URLSearchParams();
+      if (startDate) params.append('startDate', startDate);
+      if (endDate) params.append('endDate', endDate);
+      if (messageType) params.append('messageType', messageType);
 
-      if (response.ok) {
-        setTrend(data.trend || []);
-        setSummary(data.summary || []);
-        setTopEvents(data.topEvents || []);
+      const response = await fetch(`/api/admin/push-dashboard-summary?${params.toString()}`);
+      const result = await response.json();
+
+      if (response.ok && result.success) {
+        setTrend(result.data.trend || []);
+        setSummary(result.data.summary || []);
+        setTopEvents(result.data.topEvents || []);
+        setError('');
       } else {
-        setError('載入統計資料失敗');
+        setError(result.error || '載入統計資料失敗');
       }
     } catch (error) {
       console.error('載入統計資料錯誤:', error);
@@ -153,6 +162,70 @@ const PushDashboard = () => {
         >
           🔄 重新載入
         </button>
+      </div>
+
+      {/* 篩選區塊 */}
+      <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+        <h2 className="text-lg font-semibold mb-4">🔍 篩選條件</h2>
+        <div className="flex gap-4 items-end flex-wrap">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              起始日期
+            </label>
+            <input
+              type="date"
+              className="border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              結束日期
+            </label>
+            <input
+              type="date"
+              className="border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              訊息類型
+            </label>
+            <select
+              className="border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              value={messageType}
+              onChange={(e) => setMessageType(e.target.value)}
+            >
+              <option value="">全部類型</option>
+              <option value="manual_push">手動推播</option>
+              <option value="auto_reminder">自動提醒</option>
+              <option value="event_notification">活動通知</option>
+              <option value="checkin_reminder">報到提醒</option>
+            </select>
+          </div>
+          <div className="flex gap-2">
+            <button
+              className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors"
+              onClick={loadDashboardData}
+            >
+              🔍 查詢
+            </button>
+            <button
+              className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 transition-colors"
+              onClick={() => {
+                setStartDate('');
+                setEndDate('');
+                setMessageType('');
+                loadDashboardData();
+              }}
+            >
+              🗑️ 清除
+            </button>
+          </div>
+        </div>
       </div>
 
       {/* 統計卡片 */}
