@@ -1,4 +1,3 @@
-
 import {
   Model,
   DataTypes,
@@ -26,10 +25,13 @@ export interface AnnouncementAttributes extends InferAttributes<Announcement> {
   updated_at: Date;
 }
 
-export class Announcement extends Model<
-  InferAttributes<Announcement>,
-  InferCreationAttributes<Announcement>
-> implements AnnouncementAttributes {
+export class Announcement
+  extends Model<
+    InferAttributes<Announcement>,
+    InferCreationAttributes<Announcement>
+  >
+  implements AnnouncementAttributes
+{
   declare id: CreationOptional<string>;
   declare title: string;
   declare content: string;

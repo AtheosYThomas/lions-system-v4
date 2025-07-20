@@ -24,7 +24,7 @@ const Profile: React.FC = () => {
           email: 'zhang@example.com',
           phone: '0912345678',
           lineId: 'zhang123',
-          joinDate: '2024-01-01'
+          joinDate: '2024-01-01',
         };
         setProfile(mockProfile);
       } catch (error) {

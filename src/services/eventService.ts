@@ -1,4 +1,3 @@
-
 import Event, { IEventModel } from '../models/event';
 import Registration from '../models/registration';
 import Checkin from '../models/checkin';
@@ -40,19 +39,21 @@ class EventService {
       const conflictingEvent = await Event.findOne({
         where: {
           date: eventData.date,
-          status: 'active'
-        }
+          status: 'active',
+        },
       });
 
       if (conflictingEvent) {
-        console.warn(`活動時間衝突警告: ${eventData.date} 已有活動 "${conflictingEvent.title}"`);
+        console.warn(
+          `活動時間衝突警告: ${eventData.date} 已有活動 "${conflictingEvent.title}"`
+        );
       }
 
       const event = await Event.create({
         id: require('crypto').randomUUID(),
         ...eventData,
         status: eventData.status || 'active',
-        created_at: eventData.created_at || new Date()
+        created_at: eventData.created_at || new Date(),
       });
 
       return event.getPublicData();
@@ -65,7 +66,10 @@ class EventService {
   /**
    * 根據 ID 獲取活動
    */
-  async getEventById(id: string, includeStats: boolean = false): Promise<IEventModel | null> {
+  async getEventById(
+    id: string,
+    includeStats: boolean = false
+  ): Promise<IEventModel | null> {
     try {
       const includeOptions = [];
 
@@ -74,23 +78,41 @@ class EventService {
           {
             model: Registration,
             as: 'registrations',
-            include: [{ model: Member, as: 'member', attributes: ['id', 'name', 'email'] }]
+            include: [
+              {
+                model: Member,
+                as: 'member',
+                attributes: ['id', 'name', 'email'],
+              },
+            ],
           },
           {
             model: Checkin,
             as: 'checkins',
-            include: [{ model: Member, as: 'member', attributes: ['id', 'name', 'email'] }]
+            include: [
+              {
+                model: Member,
+                as: 'member',
+                attributes: ['id', 'name', 'email'],
+              },
+            ],
           },
           {
             model: Payment,
             as: 'payments',
-            include: [{ model: Member, as: 'member', attributes: ['id', 'name', 'email'] }]
+            include: [
+              {
+                model: Member,
+                as: 'member',
+                attributes: ['id', 'name', 'email'],
+              },
+            ],
           }
         );
       }
 
       const event = await Event.findByPk(id, {
-        include: includeOptions
+        include: includeOptions,
       });
 
       return event ? event.getPublicData() : null;
@@ -109,7 +131,7 @@ class EventService {
 
       if (options.title) {
         whereClause.title = {
-          [Op.iLike]: `%${options.title}%`
+          [Op.iLike]: `%${options.title}%`,
         };
       }
 
@@ -119,7 +141,7 @@ class EventService {
 
       if (options.location) {
         whereClause.location = {
-          [Op.iLike]: `%${options.location}%`
+          [Op.iLike]: `%${options.location}%`,
         };
       }
 
@@ -143,16 +165,16 @@ class EventService {
             model: Registration,
             as: 'registrations',
             attributes: ['id'],
-            required: false
-          }
-        ]
+            required: false,
+          },
+        ],
       });
 
       return {
         events: result.rows.map(event => event.getPublicData()),
         total: result.count,
         limit: options.limit || 20,
-        offset: options.offset || 0
+        offset: options.offset || 0,
       };
     } catch (error) {
       console.error('搜尋活動失敗:', error);
@@ -172,17 +194,22 @@ class EventService {
       }
 
       // 如果要更新活動時間，檢查是否有衝突
-      if (updateData.date && updateData.date.getTime() !== event.date.getTime()) {
+      if (
+        updateData.date &&
+        updateData.date.getTime() !== event.date.getTime()
+      ) {
         const conflictingEvent = await Event.findOne({
           where: {
             date: updateData.date,
             status: 'active',
-            id: { [Op.not]: updateData.id }
-          }
+            id: { [Op.not]: updateData.id },
+          },
         });
 
         if (conflictingEvent) {
-          console.warn(`活動時間衝突警告: ${updateData.date} 已有活動 "${conflictingEvent.title}"`);
+          console.warn(
+            `活動時間衝突警告: ${updateData.date} 已有活動 "${conflictingEvent.title}"`
+          );
         }
       }
 
@@ -208,7 +235,7 @@ class EventService {
       // 檢查是否有相關的報名或簽到記錄
       const [registrationCount, checkinCount] = await Promise.all([
         Registration.count({ where: { event_id: id } }),
-        Checkin.count({ where: { event_id: id } })
+        Checkin.count({ where: { event_id: id } }),
       ]);
 
       if (registrationCount > 0 || checkinCount > 0) {
@@ -231,20 +258,24 @@ class EventService {
     try {
       if (eventId) {
         // 單一活動統計
-        const [registrationCount, checkinCount, paymentCount] = await Promise.all([
-          Registration.count({ where: { event_id: eventId, status: 'confirmed' } }),
-          Checkin.count({ where: { event_id: eventId } }),
-          Payment.count({ where: { event_id: eventId, status: 'completed' } })
-        ]);
+        const [registrationCount, checkinCount, paymentCount] =
+          await Promise.all([
+            Registration.count({
+              where: { event_id: eventId, status: 'confirmed' },
+            }),
+            Checkin.count({ where: { event_id: eventId } }),
+            Payment.count({
+              where: { event_id: eventId, status: 'completed' },
+            }),
+          ]);
 
         const event = await Event.findByPk(eventId);
 
         // 將 max_attendees 統一轉型
         const maxAttendees: number | null = event?.max_attendees ?? null;
 
-        const attendanceRate = registrationCount > 0
-          ? (checkinCount / registrationCount) * 100
-          : 0;
+        const attendanceRate =
+          registrationCount > 0 ? (checkinCount / registrationCount) * 100 : 0;
 
         const availableSlots =
           maxAttendees !== null ? maxAttendees - registrationCount : null;
@@ -257,28 +288,29 @@ class EventService {
           checkins: checkinCount,
           payments: paymentCount,
           attendanceRate: Math.round(attendanceRate * 100) / 100,
-          availableSlots
+          availableSlots,
         };
       } else {
         // 全體活動統計
-        const [totalEvents, activeEvents, cancelledEvents, upcomingEvents] = await Promise.all([
-          Event.count(),
-          Event.count({ where: { status: 'active' } }),
-          Event.count({ where: { status: 'cancelled' } }),
-          Event.count({ 
-            where: { 
-              status: 'active',
-              date: { [Op.gte]: new Date() }
-            }
-          })
-        ]);
+        const [totalEvents, activeEvents, cancelledEvents, upcomingEvents] =
+          await Promise.all([
+            Event.count(),
+            Event.count({ where: { status: 'active' } }),
+            Event.count({ where: { status: 'cancelled' } }),
+            Event.count({
+              where: {
+                status: 'active',
+                date: { [Op.gte]: new Date() },
+              },
+            }),
+          ]);
 
         return {
           totalEvents,
           activeEvents,
           cancelledEvents,
           upcomingEvents,
-          pastEvents: activeEvents - upcomingEvents
+          pastEvents: activeEvents - upcomingEvents,
         };
       }
     } catch (error) {
@@ -295,7 +327,7 @@ class EventService {
       const events = await Event.findAll({
         where: {
           status: 'active',
-          date: { [Op.gte]: new Date() }
+          date: { [Op.gte]: new Date() },
         },
         order: [['date', 'ASC']],
         limit,
@@ -304,9 +336,9 @@ class EventService {
             model: Registration,
             as: 'registrations',
             attributes: ['id'],
-            required: false
-          }
-        ]
+            required: false,
+          },
+        ],
       });
 
       return events.map(event => event.getPublicData());
@@ -332,26 +364,27 @@ class EventService {
       }
 
       const currentRegistrations = await Registration.count({
-        where: { 
+        where: {
           event_id: eventId,
-          status: 'confirmed'
-        }
+          status: 'confirmed',
+        },
       });
 
       const maxAttendees: number | null = event.max_attendees ?? null;
 
       const availableSlots: number | null =
-        (maxAttendees !== null && maxAttendees !== undefined) ? maxAttendees - currentRegistrations : null;
+        maxAttendees !== null && maxAttendees !== undefined
+          ? maxAttendees - currentRegistrations
+          : null;
 
-      const isFull = maxAttendees !== null
-        ? currentRegistrations >= maxAttendees
-        : false;
+      const isFull =
+        maxAttendees !== null ? currentRegistrations >= maxAttendees : false;
 
       return {
         maxAttendees,
         currentRegistrations,
         availableSlots,
-        isFull
+        isFull,
       };
     } catch (error) {
       console.error('檢查活動名額失敗:', error);

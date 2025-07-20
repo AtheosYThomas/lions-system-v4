@@ -15,7 +15,8 @@ router.post('/', upload.single('file'), async (req, res) => {
     const stream = cloudinary.uploader.upload_stream(
       { folder: 'uploads' },
       (err, result) => {
-        if (err || !result) return res.status(500).json({ error: '上傳失敗', details: err });
+        if (err || !result)
+          return res.status(500).json({ error: '上傳失敗', details: err });
 
         res.json({
           url: result.secure_url,

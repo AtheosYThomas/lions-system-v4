@@ -12,7 +12,6 @@ import { v4 as uuidv4 } from 'uuid';
  * 僅用於開發環境測試，不要在 production 使用
  */
 class MockDataSeeder {
-
   /**
    * 清空所有表格資料
    */
@@ -55,7 +54,7 @@ class MockDataSeeder {
         fax: '02-12345678',
         address: '台北市中正區重慶南路一段122號',
         mobile: '0912345678',
-        status: 'active' as const
+        status: 'active' as const,
       },
       {
         id: uuidv4(),
@@ -70,7 +69,7 @@ class MockDataSeeder {
         fax: '02-23456789',
         address: '台北市大安區信義路三段134號',
         mobile: '0923456789',
-        status: 'active' as const
+        status: 'active' as const,
       },
       {
         id: uuidv4(),
@@ -85,7 +84,7 @@ class MockDataSeeder {
         fax: '02-34567890',
         address: '台北市信義區松仁路100號',
         mobile: '0934567890',
-        status: 'active' as const
+        status: 'active' as const,
       },
       {
         id: uuidv4(),
@@ -100,7 +99,7 @@ class MockDataSeeder {
         fax: '02-45678901',
         address: '台北市松山區南京東路四段1號',
         mobile: '0945678901',
-        status: 'active' as const
+        status: 'active' as const,
       },
       {
         id: uuidv4(),
@@ -115,8 +114,8 @@ class MockDataSeeder {
         fax: '02-56789012',
         address: '台北市中山區中山北路二段48號',
         mobile: '0956789012',
-        status: 'inactive' as const
-      }
+        status: 'inactive' as const,
+      },
     ];
 
     try {
@@ -144,7 +143,7 @@ class MockDataSeeder {
         location: '北大校友會館',
         max_attendees: 50,
         status: 'active' as const,
-        created_at: new Date('2024-03-01 10:00:00')
+        created_at: new Date('2024-03-01 10:00:00'),
       },
       {
         id: uuidv4(),
@@ -154,7 +153,7 @@ class MockDataSeeder {
         location: '陽明山國家公園',
         max_attendees: 30,
         status: 'active' as const,
-        created_at: new Date('2024-03-05 14:00:00')
+        created_at: new Date('2024-03-05 14:00:00'),
       },
       {
         id: uuidv4(),
@@ -164,7 +163,7 @@ class MockDataSeeder {
         location: '台北晶華酒店',
         max_attendees: 100,
         status: 'active' as const,
-        created_at: new Date('2024-04-01 09:00:00')
+        created_at: new Date('2024-04-01 09:00:00'),
       },
       {
         id: uuidv4(),
@@ -174,7 +173,7 @@ class MockDataSeeder {
         location: '台北市政府廣場',
         max_attendees: 20,
         status: 'active' as const,
-        created_at: new Date('2024-05-01 11:00:00')
+        created_at: new Date('2024-05-01 11:00:00'),
       },
       {
         id: uuidv4(),
@@ -184,8 +183,8 @@ class MockDataSeeder {
         location: '測試地點',
         max_attendees: 25,
         status: 'cancelled' as const,
-        created_at: new Date('2024-06-01 16:00:00')
-      }
+        created_at: new Date('2024-06-01 16:00:00'),
+      },
     ];
 
     try {
@@ -208,7 +207,8 @@ class MockDataSeeder {
       {
         id: uuidv4(),
         title: '重要通知：春季例會時間調整',
-        content: '因應場地調整，春季例會時間調整為3月15日晚上7點，請各位會員準時出席。',
+        content:
+          '因應場地調整，春季例會時間調整為3月15日晚上7點，請各位會員準時出席。',
         related_event_id: events[0].id,
         created_by: members[0].id,
         audience: 'all' as 'all' | 'officers' | 'members',
@@ -216,7 +216,7 @@ class MockDataSeeder {
         status: 'published' as 'draft' | 'scheduled' | 'published',
         scheduled_at: null,
         published_at: new Date('2024-03-01 10:00:00'),
-        is_visible: true
+        is_visible: true,
       },
       {
         id: uuidv4(),
@@ -229,12 +229,13 @@ class MockDataSeeder {
         status: 'published' as 'draft' | 'scheduled' | 'published',
         scheduled_at: null,
         published_at: new Date('2024-03-10 14:00:00'),
-        is_visible: true
+        is_visible: true,
       },
       {
         id: uuidv4(),
         title: '系統維護通知',
-        content: '系統將於本週日凌晨2點進行維護，預計維護時間2小時，造成不便敬請見諒。',
+        content:
+          '系統將於本週日凌晨2點進行維護，預計維護時間2小時，造成不便敬請見諒。',
         related_event_id: null,
         created_by: members[0].id,
         audience: 'all' as 'all' | 'officers' | 'members',
@@ -242,7 +243,7 @@ class MockDataSeeder {
         status: 'published' as 'draft' | 'scheduled' | 'published',
         scheduled_at: null,
         published_at: new Date('2024-03-20 16:00:00'),
-        is_visible: true
+        is_visible: true,
       },
       {
         id: uuidv4(),
@@ -255,7 +256,7 @@ class MockDataSeeder {
         status: 'published' as 'draft' | 'scheduled' | 'published',
         scheduled_at: null,
         published_at: new Date('2024-03-25 09:00:00'),
-        is_visible: true
+        is_visible: true,
       },
       {
         id: uuidv4(),
@@ -268,8 +269,8 @@ class MockDataSeeder {
         status: 'draft' as 'draft' | 'scheduled' | 'published',
         scheduled_at: null,
         published_at: null,
-        is_visible: true
-      }
+        is_visible: true,
+      },
     ];
 
     try {
@@ -294,43 +295,43 @@ class MockDataSeeder {
         event_id: events[0].id,
         member_id: members[0].id,
         registration_date: new Date('2024-03-02 10:00:00'),
-        status: 'confirmed' as const
+        status: 'confirmed' as const,
       },
       {
         id: uuidv4(),
         event_id: events[0].id,
         member_id: members[1].id,
         registration_date: new Date('2024-03-03 14:00:00'),
-        status: 'confirmed' as const
+        status: 'confirmed' as const,
       },
       {
         id: uuidv4(),
         event_id: events[1].id,
         member_id: members[0].id,
         registration_date: new Date('2024-03-12 09:00:00'),
-        status: 'confirmed' as const
+        status: 'confirmed' as const,
       },
       {
         id: uuidv4(),
         event_id: events[1].id,
         member_id: members[2].id,
         registration_date: new Date('2024-03-13 16:00:00'),
-        status: 'confirmed' as const
+        status: 'confirmed' as const,
       },
       {
         id: uuidv4(),
         event_id: events[2].id,
         member_id: members[1].id,
         registration_date: new Date('2024-04-01 11:00:00'),
-        status: 'pending' as const
+        status: 'pending' as const,
       },
       {
         id: uuidv4(),
         event_id: events[2].id,
         member_id: members[3].id,
         registration_date: new Date('2024-04-02 15:00:00'),
-        status: 'cancelled' as const
-      }
+        status: 'cancelled' as const,
+      },
     ];
 
     try {
@@ -355,22 +356,22 @@ class MockDataSeeder {
         member_id: members[0].id,
         event_id: events[0].id,
         checkin_time: new Date('2024-03-15 18:55:00'),
-        device_info: 'iPhone 15 Pro, iOS 17.3'
+        device_info: 'iPhone 15 Pro, iOS 17.3',
       },
       {
         id: uuidv4(),
         member_id: members[1].id,
         event_id: events[0].id,
         checkin_time: new Date('2024-03-15 19:02:00'),
-        device_info: 'Samsung Galaxy S24, Android 14'
+        device_info: 'Samsung Galaxy S24, Android 14',
       },
       {
         id: uuidv4(),
         member_id: members[0].id,
         event_id: events[1].id,
         checkin_time: new Date('2024-04-22 08:50:00'),
-        device_info: 'iPhone 15 Pro, iOS 17.3'
-      }
+        device_info: 'iPhone 15 Pro, iOS 17.3',
+      },
     ];
 
     try {
@@ -399,7 +400,7 @@ class MockDataSeeder {
         payment_date: new Date('2024-04-05 10:30:00'),
         due_date: new Date('2024-05-15 23:59:59'),
         status: 'completed' as const,
-        transaction_id: 'TXN001234567890'
+        transaction_id: 'TXN001234567890',
       },
       {
         id: uuidv4(),
@@ -410,7 +411,7 @@ class MockDataSeeder {
         payment_date: new Date('2024-04-06 14:20:00'),
         due_date: new Date('2024-05-15 23:59:59'),
         status: 'completed' as const,
-        transaction_id: 'TXN001234567891'
+        transaction_id: 'TXN001234567891',
       },
       {
         id: uuidv4(),
@@ -421,8 +422,8 @@ class MockDataSeeder {
         payment_date: null,
         due_date: new Date('2024-05-15 23:59:59'),
         status: 'pending' as const,
-        transaction_id: null
-      }
+        transaction_id: null,
+      },
     ];
 
     try {
@@ -465,7 +466,6 @@ class MockDataSeeder {
       console.log(`   📝 報名：${registrations.length} 筆`);
       console.log(`   ✅ 簽到：${checkins.length} 筆`);
       console.log(`   💳 付款：${payments.length} 筆`);
-
     } catch (error) {
       console.error('❌ 建立測試資料失敗:', error);
       throw error;

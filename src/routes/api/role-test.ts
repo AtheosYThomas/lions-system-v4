@@ -1,16 +1,15 @@
-
 import express from 'express';
 import { authMiddleware } from '../../middleware/authMiddleware';
-import { 
-  adminOnly, 
-  presidentOrAdmin, 
-  officersOrAbove, 
+import {
+  adminOnly,
+  presidentOrAdmin,
+  officersOrAbove,
   membersOrAbove,
   leadershipOnly,
   financialAccess,
   requireMinRole,
   requireAnyRole,
-  roleMiddleware
+  roleMiddleware,
 } from '../../middleware/roleMiddleware';
 import { Role, roleDisplayNames, roleRank } from '../../types/role';
 
@@ -21,13 +20,23 @@ router.get('/admin-only', authMiddleware, adminOnly, (req, res) => {
   res.json({ message: '✅ 管理員專用區域', role: req.member!.role });
 });
 
-router.get('/president-or-admin', authMiddleware, presidentOrAdmin, (req, res) => {
-  res.json({ message: '✅ 會長或管理員區域', role: req.member!.role });
-});
+router.get(
+  '/president-or-admin',
+  authMiddleware,
+  presidentOrAdmin,
+  (req, res) => {
+    res.json({ message: '✅ 會長或管理員區域', role: req.member!.role });
+  }
+);
 
-router.get('/officers-or-above', authMiddleware, officersOrAbove, (req, res) => {
-  res.json({ message: '✅ 幹部或以上權限區域', role: req.member!.role });
-});
+router.get(
+  '/officers-or-above',
+  authMiddleware,
+  officersOrAbove,
+  (req, res) => {
+    res.json({ message: '✅ 幹部或以上權限區域', role: req.member!.role });
+  }
+);
 
 router.get('/members-or-above', authMiddleware, membersOrAbove, (req, res) => {
   res.json({ message: '✅ 會員或以上權限區域', role: req.member!.role });
@@ -43,17 +52,19 @@ router.get('/financial-access', authMiddleware, financialAccess, (req, res) => {
 });
 
 // 🔥 測試彈性角色函數
-router.get('/require-officer', 
-  authMiddleware, 
-  requireMinRole(Role.Officer), 
+router.get(
+  '/require-officer',
+  authMiddleware,
+  requireMinRole(Role.Officer),
   (req, res) => {
     res.json({ message: '✅ 需要幹部或以上權限', role: req.member!.role });
   }
 );
 
-router.get('/secretary-or-treasurer', 
-  authMiddleware, 
-  requireAnyRole([Role.Secretary, Role.Treasurer]), 
+router.get(
+  '/secretary-or-treasurer',
+  authMiddleware,
+  requireAnyRole([Role.Secretary, Role.Treasurer]),
   (req, res) => {
     res.json({ message: '✅ 秘書或財務權限', role: req.member!.role });
   }
@@ -63,27 +74,27 @@ router.get('/secretary-or-treasurer',
 router.get('/role-info', authMiddleware, (req, res) => {
   const member = req.member!;
   const userRole = member.role as Role;
-  
+
   res.json({
     message: '📊 角色系統資訊',
     user: {
       name: member.name,
       role: userRole,
       displayName: roleDisplayNames[userRole],
-      rank: roleRank[userRole]
+      rank: roleRank[userRole],
     },
     systemInfo: {
       totalRoles: Object.keys(Role).length,
-      roleHierarchy: Object.entries(roleRank).sort(([,a], [,b]) => a - b),
+      roleHierarchy: Object.entries(roleRank).sort(([, a], [, b]) => a - b),
       availableMiddleware: [
         'adminOnly',
-        'presidentOrAdmin', 
+        'presidentOrAdmin',
         'officersOrAbove',
         'membersOrAbove',
         'leadershipOnly',
-        'financialAccess'
-      ]
-    }
+        'financialAccess',
+      ],
+    },
   });
 });
 

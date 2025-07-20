@@ -20,7 +20,13 @@ class SystemDiagnostics {
   private results: DiagnosticResult[] = [];
   private srcPath = path.join(__dirname, '..');
 
-  private addResult(section: string, status: 'pass' | 'fail' | 'warning', message: string, details?: any, suggestions?: string[]) {
+  private addResult(
+    section: string,
+    status: 'pass' | 'fail' | 'warning',
+    message: string,
+    details?: any,
+    suggestions?: string[]
+  ) {
     this.results.push({ section, status, message, details, suggestions });
   }
 
@@ -30,18 +36,19 @@ class SystemDiagnostics {
     const patterns = [
       'routes/**/*.ts',
       'controllers/**/*.ts',
-      'middleware/**/*.ts'
+      'middleware/**/*.ts',
     ];
 
     let totalFiles = 0;
     let errorCount = 0;
 
     for (const pattern of patterns) {
-      const files = globSync(path.join(this.srcPath, pattern)).filter(file =>
-        !file.includes('node_modules') &&
-        !file.includes('.git') &&
-        !file.includes('dist') &&
-        !file.includes('build')
+      const files = globSync(path.join(this.srcPath, pattern)).filter(
+        file =>
+          !file.includes('node_modules') &&
+          !file.includes('.git') &&
+          !file.includes('dist') &&
+          !file.includes('build')
       );
 
       files.forEach((file: string) => {
@@ -50,7 +57,11 @@ class SystemDiagnostics {
           const content = fs.readFileSync(file, 'utf8');
           // Basic syntax check
           if (content.includes('import') && !content.includes('export')) {
-            this.addResult('源碼檢查', 'warning', `檔案可能缺少 export: ${file}`);
+            this.addResult(
+              '源碼檢查',
+              'warning',
+              `檔案可能缺少 export: ${file}`
+            );
           }
         } catch (error) {
           errorCount++;
@@ -141,7 +152,7 @@ class SystemDiagnostics {
     const frontendPaths = [
       path.join(this.srcPath, '../public'),
       path.join(this.srcPath, '../client'),
-      path.join(this.srcPath, 'frontend')
+      path.join(this.srcPath, 'frontend'),
     ];
 
     let frontendFound = false;
@@ -151,7 +162,9 @@ class SystemDiagnostics {
         frontendFound = true;
 
         try {
-          const files = globSync(path.join(frontendPath, '**/*.{html,js,ts,tsx,jsx}'));
+          const files = globSync(
+            path.join(frontendPath, '**/*.{html,js,ts,tsx,jsx}')
+          );
 
           for (const file of files) {
             const content = fs.readFileSync(file, 'utf8');
@@ -170,7 +183,9 @@ class SystemDiagnostics {
               }
 
               // 檢查 JavaScript 引用
-              const scriptMatches = content.match(/<script[^>]*src=['"]([^'"]+)['"]/g);
+              const scriptMatches = content.match(
+                /<script[^>]*src=['"]([^'"]+)['"]/g
+              );
               if (scriptMatches) {
                 for (const scriptMatch of scriptMatches) {
                   const src = scriptMatch.match(/src=['"]([^'"]+)['"]/)?.[1];
@@ -193,7 +208,10 @@ class SystemDiagnostics {
             // 檢查 JavaScript/TypeScript 檔案
             if (file.match(/\.(js|ts|tsx|jsx)$/)) {
               // 檢查基本語法錯誤
-              if (content.includes('console.error(') || content.includes('throw new Error(')) {
+              if (
+                content.includes('console.error(') ||
+                content.includes('throw new Error(')
+              ) {
                 // 這是正常的錯誤處理
               }
 
@@ -218,7 +236,6 @@ class SystemDiagnostics {
             'pass',
             `檢查完成 ${frontendPath} 中的 ${files.length} 個檔案`
           );
-
         } catch (error) {
           this.addResult(
             '前端檔案檢查',
@@ -248,11 +265,11 @@ class SystemDiagnostics {
     const port = process.env.PORT || 5000;
     const healthUrl = `http://localhost:${port}/health`;
 
-    return new Promise<void>((resolve) => {
-      const req = http.get(healthUrl, (res) => {
+    return new Promise<void>(resolve => {
+      const req = http.get(healthUrl, res => {
         let data = '';
 
-        res.on('data', (chunk) => {
+        res.on('data', chunk => {
           data += chunk;
         });
 
@@ -261,17 +278,12 @@ class SystemDiagnostics {
             const healthData = JSON.parse(data);
 
             if (res.statusCode === 200) {
-              this.addResult(
-                'Health Check',
-                'pass',
-                'Health Check 測試成功',
-                {
-                  status: healthData.status,
-                  database: healthData.database,
-                  services: healthData.services,
-                  uptime: healthData.uptime
-                }
-              );
+              this.addResult('Health Check', 'pass', 'Health Check 測試成功', {
+                status: healthData.status,
+                database: healthData.database,
+                services: healthData.services,
+                uptime: healthData.uptime,
+              });
             } else {
               this.addResult(
                 'Health Check',
@@ -294,7 +306,7 @@ class SystemDiagnostics {
         });
       });
 
-      req.on('error', (error) => {
+      req.on('error', error => {
         this.addResult(
           'Health Check',
           'fail',
@@ -349,11 +361,14 @@ export default function runFullSystemDiagnostics() {
 // 執行診斷（如果直接運行此檔案）
 if (require.main === module) {
   const diagnostics = new SystemDiagnostics();
-  diagnostics.runFullDiagnostics().then(() => {
-    console.log(chalk.green('\n✅ 診斷完成！'));
-    process.exit(0);
-  }).catch((error: any) => {
-    console.error(chalk.red('❌ 診斷過程中發生錯誤:'), error);
-    process.exit(1);
-  });
+  diagnostics
+    .runFullDiagnostics()
+    .then(() => {
+      console.log(chalk.green('\n✅ 診斷完成！'));
+      process.exit(0);
+    })
+    .catch((error: any) => {
+      console.error(chalk.red('❌ 診斷過程中發生錯誤:'), error);
+      process.exit(1);
+    });
 }

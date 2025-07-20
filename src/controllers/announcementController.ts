@@ -1,4 +1,3 @@
-
 import { Request, Response } from 'express';
 import { Announcement, Member, Event } from '../models';
 import { Op } from 'sequelize';
@@ -6,16 +5,10 @@ import { Op } from 'sequelize';
 class AnnouncementController {
   async getAnnouncements(req: Request, res: Response) {
     try {
-      const {
-        status,
-        category,
-        audience,
-        limit = 10,
-        offset = 0
-      } = req.query;
+      const { status, category, audience, limit = 10, offset = 0 } = req.query;
 
       const whereClause: any = {
-        is_visible: true
+        is_visible: true,
       };
 
       // 狀態篩選
@@ -37,7 +30,7 @@ class AnnouncementController {
       if (status === 'published') {
         whereClause.published_at = {
           [Op.not]: null,
-          [Op.lte]: new Date()
+          [Op.lte]: new Date(),
         };
       }
 
@@ -48,21 +41,21 @@ class AnnouncementController {
             model: Member,
             as: 'creator',
             attributes: ['id', 'name', 'email'],
-            required: false
+            required: false,
           },
           {
             model: Event,
             as: 'relatedEvent',
             attributes: ['id', 'title', 'date', 'location'],
-            required: false
-          }
+            required: false,
+          },
         ],
         order: [
           ['published_at', 'DESC'],
-          ['created_at', 'DESC']
+          ['created_at', 'DESC'],
         ],
         limit: parseInt(limit as string),
-        offset: parseInt(offset as string)
+        offset: parseInt(offset as string),
       });
 
       res.json({
@@ -72,15 +65,15 @@ class AnnouncementController {
         pagination: {
           limit: parseInt(limit as string),
           offset: parseInt(offset as string),
-          total: announcements.count
-        }
+          total: announcements.count,
+        },
       });
     } catch (error) {
       console.error('獲取公告失敗:', error);
       res.status(500).json({
         success: false,
         message: '獲取公告失敗',
-        error: error instanceof Error ? error.message : '未知錯誤'
+        error: error instanceof Error ? error.message : '未知錯誤',
       });
     }
   }
@@ -94,33 +87,33 @@ class AnnouncementController {
           {
             model: Member,
             as: 'creator',
-            attributes: ['id', 'name', 'email']
+            attributes: ['id', 'name', 'email'],
           },
           {
             model: Event,
             as: 'relatedEvent',
-            attributes: ['id', 'title', 'date', 'location']
-          }
-        ]
+            attributes: ['id', 'title', 'date', 'location'],
+          },
+        ],
       });
 
       if (!announcement) {
         return res.status(404).json({
           success: false,
-          message: '公告不存在'
+          message: '公告不存在',
         });
       }
 
       res.json({
         success: true,
-        data: announcement
+        data: announcement,
       });
     } catch (error) {
       console.error('獲取公告詳情失敗:', error);
       res.status(500).json({
         success: false,
         message: '獲取公告詳情失敗',
-        error: error instanceof Error ? error.message : '未知錯誤'
+        error: error instanceof Error ? error.message : '未知錯誤',
       });
     }
   }
@@ -136,14 +129,14 @@ class AnnouncementController {
         category = 'event',
         status = 'draft',
         scheduled_at,
-        is_visible = true
+        is_visible = true,
       } = req.body;
 
       // 驗證必填欄位
       if (!title || !content) {
         return res.status(400).json({
           success: false,
-          message: '標題和內容為必填欄位'
+          message: '標題和內容為必填欄位',
         });
       }
 
@@ -161,20 +154,20 @@ class AnnouncementController {
         status,
         scheduled_at: final_scheduled_at,
         published_at,
-        is_visible
+        is_visible,
       });
 
       res.status(201).json({
         success: true,
         message: '公告創建成功',
-        data: announcement
+        data: announcement,
       });
     } catch (error) {
       console.error('創建公告失敗:', error);
       res.status(500).json({
         success: false,
         message: '創建公告失敗',
-        error: error instanceof Error ? error.message : '未知錯誤'
+        error: error instanceof Error ? error.message : '未知錯誤',
       });
     }
   }
@@ -190,14 +183,14 @@ class AnnouncementController {
         category,
         status,
         scheduled_at,
-        is_visible
+        is_visible,
       } = req.body;
 
       const announcement = await Announcement.findByPk(id);
       if (!announcement) {
         return res.status(404).json({
           success: false,
-          message: '公告不存在'
+          message: '公告不存在',
         });
       }
 
@@ -210,14 +203,17 @@ class AnnouncementController {
         category: category ?? announcement.category,
         status: status ?? announcement.status,
         is_visible: is_visible ?? announcement.is_visible,
-        updated_at: new Date()
+        updated_at: new Date(),
       };
 
       // 處理預約發布與即時發布
       if (status === 'scheduled') {
         updateData.scheduled_at = scheduled_at;
         updateData.published_at = null;
-      } else if (status === 'published' && announcement.status !== 'published') {
+      } else if (
+        status === 'published' &&
+        announcement.status !== 'published'
+      ) {
         updateData.published_at = new Date();
         updateData.scheduled_at = null;
       } else if (status === 'draft') {
@@ -230,14 +226,14 @@ class AnnouncementController {
       res.json({
         success: true,
         message: '公告更新成功',
-        data: announcement
+        data: announcement,
       });
     } catch (error) {
       console.error('更新公告失敗:', error);
       res.status(500).json({
         success: false,
         message: '更新公告失敗',
-        error: error instanceof Error ? error.message : '未知錯誤'
+        error: error instanceof Error ? error.message : '未知錯誤',
       });
     }
   }
@@ -250,7 +246,7 @@ class AnnouncementController {
       if (!announcement) {
         return res.status(404).json({
           success: false,
-          message: '公告不存在'
+          message: '公告不存在',
         });
       }
 
@@ -258,14 +254,14 @@ class AnnouncementController {
 
       res.json({
         success: true,
-        message: '公告刪除成功'
+        message: '公告刪除成功',
       });
     } catch (error) {
       console.error('刪除公告失敗:', error);
       res.status(500).json({
         success: false,
         message: '刪除公告失敗',
-        error: error instanceof Error ? error.message : '未知錯誤'
+        error: error instanceof Error ? error.message : '未知錯誤',
       });
     }
   }
@@ -278,27 +274,27 @@ class AnnouncementController {
       if (!announcement) {
         return res.status(404).json({
           success: false,
-          message: '公告不存在'
+          message: '公告不存在',
         });
       }
 
       await announcement.update({
         status: 'published',
         published_at: new Date(),
-        updated_at: new Date()
+        updated_at: new Date(),
       });
 
       res.json({
         success: true,
         message: '公告發布成功',
-        data: announcement
+        data: announcement,
       });
     } catch (error) {
       console.error('發布公告失敗:', error);
       res.status(500).json({
         success: false,
         message: '發布公告失敗',
-        error: error instanceof Error ? error.message : '未知錯誤'
+        error: error instanceof Error ? error.message : '未知錯誤',
       });
     }
   }

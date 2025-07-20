@@ -1,4 +1,3 @@
-
 export interface Registration {
   id: number;
   event_id: number;
@@ -22,14 +21,14 @@ export enum RegistrationStatus {
   CONFIRMED = 'confirmed',
   CANCELLED = 'cancelled',
   WAITLIST = 'waitlist',
-  NO_SHOW = 'no_show'
+  NO_SHOW = 'no_show',
 }
 
 export enum PaymentStatus {
   PENDING = 'pending',
   PAID = 'paid',
   REFUNDED = 'refunded',
-  WAIVED = 'waived'
+  WAIVED = 'waived',
 }
 
 export interface CreateRegistrationRequest {

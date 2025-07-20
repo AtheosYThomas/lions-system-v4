@@ -7,7 +7,7 @@ export const runSystemHealthCheck = async () => {
     database: false,
     models: false,
     env: false,
-    errors: [] as string[]
+    errors: [] as string[],
   };
 
   try {
@@ -32,7 +32,11 @@ export const runSystemHealthCheck = async () => {
   }
 
   // 檢查環境變數
-  const requiredVars = ['LINE_CHANNEL_ACCESS_TOKEN', 'LINE_CHANNEL_SECRET', 'DATABASE_URL'];
+  const requiredVars = [
+    'LINE_CHANNEL_ACCESS_TOKEN',
+    'LINE_CHANNEL_SECRET',
+    'DATABASE_URL',
+  ];
   const missingVars = requiredVars.filter(v => !process.env[v]);
 
   if (missingVars.length === 0) {

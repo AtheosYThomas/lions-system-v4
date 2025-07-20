@@ -27,7 +27,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  res.header(
+    'Access-Control-Allow-Headers',
+    'Origin, X-Requested-With, Content-Type, Accept, Authorization'
+  );
   if (req.method === 'OPTIONS') {
     res.sendStatus(200);
   } else {
@@ -48,16 +51,18 @@ app.get('/health', async (req, res) => {
       uptime: process.uptime(),
       database: 'connected',
       services: {
-        line: process.env.LINE_CHANNEL_ACCESS_TOKEN ? 'configured' : 'missing_token',
-        routes: ['admin', 'checkin', 'members', 'webhook']
-      }
+        line: process.env.LINE_CHANNEL_ACCESS_TOKEN
+          ? 'configured'
+          : 'missing_token',
+        routes: ['admin', 'checkin', 'members', 'webhook'],
+      },
     });
   } catch (error) {
     res.status(500).json({
       status: 'error',
       timestamp: new Date().toISOString(),
       database: 'failed',
-      error: error instanceof Error ? error.message : 'Unknown error'
+      error: error instanceof Error ? error.message : 'Unknown error',
     });
   }
 });
@@ -70,7 +75,7 @@ app.get('/api/system/status', (req, res) => {
   res.status(200).json({
     database: 'connected',
     server: 'running',
-    line_bot: 'configured'
+    line_bot: 'configured',
   });
 });
 
@@ -97,7 +102,10 @@ app.use('/api/admin/push-records', pushRecordsRoutes);
 app.use('/api/admin/push-records/export', pushRecordsExportRoutes);
 app.use('/api/push/retry', pushRetryRoutes);
 app.use('/api/push/resend', pushResendRoutes);
-app.use('/api/admin/push-dashboard-summary', require('./routes/api/push-dashboard-summary').default);
+app.use(
+  '/api/admin/push-dashboard-summary',
+  require('./routes/api/push-dashboard-summary').default
+);
 app.use('/api/push-template', require('./routes/api/push-template').default);
 
 // 前端路由（提供 React 應用）
@@ -131,9 +139,16 @@ app.get('/home', (req, res) => {
 });
 
 // 錯誤處理
-app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
-  console.error('❌ Server Error:', err);
-  res.status(500).json({ error: 'Internal Server Error' });
-});
+app.use(
+  (
+    err: any,
+    req: express.Request,
+    res: express.Response,
+    next: express.NextFunction
+  ) => {
+    console.error('❌ Server Error:', err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+);
 
 export default app;

@@ -5,11 +5,14 @@ const sequelize = new Sequelize(process.env.DATABASE_URL || '', {
   protocol: 'postgres',
   logging: false,
   dialectOptions: {
-    ssl: process.env.NODE_ENV === 'production' ? {
-      require: true,
-      rejectUnauthorized: false
-    } : false
-  }
+    ssl:
+      process.env.NODE_ENV === 'production'
+        ? {
+            require: true,
+            rejectUnauthorized: false,
+          }
+        : false,
+  },
 });
 
 export default sequelize;

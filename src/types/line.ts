@@ -1,4 +1,3 @@
-
 import { WebhookEvent, MessageEvent, TextMessage } from '@line/bot-sdk';
 
 export interface LineTextMessageEvent extends MessageEvent {
@@ -7,7 +6,12 @@ export interface LineTextMessageEvent extends MessageEvent {
     type: 'text';
     text: string;
     quoteToken: string;
-    emojis?: { index: number; length: number; productId: string; emojiId: string; }[];
+    emojis?: {
+      index: number;
+      length: number;
+      productId: string;
+      emojiId: string;
+    }[];
   };
 }
 

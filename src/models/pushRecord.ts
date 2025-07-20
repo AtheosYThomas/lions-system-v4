@@ -1,4 +1,3 @@
-
 import { DataTypes, Model } from 'sequelize';
 import sequelize from '../config/database';
 import Member from './member';
@@ -13,10 +12,13 @@ export interface PushRecordAttributes {
   pushed_at: Date;
 }
 
-export interface PushRecordCreationAttributes extends Omit<PushRecordAttributes, 'id' | 'pushed_at'> {}
+export interface PushRecordCreationAttributes
+  extends Omit<PushRecordAttributes, 'id' | 'pushed_at'> {}
 
-class PushRecord extends Model<PushRecordAttributes, PushRecordCreationAttributes> 
-  implements PushRecordAttributes {
+class PushRecord
+  extends Model<PushRecordAttributes, PushRecordCreationAttributes>
+  implements PushRecordAttributes
+{
   public id!: string;
   public member_id!: string;
   public event_id!: string;

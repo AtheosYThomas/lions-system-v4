@@ -7,9 +7,9 @@ export const config = {
     channelSecret: process.env.LINE_CHANNEL_SECRET || '',
   },
   liff: {
-    appId: process.env.LIFF_ID || '2007739371-aKePV20l'
+    appId: process.env.LIFF_ID || '2007739371-aKePV20l',
   },
   database: {
-    url: process.env.DATABASE_URL || ''
-  }
+    url: process.env.DATABASE_URL || '',
+  },
 };

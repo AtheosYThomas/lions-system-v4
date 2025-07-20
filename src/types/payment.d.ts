@@ -24,7 +24,7 @@ export enum PaymentMethod {
   BANK_TRANSFER = 'bank_transfer',
   CREDIT_CARD = 'credit_card',
   LINE_PAY = 'line_pay',
-  OTHER = 'other'
+  OTHER = 'other',
 }
 
 export enum PaymentStatus {
@@ -33,7 +33,7 @@ export enum PaymentStatus {
   COMPLETED = 'completed',
   FAILED = 'failed',
   CANCELLED = 'cancelled',
-  REFUNDED = 'refunded'
+  REFUNDED = 'refunded',
 }
 
 export interface CreatePaymentRequest {

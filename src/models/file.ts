@@ -1,4 +1,3 @@
-
 import { Model, DataTypes, Optional } from 'sequelize';
 import sequelize from '../config/database';
 
@@ -8,7 +7,11 @@ export interface IFileModel {
   mime_type?: string;
   size?: number;
   url: string;
-  usage: 'event_cover' | 'registration_attachment' | 'announcement_image' | 'profile_avatar';
+  usage:
+    | 'event_cover'
+    | 'registration_attachment'
+    | 'announcement_image'
+    | 'profile_avatar';
   uploaded_by?: string;
   related_id?: string;
   status: string;
@@ -17,16 +20,26 @@ export interface IFileModel {
 }
 
 // IFileModel 是全部欄位，FileCreationAttributes 是可省略 id、timestamps 和 status（有預設值）
-export type FileCreationAttributes = Optional<IFileModel, 'id' | 'created_at' | 'updated_at' | 'status'>;
+export type FileCreationAttributes = Optional<
+  IFileModel,
+  'id' | 'created_at' | 'updated_at' | 'status'
+>;
 
 // 使用泛型擴充 Sequelize Model 類型
-class File extends Model<IFileModel, FileCreationAttributes> implements IFileModel {
+class File
+  extends Model<IFileModel, FileCreationAttributes>
+  implements IFileModel
+{
   public id!: number;
   public original_name!: string;
   public mime_type?: string;
   public size?: number;
   public url!: string;
-  public usage!: 'event_cover' | 'registration_attachment' | 'announcement_image' | 'profile_avatar';
+  public usage!:
+    | 'event_cover'
+    | 'registration_attachment'
+    | 'announcement_image'
+    | 'profile_avatar';
   public uploaded_by?: string;
   public related_id?: string;
   public status!: string;
@@ -50,71 +63,75 @@ class File extends Model<IFileModel, FileCreationAttributes> implements IFileMod
   }
 }
 
-File.init({
-  id: {
-    type: DataTypes.INTEGER,
-    autoIncrement: true,
-    primaryKey: true,
+File.init(
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
+    },
+    original_name: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      comment: '原始檔案名稱',
+    },
+    mime_type: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      comment: '檔案 MIME 類型',
+    },
+    size: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      comment: '檔案大小（bytes）',
+    },
+    url: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      comment: 'Google Drive 公開分享網址',
+    },
+    usage: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      comment:
+        '檔案用途：event_cover, registration_attachment, announcement_image, profile_avatar',
+    },
+    uploaded_by: {
+      type: DataTypes.UUID,
+      allowNull: true,
+      comment: '上傳者 ID（關聯 members.id）',
+    },
+    related_id: {
+      type: DataTypes.UUID,
+      allowNull: true,
+      comment: '關聯資源 ID（如活動 ID、公告 ID）',
+    },
+    status: {
+      type: DataTypes.STRING,
+      defaultValue: 'active',
+      comment: '檔案狀態：active, deleted',
+    },
+    // 明確定義 timestamp 欄位
+    created_at: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      field: 'created_at',
+    },
+    updated_at: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      field: 'updated_at',
+    },
   },
-  original_name: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    comment: '原始檔案名稱',
-  },
-  mime_type: {
-    type: DataTypes.STRING,
-    allowNull: true,
-    comment: '檔案 MIME 類型',
-  },
-  size: {
-    type: DataTypes.INTEGER,
-    allowNull: true,
-    comment: '檔案大小（bytes）',
-  },
-  url: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    comment: 'Google Drive 公開分享網址',
-  },
-  usage: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    comment: '檔案用途：event_cover, registration_attachment, announcement_image, profile_avatar',
-  },
-  uploaded_by: {
-    type: DataTypes.UUID,
-    allowNull: true,
-    comment: '上傳者 ID（關聯 members.id）',
-  },
-  related_id: {
-    type: DataTypes.UUID,
-    allowNull: true,
-    comment: '關聯資源 ID（如活動 ID、公告 ID）',
-  },
-  status: {
-    type: DataTypes.STRING,
-    defaultValue: 'active',
-    comment: '檔案狀態：active, deleted',
-  },
-  // 明確定義 timestamp 欄位
-  created_at: {
-    type: DataTypes.DATE,
-    allowNull: false,
-    field: 'created_at',
-  },
-  updated_at: {
-    type: DataTypes.DATE,
-    allowNull: false,
-    field: 'updated_at',
-  },
-}, {
-  sequelize,
-  tableName: 'files',
-  modelName: 'File',
-  timestamps: true,
-  underscored: true, // 使用 snake_case 命名慣例
-  createdAt: 'created_at',
-  updatedAt: 'updated_at',
-});
+  {
+    sequelize,
+    tableName: 'files',
+    modelName: 'File',
+    timestamps: true,
+    underscored: true, // 使用 snake_case 命名慣例
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
+  }
+);
 
 export default File;

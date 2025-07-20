@@ -16,24 +16,26 @@ class CheckinController {
       }
 
       // 查找會員
-      const member = await Member.findOne({ where: { line_user_id: lineUserId } });
+      const member = await Member.findOne({
+        where: { line_user_id: lineUserId },
+      });
       if (!member) {
         return res.status(404).json({ error: '會員不存在' });
       }
 
       // 檢查是否已簽到
       const existingCheckin = await Checkin.findOne({
-        where: { 
-          member_id: member.id, 
-          event_id: eventId 
-        }
+        where: {
+          member_id: member.id,
+          event_id: eventId,
+        },
       });
 
       if (existingCheckin) {
-        return res.json({ 
-          success: false, 
+        return res.json({
+          success: false,
           message: '已經簽到過了',
-          checkin: existingCheckin 
+          checkin: existingCheckin,
         });
       }
 
@@ -41,28 +43,28 @@ class CheckinController {
       const checkin = await Checkin.create({
         member_id: member.id,
         event_id: eventId,
-        device_info: deviceInfo || 'Unknown'
+        device_info: deviceInfo || 'Unknown',
       });
 
-      res.json({ 
-        success: true, 
+      res.json({
+        success: true,
         message: '簽到成功',
         checkin,
         member: {
           name: member.name,
-          role: member.role
+          role: member.role,
         },
         event: {
           id: event.id,
           title: event.title,
-          date: event.date
-        }
+          date: event.date,
+        },
       });
     } catch (err) {
       console.error('❌ 簽到失敗:', err);
-      res.status(500).json({ 
-        error: 'Check-in failed', 
-        details: err instanceof Error ? err.message : '未知錯誤'
+      res.status(500).json({
+        error: 'Check-in failed',
+        details: err instanceof Error ? err.message : '未知錯誤',
       });
     }
   }
@@ -73,24 +75,26 @@ class CheckinController {
     try {
       const checkins = await Checkin.findAll({
         where: { event_id: eventId },
-        include: [{
-          model: Member,
-          attributes: ['name', 'role', 'phone'],
-          required: false
-        }],
-        order: [['checkin_time', 'DESC']]
+        include: [
+          {
+            model: Member,
+            attributes: ['name', 'role', 'phone'],
+            required: false,
+          },
+        ],
+        order: [['checkin_time', 'DESC']],
       });
 
       res.json({
         eventId,
         checkinCount: checkins.length,
-        checkins
+        checkins,
       });
     } catch (err) {
       console.error('❌ 查詢簽到列表錯誤:', err);
-      res.status(500).json({ 
-        error: 'Get checkin list failed', 
-        details: err instanceof Error ? err.message : '未知錯誤'
+      res.status(500).json({
+        error: 'Get checkin list failed',
+        details: err instanceof Error ? err.message : '未知錯誤',
       });
     }
   }
@@ -99,33 +103,37 @@ class CheckinController {
     const { lineUserId } = req.params;
 
     try {
-      const member = await Member.findOne({ where: { line_user_id: lineUserId } });
+      const member = await Member.findOne({
+        where: { line_user_id: lineUserId },
+      });
       if (!member) {
         return res.status(404).json({ error: '會員不存在' });
       }
 
       const checkins = await Checkin.findAll({
         where: { member_id: member.id },
-        include: [{
-          model: Event,
-          attributes: ['title', 'date', 'location'],
-          required: false
-        }],
-        order: [['checkin_time', 'DESC']]
+        include: [
+          {
+            model: Event,
+            attributes: ['title', 'date', 'location'],
+            required: false,
+          },
+        ],
+        order: [['checkin_time', 'DESC']],
       });
 
       res.json({
         member: {
           name: member.name,
-          lineUid: member.line_user_id
+          lineUid: member.line_user_id,
         },
-        checkinHistory: checkins
+        checkinHistory: checkins,
       });
     } catch (err) {
       console.error('❌ 查詢會員簽到歷史錯誤:', err);
-      res.status(500).json({ 
-        error: 'Get member checkin history failed', 
-        details: err instanceof Error ? err.message : '未知錯誤'
+      res.status(500).json({
+        error: 'Get member checkin history failed',
+        details: err instanceof Error ? err.message : '未知錯誤',
       });
     }
   }

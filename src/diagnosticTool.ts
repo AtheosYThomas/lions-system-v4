@@ -1,4 +1,3 @@
-
 import fs from 'fs';
 import path from 'path';
 import { Sequelize } from 'sequelize';
@@ -23,19 +22,31 @@ function log(message: string) {
 
 export async function runDiagnostics() {
   log('🔍 啟動 V4.0 系統診斷...');
-  
+
   // Check startup file
   const indexExists = fs.existsSync(path.join('src', 'index.ts'));
   log(`✅ 啟動點檢查：${indexExists ? 'index.ts ✔' : '❌ index.ts 不存在'}`);
-  
+
   // Check middleware
-  const roleMiddlewareExists = fs.existsSync(path.join('src', 'middleware', 'roleMiddleware.ts'));
-  const authMiddlewareExists = fs.existsSync(path.join('src', 'middleware', 'authMiddleware.ts'));
-  log(`✅ Middleware：${roleMiddlewareExists ? 'roleMiddleware ✔' : '❌ roleMiddleware 缺少'} | ${authMiddlewareExists ? 'authMiddleware ✔' : '❌ authMiddleware 缺少'}`);
-  
+  const roleMiddlewareExists = fs.existsSync(
+    path.join('src', 'middleware', 'roleMiddleware.ts')
+  );
+  const authMiddlewareExists = fs.existsSync(
+    path.join('src', 'middleware', 'authMiddleware.ts')
+  );
+  log(
+    `✅ Middleware：${roleMiddlewareExists ? 'roleMiddleware ✔' : '❌ roleMiddleware 缺少'} | ${authMiddlewareExists ? 'authMiddleware ✔' : '❌ authMiddleware 缺少'}`
+  );
+
   // Check models
   const modelsPath = path.join('src', 'models');
-  const requiredModels = ['member', 'event', 'registration', 'announcement', 'checkin'];
+  const requiredModels = [
+    'member',
+    'event',
+    'registration',
+    'announcement',
+    'checkin',
+  ];
   requiredModels.forEach(model => {
     const modelFile = fs.existsSync(path.join(modelsPath, `${model}.ts`));
     log(`✅ 模型檢查：${model} ${modelFile ? '✔' : '❌ 缺少'}`);
@@ -43,15 +54,26 @@ export async function runDiagnostics() {
 
   // Check webhook
   const routesPath = path.join('src', 'routes');
-  const webhookExists = fs.existsSync(path.join(routesPath, 'line', 'webhook.ts'));
-  log(`✅ Webhook 路由檢查：${webhookExists ? '✔ 存在' : '❌ webhook.ts 不存在'}`);
+  const webhookExists = fs.existsSync(
+    path.join(routesPath, 'line', 'webhook.ts')
+  );
+  log(
+    `✅ Webhook 路由檢查：${webhookExists ? '✔ 存在' : '❌ webhook.ts 不存在'}`
+  );
 
   // Check LIFF html
   const liffHtmlExists = fs.existsSync(path.join('public', 'liff.html'));
-  log(`✅ LIFF 前端檢查：${liffHtmlExists ? '✔ 存在' : '❌ liff.html 不存在'}`);
+  log(
+    `✅ LIFF 前端檢查：${liffHtmlExists ? '✔ 存在' : '❌ liff.html 不存在'}`
+  );
 
   // Check env variables
-  const envVars = ['LINE_CHANNEL_SECRET', 'LIFF_ID', 'DATABASE_URL', 'LINE_CHANNEL_ACCESS_TOKEN'];
+  const envVars = [
+    'LINE_CHANNEL_SECRET',
+    'LIFF_ID',
+    'DATABASE_URL',
+    'LINE_CHANNEL_ACCESS_TOKEN',
+  ];
   envVars.forEach(key => {
     const isSet = !!process.env[key];
     log(`✅ .env 設定：${key} ${isSet ? '✔' : '❌ 未設定'}`);
@@ -59,7 +81,9 @@ export async function runDiagnostics() {
 
   // DB Connection Test
   try {
-    const sequelize = new Sequelize(process.env.DATABASE_URL!, { logging: false });
+    const sequelize = new Sequelize(process.env.DATABASE_URL!, {
+      logging: false,
+    });
     await sequelize.authenticate();
     log(`✅ 資料庫連線測試：✔ 成功`);
     await sequelize.close();

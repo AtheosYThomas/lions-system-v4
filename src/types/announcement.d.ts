@@ -1,4 +1,3 @@
-
 export interface Announcement {
   id: number;
   title: string;
@@ -24,14 +23,14 @@ export enum AnnouncementStatus {
   DRAFT = 'draft',
   SCHEDULED = 'scheduled',
   PUBLISHED = 'published',
-  ARCHIVED = 'archived'
+  ARCHIVED = 'archived',
 }
 
 export enum AnnouncementPriority {
   LOW = 'low',
   NORMAL = 'normal',
   HIGH = 'high',
-  URGENT = 'urgent'
+  URGENT = 'urgent',
 }
 
 export enum AnnouncementCategory {
@@ -40,7 +39,7 @@ export enum AnnouncementCategory {
   MEETING = 'meeting',
   EMERGENCY = 'emergency',
   POLICY = 'policy',
-  SOCIAL = 'social'
+  SOCIAL = 'social',
 }
 
 export enum TargetAudience {
@@ -48,7 +47,7 @@ export enum TargetAudience {
   MEMBERS_ONLY = 'members_only',
   BOARD_ONLY = 'board_only',
   COMMITTEE = 'committee',
-  NEW_MEMBERS = 'new_members'
+  NEW_MEMBERS = 'new_members',
 }
 
 export interface CreateAnnouncementRequest {

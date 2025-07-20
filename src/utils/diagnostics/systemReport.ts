@@ -1,4 +1,3 @@
-
 import fs from 'fs';
 import path from 'path';
 import chalk from 'chalk';
@@ -18,7 +17,13 @@ export class SystemReportGenerator {
   private results: ReportItem[] = [];
   private srcPath = path.join(process.cwd(), 'src');
 
-  private addResult(section: string, status: 'pass' | 'fail' | 'warning', message: string, details?: any, suggestions?: string[]) {
+  private addResult(
+    section: string,
+    status: 'pass' | 'fail' | 'warning',
+    message: string,
+    details?: any,
+    suggestions?: string[]
+  ) {
     this.results.push({ section, status, message, details, suggestions });
   }
 
@@ -31,7 +36,7 @@ export class SystemReportGenerator {
       'controllers/**/*.ts',
       'middleware/**/*.ts',
       'services/**/*.ts',
-      'models/**/*.ts'
+      'models/**/*.ts',
     ];
 
     let totalFiles = 0;
@@ -50,7 +55,10 @@ export class SystemReportGenerator {
           const syntaxIssues = [];
 
           // 檢查未完成的 import
-          if (content.includes('import') && content.match(/import.*from\s*$/m)) {
+          if (
+            content.includes('import') &&
+            content.match(/import.*from\s*$/m)
+          ) {
             syntaxIssues.push('不完整的 import 語句');
           }
 
@@ -58,21 +66,38 @@ export class SystemReportGenerator {
           const openBraces = (content.match(/\{/g) || []).length;
           const closeBraces = (content.match(/\}/g) || []).length;
           if (openBraces !== closeBraces) {
-            syntaxIssues.push(`括號不匹配 (開: ${openBraces}, 閉: ${closeBraces})`);
+            syntaxIssues.push(
+              `括號不匹配 (開: ${openBraces}, 閉: ${closeBraces})`
+            );
           }
 
           // 檢查錯誤的模組引用
-          const importMatches = content.match(/import.*from\s+['"]([^'"]+)['"]/g);
+          const importMatches = content.match(
+            /import.*from\s+['"]([^'"]+)['"]/g
+          );
           if (importMatches) {
             for (const importMatch of importMatches) {
-              const modulePath = importMatch.match(/from\s+['"]([^'"]+)['"]/)?.[1];
-              if (modulePath && modulePath.startsWith('./') || modulePath?.startsWith('../')) {
-                const resolvedPath = path.resolve(path.dirname(file), modulePath);
+              const modulePath = importMatch.match(
+                /from\s+['"]([^'"]+)['"]/
+              )?.[1];
+              if (
+                (modulePath && modulePath.startsWith('./')) ||
+                modulePath?.startsWith('../')
+              ) {
+                const resolvedPath = path.resolve(
+                  path.dirname(file),
+                  modulePath
+                );
                 const tsPath = resolvedPath + '.ts';
                 const jsPath = resolvedPath + '.js';
                 const indexPath = path.join(resolvedPath, 'index.ts');
-                
-                if (!fs.existsSync(tsPath) && !fs.existsSync(jsPath) && !fs.existsSync(indexPath) && !fs.existsSync(resolvedPath)) {
+
+                if (
+                  !fs.existsSync(tsPath) &&
+                  !fs.existsSync(jsPath) &&
+                  !fs.existsSync(indexPath) &&
+                  !fs.existsSync(resolvedPath)
+                ) {
                   syntaxIssues.push(`找不到模組: ${modulePath}`);
                 }
               }
@@ -80,7 +105,11 @@ export class SystemReportGenerator {
           }
 
           // 檢查未處理的 async 函數
-          if (content.includes('async') && !content.includes('try') && !content.includes('catch')) {
+          if (
+            content.includes('async') &&
+            !content.includes('try') &&
+            !content.includes('catch')
+          ) {
             syntaxIssues.push('async 函數缺少錯誤處理');
           }
 
@@ -95,7 +124,6 @@ export class SystemReportGenerator {
           } else {
             console.log(chalk.green(`✅ ${relativePath} 語法檢查通過`));
           }
-
         } catch (error) {
           errorCount++;
           this.addResult(
@@ -133,15 +161,14 @@ export class SystemReportGenerator {
             envVarsInFile.add(match[1]);
           }
         }
-        console.log(chalk.green(`✅ .env 檔案存在，包含 ${envVarsInFile.size} 個變數`));
-      } else {
-        this.addResult(
-          '環境變數檢查',
-          'fail',
-          '.env 檔案不存在',
-          undefined,
-          ['建立 .env 檔案', '參考 .env.example']
+        console.log(
+          chalk.green(`✅ .env 檔案存在，包含 ${envVarsInFile.size} 個變數`)
         );
+      } else {
+        this.addResult('環境變數檢查', 'fail', '.env 檔案不存在', undefined, [
+          '建立 .env 檔案',
+          '參考 .env.example',
+        ]);
         return;
       }
     } catch (error) {
@@ -192,15 +219,30 @@ export class SystemReportGenerator {
         'fail',
         `發現 ${undefinedVars.length} 個未定義的環境變數`,
         undefinedVars,
-        ['在 .env 檔案中添加這些變數', '檢查 Replit Secrets 設定', '確認變數名稱拼寫正確']
+        [
+          '在 .env 檔案中添加這些變數',
+          '檢查 Replit Secrets 設定',
+          '確認變數名稱拼寫正確',
+        ]
       );
     } else {
-      this.addResult('環境變數檢查', 'pass', `所有 ${definedVars.length} 個環境變數都已正確定義`);
+      this.addResult(
+        '環境變數檢查',
+        'pass',
+        `所有 ${definedVars.length} 個環境變數都已正確定義`
+      );
     }
 
     // 檢查關鍵環境變數
-    const criticalVars = ['LINE_CHANNEL_ACCESS_TOKEN', 'LINE_CHANNEL_SECRET', 'DATABASE_URL', 'LIFF_ID'];
-    const missingCritical = criticalVars.filter(v => !process.env[v] && !envVarsInFile.has(v));
+    const criticalVars = [
+      'LINE_CHANNEL_ACCESS_TOKEN',
+      'LINE_CHANNEL_SECRET',
+      'DATABASE_URL',
+      'LIFF_ID',
+    ];
+    const missingCritical = criticalVars.filter(
+      v => !process.env[v] && !envVarsInFile.has(v)
+    );
 
     if (missingCritical.length > 0) {
       this.addResult(
@@ -220,7 +262,7 @@ export class SystemReportGenerator {
     const frontendPaths = [
       path.join(process.cwd(), 'public'),
       path.join(process.cwd(), 'client'),
-      path.join(this.srcPath, 'frontend')
+      path.join(this.srcPath, 'frontend'),
     ];
 
     let frontendFound = false;
@@ -230,10 +272,16 @@ export class SystemReportGenerator {
     for (const frontendPath of frontendPaths) {
       if (fs.existsSync(frontendPath)) {
         frontendFound = true;
-        console.log(chalk.green(`✅ 發現前端目錄: ${path.relative(process.cwd(), frontendPath)}`));
+        console.log(
+          chalk.green(
+            `✅ 發現前端目錄: ${path.relative(process.cwd(), frontendPath)}`
+          )
+        );
 
         try {
-          const files = globSync(path.join(frontendPath, '**/*.{html,js,ts,tsx,jsx}'));
+          const files = globSync(
+            path.join(frontendPath, '**/*.{html,js,ts,tsx,jsx}')
+          );
           totalFiles += files.length;
 
           for (const file of files) {
@@ -249,7 +297,9 @@ export class SystemReportGenerator {
               }
 
               // 檢查 JavaScript 引用
-              const scriptMatches = content.match(/<script[^>]*src=['"]([^'"]+)['"]/g);
+              const scriptMatches = content.match(
+                /<script[^>]*src=['"]([^'"]+)['"]/g
+              );
               if (scriptMatches) {
                 for (const scriptMatch of scriptMatches) {
                   const src = scriptMatch.match(/src=['"]([^'"]+)['"]/)?.[1];
@@ -263,7 +313,9 @@ export class SystemReportGenerator {
               }
 
               // 檢查 CSS 引用
-              const linkMatches = content.match(/<link[^>]*href=['"]([^'"]+)['"]/g);
+              const linkMatches = content.match(
+                /<link[^>]*href=['"]([^'"]+)['"]/g
+              );
               if (linkMatches) {
                 for (const linkMatch of linkMatches) {
                   const href = linkMatch.match(/href=['"]([^'"]+)['"]/)?.[1];
@@ -293,7 +345,10 @@ export class SystemReportGenerator {
               const jsIssues = [];
 
               // 檢查語法錯誤指標
-              if (content.includes('SyntaxError') || content.includes('Unexpected token')) {
+              if (
+                content.includes('SyntaxError') ||
+                content.includes('Unexpected token')
+              ) {
                 jsIssues.push('可能包含語法錯誤');
               }
 
@@ -301,7 +356,9 @@ export class SystemReportGenerator {
               const openBraces = (content.match(/\{/g) || []).length;
               const closeBraces = (content.match(/\}/g) || []).length;
               if (openBraces !== closeBraces) {
-                jsIssues.push(`括號不匹配 (開: ${openBraces}, 閉: ${closeBraces})`);
+                jsIssues.push(
+                  `括號不匹配 (開: ${openBraces}, 閉: ${closeBraces})`
+                );
               }
 
               // 檢查 console.error 呼叫
@@ -321,7 +378,6 @@ export class SystemReportGenerator {
               }
             }
           }
-
         } catch (error) {
           this.addResult(
             '前端檔案檢查',
@@ -357,35 +413,41 @@ export class SystemReportGenerator {
     const port = process.env.PORT || 5000;
     const healthUrl = `http://0.0.0.0:${port}/health`;
 
-    const attemptHealthCheck = (): Promise<{ success: boolean; data?: any; error?: string; statusCode?: number }> => {
-      return new Promise((resolve) => {
-        const req = http.get(healthUrl, (res) => {
+    const attemptHealthCheck = (): Promise<{
+      success: boolean;
+      data?: any;
+      error?: string;
+      statusCode?: number;
+    }> => {
+      return new Promise(resolve => {
+        const req = http.get(healthUrl, res => {
           let data = '';
 
-          res.on('data', (chunk) => {
+          res.on('data', chunk => {
             data += chunk;
           });
 
           res.on('end', () => {
             try {
               const healthData = JSON.parse(data);
-              resolve({ 
-                success: res.statusCode === 200 && healthData.status === 'healthy', 
-                data: healthData, 
-                statusCode: res.statusCode 
+              resolve({
+                success:
+                  res.statusCode === 200 && healthData.status === 'healthy',
+                data: healthData,
+                statusCode: res.statusCode,
               });
             } catch (error) {
-              resolve({ 
-                success: false, 
-                error: 'JSON 解析錯誤', 
+              resolve({
+                success: false,
+                error: 'JSON 解析錯誤',
                 data: data,
-                statusCode: res.statusCode 
+                statusCode: res.statusCode,
               });
             }
           });
         });
 
-        req.on('error', (error) => {
+        req.on('error', error => {
           resolve({ success: false, error: error.message });
         });
 
@@ -398,19 +460,14 @@ export class SystemReportGenerator {
 
     // 嘗試連接
     const result = await attemptHealthCheck();
-    
+
     if (result.success) {
-      this.addResult(
-        'Health Check',
-        'pass',
-        'Health Check 測試成功',
-        {
-          status: result.data.status,
-          uptime: result.data.uptime,
-          database: result.data.database,
-          services: result.data.services
-        }
-      );
+      this.addResult('Health Check', 'pass', 'Health Check 測試成功', {
+        status: result.data.status,
+        uptime: result.data.uptime,
+        database: result.data.database,
+        services: result.data.services,
+      });
       console.log(chalk.green('✅ Health Check 成功'));
       return;
     }
@@ -419,9 +476,9 @@ export class SystemReportGenerator {
     if (result.error?.includes('ECONNREFUSED')) {
       console.log(chalk.yellow('⏳ 等待伺服器啟動...'));
       await new Promise(wait => setTimeout(wait, 3000));
-      
+
       const secondResult = await attemptHealthCheck();
-      
+
       if (secondResult.success) {
         this.addResult(
           'Health Check',
@@ -431,13 +488,13 @@ export class SystemReportGenerator {
             status: secondResult.data.status,
             uptime: secondResult.data.uptime,
             database: secondResult.data.database,
-            services: secondResult.data.services
+            services: secondResult.data.services,
           }
         );
         console.log(chalk.green('✅ Health Check 成功'));
         return;
       }
-      
+
       // 如果還是失敗，只記錄為警告而不是錯誤
       this.addResult(
         'Health Check',
@@ -446,7 +503,9 @@ export class SystemReportGenerator {
         '診斷工具可能比伺服器啟動更早執行',
         ['此警告通常可以忽略', '如果系統功能正常，則無需處理']
       );
-      console.log(chalk.yellow('⚠️ Health Check 暫時無法連接 - 這通常是正常的'));
+      console.log(
+        chalk.yellow('⚠️ Health Check 暫時無法連接 - 這通常是正常的')
+      );
     } else {
       // 其他錯誤情況
       this.addResult(
@@ -466,7 +525,9 @@ export class SystemReportGenerator {
     console.log(chalk.cyan('='.repeat(60)));
 
     const passCount = this.results.filter(r => r.status === 'pass').length;
-    const warningCount = this.results.filter(r => r.status === 'warning').length;
+    const warningCount = this.results.filter(
+      r => r.status === 'warning'
+    ).length;
     const failCount = this.results.filter(r => r.status === 'fail').length;
     const totalCount = this.results.length;
 
@@ -484,8 +545,18 @@ export class SystemReportGenerator {
       const sectionResults = this.results.filter(r => r.section === section);
 
       for (const result of sectionResults) {
-        const icon = result.status === 'pass' ? '✅' : result.status === 'warning' ? '⚠️' : '❌';
-        const color = result.status === 'pass' ? chalk.green : result.status === 'warning' ? chalk.yellow : chalk.red;
+        const icon =
+          result.status === 'pass'
+            ? '✅'
+            : result.status === 'warning'
+              ? '⚠️'
+              : '❌';
+        const color =
+          result.status === 'pass'
+            ? chalk.green
+            : result.status === 'warning'
+              ? chalk.yellow
+              : chalk.red;
 
         console.log(color(`  ${icon} ${result.message}`));
 
@@ -494,7 +565,9 @@ export class SystemReportGenerator {
             console.log(color(`      - ${detail}`));
           });
         } else if (result.details && typeof result.details === 'object') {
-          console.log(color(`      詳細資訊: ${JSON.stringify(result.details, null, 2)}`));
+          console.log(
+            color(`      詳細資訊: ${JSON.stringify(result.details, null, 2)}`)
+          );
         } else if (result.details) {
           console.log(color(`      詳細資訊: ${result.details}`));
         }
@@ -509,7 +582,10 @@ export class SystemReportGenerator {
     }
 
     // 生成 JSON 報告
-    const reportPath = path.join(process.cwd(), 'system_diagnostic_report.json');
+    const reportPath = path.join(
+      process.cwd(),
+      'system_diagnostic_report.json'
+    );
     const reportData = {
       timestamp: new Date().toISOString(),
       summary: {
@@ -517,9 +593,9 @@ export class SystemReportGenerator {
         pass: passCount,
         warning: warningCount,
         fail: failCount,
-        healthScore: Math.round((passCount / totalCount) * 100)
+        healthScore: Math.round((passCount / totalCount) * 100),
       },
-      results: this.results
+      results: this.results,
     };
 
     fs.writeFileSync(reportPath, JSON.stringify(reportData, null, 2));
@@ -529,16 +605,21 @@ export class SystemReportGenerator {
     console.log(chalk.cyan('\n💡 總結建議:'));
     if (failCount > 0) {
       console.log(chalk.red('🚨 發現嚴重問題，建議立即修正:'));
-      this.results.filter(r => r.status === 'fail').forEach(result => {
-        console.log(chalk.red(`   - ${result.message}`));
-      });
+      this.results
+        .filter(r => r.status === 'fail')
+        .forEach(result => {
+          console.log(chalk.red(`   - ${result.message}`));
+        });
     }
 
     if (warningCount > 0) {
       console.log(chalk.yellow('⚠️  發現警告事項，建議排程修正:'));
-      this.results.filter(r => r.status === 'warning').slice(0, 3).forEach(result => {
-        console.log(chalk.yellow(`   - ${result.message}`));
-      });
+      this.results
+        .filter(r => r.status === 'warning')
+        .slice(0, 3)
+        .forEach(result => {
+          console.log(chalk.yellow(`   - ${result.message}`));
+        });
     }
 
     if (passCount === totalCount) {
@@ -564,13 +645,16 @@ export class SystemReportGenerator {
 // 執行診斷（如果直接運行此檔案）
 if (require.main === module) {
   const reporter = new SystemReportGenerator();
-  reporter.runFullDiagnostics().then(() => {
-    console.log(chalk.green('\n✅ 診斷完成！'));
-    process.exit(0);
-  }).catch((error: any) => {
-    console.error(chalk.red('❌ 診斷過程中發生錯誤:'), error);
-    process.exit(1);
-  });
+  reporter
+    .runFullDiagnostics()
+    .then(() => {
+      console.log(chalk.green('\n✅ 診斷完成！'));
+      process.exit(0);
+    })
+    .catch((error: any) => {
+      console.error(chalk.red('❌ 診斷過程中發生錯誤:'), error);
+      process.exit(1);
+    });
 }
 
 export default SystemReportGenerator;

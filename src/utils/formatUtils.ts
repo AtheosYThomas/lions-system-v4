@@ -1,4 +1,3 @@
-
 /**
  * 格式化工具函數
  * 純粹的格式化邏輯，無業務邏輯依賴
@@ -32,12 +31,12 @@ export const formatFileSize = (bytes: number): string => {
   const units = ['B', 'KB', 'MB', 'GB'];
   let size = bytes;
   let unitIndex = 0;
-  
+
   while (size >= 1024 && unitIndex < units.length - 1) {
     size /= 1024;
     unitIndex++;
   }
-  
+
   return `${size.toFixed(1)} ${units[unitIndex]}`;
 };
 
@@ -46,11 +45,11 @@ export const formatFileSize = (bytes: number): string => {
  */
 export const formatPhoneNumber = (phone: string): string => {
   const cleaned = phone.replace(/\D/g, '');
-  
+
   if (cleaned.length === 10) {
     return `${cleaned.slice(0, 4)}-${cleaned.slice(4, 7)}-${cleaned.slice(7)}`;
   }
-  
+
   return phone; // 如果格式不符合，返回原始值
 };
 

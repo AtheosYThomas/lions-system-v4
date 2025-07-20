@@ -15,7 +15,9 @@ class LineController {
       console.log('📦 Request headers:', {
         'content-type': req.headers['content-type'],
         'user-agent': req.headers['user-agent'],
-        'x-line-signature': req.headers['x-line-signature'] ? 'Present' : 'Missing'
+        'x-line-signature': req.headers['x-line-signature']
+          ? 'Present'
+          : 'Missing',
       });
 
       const body: LineWebhookRequestBody = req.body;
@@ -50,7 +52,12 @@ class LineController {
           type: event.type,
           timestamp: event.timestamp,
           source: event.source,
-          replyToken: 'replyToken' in event ? (event.replyToken ? 'Present' : 'Missing') : 'N/A'
+          replyToken:
+            'replyToken' in event
+              ? event.replyToken
+                ? 'Present'
+                : 'Missing'
+              : 'N/A',
         });
       });
 
@@ -59,31 +66,33 @@ class LineController {
 
       if (!result.success) {
         console.error('❌ LINE 服務處理失敗:', result.error);
-        res.status(200).json({ 
-          status: 'error', 
+        res.status(200).json({
+          status: 'error',
           message: 'Event processing failed',
-          error: result.error
+          error: result.error,
         });
         return;
       } else {
         console.log('✅ LINE webhook 處理成功:', result.message);
-        res.status(200).json({ 
-          status: 'ok', 
+        res.status(200).json({
+          status: 'ok',
           message: result.message,
-          processed: body.events.length
+          processed: body.events.length,
         });
         return;
       }
-
     } catch (error) {
       console.error('❌ LineController webhook 處理錯誤:', error);
-      console.error('❌ 錯誤堆疊:', error instanceof Error ? error.stack : 'No stack trace');
+      console.error(
+        '❌ 錯誤堆疊:',
+        error instanceof Error ? error.stack : 'No stack trace'
+      );
 
       // LINE webhook 必須回傳 200，否則會重複發送
-      res.status(200).json({ 
-        status: 'error', 
+      res.status(200).json({
+        status: 'error',
         message: 'Internal processing error',
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : 'Unknown error',
       });
       return;
     }
@@ -98,9 +107,9 @@ class LineController {
       const { message } = req.body;
 
       if (!userId) {
-        res.status(400).json({ 
-          success: false, 
-          error: 'userId is required' 
+        res.status(400).json({
+          success: false,
+          error: 'userId is required',
         });
         return;
       }
@@ -108,22 +117,21 @@ class LineController {
       const result = await lineService.pushMessage(userId, message);
 
       if (result.success) {
-        res.json({ 
-          success: true, 
-          message: 'Push message sent successfully' 
+        res.json({
+          success: true,
+          message: 'Push message sent successfully',
         });
       } else {
-        res.status(500).json({ 
-          success: false, 
-          error: result.error 
+        res.status(500).json({
+          success: false,
+          error: result.error,
         });
       }
-
     } catch (error) {
       console.error('❌ LineController 推播處理錯誤:', error);
-      res.status(500).json({ 
-        success: false, 
-        error: error instanceof Error ? error.message : 'Internal server error' 
+      res.status(500).json({
+        success: false,
+        error: error instanceof Error ? error.message : 'Internal server error',
       });
     }
   }
@@ -136,9 +144,9 @@ class LineController {
       const { userId, type = 'event' } = req.body;
 
       if (!userId) {
-        res.status(400).json({ 
-          success: false, 
-          error: 'userId is required' 
+        res.status(400).json({
+          success: false,
+          error: 'userId is required',
         });
         return;
       }
@@ -162,31 +170,30 @@ class LineController {
           '2025/01/01'
         );
       } else {
-        res.status(400).json({ 
-          success: false, 
-          error: 'Invalid type. Use "event" or "member"' 
+        res.status(400).json({
+          success: false,
+          error: 'Invalid type. Use "event" or "member"',
         });
         return;
       }
 
       if (result.success) {
-        res.json({ 
-          success: true, 
+        res.json({
+          success: true,
           message: `Flex ${type} message sent successfully`,
-          type: type
+          type: type,
         });
       } else {
-        res.status(500).json({ 
-          success: false, 
-          error: result.error 
+        res.status(500).json({
+          success: false,
+          error: result.error,
         });
       }
-
     } catch (error) {
       console.error('❌ LineController Flex 推播處理錯誤:', error);
-      res.status(500).json({ 
-        success: false, 
-        error: error instanceof Error ? error.message : 'Internal server error' 
+      res.status(500).json({
+        success: false,
+        error: error instanceof Error ? error.message : 'Internal server error',
       });
     }
   }
@@ -199,14 +206,15 @@ class LineController {
       const { userId, title, date, imageUrl } = req.body;
 
       if (!userId || !title || !date) {
-        res.status(400).json({ 
-          success: false, 
-          error: 'userId, title, and date are required' 
+        res.status(400).json({
+          success: false,
+          error: 'userId, title, and date are required',
         });
         return;
       }
 
-      const defaultImageUrl = 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&h=800&q=80';
+      const defaultImageUrl =
+        'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&h=800&q=80';
       const result = await lineService.pushEventNotification(
         userId,
         title,
@@ -215,22 +223,21 @@ class LineController {
       );
 
       if (result.success) {
-        res.json({ 
-          success: true, 
-          message: 'Custom flex message sent successfully' 
+        res.json({
+          success: true,
+          message: 'Custom flex message sent successfully',
         });
       } else {
-        res.status(500).json({ 
-          success: false, 
-          error: result.error 
+        res.status(500).json({
+          success: false,
+          error: result.error,
         });
       }
-
     } catch (error) {
       console.error('❌ LineController 自訂 Flex 推播處理錯誤:', error);
-      res.status(500).json({ 
-        success: false, 
-        error: error instanceof Error ? error.message : 'Internal server error' 
+      res.status(500).json({
+        success: false,
+        error: error instanceof Error ? error.message : 'Internal server error',
       });
     }
   }
@@ -238,7 +245,10 @@ class LineController {
 
 export default new LineController();
 
-export const handleLineWebhook = async (req: Request, res: Response): Promise<void> => {
+export const handleLineWebhook = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
     const events = req.body.events || [];
 
@@ -249,7 +259,7 @@ export const handleLineWebhook = async (req: Request, res: Response): Promise<vo
 
     // 修復：使用正確的方法名稱
     const result = await lineService.handleWebhookEvents(events);
-    
+
     if (result.success) {
       res.status(200).json({ status: 'ok', message: result.message });
     } else {
@@ -261,7 +271,10 @@ export const handleLineWebhook = async (req: Request, res: Response): Promise<vo
   }
 };
 
-export const getLiffConfig = async (req: Request, res: Response): Promise<void> => {
+export const getLiffConfig = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
     const liffId = process.env.LIFF_ID;
     if (!liffId) {

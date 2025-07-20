@@ -1,4 +1,3 @@
-
 import express from 'express';
 import registrationController from '../../controllers/registrationController';
 

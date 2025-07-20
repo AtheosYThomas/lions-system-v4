@@ -1,4 +1,3 @@
-
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -14,9 +13,9 @@ router.post('/create', async (req, res) => {
     const { title, description, date, location, max_attendees } = req.body;
 
     if (!title || !date) {
-      return res.status(400).json({ 
+      return res.status(400).json({
         error: '缺少必要資料',
-        details: '標題和日期為必填欄位'
+        details: '標題和日期為必填欄位',
       });
     }
 
@@ -27,7 +26,7 @@ router.post('/create', async (req, res) => {
       date: new Date(date),
       location,
       max_attendees: max_attendees || null,
-      status: 'active'
+      status: 'active',
     });
 
     // 生成 QR Code
@@ -38,14 +37,13 @@ router.post('/create', async (req, res) => {
       success: true,
       event: newEvent.getPublicData(),
       qrCode: qrCodeDataUrl,
-      checkinUrl: `${baseUrl}/checkin/${newEvent.id}`
+      checkinUrl: `${baseUrl}/checkin/${newEvent.id}`,
     });
-
   } catch (error) {
     console.error('建立活動失敗:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       error: '建立活動失敗',
-      details: error instanceof Error ? error.message : '未知錯誤'
+      details: error instanceof Error ? error.message : '未知錯誤',
     });
   }
 });
@@ -54,7 +52,7 @@ router.post('/create', async (req, res) => {
 router.get('/:eventId', async (req, res) => {
   try {
     const { eventId } = req.params;
-    
+
     const event = await Event.findByPk(eventId);
     if (!event) {
       return res.status(404).json({ error: '活動不存在' });
@@ -68,14 +66,13 @@ router.get('/:eventId', async (req, res) => {
       success: true,
       event: event.getPublicData(),
       qrCode: qrCodeDataUrl,
-      checkinUrl: `${baseUrl}/checkin/${eventId}`
+      checkinUrl: `${baseUrl}/checkin/${eventId}`,
     });
-
   } catch (error) {
     console.error('取得活動失敗:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       error: '取得活動失敗',
-      details: error instanceof Error ? error.message : '未知錯誤'
+      details: error instanceof Error ? error.message : '未知錯誤',
     });
   }
 });
@@ -86,19 +83,18 @@ router.get('/', async (req, res) => {
     const events = await Event.findAll({
       where: { status: 'active' },
       order: [['date', 'DESC']],
-      limit: 50
+      limit: 50,
     });
 
     res.json({
       success: true,
-      events: events.map(event => event.getPublicData())
+      events: events.map(event => event.getPublicData()),
     });
-
   } catch (error) {
     console.error('取得活動列表失敗:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       error: '取得活動列表失敗',
-      details: error instanceof Error ? error.message : '未知錯誤'
+      details: error instanceof Error ? error.message : '未知錯誤',
     });
   }
 });

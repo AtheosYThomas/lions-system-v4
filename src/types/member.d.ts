@@ -1,4 +1,3 @@
-
 export interface Member {
   id: number;
   name: string;
@@ -18,14 +17,14 @@ export enum MembershipType {
   REGULAR = 'regular',
   HONORARY = 'honorary',
   LIFE = 'life',
-  ASSOCIATE = 'associate'
+  ASSOCIATE = 'associate',
 }
 
 export enum MemberStatus {
   ACTIVE = 'active',
   INACTIVE = 'inactive',
   SUSPENDED = 'suspended',
-  PENDING = 'pending'
+  PENDING = 'pending',
 }
 
 export interface CreateMemberRequest {

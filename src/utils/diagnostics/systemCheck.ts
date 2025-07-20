@@ -1,4 +1,3 @@
-
 import sequelize from '../../config/database';
 import { Member, Event, Registration, Checkin } from '../../models';
 
@@ -6,12 +5,16 @@ export const performSystemCheck = async () => {
   const report = {
     timestamp: new Date().toISOString(),
     database: { status: 'unknown', error: null as string | null },
-    models: { status: 'unknown', tables: [] as string[], error: null as string | null },
-    environment: { 
-      status: 'unknown', 
+    models: {
+      status: 'unknown',
+      tables: [] as string[],
+      error: null as string | null,
+    },
+    environment: {
+      status: 'unknown',
       missing: [] as string[],
-      configured: [] as string[]
-    }
+      configured: [] as string[],
+    },
   };
 
   // 1. 檢查資料庫連線
@@ -39,9 +42,9 @@ export const performSystemCheck = async () => {
   // 3. 檢查環境變數
   const requiredEnvVars = [
     'LINE_CHANNEL_ACCESS_TOKEN',
-    'LINE_CHANNEL_SECRET', 
+    'LINE_CHANNEL_SECRET',
     'DATABASE_URL',
-    'PORT'
+    'PORT',
   ];
 
   requiredEnvVars.forEach(envVar => {
@@ -52,15 +55,20 @@ export const performSystemCheck = async () => {
     }
   });
 
-  report.environment.status = report.environment.missing.length === 0 ? 'complete' : 'incomplete';
+  report.environment.status =
+    report.environment.missing.length === 0 ? 'complete' : 'incomplete';
 
   // 4. 輸出報告
   console.log('\n📊 === 系統診斷報告 ===');
   console.log(`📅 時間: ${report.timestamp}`);
   console.log(`🗄️  資料庫: ${report.database.status}`);
-  console.log(`📋 資料表: ${report.models.status} (${report.models.tables.length} 個表格)`);
-  console.log(`🔧 環境變數: ${report.environment.status} (${report.environment.configured.length}/${requiredEnvVars.length})`);
-  
+  console.log(
+    `📋 資料表: ${report.models.status} (${report.models.tables.length} 個表格)`
+  );
+  console.log(
+    `🔧 環境變數: ${report.environment.status} (${report.environment.configured.length}/${requiredEnvVars.length})`
+  );
+
   if (report.environment.missing.length > 0) {
     console.log(`❌ 缺少環境變數: ${report.environment.missing.join(', ')}`);
   }

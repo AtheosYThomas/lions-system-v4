@@ -17,10 +17,13 @@ router.post('/checkin-reminder', async (req, res) => {
   try {
     // 簡單的安全檢查
     const cronToken = req.headers['x-cron-token'];
-    if (cronToken !== process.env.CRON_TOKEN && cronToken !== 'cron-secret-token') {
+    if (
+      cronToken !== process.env.CRON_TOKEN &&
+      cronToken !== 'cron-secret-token'
+    ) {
       return res.status(401).json({
         error: '未授權的排程請求',
-        code: 'UNAUTHORIZED_CRON'
+        code: 'UNAUTHORIZED_CRON',
       });
     }
 
@@ -34,7 +37,7 @@ router.post('/checkin-reminder', async (req, res) => {
       return res.json({
         success: true,
         message: '明日無活動',
-        eventsCount: 0
+        eventsCount: 0,
       });
     }
 
@@ -45,11 +48,11 @@ router.post('/checkin-reminder', async (req, res) => {
       where: {
         line_user_id: {
           [Op.not]: {
-            [Op.is]: null
-          }
-        } as any
+            [Op.is]: null,
+          },
+        } as any,
       },
-      attributes: ['id', 'name', 'line_user_id']
+      attributes: ['id', 'name', 'line_user_id'],
     });
 
     if (members.length === 0) {
@@ -57,7 +60,7 @@ router.post('/checkin-reminder', async (req, res) => {
         success: true,
         message: '無可推播的會員',
         eventsCount: tomorrowEvents.length,
-        membersCount: 0
+        membersCount: 0,
       });
     }
 
@@ -113,16 +116,20 @@ router.post('/checkin-reminder', async (req, res) => {
         eventTitle: event.title,
         targetCount: membersToPush.length,
         successCount: pushResult.success,
-        failedCount: pushResult.failed
+        failedCount: pushResult.failed,
       });
 
-      console.log(`✅ 活動 ${event.title} 推播完成 - 成功: ${pushResult.success}, 失敗: ${pushResult.failed}`);
+      console.log(
+        `✅ 活動 ${event.title} 推播完成 - 成功: ${pushResult.success}, 失敗: ${pushResult.failed}`
+      );
 
       // 避免過快推送
       await new Promise(resolve => setTimeout(resolve, 2000));
     }
 
-    console.log(`🎉 排程推播完成 - 總成功: ${totalSuccessful}, 總失敗: ${totalFailed}`);
+    console.log(
+      `🎉 排程推播完成 - 總成功: ${totalSuccessful}, 總失敗: ${totalFailed}`
+    );
 
     res.json({
       success: true,
@@ -132,18 +139,20 @@ router.post('/checkin-reminder', async (req, res) => {
         membersCount: members.length,
         totalSuccessful,
         totalFailed,
-        successRate: totalSuccessful + totalFailed > 0 
-          ? Math.round((totalSuccessful / (totalSuccessful + totalFailed)) * 100 * 100) / 100 
-          : 0
+        successRate:
+          totalSuccessful + totalFailed > 0
+            ? Math.round(
+                (totalSuccessful / (totalSuccessful + totalFailed)) * 100 * 100
+              ) / 100
+            : 0,
       },
-      details: pushResults
+      details: pushResults,
     });
-
   } catch (error) {
     console.error('❌ 排程推播失敗:', error);
     res.status(500).json({
       error: '排程推播失敗',
-      details: error instanceof Error ? error.message : '未知錯誤'
+      details: error instanceof Error ? error.message : '未知錯誤',
     });
   }
 });
@@ -166,7 +175,7 @@ router.post('/test-checkin-reminder', async (req, res) => {
       return res.json({
         success: true,
         message: '明日無活動（測試模式）',
-        eventsCount: 0
+        eventsCount: 0,
       });
     }
 
@@ -177,11 +186,11 @@ router.post('/test-checkin-reminder', async (req, res) => {
       where: {
         line_user_id: {
           [Op.not]: {
-            [Op.is]: null
-          }
-        } as any
+            [Op.is]: null,
+          },
+        } as any,
       },
-      attributes: ['id', 'name', 'line_user_id']
+      attributes: ['id', 'name', 'line_user_id'],
     });
 
     res.json({
@@ -190,20 +199,19 @@ router.post('/test-checkin-reminder', async (req, res) => {
       summary: {
         eventsCount: tomorrowEvents.length,
         membersCount: members.length,
-        mode: 'test'
+        mode: 'test',
       },
       events: tomorrowEvents.map(event => ({
         id: event.id,
         title: event.title,
-        date: event.date
-      }))
+        date: event.date,
+      })),
     });
-
   } catch (error) {
     console.error('❌ 測試排程推播失敗:', error);
     res.status(500).json({
       error: '測試推播失敗',
-      details: error instanceof Error ? error.message : '未知錯誤'
+      details: error instanceof Error ? error.message : '未知錯誤',
     });
   }
 });

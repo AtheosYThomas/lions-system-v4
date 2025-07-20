@@ -1,4 +1,3 @@
-
 /**
  * 驗證工具函數
  * 純粹的驗證邏輯，不依賴外部服務
@@ -32,7 +31,11 @@ export const isValidLineUserId = (userId: string): boolean => {
 /**
  * 驗證字串長度
  */
-export const isValidLength = (str: string, min: number, max: number): boolean => {
+export const isValidLength = (
+  str: string,
+  min: number,
+  max: number
+): boolean => {
   return str.length >= min && str.length <= max;
 };
 

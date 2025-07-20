@@ -12,7 +12,7 @@ export enum Role {
   Treasurer = 'treasurer',
   VicePresident = 'vice_president',
   President = 'president',
-  Admin = 'admin'
+  Admin = 'admin',
 }
 
 // 定義角色等級（權限排序，數字越高權限越大）
@@ -24,7 +24,7 @@ export const roleRank: Record<Role, number> = {
   [Role.Treasurer]: 4,
   [Role.VicePresident]: 5,
   [Role.President]: 6,
-  [Role.Admin]: 7
+  [Role.Admin]: 7,
 };
 
 // 角色顯示名稱
@@ -36,17 +36,41 @@ export const roleDisplayNames: Record<Role, string> = {
   [Role.Treasurer]: '財務',
   [Role.VicePresident]: '副會長',
   [Role.President]: '會長',
-  [Role.Admin]: '系統管理員'
+  [Role.Admin]: '系統管理員',
 };
 
 // 定義角色群組 - 使用 as const 確保型別安全
 export const roleGroups = {
-  members: [Role.Member, Role.Officer, Role.Secretary, Role.Treasurer, Role.VicePresident, Role.President, Role.Admin],
-  officers: [Role.Officer, Role.Secretary, Role.Treasurer, Role.VicePresident, Role.President, Role.Admin],
+  members: [
+    Role.Member,
+    Role.Officer,
+    Role.Secretary,
+    Role.Treasurer,
+    Role.VicePresident,
+    Role.President,
+    Role.Admin,
+  ],
+  officers: [
+    Role.Officer,
+    Role.Secretary,
+    Role.Treasurer,
+    Role.VicePresident,
+    Role.President,
+    Role.Admin,
+  ],
   leadership: [Role.VicePresident, Role.President, Role.Admin],
   financial: [Role.Treasurer, Role.President, Role.Admin],
   admin: [Role.Admin, Role.President],
-  all: [Role.Guest, Role.Member, Role.Officer, Role.Secretary, Role.Treasurer, Role.VicePresident, Role.President, Role.Admin]
+  all: [
+    Role.Guest,
+    Role.Member,
+    Role.Officer,
+    Role.Secretary,
+    Role.Treasurer,
+    Role.VicePresident,
+    Role.President,
+    Role.Admin,
+  ],
 } as const;
 
 // 取得合法群組名稱型別
@@ -71,16 +95,22 @@ export function hasPermission(userRole: Role, requiredRole: Role): boolean {
 /**
  * 檢查角色是否滿足最低權限需求（向後相容）
  */
-export function hasMinimumRole(userRole: Role | string, requiredRole: Role): boolean {
-  const role = typeof userRole === 'string' ? userRole as Role : userRole;
+export function hasMinimumRole(
+  userRole: Role | string,
+  requiredRole: Role
+): boolean {
+  const role = typeof userRole === 'string' ? (userRole as Role) : userRole;
   return hasPermission(role, requiredRole);
 }
 
 /**
  * 檢查角色是否在指定角色組中（向後相容）
  */
-export function isInRoleGroup(userRole: Role | string, group: RoleGroup): boolean {
-  const role = typeof userRole === 'string' ? userRole as Role : userRole;
+export function isInRoleGroup(
+  userRole: Role | string,
+  group: RoleGroup
+): boolean {
+  const role = typeof userRole === 'string' ? (userRole as Role) : userRole;
   return isRoleInGroup(role, group);
 }
 
@@ -117,8 +147,11 @@ export function isHighRankRole(role: Role): boolean {
 /**
  * 檢查角色是否有足夠權限（向後相容）
  */
-export function hasRolePermission(userRole: Role | string, requiredRole: Role): boolean {
-  const role = typeof userRole === 'string' ? userRole as Role : userRole;
+export function hasRolePermission(
+  userRole: Role | string,
+  requiredRole: Role
+): boolean {
+  const role = typeof userRole === 'string' ? (userRole as Role) : userRole;
 
   // Admin 總是有權限
   if (role === Role.Admin) return true;
@@ -130,7 +163,10 @@ export function hasRolePermission(userRole: Role | string, requiredRole: Role): 
 /**
  * 檢查用戶是否可以訪問路由
  */
-export function canUserAccessRoute(userRole: Role, requiredRole: Role): boolean {
+export function canUserAccessRoute(
+  userRole: Role,
+  requiredRole: Role
+): boolean {
   return hasPermission(userRole, requiredRole);
 }
 

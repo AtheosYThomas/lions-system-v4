@@ -19,7 +19,7 @@ class AdminService {
       totalMembers: 0,
       totalEvents: 0,
       totalAnnouncements: 0,
-      totalRegistrations: 0
+      totalRegistrations: 0,
     };
   }
 
@@ -41,13 +41,13 @@ class AdminService {
         activeMembers,
         registrationCount,
         eventCount,
-        checkinCount
+        checkinCount,
       ] = await Promise.all([
         Member.count(),
         Member.count({ where: { status: 'active' } }),
         Registration.count(),
         Event.count(),
-        Checkin.count()
+        Checkin.count(),
       ]);
 
       const summary = {
@@ -57,7 +57,7 @@ class AdminService {
         eventCount,
         checkinCount,
         timestamp: new Date().toISOString(),
-        status: 'active'
+        status: 'active',
       };
 
       console.log('✅ 系統總覽統計完成:', summary);
@@ -72,16 +72,15 @@ class AdminService {
   async getRegistrationStats() {
     try {
       const stats = await Registration.findAll({
-        attributes: [
-          'event_id',
-          [sequelize.fn('COUNT', '*'), 'count']
-        ],
+        attributes: ['event_id', [sequelize.fn('COUNT', '*'), 'count']],
         group: ['event_id', 'Event.id', 'Event.title', 'Event.date'],
-        include: [{
-          model: Event,
-          attributes: ['title', 'date'],
-          required: false
-        }]
+        include: [
+          {
+            model: Event,
+            attributes: ['title', 'date'],
+            required: false,
+          },
+        ],
       });
 
       return stats;
@@ -97,19 +96,20 @@ class AdminService {
       console.log('📊 開始計算會員統計...');
 
       // 分別查詢各項統計，確保準確性
-      const [total, active, inactive, officers, members, withLineAccount] = await Promise.all([
-        Member.count(),
-        Member.count({ where: { status: 'active' } }),
-        Member.count({ where: { status: 'inactive' } }),
-        Member.count({ where: { role: 'officer' } }),
-        Member.count({ where: { role: 'member' } }),
-        Member.count({ 
-          where: { 
-            line_user_id: { [Op.ne]: '' },
-            status: 'active'
-          }
-        })
-      ]);
+      const [total, active, inactive, officers, members, withLineAccount] =
+        await Promise.all([
+          Member.count(),
+          Member.count({ where: { status: 'active' } }),
+          Member.count({ where: { status: 'inactive' } }),
+          Member.count({ where: { role: 'officer' } }),
+          Member.count({ where: { role: 'member' } }),
+          Member.count({
+            where: {
+              line_user_id: { [Op.ne]: '' },
+              status: 'active',
+            },
+          }),
+        ]);
 
       const stats = {
         total,
@@ -117,7 +117,7 @@ class AdminService {
         inactive,
         officers,
         members,
-        withLineAccount
+        withLineAccount,
       };
 
       console.log('✅ 會員統計結果:', stats);
@@ -135,9 +135,12 @@ class AdminService {
         attributes: [
           'status',
           [sequelize.fn('COUNT', '*'), 'count'],
-          [sequelize.fn('AVG', sequelize.col('max_participants')), 'avgCapacity']
+          [
+            sequelize.fn('AVG', sequelize.col('max_participants')),
+            'avgCapacity',
+          ],
         ],
-        group: ['status']
+        group: ['status'],
       });
 
       return eventStats;
@@ -153,11 +156,11 @@ class AdminService {
       const checkinStats = await Checkin.findAll({
         attributes: [
           [sequelize.fn('DATE', sequelize.col('created_at')), 'date'],
-          [sequelize.fn('COUNT', '*'), 'count']
+          [sequelize.fn('COUNT', '*'), 'count'],
         ],
         group: [sequelize.fn('DATE', sequelize.col('created_at'))],
         order: [[sequelize.fn('DATE', sequelize.col('created_at')), 'DESC']],
-        limit: 30
+        limit: 30,
       });
 
       return checkinStats;
@@ -188,12 +191,18 @@ class AdminService {
 
       const members = await Member.findAll({
         where: whereClause,
-        order: [['created_at', 'DESC']]
+        order: [['created_at', 'DESC']],
       });
 
       if (format === 'csv') {
         return this.convertToCSV(members, [
-          'id', 'name', 'email', 'phone', 'status', 'line_user_id', 'created_at'
+          'id',
+          'name',
+          'email',
+          'phone',
+          'status',
+          'line_user_id',
+          'created_at',
         ]);
       }
 
@@ -229,22 +238,37 @@ class AdminService {
           {
             model: Registration,
             attributes: [],
-            required: false
-          }
+            required: false,
+          },
         ],
         attributes: [
-          'id', 'title', 'description', 'date', 'location', 
-          'max_participants', 'status', 'created_at',
-          [sequelize.fn('COUNT', sequelize.col('Registrations.id')), 'registrationCount']
+          'id',
+          'title',
+          'description',
+          'date',
+          'location',
+          'max_participants',
+          'status',
+          'created_at',
+          [
+            sequelize.fn('COUNT', sequelize.col('Registrations.id')),
+            'registrationCount',
+          ],
         ],
         group: ['Event.id'],
-        order: [['date', 'DESC']]
+        order: [['date', 'DESC']],
       });
 
       if (format === 'csv') {
         return this.convertToCSV(events, [
-          'id', 'title', 'date', 'location', 'max_participants', 
-          'status', 'registrationCount', 'created_at'
+          'id',
+          'title',
+          'date',
+          'location',
+          'max_participants',
+          'status',
+          'registrationCount',
+          'created_at',
         ]);
       }
 
@@ -256,7 +280,10 @@ class AdminService {
   }
 
   // 匯出報名報表
-  async exportRegistrationsReport(filters: ReportFilters, format: string = 'json') {
+  async exportRegistrationsReport(
+    filters: ReportFilters,
+    format: string = 'json'
+  ) {
     try {
       const whereClause: any = {};
 
@@ -283,20 +310,25 @@ class AdminService {
         include: [
           {
             model: Member,
-            attributes: ['name', 'email', 'phone']
+            attributes: ['name', 'email', 'phone'],
           },
           {
             model: Event,
-            attributes: ['title', 'date', 'location']
-          }
+            attributes: ['title', 'date', 'location'],
+          },
         ],
-        order: [['created_at', 'DESC']]
+        order: [['created_at', 'DESC']],
       });
 
       if (format === 'csv') {
         return this.convertToCSV(registrations, [
-          'id', 'Member.name', 'Member.email', 'Event.title', 
-          'Event.date', 'status', 'created_at'
+          'id',
+          'Member.name',
+          'Member.email',
+          'Event.title',
+          'Event.date',
+          'status',
+          'created_at',
         ]);
       }
 
@@ -331,20 +363,25 @@ class AdminService {
         include: [
           {
             model: Member,
-            attributes: ['name', 'email', 'line_user_id']
+            attributes: ['name', 'email', 'line_user_id'],
           },
           {
             model: Event,
-            attributes: ['title', 'date', 'location']
-          }
+            attributes: ['title', 'date', 'location'],
+          },
         ],
-        order: [['created_at', 'DESC']]
+        order: [['created_at', 'DESC']],
       });
 
       if (format === 'csv') {
         return this.convertToCSV(checkins, [
-          'id', 'Member.name', 'Member.email', 'Event.title', 
-          'Event.date', 'checkin_time', 'created_at'
+          'id',
+          'Member.name',
+          'Member.email',
+          'Event.title',
+          'Event.date',
+          'checkin_time',
+          'created_at',
         ]);
       }
 
@@ -356,20 +393,23 @@ class AdminService {
   }
 
   // 綜合報表
-  async exportComprehensiveReport(filters: ReportFilters, format: string = 'json') {
+  async exportComprehensiveReport(
+    filters: ReportFilters,
+    format: string = 'json'
+  ) {
     try {
       const [
         systemSummary,
         memberStats,
         eventStats,
         registrationStats,
-        checkinStats
+        checkinStats,
       ] = await Promise.all([
         this.getSystemSummary(),
         this.getMemberStats(),
         this.getEventStats(),
         this.getRegistrationStats(),
-        this.getCheckinStats()
+        this.getCheckinStats(),
       ]);
 
       const comprehensiveReport = {
@@ -379,7 +419,7 @@ class AdminService {
         eventStats,
         registrationStats,
         checkinStats,
-        filters
+        filters,
       };
 
       if (format === 'csv') {
@@ -390,7 +430,7 @@ class AdminService {
           ['活躍會員數', systemSummary.activeMembers, '狀態為活躍的會員'],
           ['總報名數', systemSummary.registrationCount, '所有活動報名總數'],
           ['總活動數', systemSummary.eventCount, '系統中所有活動'],
-          ['總簽到數', systemSummary.checkinCount, '所有簽到記錄']
+          ['總簽到數', systemSummary.checkinCount, '所有簽到記錄'],
         ];
 
         return csvData.map(row => row.join(',')).join('\n');
@@ -412,17 +452,22 @@ class AdminService {
 
       const headers = fields.join(',');
       const rows = data.map(item => {
-        return fields.map(field => {
-          // 處理嵌套屬性 (如 Member.name)
-          const value = field.includes('.') ? 
-            field.split('.').reduce((obj, key) => obj?.[key], item) : 
-            item[field];
+        return fields
+          .map(field => {
+            // 處理嵌套屬性 (如 Member.name)
+            const value = field.includes('.')
+              ? field.split('.').reduce((obj, key) => obj?.[key], item)
+              : item[field];
 
-          // 處理 CSV 中的特殊字符
-          const stringValue = String(value || '');
-          return stringValue.includes(',') || stringValue.includes('\n') || stringValue.includes('"') ?
-            `"${stringValue.replace(/"/g, '""')}"` : stringValue;
-        }).join(',');
+            // 處理 CSV 中的特殊字符
+            const stringValue = String(value || '');
+            return stringValue.includes(',') ||
+              stringValue.includes('\n') ||
+              stringValue.includes('"')
+              ? `"${stringValue.replace(/"/g, '""')}"`
+              : stringValue;
+          })
+          .join(',');
       });
 
       return [headers, ...rows].join('\n');

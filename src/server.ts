@@ -1,4 +1,3 @@
-
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -11,7 +10,7 @@ import { AutoBootDiagnostics } from './utils/diagnostics/autoBootDiagnostics';
 const PORT: number = parseInt(process.env.PORT || '5000', 10);
 
 // 處理未捕獲的異常
-process.on('uncaughtException', (err) => {
+process.on('uncaughtException', err => {
   console.error('🔥 Uncaught Exception:', err);
   console.error('Stack trace:', err.stack);
   process.exit(1);
@@ -29,7 +28,7 @@ const logMemoryUsage = () => {
     rss: `${Math.round(usage.rss / 1024 / 1024)}MB`,
     heapTotal: `${Math.round(usage.heapTotal / 1024 / 1024)}MB`,
     heapUsed: `${Math.round(usage.heapUsed / 1024 / 1024)}MB`,
-    external: `${Math.round(usage.external / 1024 / 1024)}MB`
+    external: `${Math.round(usage.external / 1024 / 1024)}MB`,
   });
 };
 
@@ -39,7 +38,7 @@ const startServer = async () => {
     // 🔥 新增：啟動時自動執行完整診斷
     const diagnostics = new AutoBootDiagnostics();
     const diagnosticsPassed = await diagnostics.runBootDiagnostics();
-    
+
     if (!diagnosticsPassed) {
       console.warn('⚠️  診斷發現一些問題，但繼續啟動伺服器...');
     }
@@ -65,21 +64,23 @@ const startServer = async () => {
       console.log(`📍 Health Check: http://0.0.0.0:${PORT}/health`);
       console.log(`📱 LINE Webhook: http://0.0.0.0:${PORT}/webhook`);
       console.log(`🌐 前端頁面: http://0.0.0.0:${PORT}`);
-      
+
       // 伺服器完全啟動後，延遲 3 秒執行最後的健康檢查
       setTimeout(async () => {
         try {
           const http = await import('http');
-          const req = http.get(`http://0.0.0.0:${PORT}/health`, (res) => {
+          const req = http.get(`http://0.0.0.0:${PORT}/health`, res => {
             let data = '';
-            res.on('data', (chunk) => data += chunk);
+            res.on('data', chunk => (data += chunk));
             res.on('end', () => {
               if (res.statusCode === 200) {
                 const healthData = JSON.parse(data);
                 console.log('✅ Health Check 成功');
                 console.log(`📊 狀態: ${healthData.status}`);
                 console.log(`🔌 資料庫: ${healthData.database}`);
-                console.log(`🛣️ 路由: ${healthData.services?.routes?.join(', ')}`);
+                console.log(
+                  `🛣️ 路由: ${healthData.services?.routes?.join(', ')}`
+                );
               }
             });
           });
@@ -99,7 +100,7 @@ const startServer = async () => {
 };
 
 // 立即執行伺服器啟動
-startServer().catch((error) => {
+startServer().catch(error => {
   console.error('❌ 伺服器啟動失敗:', error);
   process.exit(1);
 });

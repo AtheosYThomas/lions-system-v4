@@ -1,4 +1,7 @@
-import { Registration, RegistrationCreationAttributes } from '../models/registration';
+import {
+  Registration,
+  RegistrationCreationAttributes,
+} from '../models/registration';
 import Event from '../models/event';
 import { Member } from '../models/member';
 import { Op } from 'sequelize';
@@ -23,7 +26,9 @@ class RegistrationService {
   /**
    * 創建報名
    */
-  async createRegistration(registrationData: RegistrationData): Promise<Registration> {
+  async createRegistration(
+    registrationData: RegistrationData
+  ): Promise<Registration> {
     try {
       // 驗證活動是否存在且有效
       const event = await Event.findByPk(registrationData.event_id);
@@ -55,8 +60,8 @@ class RegistrationService {
       const existingRegistration = await Registration.findOne({
         where: {
           member_id: registrationData.member_id,
-          event_id: registrationData.event_id
-        }
+          event_id: registrationData.event_id,
+        },
       });
 
       if (existingRegistration) {
@@ -66,7 +71,7 @@ class RegistrationService {
           // 重新啟用已取消的報名
           await existingRegistration.update({
             status: 'confirmed',
-            registration_date: new Date()
+            registration_date: new Date(),
           });
           return existingRegistration;
         }
@@ -77,8 +82,8 @@ class RegistrationService {
         const currentRegistrations = await Registration.count({
           where: {
             event_id: registrationData.event_id,
-            status: 'confirmed'
-          }
+            status: 'confirmed',
+          },
         });
 
         if (currentRegistrations >= event.max_attendees) {
@@ -91,17 +96,24 @@ class RegistrationService {
         member_id: registrationData.member_id,
         event_id: registrationData.event_id,
         status: registrationData.status || 'confirmed',
-        registration_date: new Date()
+        registration_date: new Date(),
       });
 
       // 回傳完整的報名資料
-      return await Registration.findByPk(registration.id, {
+      return (await Registration.findByPk(registration.id, {
         include: [
-          { model: Member, as: 'member', attributes: ['id', 'name', 'email', 'phone'] },
-          { model: Event, as: 'event', attributes: ['id', 'title', 'date', 'location', 'max_attendees'] }
-        ]
-      }) as Registration;
-
+          {
+            model: Member,
+            as: 'member',
+            attributes: ['id', 'name', 'email', 'phone'],
+          },
+          {
+            model: Event,
+            as: 'event',
+            attributes: ['id', 'title', 'date', 'location', 'max_attendees'],
+          },
+        ],
+      })) as Registration;
     } catch (error) {
       console.error('創建報名失敗:', error);
       throw error;
@@ -115,9 +127,17 @@ class RegistrationService {
     try {
       return await Registration.findByPk(id, {
         include: [
-          { model: Member, as: 'member', attributes: ['id', 'name', 'email', 'phone'] },
-          { model: Event, as: 'event', attributes: ['id', 'title', 'date', 'location', 'max_attendees'] }
-        ]
+          {
+            model: Member,
+            as: 'member',
+            attributes: ['id', 'name', 'email', 'phone'],
+          },
+          {
+            model: Event,
+            as: 'event',
+            attributes: ['id', 'title', 'date', 'location', 'max_attendees'],
+          },
+        ],
       });
     } catch (error) {
       console.error('獲取報名記錄失敗:', error);
@@ -128,7 +148,10 @@ class RegistrationService {
   /**
    * 檢查會員是否已報名活動
    */
-  async isRegistered(memberId: string, eventId: string): Promise<{
+  async isRegistered(
+    memberId: string,
+    eventId: string
+  ): Promise<{
     registered: boolean;
     registration?: Registration;
     status?: string;
@@ -137,11 +160,11 @@ class RegistrationService {
       const registration = await Registration.findOne({
         where: {
           member_id: memberId,
-          event_id: eventId
+          event_id: eventId,
         },
         include: [
-          { model: Event, as: 'event', attributes: ['id', 'title', 'date'] }
-        ]
+          { model: Event, as: 'event', attributes: ['id', 'title', 'date'] },
+        ],
       });
 
       if (!registration) {
@@ -151,7 +174,7 @@ class RegistrationService {
       return {
         registered: registration.status === 'confirmed',
         registration,
-        status: registration.status
+        status: registration.status,
       };
     } catch (error) {
       console.error('檢查報名狀態失敗:', error);
@@ -191,19 +214,27 @@ class RegistrationService {
       const result = await Registration.findAndCountAll({
         where: whereClause,
         include: [
-          { model: Member, as: 'member', attributes: ['id', 'name', 'email', 'phone'] },
-          { model: Event, as: 'event', attributes: ['id', 'title', 'date', 'location'] }
+          {
+            model: Member,
+            as: 'member',
+            attributes: ['id', 'name', 'email', 'phone'],
+          },
+          {
+            model: Event,
+            as: 'event',
+            attributes: ['id', 'title', 'date', 'location'],
+          },
         ],
         order: [['registration_date', 'DESC']],
         limit: options.limit || 20,
-        offset: options.offset || 0
+        offset: options.offset || 0,
       });
 
       return {
         registrations: result.rows,
         total: result.count,
         limit: options.limit || 20,
-        offset: options.offset || 0
+        offset: options.offset || 0,
       };
     } catch (error) {
       console.error('搜尋報名記錄失敗:', error);
@@ -218,8 +249,8 @@ class RegistrationService {
     try {
       const registration = await Registration.findByPk(registrationId, {
         include: [
-          { model: Event, as: 'event', attributes: ['id', 'title', 'date'] }
-        ]
+          { model: Event, as: 'event', attributes: ['id', 'title', 'date'] },
+        ],
       });
 
       if (!registration) {
@@ -235,7 +266,9 @@ class RegistrationService {
       if (event) {
         const now = new Date();
         const eventDate = new Date(event.date);
-        const twentyFourHoursBefore = new Date(eventDate.getTime() - 24 * 60 * 60 * 1000);
+        const twentyFourHoursBefore = new Date(
+          eventDate.getTime() - 24 * 60 * 60 * 1000
+        );
 
         if (now > twentyFourHoursBefore) {
           throw new Error('活動前24小時內無法取消報名');
@@ -253,7 +286,10 @@ class RegistrationService {
   /**
    * 更新報名狀態
    */
-  async updateRegistrationStatus(registrationId: string, status: string): Promise<Registration> {
+  async updateRegistrationStatus(
+    registrationId: string,
+    status: string
+  ): Promise<Registration> {
     try {
       const registration = await Registration.findByPk(registrationId);
 
@@ -277,12 +313,15 @@ class RegistrationService {
   /**
    * 獲取會員的報名記錄
    */
-  async getMemberRegistrations(memberId: string, options: Partial<RegistrationSearchOptions> = {}) {
+  async getMemberRegistrations(
+    memberId: string,
+    options: Partial<RegistrationSearchOptions> = {}
+  ) {
     try {
       const registrations = await Registration.findAll({
         where: { member_id: memberId },
         include: [{ model: Event, as: 'event' }],
-        order: [['created_at', 'DESC']]
+        order: [['created_at', 'DESC']],
       });
       return registrations;
     } catch (error) {
@@ -294,11 +333,14 @@ class RegistrationService {
   /**
    * 獲取活動的報名記錄
    */
-  async getEventRegistrations(eventId: string, options: Partial<RegistrationSearchOptions> = {}) {
+  async getEventRegistrations(
+    eventId: string,
+    options: Partial<RegistrationSearchOptions> = {}
+  ) {
     try {
       return await this.searchRegistrations({
         ...options,
-        event_id: eventId
+        event_id: eventId,
       });
     } catch (error) {
       console.error('獲取活動報名記錄失敗:', error);
@@ -314,14 +356,26 @@ class RegistrationService {
       if (eventId) {
         // 單一活動報名統計
         const [confirmed, pending, cancelled, waitlist] = await Promise.all([
-          Registration.count({ where: { event_id: eventId, status: 'confirmed' } }),
-          Registration.count({ where: { event_id: eventId, status: 'pending' } }),
-          Registration.count({ where: { event_id: eventId, status: 'cancelled' } }),
-          Registration.count({ where: { event_id: eventId, status: 'waitlist' } })
+          Registration.count({
+            where: { event_id: eventId, status: 'confirmed' },
+          }),
+          Registration.count({
+            where: { event_id: eventId, status: 'pending' },
+          }),
+          Registration.count({
+            where: { event_id: eventId, status: 'cancelled' },
+          }),
+          Registration.count({
+            where: { event_id: eventId, status: 'waitlist' },
+          }),
         ]);
 
-        const event = await Event.findByPk(eventId, { attributes: ['title', 'max_attendees'] });
-        const availableSlots = event?.max_attendees ? event.max_attendees - confirmed : null;
+        const event = await Event.findByPk(eventId, {
+          attributes: ['title', 'max_attendees'],
+        });
+        const availableSlots = event?.max_attendees
+          ? event.max_attendees - confirmed
+          : null;
 
         return {
           eventId,
@@ -333,15 +387,22 @@ class RegistrationService {
           waitlist,
           total: confirmed + pending + cancelled + waitlist,
           availableSlots,
-          isFull: event?.max_attendees ? confirmed >= event.max_attendees : false
+          isFull: event?.max_attendees
+            ? confirmed >= event.max_attendees
+            : false,
         };
       } else {
         // 全體報名統計
-        const [totalRegistrations, confirmedRegistrations, pendingRegistrations, cancelledRegistrations] = await Promise.all([
+        const [
+          totalRegistrations,
+          confirmedRegistrations,
+          pendingRegistrations,
+          cancelledRegistrations,
+        ] = await Promise.all([
           Registration.count(),
           Registration.count({ where: { status: 'confirmed' } }),
           Registration.count({ where: { status: 'pending' } }),
-          Registration.count({ where: { status: 'cancelled' } })
+          Registration.count({ where: { status: 'cancelled' } }),
         ]);
 
         return {
@@ -349,7 +410,10 @@ class RegistrationService {
           confirmedRegistrations,
           pendingRegistrations,
           cancelledRegistrations,
-          cancellationRate: totalRegistrations > 0 ? (cancelledRegistrations / totalRegistrations) * 100 : 0
+          cancellationRate:
+            totalRegistrations > 0
+              ? (cancelledRegistrations / totalRegistrations) * 100
+              : 0,
         };
       }
     } catch (error) {
@@ -361,7 +425,10 @@ class RegistrationService {
   /**
    * 驗證報名資格
    */
-  async validateRegistrationEligibility(memberId: string, eventId: string): Promise<{
+  async validateRegistrationEligibility(
+    memberId: string,
+    eventId: string
+  ): Promise<{
     eligible: boolean;
     reason?: string;
     event?: Event;
@@ -392,13 +459,23 @@ class RegistrationService {
       }
 
       if (member.status !== 'active') {
-        return { eligible: false, reason: '會員帳號已停用，無法報名', event, member };
+        return {
+          eligible: false,
+          reason: '會員帳號已停用，無法報名',
+          event,
+          member,
+        };
       }
 
       // 檢查是否已報名
       const { registered, status } = await this.isRegistered(memberId, eventId);
       if (registered) {
-        return { eligible: false, reason: '您已經報名過此活動了', event, member };
+        return {
+          eligible: false,
+          reason: '您已經報名過此活動了',
+          event,
+          member,
+        };
       } else if (status === 'cancelled') {
         // 已取消的報名可以重新報名
       }
@@ -406,12 +483,12 @@ class RegistrationService {
       // 檢查名額
       const capacityInfo = await this.getRegistrationStats(eventId);
       if (capacityInfo.isFull) {
-        return { 
-          eligible: false, 
-          reason: '活動名額已滿，無法報名', 
-          event, 
-          member, 
-          capacityInfo 
+        return {
+          eligible: false,
+          reason: '活動名額已滿，無法報名',
+          event,
+          member,
+          capacityInfo,
         };
       }
 
@@ -432,8 +509,8 @@ class RegistrationService {
         {
           where: {
             id: { [Op.in]: registrationIds },
-            status: 'pending'
-          }
+            status: 'pending',
+          },
         }
       );
 
@@ -454,8 +531,8 @@ class RegistrationService {
         {
           where: {
             id: { [Op.in]: registrationIds },
-            status: { [Op.not]: 'cancelled' }
-          }
+            status: { [Op.not]: 'cancelled' },
+          },
         }
       );
 

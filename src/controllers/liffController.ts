@@ -29,7 +29,7 @@ class LiffController {
     const { lineUserId } = req.body;
 
     if (!lineUserId) {
-      res.status(400).json({ error: "lineUserId is required" });
+      res.status(400).json({ error: 'lineUserId is required' });
       return;
     }
 
@@ -42,8 +42,8 @@ class LiffController {
 
       res.json({ member });
     } catch (err) {
-      console.error("checkMember error:", err);
-      res.status(500).json({ error: "Server error" });
+      console.error('checkMember error:', err);
+      res.status(500).json({ error: 'Server error' });
     }
   }
 
@@ -61,7 +61,7 @@ class LiffController {
         mobile,
         fax,
         address,
-        email
+        email,
       } = req.body;
 
       console.log('📝 收到註冊請求:', {
@@ -71,42 +71,51 @@ class LiffController {
         birthday,
         job_title,
         mobile,
-        address
+        address,
       });
 
       // 基本驗證 - 檢查必要欄位
-      if (!line_user_id || !name || !birthday || !job_title || !mobile || !address || !email) {
+      if (
+        !line_user_id ||
+        !name ||
+        !birthday ||
+        !job_title ||
+        !mobile ||
+        !address ||
+        !email
+      ) {
         res.status(400).json({
           success: false,
-          error: '缺少必要欄位 (line_user_id, name, birthday, job_title, mobile, address, email)'
+          error:
+            '缺少必要欄位 (line_user_id, name, birthday, job_title, mobile, address, email)',
         });
         return;
       }
 
       // 檢查是否已註冊
       const existingMember = await Member.findOne({
-        where: { line_user_id }
+        where: { line_user_id },
       });
 
       if (existingMember) {
         console.log('⚠️ LINE 帳號已存在:', line_user_id);
         res.status(409).json({
           success: false,
-          error: '此 LINE 帳號已註冊'
+          error: '此 LINE 帳號已註冊',
         });
         return;
       }
 
       // 檢查 email 是否已被使用
       const existingEmail = await Member.findOne({
-        where: { email }
+        where: { email },
       });
 
       if (existingEmail) {
         console.log('⚠️ Email 已存在:', email);
         res.status(409).json({
           success: false,
-          error: '此 Email 已被註冊'
+          error: '此 Email 已被註冊',
         });
         return;
       }
@@ -125,26 +134,25 @@ class LiffController {
         email,
         status: 'pending', // 預設為待審核狀態
         role: 'member',
-        created_at: new Date()
+        created_at: new Date(),
       });
 
       console.log('✅ 會員註冊成功:', {
         id: newMember.id,
         name: newMember.name,
-        email: newMember.email
+        email: newMember.email,
       });
 
       res.status(201).json({
         success: true,
         message: '註冊成功，請等待管理員審核',
-        member_id: newMember.id
+        member_id: newMember.id,
       });
-
     } catch (error) {
       console.error('❌ 註冊會員失敗:', error);
       res.status(500).json({
         success: false,
-        error: '系統錯誤，請稍後再試'
+        error: '系統錯誤，請稍後再試',
       });
     }
   }

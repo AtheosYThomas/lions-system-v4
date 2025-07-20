@@ -1,11 +1,11 @@
 // Member types
 export * from './member';
 
-// Event types  
+// Event types
 export * from './event';
 
 // Registration types
-// 全域註冊型別  
+// 全域註冊型別
 export { RegistrationStatus } from './registration';
 export { PaymentStatus, PaymentMethod } from './payment';
 

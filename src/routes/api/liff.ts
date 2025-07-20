@@ -18,7 +18,7 @@ router.post('/check-member', async (req, res) => {
     res.status(500).json({
       success: false,
       error: 'LIFF 服務錯誤',
-      details: error instanceof Error ? error.message : '未知錯誤'
+      details: error instanceof Error ? error.message : '未知錯誤',
     });
   }
 });
@@ -36,7 +36,7 @@ router.post('/checkMember', async (req, res) => {
     console.error('❌ LIFF checkMember 錯誤:', error);
     res.status(500).json({
       error: 'Server error',
-      details: error instanceof Error ? error.message : '未知錯誤'
+      details: error instanceof Error ? error.message : '未知錯誤',
     });
   }
 });
@@ -53,7 +53,7 @@ router.post('/register', async (req, res) => {
     res.status(500).json({
       success: false,
       error: 'LIFF 註冊服務錯誤',
-      details: error instanceof Error ? error.message : '未知錯誤'
+      details: error instanceof Error ? error.message : '未知錯誤',
     });
   }
 });
@@ -66,18 +66,21 @@ router.get('/config', (req, res) => {
   try {
     // 統一使用 LIFF_ID 環境變數
     const liffId = process.env.LIFF_ID || '2007739371-aKePV20l';
-    console.log('📱 LIFF 配置請求:', { liffId, isDefault: liffId === '2007739371-aKePV20l' });
+    console.log('📱 LIFF 配置請求:', {
+      liffId,
+      isDefault: liffId === '2007739371-aKePV20l',
+    });
 
     res.json({
       success: true,
       liffId: liffId,
-      isDefault: liffId === '2007739371-aKePV20l'
+      isDefault: liffId === '2007739371-aKePV20l',
     });
   } catch (error) {
     console.error('❌ LIFF config 錯誤:', error);
     res.status(500).json({
       success: false,
-      error: 'LIFF 配置服務錯誤'
+      error: 'LIFF 配置服務錯誤',
     });
   }
 });

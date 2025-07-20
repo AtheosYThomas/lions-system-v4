@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import EventModal from '../components/admin/EventModal';
@@ -69,21 +68,26 @@ const AdminEventsList: React.FC = () => {
       month: '2-digit',
       day: '2-digit',
       hour: '2-digit',
-      minute: '2-digit'
+      minute: '2-digit',
     });
   };
 
   const getStatusBadge = (status: string) => {
     const statusMap = {
-      'active': { text: '進行中', className: 'bg-green-100 text-green-800' },
-      'cancelled': { text: '已取消', className: 'bg-red-100 text-red-800' },
-      'completed': { text: '已結束', className: 'bg-gray-100 text-gray-800' }
+      active: { text: '進行中', className: 'bg-green-100 text-green-800' },
+      cancelled: { text: '已取消', className: 'bg-red-100 text-red-800' },
+      completed: { text: '已結束', className: 'bg-gray-100 text-gray-800' },
     };
-    
-    const statusInfo = statusMap[status as keyof typeof statusMap] || { text: status, className: 'bg-blue-100 text-blue-800' };
-    
+
+    const statusInfo = statusMap[status as keyof typeof statusMap] || {
+      text: status,
+      className: 'bg-blue-100 text-blue-800',
+    };
+
     return (
-      <span className={`px-2 py-1 rounded-full text-xs font-medium ${statusInfo.className}`}>
+      <span
+        className={`px-2 py-1 rounded-full text-xs font-medium ${statusInfo.className}`}
+      >
         {statusInfo.text}
       </span>
     );
@@ -110,7 +114,7 @@ const AdminEventsList: React.FC = () => {
           <div className="text-red-600 text-center">
             <h2 className="text-lg font-semibold mb-2">載入失敗</h2>
             <p>{error}</p>
-            <button 
+            <button
               onClick={() => window.location.reload()}
               className="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
             >
@@ -150,13 +154,25 @@ const AdminEventsList: React.FC = () => {
           <div className="bg-white p-6 rounded-lg shadow-sm">
             <div className="flex items-center">
               <div className="p-2 bg-blue-100 rounded-lg">
-                <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                <svg
+                  className="w-6 h-6 text-blue-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                  />
                 </svg>
               </div>
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-600">總活動數</p>
-                <p className="text-2xl font-bold text-gray-900">{events.length}</p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {events.length}
+                </p>
               </div>
             </div>
           </div>
@@ -164,8 +180,18 @@ const AdminEventsList: React.FC = () => {
           <div className="bg-white p-6 rounded-lg shadow-sm">
             <div className="flex items-center">
               <div className="p-2 bg-green-100 rounded-lg">
-                <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <svg
+                  className="w-6 h-6 text-green-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
                 </svg>
               </div>
               <div className="ml-4">
@@ -180,14 +206,29 @@ const AdminEventsList: React.FC = () => {
           <div className="bg-white p-6 rounded-lg shadow-sm">
             <div className="flex items-center">
               <div className="p-2 bg-yellow-100 rounded-lg">
-                <svg className="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <svg
+                  className="w-6 h-6 text-yellow-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
                 </svg>
               </div>
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-600">即將開始</p>
                 <p className="text-2xl font-bold text-gray-900">
-                  {events.filter(e => e.status === 'active' && new Date(e.date) > new Date()).length}
+                  {
+                    events.filter(
+                      e =>
+                        e.status === 'active' && new Date(e.date) > new Date()
+                    ).length
+                  }
                 </p>
               </div>
             </div>
@@ -196,8 +237,18 @@ const AdminEventsList: React.FC = () => {
           <div className="bg-white p-6 rounded-lg shadow-sm">
             <div className="flex items-center">
               <div className="p-2 bg-gray-100 rounded-lg">
-                <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                <svg
+                  className="w-6 h-6 text-gray-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M5 13l4 4L19 7"
+                  />
                 </svg>
               </div>
               <div className="ml-4">
@@ -222,7 +273,7 @@ const AdminEventsList: React.FC = () => {
                 placeholder="輸入關鍵字搜尋..."
                 className="w-full border border-gray-300 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 value={searchKeyword}
-                onChange={(e) => setSearchKeyword(e.target.value)}
+                onChange={e => setSearchKeyword(e.target.value)}
               />
             </div>
             <div className="min-w-48">
@@ -233,7 +284,7 @@ const AdminEventsList: React.FC = () => {
                 type="month"
                 className="w-full border border-gray-300 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 value={filterMonth}
-                onChange={(e) => setFilterMonth(e.target.value)}
+                onChange={e => setFilterMonth(e.target.value)}
               />
             </div>
             <div className="flex gap-2">
@@ -251,7 +302,9 @@ const AdminEventsList: React.FC = () => {
           {(searchKeyword || filterMonth) && (
             <div className="mt-4 text-sm text-gray-600">
               找到 {events.length} 筆活動
-              {searchKeyword && <span className="ml-2">關鍵字：「{searchKeyword}」</span>}
+              {searchKeyword && (
+                <span className="ml-2">關鍵字：「{searchKeyword}」</span>
+              )}
               {filterMonth && <span className="ml-2">月份：{filterMonth}</span>}
             </div>
           )}
@@ -265,14 +318,26 @@ const AdminEventsList: React.FC = () => {
 
           {filteredEvents.length === 0 ? (
             <div className="text-center py-12">
-              <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              <svg
+                className="mx-auto h-12 w-12 text-gray-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                />
               </svg>
               <h3 className="mt-2 text-sm font-medium text-gray-900">
                 {events.length === 0 ? '尚無活動' : '找不到符合條件的活動'}
               </h3>
               <p className="mt-1 text-sm text-gray-500">
-                {events.length === 0 ? '開始建立第一個活動吧！' : '請嘗試調整搜尋條件'}
+                {events.length === 0
+                  ? '開始建立第一個活動吧！'
+                  : '請嘗試調整搜尋條件'}
               </p>
               {events.length === 0 && (
                 <div className="mt-6">
@@ -315,11 +380,13 @@ const AdminEventsList: React.FC = () => {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {filteredEvents.map((event) => (
+                  {filteredEvents.map(event => (
                     <tr key={event.id} className="hover:bg-gray-50">
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div>
-                          <div className="text-sm font-medium text-gray-900">{event.title}</div>
+                          <div className="text-sm font-medium text-gray-900">
+                            {event.title}
+                          </div>
                           {event.description && (
                             <div className="text-sm text-gray-500 truncate max-w-xs">
                               {event.description}
@@ -353,7 +420,9 @@ const AdminEventsList: React.FC = () => {
                             ✏️ 編輯
                           </button>
                           <button
-                            onClick={() => navigate(`/admin/event/${event.id}/checkin`)}
+                            onClick={() =>
+                              navigate(`/admin/event/${event.id}/checkin`)
+                            }
                             className="text-green-600 hover:text-green-900 font-medium"
                             title="查看報到統計"
                           >
@@ -361,27 +430,39 @@ const AdminEventsList: React.FC = () => {
                           </button>
                           <button
                             onClick={async () => {
-                              if (!confirm(`確定要推播「${event.title}」報到通知給所有會員？`)) return;
-                              
+                              if (
+                                !confirm(
+                                  `確定要推播「${event.title}」報到通知給所有會員？`
+                                )
+                              )
+                                return;
+
                               try {
-                                const response = await fetch(`/api/admin/event/${event.id}/notify`, {
-                                  method: 'POST',
-                                  headers: { 
-                                    'Content-Type': 'application/json',
-                                    'Authorization': 'Bearer admin-token'
-                                  },
-                                  body: JSON.stringify({ 
-                                    targetType: 'all',
-                                    messageType: 'manual_push'
-                                  })
-                                });
-                                
+                                const response = await fetch(
+                                  `/api/admin/event/${event.id}/notify`,
+                                  {
+                                    method: 'POST',
+                                    headers: {
+                                      'Content-Type': 'application/json',
+                                      Authorization: 'Bearer admin-token',
+                                    },
+                                    body: JSON.stringify({
+                                      targetType: 'all',
+                                      messageType: 'manual_push',
+                                    }),
+                                  }
+                                );
+
                                 const result = await response.json();
-                                
+
                                 if (response.ok) {
-                                  alert(`📢 推播完成！\n✅ 成功: ${result.statistics.successCount}\n❌ 失敗: ${result.statistics.failedCount}\n📊 推播記錄: ${result.pushRecords.length} 筆`);
+                                  alert(
+                                    `📢 推播完成！\n✅ 成功: ${result.statistics.successCount}\n❌ 失敗: ${result.statistics.failedCount}\n📊 推播記錄: ${result.pushRecords.length} 筆`
+                                  );
                                 } else {
-                                  alert(`推播失敗：${result.error}${result.hint ? '\n提示：' + result.hint : ''}`);
+                                  alert(
+                                    `推播失敗：${result.error}${result.hint ? '\n提示：' + result.hint : ''}`
+                                  );
                                 }
                               } catch (error) {
                                 alert('推播過程發生錯誤');

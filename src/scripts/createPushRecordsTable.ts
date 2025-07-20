@@ -1,13 +1,12 @@
-
 import sequelize from '../config/database';
 import { QueryInterface, DataTypes } from 'sequelize';
 
 async function createPushRecordsTable() {
   const queryInterface = sequelize.getQueryInterface();
-  
+
   try {
     console.log('🔧 正在創建 push_records 表...');
-    
+
     await queryInterface.createTable('push_records', {
       id: {
         type: DataTypes.UUID,
@@ -67,7 +66,6 @@ async function createPushRecordsTable() {
     await queryInterface.addIndex('push_records', ['pushed_at']);
 
     console.log('✅ push_records 表創建成功');
-    
   } catch (error) {
     console.error('❌ 創建 push_records 表失敗:', error);
     throw error;
@@ -81,7 +79,7 @@ if (require.main === module) {
       console.log('🎉 資料庫遷移完成');
       process.exit(0);
     })
-    .catch((error) => {
+    .catch(error => {
       console.error('💥 資料庫遷移失敗:', error);
       process.exit(1);
     });

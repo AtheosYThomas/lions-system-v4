@@ -1,10 +1,12 @@
-
 import dotenv from 'dotenv';
 dotenv.config();
 
 import QRCode from 'qrcode';
 
-export async function generateQRCode(eventId: string, baseUrl?: string): Promise<string> {
+export async function generateQRCode(
+  eventId: string,
+  baseUrl?: string
+): Promise<string> {
   try {
     const fullUrl = baseUrl || process.env.BASE_URL;
     if (!fullUrl) {
@@ -16,8 +18,8 @@ export async function generateQRCode(eventId: string, baseUrl?: string): Promise
       margin: 2,
       color: {
         dark: '#000000',
-        light: '#FFFFFF'
-      }
+        light: '#FFFFFF',
+      },
     });
     return qrCodeDataUrl;
   } catch (error) {
@@ -26,7 +28,10 @@ export async function generateQRCode(eventId: string, baseUrl?: string): Promise
   }
 }
 
-export async function generateQRCodeBuffer(eventId: string, baseUrl?: string): Promise<Buffer> {
+export async function generateQRCodeBuffer(
+  eventId: string,
+  baseUrl?: string
+): Promise<Buffer> {
   try {
     const fullUrl = baseUrl || process.env.BASE_URL;
     if (!fullUrl) {
@@ -38,8 +43,8 @@ export async function generateQRCodeBuffer(eventId: string, baseUrl?: string): P
       margin: 2,
       color: {
         dark: '#000000',
-        light: '#FFFFFF'
-      }
+        light: '#FFFFFF',
+      },
     });
     return qrCodeBuffer;
   } catch (error) {

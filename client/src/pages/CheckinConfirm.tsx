@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 
 declare global {
@@ -18,15 +17,15 @@ interface CheckinStatus {
 const CheckinConfirm: React.FC = () => {
   const [checkinStatus, setCheckinStatus] = useState<CheckinStatus>({
     status: 'checking',
-    message: '正在確認報到資訊...'
+    message: '正在確認報到資訊...',
   });
 
   useEffect(() => {
     const initLiffAndCheckin = async () => {
       try {
         // 初始化 LIFF
-        await window.liff.init({ 
-          liffId: process.env.REACT_APP_LIFF_ID || 'YOUR_LIFF_ID'
+        await window.liff.init({
+          liffId: process.env.REACT_APP_LIFF_ID || 'YOUR_LIFF_ID',
         });
 
         if (!window.liff.isLoggedIn()) {
@@ -41,7 +40,7 @@ const CheckinConfirm: React.FC = () => {
         if (!lineUserId) {
           setCheckinStatus({
             status: 'error',
-            message: '無法取得 LINE 使用者資訊，請重新登入'
+            message: '無法取得 LINE 使用者資訊，請重新登入',
           });
           return;
         }
@@ -50,7 +49,7 @@ const CheckinConfirm: React.FC = () => {
         const memberCheckRes = await fetch('/api/liff/check-member', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ line_user_id: lineUserId })
+          body: JSON.stringify({ line_user_id: lineUserId }),
         });
 
         const memberResult = await memberCheckRes.json();
@@ -58,7 +57,7 @@ const CheckinConfirm: React.FC = () => {
         if (!memberCheckRes.ok || !memberResult.exists) {
           setCheckinStatus({
             status: 'not_member',
-            message: '您尚未註冊為會員，請先完成註冊'
+            message: '您尚未註冊為會員，請先完成註冊',
           });
           return;
         }
@@ -69,10 +68,10 @@ const CheckinConfirm: React.FC = () => {
         const checkinRes = await fetch(`/api/checkin/${eventId}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ 
+          body: JSON.stringify({
             lineUserId: lineUserId,
-            deviceInfo: navigator.userAgent
-          })
+            deviceInfo: navigator.userAgent,
+          }),
         });
 
         const checkinResult = await checkinRes.json();
@@ -83,33 +82,32 @@ const CheckinConfirm: React.FC = () => {
               status: 'success',
               message: '報到成功！',
               memberName: checkinResult.member?.name,
-              checkinTime: new Date().toLocaleString('zh-TW')
+              checkinTime: new Date().toLocaleString('zh-TW'),
             });
           } else {
             setCheckinStatus({
               status: 'already',
-              message: checkinResult.message || '您已完成報到'
+              message: checkinResult.message || '您已完成報到',
             });
           }
         } else {
           if (checkinResult.error?.includes('已經簽到過了')) {
             setCheckinStatus({
               status: 'already',
-              message: '您已完成報到，無需重複操作'
+              message: '您已完成報到，無需重複操作',
             });
           } else {
             setCheckinStatus({
               status: 'error',
-              message: checkinResult.error || '報到失敗，請聯繫工作人員'
+              message: checkinResult.error || '報到失敗，請聯繫工作人員',
             });
           }
         }
-
       } catch (error) {
         console.error('報到流程發生錯誤:', error);
         setCheckinStatus({
           status: 'error',
-          message: '發生未知錯誤，請稍後再試'
+          message: '發生未知錯誤，請稍後再試',
         });
       }
     };
@@ -126,7 +124,7 @@ const CheckinConfirm: React.FC = () => {
         script.onerror = () => {
           setCheckinStatus({
             status: 'error',
-            message: 'LIFF SDK 載入失敗'
+            message: 'LIFF SDK 載入失敗',
           });
         };
         document.head.appendChild(script);
@@ -183,7 +181,7 @@ const CheckinConfirm: React.FC = () => {
         </button>
       );
     }
-    
+
     if (checkinStatus.status !== 'checking') {
       return (
         <button
@@ -194,7 +192,7 @@ const CheckinConfirm: React.FC = () => {
         </button>
       );
     }
-    
+
     return null;
   };
 
@@ -209,7 +207,7 @@ const CheckinConfirm: React.FC = () => {
         </div>
 
         {renderStatusIcon()}
-        
+
         <h2 className={`text-xl font-bold mb-4 ${renderStatusColor()}`}>
           {checkinStatus.status === 'checking' && '檢查報到狀態中...'}
           {checkinStatus.status === 'success' && '報到成功！'}
@@ -218,18 +216,18 @@ const CheckinConfirm: React.FC = () => {
           {checkinStatus.status === 'not_member' && '尚未註冊'}
         </h2>
 
-        <p className="text-gray-600 mb-4">
-          {checkinStatus.message}
-        </p>
+        <p className="text-gray-600 mb-4">{checkinStatus.message}</p>
 
         {checkinStatus.memberName && (
           <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-4">
             <p className="text-green-800">
-              <strong>會員：</strong>{checkinStatus.memberName}
+              <strong>會員：</strong>
+              {checkinStatus.memberName}
             </p>
             {checkinStatus.checkinTime && (
               <p className="text-green-800">
-                <strong>報到時間：</strong>{checkinStatus.checkinTime}
+                <strong>報到時間：</strong>
+                {checkinStatus.checkinTime}
               </p>
             )}
           </div>
@@ -246,9 +244,7 @@ const CheckinConfirm: React.FC = () => {
         {renderActionButton()}
 
         <div className="mt-6 pt-4 border-t border-gray-200">
-          <p className="text-xs text-gray-500">
-            如有任何問題，請聯繫工作人員
-          </p>
+          <p className="text-xs text-gray-500">如有任何問題，請聯繫工作人員</p>
         </div>
       </div>
     </div>

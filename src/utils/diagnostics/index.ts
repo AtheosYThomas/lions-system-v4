@@ -1,4 +1,3 @@
-
 // src/utils/diagnostics/index.ts - 診斷工具統一入口
 export { validateEnvironment } from './envValidation';
 export { checkEnvironment } from './envCheck';
@@ -53,27 +52,38 @@ export class DiagnosticsManager {
       const results = await Promise.all([
         systemDiag.runDiagnostics(),
         liffDiag.runDiagnostics(),
-        runSystemHealthCheck()
+        runSystemHealthCheck(),
       ]);
 
       // 確保所有結果都是 DiagnosticResult 類型
-      const flatResults = results.flat().filter((result): result is DiagnosticResult => 
-        result && typeof result === 'object' && 'component' in result && 'status' in result && 'message' in result
-      );
+      const flatResults = results
+        .flat()
+        .filter(
+          (result): result is DiagnosticResult =>
+            result &&
+            typeof result === 'object' &&
+            'component' in result &&
+            'status' in result &&
+            'message' in result
+        );
 
       return this.generateSystemReport(flatResults);
     } catch (error) {
       console.error('系統檢查失敗:', error);
-      return this.generateSystemReport([{
-        component: 'System Check',
-        status: 'fail',
-        message: '系統檢查執行失敗',
-        details: error instanceof Error ? error.message : '未知錯誤'
-      }]);
+      return this.generateSystemReport([
+        {
+          component: 'System Check',
+          status: 'fail',
+          message: '系統檢查執行失敗',
+          details: error instanceof Error ? error.message : '未知錯誤',
+        },
+      ]);
     }
   }
 
-  private static generateSystemReport(results: DiagnosticResult[]): SystemReport {
+  private static generateSystemReport(
+    results: DiagnosticResult[]
+  ): SystemReport {
     const pass = results.filter(r => r.status === 'pass').length;
     const warning = results.filter(r => r.status === 'warning').length;
     const error = results.filter(r => r.status === 'fail').length;
@@ -86,9 +96,9 @@ export class DiagnosticsManager {
         pass,
         warning,
         error,
-        healthScore
+        healthScore,
       },
-      results
+      results,
     };
   }
 }

@@ -1,4 +1,3 @@
-
 import { Role } from '../types/role';
 
 /**
@@ -33,7 +32,7 @@ export class AuthError extends Error {
   ): AuthError {
     return new AuthError(message, 403, 'INSUFFICIENT_PERMISSIONS', {
       required: requiredRole,
-      current: currentRole
+      current: currentRole,
     });
   }
 
@@ -54,7 +53,7 @@ export class AuthError extends Error {
       error: this.message,
       code: this.code,
       statusCode: this.statusCode,
-      ...(this.details && { details: this.details })
+      ...(this.details && { details: this.details }),
     };
   }
 }

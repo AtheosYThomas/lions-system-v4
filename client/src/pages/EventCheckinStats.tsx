@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import {
-  BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  CartesianGrid,
 } from 'recharts';
 
 interface AttendeeData {
@@ -75,9 +81,9 @@ const EventCheckinStats: React.FC = () => {
 
     // 轉換時間分布資料
     for (const [hour, count] of Object.entries(hourlyDistribution)) {
-      result.push({ 
-        hour: `${hour}:00`, 
-        count 
+      result.push({
+        hour: `${hour}:00`,
+        count,
       });
     }
 
@@ -110,7 +116,7 @@ const EventCheckinStats: React.FC = () => {
           <div className="text-red-600 text-center">
             <h2 className="text-lg font-semibold mb-2">載入失敗</h2>
             <p>{error}</p>
-            <button 
+            <button
               onClick={() => window.location.reload()}
               className="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
             >
@@ -141,7 +147,9 @@ const EventCheckinStats: React.FC = () => {
             {data.eventTitle} - 報到統計
           </h1>
           <div className="text-sm text-gray-600 space-y-1">
-            <p>📅 活動日期：{new Date(data.eventDate).toLocaleString('zh-TW')}</p>
+            <p>
+              📅 活動日期：{new Date(data.eventDate).toLocaleString('zh-TW')}
+            </p>
             <p>📍 活動地點：{data.eventLocation}</p>
           </div>
         </div>
@@ -153,7 +161,9 @@ const EventCheckinStats: React.FC = () => {
               <div className="text-blue-600 text-2xl mr-3">👥</div>
               <div>
                 <p className="text-sm text-gray-600">報名人數</p>
-                <p className="text-2xl font-bold text-gray-900">{data.totalRegistrations}</p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {data.totalRegistrations}
+                </p>
               </div>
             </div>
           </div>
@@ -163,7 +173,9 @@ const EventCheckinStats: React.FC = () => {
               <div className="text-green-600 text-2xl mr-3">✅</div>
               <div>
                 <p className="text-sm text-gray-600">已報到</p>
-                <p className="text-2xl font-bold text-gray-900">{data.totalCheckins}</p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {data.totalCheckins}
+                </p>
               </div>
             </div>
           </div>
@@ -173,7 +185,9 @@ const EventCheckinStats: React.FC = () => {
               <div className="text-orange-600 text-2xl mr-3">⏳</div>
               <div>
                 <p className="text-sm text-gray-600">未報到</p>
-                <p className="text-2xl font-bold text-gray-900">{data.notCheckedIn.length}</p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {data.notCheckedIn.length}
+                </p>
               </div>
             </div>
           </div>
@@ -183,7 +197,9 @@ const EventCheckinStats: React.FC = () => {
               <div className="text-purple-600 text-2xl mr-3">📊</div>
               <div>
                 <p className="text-sm text-gray-600">報到率</p>
-                <p className="text-2xl font-bold text-gray-900">{data.attendanceRate.toFixed(1)}%</p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {data.attendanceRate.toFixed(1)}%
+                </p>
               </div>
             </div>
           </div>
@@ -237,30 +253,39 @@ const EventCheckinStats: React.FC = () => {
               <table className="w-full">
                 <thead className="bg-gray-50 sticky top-0">
                   <tr>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">姓名</th>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">手機</th>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">報到時間</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">
+                      姓名
+                    </th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">
+                      手機
+                    </th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">
+                      報到時間
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
                   {data.attendees.map((attendee, index) => (
                     <tr key={attendee.id || index} className="hover:bg-gray-50">
-                      <td className="px-4 py-2 text-sm text-gray-900">{attendee.name}</td>
-                      <td className="px-4 py-2 text-sm text-gray-900">{attendee.phone}</td>
                       <td className="px-4 py-2 text-sm text-gray-900">
-                        {attendee.checkedInAt 
-                          ? new Date(attendee.checkedInAt).toLocaleString('zh-TW')
-                          : '-'
-                        }
+                        {attendee.name}
+                      </td>
+                      <td className="px-4 py-2 text-sm text-gray-900">
+                        {attendee.phone}
+                      </td>
+                      <td className="px-4 py-2 text-sm text-gray-900">
+                        {attendee.checkedInAt
+                          ? new Date(attendee.checkedInAt).toLocaleString(
+                              'zh-TW'
+                            )
+                          : '-'}
                       </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
               {data.attendees.length === 0 && (
-                <div className="p-4 text-center text-gray-500">
-                  尚無人報到
-                </div>
+                <div className="p-4 text-center text-gray-500">尚無人報到</div>
               )}
             </div>
           </div>
@@ -276,21 +301,32 @@ const EventCheckinStats: React.FC = () => {
               <table className="w-full">
                 <thead className="bg-gray-50 sticky top-0">
                   <tr>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">姓名</th>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">手機</th>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">報名時間</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">
+                      姓名
+                    </th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">
+                      手機
+                    </th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">
+                      報名時間
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
                   {data.notCheckedIn.map((member, index) => (
                     <tr key={member.id || index} className="hover:bg-gray-50">
-                      <td className="px-4 py-2 text-sm text-gray-900">{member.name}</td>
-                      <td className="px-4 py-2 text-sm text-gray-900">{member.phone}</td>
                       <td className="px-4 py-2 text-sm text-gray-900">
-                        {member.registeredAt 
-                          ? new Date(member.registeredAt).toLocaleString('zh-TW')
-                          : '-'
-                        }
+                        {member.name}
+                      </td>
+                      <td className="px-4 py-2 text-sm text-gray-900">
+                        {member.phone}
+                      </td>
+                      <td className="px-4 py-2 text-sm text-gray-900">
+                        {member.registeredAt
+                          ? new Date(member.registeredAt).toLocaleString(
+                              'zh-TW'
+                            )
+                          : '-'}
                       </td>
                     </tr>
                   ))}

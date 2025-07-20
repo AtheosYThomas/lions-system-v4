@@ -1,4 +1,3 @@
-
 import { Request, Response, NextFunction } from 'express';
 
 export const errorHandler = (
@@ -8,7 +7,7 @@ export const errorHandler = (
   next: NextFunction
 ) => {
   console.error('Error:', err);
-  
+
   // 處理認證相關錯誤
   if (err.code === 'UNAUTHORIZED' || err.code === 'UNAUTHENTICATED') {
     return res.status(401).json({
@@ -16,28 +15,31 @@ export const errorHandler = (
         message: err.message || '身份驗證失敗',
         code: err.code,
         status: 401,
-        timestamp: new Date().toISOString()
-      }
+        timestamp: new Date().toISOString(),
+      },
     });
   }
 
-  if (err.code === 'INSUFFICIENT_PERMISSIONS' || err.code === 'ACCOUNT_INACTIVE') {
+  if (
+    err.code === 'INSUFFICIENT_PERMISSIONS' ||
+    err.code === 'ACCOUNT_INACTIVE'
+  ) {
     return res.status(403).json({
       error: {
         message: err.message || '權限不足',
         code: err.code,
         status: 403,
-        timestamp: new Date().toISOString()
-      }
+        timestamp: new Date().toISOString(),
+      },
     });
   }
-  
+
   res.status(err.status || 500).json({
     error: {
       message: err.message || 'Internal Server Error',
       status: err.status || 500,
-      timestamp: new Date().toISOString()
-    }
+      timestamp: new Date().toISOString(),
+    },
   });
 };
 
@@ -50,7 +52,7 @@ export const notFoundHandler = (
     error: {
       message: 'Route not found',
       status: 404,
-      path: req.path
-    }
+      path: req.path,
+    },
   });
 };

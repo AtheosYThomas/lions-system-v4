@@ -11,7 +11,7 @@ export function checkEnvironment() {
     'DATABASE_URL',
     'LINE_CHANNEL_ACCESS_TOKEN',
     'LINE_CHANNEL_SECRET',
-    'LIFF_ID'
+    'LIFF_ID',
   ];
 
   const missing: string[] = [];
@@ -25,7 +25,11 @@ export function checkEnvironment() {
     }
   });
 
-  console.log(chalk.green(`✅ 已設定的環境變數 (${present.length}/${requiredVars.length}):`));
+  console.log(
+    chalk.green(
+      `✅ 已設定的環境變數 (${present.length}/${requiredVars.length}):`
+    )
+  );
   present.forEach(varName => {
     console.log(chalk.green(`  - ${varName}`));
   });

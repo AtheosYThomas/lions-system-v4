@@ -1,4 +1,3 @@
-
 import axios from 'axios';
 import crypto from 'crypto';
 import dotenv from 'dotenv';
@@ -36,7 +35,10 @@ class LineWebhookTester {
   /**
    * 測試文字訊息事件
    */
-  async testTextMessage(text: string, userId = 'U_TEST_USER_12345'): Promise<void> {
+  async testTextMessage(
+    text: string,
+    userId = 'U_TEST_USER_12345'
+  ): Promise<void> {
     const payload = {
       destination: 'U_LINE_BOT_ID',
       events: [
@@ -45,17 +47,17 @@ class LineWebhookTester {
           message: {
             type: 'text',
             id: `msg_${Date.now()}`,
-            text: text
+            text: text,
           },
           timestamp: Date.now(),
           source: {
             type: 'user',
-            userId: userId
+            userId: userId,
           },
           replyToken: `REPLY_TOKEN_${Date.now()}`,
-          mode: 'active'
-        }
-      ]
+          mode: 'active',
+        },
+      ],
     };
 
     const body = JSON.stringify(payload);
@@ -63,7 +65,7 @@ class LineWebhookTester {
 
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
-      'User-Agent': 'LineBotSdk/1.0'
+      'User-Agent': 'LineBotSdk/1.0',
     };
 
     if (signature) {
@@ -73,13 +75,12 @@ class LineWebhookTester {
     try {
       console.log(`🧪 測試訊息: "${text}"`);
       console.log(`👤 用戶ID: ${userId}`);
-      
+
       const response = await axios.post(this.webhookUrl, payload, { headers });
-      
+
       console.log('✅ Webhook 測試成功');
       console.log('📊 回應狀態:', response.status);
       console.log('📦 回應資料:', response.data);
-      
     } catch (error: any) {
       console.error('❌ Webhook 測試失敗');
       if (error.response) {
@@ -103,12 +104,12 @@ class LineWebhookTester {
           timestamp: Date.now(),
           source: {
             type: 'user',
-            userId: userId
+            userId: userId,
           },
           replyToken: `REPLY_TOKEN_${Date.now()}`,
-          mode: 'active'
-        }
-      ]
+          mode: 'active',
+        },
+      ],
     };
 
     const body = JSON.stringify(payload);
@@ -116,7 +117,7 @@ class LineWebhookTester {
 
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
-      'User-Agent': 'LineBotSdk/1.0'
+      'User-Agent': 'LineBotSdk/1.0',
     };
 
     if (signature) {
@@ -126,13 +127,12 @@ class LineWebhookTester {
     try {
       console.log(`🧪 測試追蹤事件`);
       console.log(`👤 用戶ID: ${userId}`);
-      
+
       const response = await axios.post(this.webhookUrl, payload, { headers });
-      
+
       console.log('✅ 追蹤事件測試成功');
       console.log('📊 回應狀態:', response.status);
       console.log('📦 回應資料:', response.data);
-      
     } catch (error: any) {
       console.error('❌ 追蹤事件測試失敗');
       if (error.response) {
@@ -151,19 +151,12 @@ class LineWebhookTester {
     console.log('🚀 開始批量測試 LINE Webhook');
     console.log('================================');
 
-    const testCases = [
-      '簽到',
-      '活動',
-      '會員',
-      '報名',
-      'hello',
-      '測試訊息'
-    ];
+    const testCases = ['簽到', '活動', '會員', '報名', 'hello', '測試訊息'];
 
     for (const testCase of testCases) {
       await this.testTextMessage(testCase, userId);
       console.log(''); // 空行分隔
-      
+
       // 避免請求過快
       await new Promise(resolve => setTimeout(resolve, 500));
     }
@@ -176,10 +169,10 @@ class LineWebhookTester {
 // 執行測試
 async function main(): Promise<void> {
   const tester = new LineWebhookTester();
-  
+
   // 檢查命令行參數
   const args = process.argv.slice(2);
-  
+
   if (args.length === 0) {
     console.log('📋 使用方式:');
     console.log('npx tsx src/scripts/testLineWebhook.ts "測試訊息" [userId]');
@@ -200,11 +193,11 @@ async function main(): Promise<void> {
     case '--batch':
       await tester.runBatchTest(userId);
       break;
-      
+
     case '--follow':
       await tester.testFollowEvent(userId);
       break;
-      
+
     default:
       await tester.testTextMessage(command, userId);
       break;

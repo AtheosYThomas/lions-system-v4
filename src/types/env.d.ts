@@ -5,15 +5,15 @@ declare namespace NodeJS {
     LINE_CHANNEL_SECRET: string;
     DATABASE_URL: string;
     PORT?: string;
-    
+
     // LIFF 相關
     LIFF_ID?: string;
     LIFF_URL?: string;
-    
+
     // 推播與排程相關
     CRON_TOKEN?: string;
     BASE_URL?: string;
-    
+
     // PostgreSQL
     PGDATABASE?: string;
     PGHOST?: string;

@@ -19,10 +19,10 @@ function scanSourceFiles() {
 
   const patterns = [
     'src/routes/**/*.ts',
-    'src/controllers/**/*.ts', 
+    'src/controllers/**/*.ts',
     'src/middleware/**/*.ts',
     'src/models/**/*.ts',
-    'src/utils/**/*.ts'
+    'src/utils/**/*.ts',
   ];
 
   let hasErrors = false;
@@ -40,7 +40,11 @@ function scanSourceFiles() {
         }
 
         // 檢查是否有未捕獲的 async/await
-        if (content.includes('async') && !content.includes('try') && !content.includes('catch')) {
+        if (
+          content.includes('async') &&
+          !content.includes('try') &&
+          !content.includes('catch')
+        ) {
           console.log(chalk.yellow(`⚠️ ${file}: async 函數缺少錯誤處理`));
         }
 
@@ -90,17 +94,24 @@ function checkEnvVariables() {
     });
 
     // 檢查缺少的環境變數
-    const missingVars = Array.from(usedEnvVars).filter(varName => !envVars[varName as string]);
+    const missingVars = Array.from(usedEnvVars).filter(
+      varName => !envVars[varName as string]
+    );
 
     if (missingVars.length > 0) {
-      console.log(chalk.red(`❌ 程式中使用但 .env 中缺少的變數: ${missingVars.join(', ')}`));
+      console.log(
+        chalk.red(
+          `❌ 程式中使用但 .env 中缺少的變數: ${missingVars.join(', ')}`
+        )
+      );
     } else {
       console.log(chalk.green('✅ 所有使用的環境變數都已定義'));
     }
 
     // 顯示已設定的環境變數
-    console.log(chalk.cyan(`📋 已設定的環境變數: ${Object.keys(envVars).join(', ')}`));
-
+    console.log(
+      chalk.cyan(`📋 已設定的環境變數: ${Object.keys(envVars).join(', ')}`)
+    );
   } catch (err: any) {
     console.log(chalk.red(`❌ .env 檔案解析錯誤: ${err.message}`));
   }
@@ -157,15 +168,19 @@ function checkFrontendFiles() {
 // 4. 執行 health check 測試（智能檢測）
 function runHealthCheck() {
   console.log(chalk.blue('🏥 4. 執行 Health Check...'));
-  
+
   const PORT = process.env.PORT || '5000';
-  
-  const attemptHealthCheck = (): Promise<{ success: boolean; data?: any; error?: string }> => {
-    return new Promise((resolve) => {
-      const req = http.get(`http://0.0.0.0:${PORT}/health`, (res) => {
+
+  const attemptHealthCheck = (): Promise<{
+    success: boolean;
+    data?: any;
+    error?: string;
+  }> => {
+    return new Promise(resolve => {
+      const req = http.get(`http://0.0.0.0:${PORT}/health`, res => {
         let data = '';
 
-        res.on('data', (chunk) => {
+        res.on('data', chunk => {
           data += chunk;
         });
 
@@ -175,7 +190,10 @@ function runHealthCheck() {
             if (res.statusCode === 200 && healthData.status === 'healthy') {
               resolve({ success: true, data: healthData });
             } else {
-              resolve({ success: false, error: `HTTP ${res.statusCode}: ${data}` });
+              resolve({
+                success: false,
+                error: `HTTP ${res.statusCode}: ${data}`,
+              });
             }
           } catch (parseError) {
             resolve({ success: false, error: `回應格式錯誤: ${data}` });
@@ -183,7 +201,7 @@ function runHealthCheck() {
         });
       });
 
-      req.on('error', (err) => {
+      req.on('error', err => {
         resolve({ success: false, error: err.message });
       });
 
@@ -194,16 +212,18 @@ function runHealthCheck() {
     });
   };
 
-  return new Promise<void>(async (resolve) => {
+  return new Promise<void>(async resolve => {
     // 先嘗試一次
     const result = await attemptHealthCheck();
-    
+
     if (result.success) {
       console.log(chalk.green(`✅ Health check 成功`));
       console.log(chalk.cyan(`📊 狀態: ${result.data.status}`));
       console.log(chalk.cyan(`🔌 資料庫: ${result.data.database}`));
       if (result.data.services?.routes) {
-        console.log(chalk.cyan(`🛣️ 路由: ${result.data.services.routes.join(', ')}`));
+        console.log(
+          chalk.cyan(`🛣️ 路由: ${result.data.services.routes.join(', ')}`)
+        );
       }
       resolve();
       return;
@@ -212,25 +232,33 @@ function runHealthCheck() {
     // 如果失敗，等待 3 秒後再試一次（給伺服器啟動時間）
     console.log(chalk.yellow('⏳ 等待伺服器啟動...'));
     await new Promise(wait => setTimeout(wait, 3000));
-    
+
     const secondResult = await attemptHealthCheck();
-    
+
     if (secondResult.success) {
       console.log(chalk.green(`✅ Health check 成功`));
       console.log(chalk.cyan(`📊 狀態: ${secondResult.data.status}`));
       console.log(chalk.cyan(`🔌 資料庫: ${secondResult.data.database}`));
       if (secondResult.data.services?.routes) {
-        console.log(chalk.cyan(`🛣️ 路由: ${secondResult.data.services.routes.join(', ')}`));
+        console.log(
+          chalk.cyan(`🛣️ 路由: ${secondResult.data.services.routes.join(', ')}`)
+        );
       }
     } else {
       // 只有在真的連不上時才顯示警告，而不是錯誤
       if (secondResult.error?.includes('ECONNREFUSED')) {
-        console.log(chalk.yellow(`⏳ Health Check 暫時無法連接 - 這是正常的，伺服器可能正在啟動中`));
+        console.log(
+          chalk.yellow(
+            `⏳ Health Check 暫時無法連接 - 這是正常的，伺服器可能正在啟動中`
+          )
+        );
       } else {
-        console.log(chalk.yellow(`⚠️ Health check 暫時失敗: ${secondResult.error}`));
+        console.log(
+          chalk.yellow(`⚠️ Health check 暫時失敗: ${secondResult.error}`)
+        );
       }
     }
-    
+
     resolve();
   });
 }
@@ -245,7 +273,7 @@ async function testDatabaseConnection() {
     console.log(chalk.green('✅ 資料庫連線成功'));
 
     // 測試基本操作
-    await sequelize.query("SELECT 1 as test");
+    await sequelize.query('SELECT 1 as test');
     console.log(chalk.green('✅ 資料庫查詢測試成功'));
 
     await sequelize.close();
@@ -262,12 +290,22 @@ function checkDependencies() {
 
   try {
     const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf-8'));
-    const dependencies = { ...packageJson.dependencies, ...packageJson.devDependencies };
+    const dependencies = {
+      ...packageJson.dependencies,
+      ...packageJson.devDependencies,
+    };
 
-    console.log(chalk.green(`✅ 共 ${Object.keys(dependencies).length} 個套件`));
+    console.log(
+      chalk.green(`✅ 共 ${Object.keys(dependencies).length} 個套件`)
+    );
 
     // 檢查重要套件
-    const importantPackages = ['express', 'sequelize', '@line/bot-sdk', 'dotenv'];
+    const importantPackages = [
+      'express',
+      'sequelize',
+      '@line/bot-sdk',
+      'dotenv',
+    ];
     importantPackages.forEach(pkg => {
       if (dependencies[pkg]) {
         console.log(chalk.green(`✅ ${pkg}: ${dependencies[pkg]}`));
@@ -275,7 +313,6 @@ function checkDependencies() {
         console.log(chalk.red(`❌ 缺少重要套件: ${pkg}`));
       }
     });
-
   } catch (err: any) {
     console.log(chalk.red(`❌ package.json 讀取錯誤: ${err.message}`));
   }
@@ -285,9 +322,9 @@ function checkDependencies() {
 
 // 主要診斷函數
 export async function runDiagnostics() {
-  console.log(chalk.cyan('=' .repeat(60)));
+  console.log(chalk.cyan('='.repeat(60)));
   console.log(chalk.cyan('🦁 北大獅子會系統診斷報告'));
-  console.log(chalk.cyan('=' .repeat(60)));
+  console.log(chalk.cyan('='.repeat(60)));
 
   scanSourceFiles();
   checkEnvVariables();
@@ -296,9 +333,9 @@ export async function runDiagnostics() {
   await testDatabaseConnection();
   checkDependencies();
 
-  console.log(chalk.cyan('=' .repeat(60)));
+  console.log(chalk.cyan('='.repeat(60)));
   console.log(chalk.cyan('📋 診斷完成'));
-  console.log(chalk.cyan('=' .repeat(60)));
+  console.log(chalk.cyan('='.repeat(60)));
 
   // 建議修正事項
   console.log(chalk.yellow('\n💡 建議修正事項:'));

@@ -33,7 +33,9 @@ class PushService {
   /**
    * 批量記錄推播結果
    */
-  async recordBulkPushResults(records: PushRecordData[]): Promise<PushRecord[]> {
+  async recordBulkPushResults(
+    records: PushRecordData[]
+  ): Promise<PushRecord[]> {
     try {
       return await PushRecord.bulkCreate(records);
     } catch (error) {
@@ -48,24 +50,25 @@ class PushService {
   async getPushStatistics(eventId: string): Promise<PushStatistics> {
     try {
       const total = await PushRecord.count({
-        where: { event_id: eventId }
+        where: { event_id: eventId },
       });
 
       const success = await PushRecord.count({
-        where: { 
+        where: {
           event_id: eventId,
-          status: 'success'
-        }
+          status: 'success',
+        },
       });
 
       const failed = total - success;
-      const successRate = total > 0 ? Math.round((success / total) * 100 * 100) / 100 : 0;
+      const successRate =
+        total > 0 ? Math.round((success / total) * 100 * 100) / 100 : 0;
 
       return {
         total,
         success,
         failed,
-        successRate
+        successRate,
       };
     } catch (error) {
       console.error('❌ 獲取推播統計失敗:', error);
@@ -76,15 +79,24 @@ class PushService {
   /**
    * 獲取活動推播記錄
    */
-  async getEventPushRecords(eventId: string, options: {
-    limit?: number;
-    offset?: number;
-    messageType?: string;
-    startDate?: string;
-    endDate?: string;
-  } = {}) {
+  async getEventPushRecords(
+    eventId: string,
+    options: {
+      limit?: number;
+      offset?: number;
+      messageType?: string;
+      startDate?: string;
+      endDate?: string;
+    } = {}
+  ) {
     try {
-      const { limit = 50, offset = 0, messageType, startDate, endDate } = options;
+      const {
+        limit = 50,
+        offset = 0,
+        messageType,
+        startDate,
+        endDate,
+      } = options;
 
       const whereClause: any = { event_id: eventId };
       if (messageType) {
@@ -108,19 +120,19 @@ class PushService {
           {
             model: Member,
             as: 'member',
-            attributes: ['id', 'name', 'phone', 'email']
-          }
+            attributes: ['id', 'name', 'phone', 'email'],
+          },
         ],
         order: [['pushed_at', 'DESC']],
         limit,
-        offset
+        offset,
       });
 
       return {
         records: records.rows,
         total: records.count,
         limit,
-        offset
+        offset,
       };
     } catch (error) {
       console.error('❌ 獲取活動推播記錄失敗:', error);
@@ -131,15 +143,19 @@ class PushService {
   /**
    * 檢查會員是否已收到特定類型推播
    */
-  async checkMemberPushStatus(memberId: string, eventId: string, messageType: string): Promise<boolean> {
+  async checkMemberPushStatus(
+    memberId: string,
+    eventId: string,
+    messageType: string
+  ): Promise<boolean> {
     try {
       const record = await PushRecord.findOne({
         where: {
           member_id: memberId,
           event_id: eventId,
           message_type: messageType,
-          status: 'success'
-        }
+          status: 'success',
+        },
       });
 
       return !!record;
@@ -152,15 +168,24 @@ class PushService {
   /**
    * 獲取會員推播記錄
    */
-  async getMemberPushRecords(memberId: string, options: {
-    limit?: number;
-    offset?: number;
-    messageType?: string;
-    startDate?: string;
-    endDate?: string;
-  } = {}) {
+  async getMemberPushRecords(
+    memberId: string,
+    options: {
+      limit?: number;
+      offset?: number;
+      messageType?: string;
+      startDate?: string;
+      endDate?: string;
+    } = {}
+  ) {
     try {
-      const { limit = 50, offset = 0, messageType, startDate, endDate } = options;
+      const {
+        limit = 50,
+        offset = 0,
+        messageType,
+        startDate,
+        endDate,
+      } = options;
 
       const whereClause: any = { member_id: memberId };
       if (messageType) {
@@ -184,12 +209,12 @@ class PushService {
           {
             model: Event,
             as: 'event',
-            attributes: ['id', 'title', 'date', 'status']
-          }
+            attributes: ['id', 'title', 'date', 'status'],
+          },
         ],
         order: [['pushed_at', 'DESC']],
         limit,
-        offset
+        offset,
       });
 
       return records;
@@ -215,10 +240,10 @@ class PushService {
         where: {
           date: {
             [Op.gte]: tomorrow,
-            [Op.lte]: tomorrowEnd
+            [Op.lte]: tomorrowEnd,
           },
-          status: 'active'
-        }
+          status: 'active',
+        },
       });
     } catch (error) {
       console.error('❌ 獲取明日活動失敗:', error);

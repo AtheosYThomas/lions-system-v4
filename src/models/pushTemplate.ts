@@ -1,4 +1,3 @@
-
 import { DataTypes, Model, Optional } from 'sequelize';
 import sequelize from '../config/database';
 
@@ -11,9 +10,16 @@ interface PushTemplateAttributes {
   updated_at: Date;
 }
 
-interface PushTemplateCreationAttributes extends Optional<PushTemplateAttributes, 'id' | 'created_at' | 'updated_at'> {}
+interface PushTemplateCreationAttributes
+  extends Optional<
+    PushTemplateAttributes,
+    'id' | 'created_at' | 'updated_at'
+  > {}
 
-class PushTemplate extends Model<PushTemplateAttributes, PushTemplateCreationAttributes> implements PushTemplateAttributes {
+class PushTemplate
+  extends Model<PushTemplateAttributes, PushTemplateCreationAttributes>
+  implements PushTemplateAttributes
+{
   public id!: string;
   public name!: string;
   public description?: string;
@@ -27,35 +33,35 @@ PushTemplate.init(
     id: {
       type: DataTypes.STRING,
       primaryKey: true,
-      defaultValue: DataTypes.UUIDV4
+      defaultValue: DataTypes.UUIDV4,
     },
     name: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
     },
     description: {
       type: DataTypes.TEXT,
-      allowNull: true
+      allowNull: true,
     },
     json: {
       type: DataTypes.JSONB,
-      allowNull: false
+      allowNull: false,
     },
     created_at: {
       type: DataTypes.DATE,
-      defaultValue: DataTypes.NOW
+      defaultValue: DataTypes.NOW,
     },
     updated_at: {
       type: DataTypes.DATE,
-      defaultValue: DataTypes.NOW
-    }
+      defaultValue: DataTypes.NOW,
+    },
   },
   {
     sequelize,
     tableName: 'push_templates',
     timestamps: true,
     createdAt: 'created_at',
-    updatedAt: 'updated_at'
+    updatedAt: 'updated_at',
   }
 );
 

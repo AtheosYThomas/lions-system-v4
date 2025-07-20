@@ -20,7 +20,7 @@ interface CheckinSearchOptions {
 export async function performCheckin({
   member_id,
   event_id,
-  device_info
+  device_info,
 }: PerformCheckinParams) {
   // 1️⃣ 檢查活動是否存在
   const event = await prisma.event.findUnique({
@@ -78,9 +78,9 @@ export async function performCheckin({
         select: {
           id: true,
           name: true,
-          email: true
-        }
-      }
+          email: true,
+        },
+      },
     },
   });
 
@@ -90,13 +90,16 @@ export async function performCheckin({
 /**
  * 檢查會員是否已簽到
  */
-export async function isCheckedIn(memberId: string, eventId: string): Promise<boolean> {
+export async function isCheckedIn(
+  memberId: string,
+  eventId: string
+): Promise<boolean> {
   try {
     const checkin = await prisma.checkin.findFirst({
       where: {
         member_id: memberId,
-        event_id: eventId
-      }
+        event_id: eventId,
+      },
     });
 
     return !!checkin;
@@ -109,7 +112,10 @@ export async function isCheckedIn(memberId: string, eventId: string): Promise<bo
 /**
  * 獲取會員的簽到記錄
  */
-export async function getMemberCheckins(memberId: string, options: Partial<CheckinSearchOptions> = {}) {
+export async function getMemberCheckins(
+  memberId: string,
+  options: Partial<CheckinSearchOptions> = {}
+) {
   try {
     const whereClause: any = { member_id: memberId };
 
@@ -136,26 +142,26 @@ export async function getMemberCheckins(memberId: string, options: Partial<Check
               id: true,
               title: true,
               date: true,
-              location: true
-            }
-          }
+              location: true,
+            },
+          },
         },
         orderBy: {
-          checkin_time: 'desc'
+          checkin_time: 'desc',
         },
         take: options.limit || 20,
-        skip: options.offset || 0
+        skip: options.offset || 0,
       }),
       prisma.checkin.count({
-        where: whereClause
-      })
+        where: whereClause,
+      }),
     ]);
 
     return {
       checkins,
       total,
       limit: options.limit || 20,
-      offset: options.offset || 0
+      offset: options.offset || 0,
     };
   } catch (error) {
     console.error('獲取會員簽到記錄失敗:', error);
@@ -166,7 +172,10 @@ export async function getMemberCheckins(memberId: string, options: Partial<Check
 /**
  * 獲取活動的簽到記錄
  */
-export async function getEventCheckins(eventId: string, options: Partial<CheckinSearchOptions> = {}) {
+export async function getEventCheckins(
+  eventId: string,
+  options: Partial<CheckinSearchOptions> = {}
+) {
   try {
     const whereClause: any = { event_id: eventId };
 
@@ -189,26 +198,26 @@ export async function getEventCheckins(eventId: string, options: Partial<Checkin
               id: true,
               name: true,
               email: true,
-              phone: true
-            }
-          }
+              phone: true,
+            },
+          },
         },
         orderBy: {
-          checkin_time: 'asc'
+          checkin_time: 'asc',
         },
         take: options.limit || 100,
-        skip: options.offset || 0
+        skip: options.offset || 0,
       }),
       prisma.checkin.count({
-        where: whereClause
-      })
+        where: whereClause,
+      }),
     ]);
 
     return {
       checkins,
       total,
       limit: options.limit || 100,
-      offset: options.offset || 0
+      offset: options.offset || 0,
     };
   } catch (error) {
     console.error('獲取活動簽到記錄失敗:', error);
@@ -225,25 +234,31 @@ export async function getCheckinStats(eventId?: string) {
       // 單一活動簽到統計
       const [checkinCount, registrationCount] = await Promise.all([
         prisma.checkin.count({ where: { event_id: eventId } }),
-        prisma.eventRegistration.count({ where: { event_id: eventId, status: 'confirmed' } })
+        prisma.eventRegistration.count({
+          where: { event_id: eventId, status: 'confirmed' },
+        }),
       ]);
 
-      const attendanceRate = registrationCount > 0 ? (checkinCount / registrationCount) * 100 : 0;
+      const attendanceRate =
+        registrationCount > 0 ? (checkinCount / registrationCount) * 100 : 0;
 
       // 按小時統計簽到分布
       const checkins = await prisma.checkin.findMany({
         where: { event_id: eventId },
         select: {
-          checkin_time: true
+          checkin_time: true,
         },
         orderBy: {
-          checkin_time: 'asc'
-        }
+          checkin_time: 'asc',
+        },
       });
 
       const hourlyStats: { [hour: string]: number } = {};
       checkins.forEach(checkin => {
-        const hour = new Date(checkin.checkin_time).getHours().toString().padStart(2, '0');
+        const hour = new Date(checkin.checkin_time)
+          .getHours()
+          .toString()
+          .padStart(2, '0');
         hourlyStats[hour] = (hourlyStats[hour] || 0) + 1;
       });
 
@@ -252,7 +267,7 @@ export async function getCheckinStats(eventId?: string) {
         totalCheckins: checkinCount,
         totalRegistrations: registrationCount,
         attendanceRate: Math.round(attendanceRate * 100) / 100,
-        hourlyDistribution: hourlyStats
+        hourlyDistribution: hourlyStats,
       };
     } else {
       // 全體簽到統計
@@ -261,28 +276,29 @@ export async function getCheckinStats(eventId?: string) {
 
       const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
 
-      const [totalCheckins, todayCheckins, thisWeekCheckins] = await Promise.all([
-        prisma.checkin.count(),
-        prisma.checkin.count({
-          where: {
-            checkin_time: {
-              gte: today
-            }
-          }
-        }),
-        prisma.checkin.count({
-          where: {
-            checkin_time: {
-              gte: oneWeekAgo
-            }
-          }
-        })
-      ]);
+      const [totalCheckins, todayCheckins, thisWeekCheckins] =
+        await Promise.all([
+          prisma.checkin.count(),
+          prisma.checkin.count({
+            where: {
+              checkin_time: {
+                gte: today,
+              },
+            },
+          }),
+          prisma.checkin.count({
+            where: {
+              checkin_time: {
+                gte: oneWeekAgo,
+              },
+            },
+          }),
+        ]);
 
       return {
         totalCheckins,
         todayCheckins,
-        thisWeekCheckins
+        thisWeekCheckins,
       };
     }
   } catch (error) {
@@ -302,12 +318,12 @@ export async function getEventRegistrations(eventId: string) {
         member: true,
         event: true,
       },
-      orderBy: { registration_date: 'desc' }
+      orderBy: { registration_date: 'desc' },
     });
 
     return {
       registrations: registrationList,
-      total: registrationList.length
+      total: registrationList.length,
     };
   } catch (error) {
     console.error('獲取活動報名記錄失敗:', error);
@@ -323,33 +339,36 @@ type CheckinEligibilityResult = {
 /**
  * 驗證簽到資格
  */
-export async function validateCheckinEligibility(memberId: string, eventId: string): Promise<CheckinEligibilityResult> {
+export async function validateCheckinEligibility(
+  memberId: string,
+  eventId: string
+): Promise<CheckinEligibilityResult> {
   try {
     // 檢查會員是否已註冊該活動
     const registration = await prisma.eventRegistration.findFirst({
       where: {
         member_id: memberId,
         event_id: eventId,
-        status: 'confirmed' // 只有確認的報名才能簽到
-      }
+        status: 'confirmed', // 只有確認的報名才能簽到
+      },
     });
 
     if (registration) {
       return {
         eligible: true,
-        reason: null
+        reason: null,
       };
     } else {
       return {
         eligible: false,
-        reason: '尚未報名該活動或報名未確認'
+        reason: '尚未報名該活動或報名未確認',
       };
     }
   } catch (error) {
     console.error('驗證簽到資格失敗:', error);
     return {
       eligible: false,
-      reason: '驗證簽到資格時發生錯誤'
+      reason: '驗證簽到資格時發生錯誤',
     };
   }
 }
@@ -361,5 +380,5 @@ export default {
   getEventCheckins,
   getCheckinStats,
   getEventRegistrations,
-  validateCheckinEligibility
+  validateCheckinEligibility,
 };

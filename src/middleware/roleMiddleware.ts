@@ -1,6 +1,13 @@
 import { Request, Response, NextFunction } from 'express';
 import { AuthError } from './AuthError';
-import { Role, roleRank, roleDisplayNames, hasMinimumRole, isInRoleGroup, RoleGroup } from '../types/role';
+import {
+  Role,
+  roleRank,
+  roleDisplayNames,
+  hasMinimumRole,
+  isInRoleGroup,
+  RoleGroup,
+} from '../types/role';
 
 /**
  * 基礎角色權限中間件
@@ -107,7 +114,9 @@ export const requireAnyRole = (allowedRoles: Role[]) => {
     const userRole = member.role as Role;
 
     if (!allowedRoles.includes(userRole)) {
-      const roleNames = allowedRoles.map(role => roleDisplayNames[role]).join(' 或 ');
+      const roleNames = allowedRoles
+        .map(role => roleDisplayNames[role])
+        .join(' 或 ');
       const error = AuthError.forbidden(
         `需要 ${roleNames} 權限`,
         undefined,

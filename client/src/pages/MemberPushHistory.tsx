@@ -118,9 +118,12 @@ const MemberPushHistory = () => {
 
   // 統計資料
   const totalRecords = filteredRecords.length;
-  const successCount = filteredRecords.filter(r => r.status === 'success').length;
+  const successCount = filteredRecords.filter(
+    r => r.status === 'success'
+  ).length;
   const failedCount = totalRecords - successCount;
-  const successRate = totalRecords > 0 ? Math.round((successCount / totalRecords) * 100) : 0;
+  const successRate =
+    totalRecords > 0 ? Math.round((successCount / totalRecords) * 100) : 0;
 
   if (loading) {
     return (
@@ -133,9 +136,7 @@ const MemberPushHistory = () => {
   if (error) {
     return (
       <div className="container mx-auto px-4 py-8">
-        <div className="bg-red-100 text-red-700 p-4 rounded-md">
-          {error}
-        </div>
+        <div className="bg-red-100 text-red-700 p-4 rounded-md">{error}</div>
       </div>
     );
   }
@@ -185,7 +186,9 @@ const MemberPushHistory = () => {
 
         {/* 日期範圍查詢 */}
         <div className="border-b pb-4 mb-4">
-          <h3 className="text-md font-medium text-gray-700 mb-3">📅 日期範圍查詢</h3>
+          <h3 className="text-md font-medium text-gray-700 mb-3">
+            📅 日期範圍查詢
+          </h3>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -194,7 +197,7 @@ const MemberPushHistory = () => {
               <input
                 type="date"
                 value={startDate}
-                onChange={(e) => setStartDate(e.target.value)}
+                onChange={e => setStartDate(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
@@ -205,7 +208,7 @@ const MemberPushHistory = () => {
               <input
                 type="date"
                 value={endDate}
-                onChange={(e) => setEndDate(e.target.value)}
+                onChange={e => setEndDate(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
@@ -242,7 +245,9 @@ const MemberPushHistory = () => {
 
         {/* 本地篩選 */}
         <div>
-          <h3 className="text-md font-medium text-gray-700 mb-3">🔧 本地篩選</h3>
+          <h3 className="text-md font-medium text-gray-700 mb-3">
+            🔧 本地篩選
+          </h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -251,7 +256,7 @@ const MemberPushHistory = () => {
               <input
                 type="date"
                 value={dateFilter}
-                onChange={(e) => setDateFilter(e.target.value)}
+                onChange={e => setDateFilter(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
@@ -261,7 +266,7 @@ const MemberPushHistory = () => {
               </label>
               <select
                 value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
+                onChange={e => setStatusFilter(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">全部狀態</option>
@@ -287,7 +292,9 @@ const MemberPushHistory = () => {
       {/* 推播記錄表格 */}
       <div className="bg-white rounded-lg shadow-md p-6">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-semibold">推播記錄 ({filteredRecords.length})</h2>
+          <h2 className="text-xl font-semibold">
+            推播記錄 ({filteredRecords.length})
+          </h2>
           <button
             onClick={loadPushHistory}
             className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-colors"
@@ -305,16 +312,28 @@ const MemberPushHistory = () => {
             <table className="w-full text-sm border-collapse">
               <thead>
                 <tr className="bg-gray-50">
-                  <th className="border border-gray-200 px-4 py-2 text-left">活動名稱</th>
-                  <th className="border border-gray-200 px-4 py-2 text-left">活動日期</th>
-                  <th className="border border-gray-200 px-4 py-2 text-left">推播時間</th>
-                  <th className="border border-gray-200 px-4 py-2 text-left">推播類型</th>
-                  <th className="border border-gray-200 px-4 py-2 text-left">狀態</th>
-                  <th className="border border-gray-200 px-4 py-2 text-left">操作</th>
+                  <th className="border border-gray-200 px-4 py-2 text-left">
+                    活動名稱
+                  </th>
+                  <th className="border border-gray-200 px-4 py-2 text-left">
+                    活動日期
+                  </th>
+                  <th className="border border-gray-200 px-4 py-2 text-left">
+                    推播時間
+                  </th>
+                  <th className="border border-gray-200 px-4 py-2 text-left">
+                    推播類型
+                  </th>
+                  <th className="border border-gray-200 px-4 py-2 text-left">
+                    狀態
+                  </th>
+                  <th className="border border-gray-200 px-4 py-2 text-left">
+                    操作
+                  </th>
                 </tr>
               </thead>
               <tbody>
-                {filteredRecords.map((record) => (
+                {filteredRecords.map(record => (
                   <tr key={record.id} className="hover:bg-gray-50">
                     <td className="border border-gray-200 px-4 py-2">
                       <Link
@@ -336,11 +355,13 @@ const MemberPushHistory = () => {
                       </span>
                     </td>
                     <td className="border border-gray-200 px-4 py-2">
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                        record.status === 'success' 
-                          ? 'bg-green-100 text-green-800' 
-                          : 'bg-red-100 text-red-800'
-                      }`}>
+                      <span
+                        className={`px-2 py-1 rounded-full text-xs font-medium ${
+                          record.status === 'success'
+                            ? 'bg-green-100 text-green-800'
+                            : 'bg-red-100 text-red-800'
+                        }`}
+                      >
                         {record.status === 'success' ? '✅ 成功' : '❌ 失敗'}
                       </span>
                     </td>

@@ -1,4 +1,3 @@
-
 import { Request, Response, NextFunction } from 'express';
 import Member from '../models/member';
 
@@ -14,8 +13,8 @@ export interface AuthenticatedRequest extends Request {
  * 驗證推播權限 - 僅限幹部
  */
 export const requirePushPermission = async (
-  req: AuthenticatedRequest, 
-  res: Response, 
+  req: AuthenticatedRequest,
+  res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
@@ -26,19 +25,26 @@ export const requirePushPermission = async (
     if (!userId) {
       res.status(401).json({
         error: '未登入',
-        code: 'UNAUTHORIZED'
+        code: 'UNAUTHORIZED',
       });
       return;
     }
 
     // 檢查角色權限
-    const allowedRoles = ['會長', 'President', '秘書', 'Secretary', '幹部', 'Officer'];
-    
+    const allowedRoles = [
+      '會長',
+      'President',
+      '秘書',
+      'Secretary',
+      '幹部',
+      'Officer',
+    ];
+
     if (!userRole || !allowedRoles.includes(userRole)) {
       res.status(403).json({
         error: '權限不足，僅限幹部推播',
         code: 'INSUFFICIENT_PERMISSION',
-        requiredRoles: allowedRoles
+        requiredRoles: allowedRoles,
       });
       return;
     }
@@ -48,7 +54,7 @@ export const requirePushPermission = async (
     if (!member) {
       res.status(404).json({
         error: '會員不存在',
-        code: 'MEMBER_NOT_FOUND'
+        code: 'MEMBER_NOT_FOUND',
       });
       return;
     }
@@ -57,7 +63,7 @@ export const requirePushPermission = async (
     req.user = {
       id: userId,
       role: userRole,
-      line_user_id: member.line_user_id
+      line_user_id: member.line_user_id,
     };
 
     next();
@@ -65,7 +71,7 @@ export const requirePushPermission = async (
     console.error('❌ 推播權限驗證失敗:', error);
     res.status(500).json({
       error: '權限驗證失敗',
-      details: error instanceof Error ? error.message : '未知錯誤'
+      details: error instanceof Error ? error.message : '未知錯誤',
     });
   }
 };
@@ -74,23 +80,23 @@ export const requirePushPermission = async (
  * 簡化版權限檢查（用於測試）
  */
 export const requireBasicAuth = (
-  req: AuthenticatedRequest, 
-  res: Response, 
+  req: AuthenticatedRequest,
+  res: Response,
   next: NextFunction
 ): void => {
   const authToken = req.headers['authorization'];
-  
+
   if (!authToken || authToken !== 'Bearer admin-token') {
     res.status(401).json({
       error: '需要管理員權限',
-      code: 'ADMIN_REQUIRED'
+      code: 'ADMIN_REQUIRED',
     });
     return;
   }
 
   req.user = {
     id: 'admin',
-    role: '會長'
+    role: '會長',
   };
 
   next();

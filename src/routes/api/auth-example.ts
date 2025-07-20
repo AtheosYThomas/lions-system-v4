@@ -1,16 +1,25 @@
 import express from 'express';
-import { authMiddleware, optionalAuthMiddleware, guestOnly } from '../../middleware/authMiddleware';
-import { 
-  adminOnly, 
-  presidentOrAdmin, 
-  officersOrAbove, 
+import {
+  authMiddleware,
+  optionalAuthMiddleware,
+  guestOnly,
+} from '../../middleware/authMiddleware';
+import {
+  adminOnly,
+  presidentOrAdmin,
+  officersOrAbove,
   membersOrAbove,
   leadershipOnly,
   financialAccess,
   requireMinRole,
-  requireAnyRole
+  requireAnyRole,
 } from '../../middleware/roleMiddleware';
-import { Role, roleDisplayNames, hasMinimumRole, isInRoleGroup } from '../../types/role';
+import {
+  Role,
+  roleDisplayNames,
+  hasMinimumRole,
+  isInRoleGroup,
+} from '../../types/role';
 
 const router = express.Router();
 
@@ -22,8 +31,8 @@ router.get('/profile', authMiddleware, (req, res) => {
       id: req.member!.id,
       name: req.member!.name,
       email: req.member!.email,
-      role: req.member!.role
-    }
+      role: req.member!.role,
+    },
   });
 });
 
@@ -33,9 +42,14 @@ router.get('/admin/users', authMiddleware, adminOnly, (req, res) => {
 });
 
 // 範例 3: 會長或管理員可以存取
-router.get('/admin/announcements', authMiddleware, presidentOrAdmin, (req, res) => {
-  res.json({ message: '公告審核頁面 - 會長或管理員' });
-});
+router.get(
+  '/admin/announcements',
+  authMiddleware,
+  presidentOrAdmin,
+  (req, res) => {
+    res.json({ message: '公告審核頁面 - 會長或管理員' });
+  }
+);
 
 // 範例 4: 幹部或以上權限
 router.get('/admin/reports', authMiddleware, officersOrAbove, (req, res) => {
@@ -48,9 +62,14 @@ router.get('/finance/budget', authMiddleware, financialAccess, (req, res) => {
 });
 
 // 範例 6: 領導層權限
-router.get('/leadership/decisions', authMiddleware, leadershipOnly, (req, res) => {
-  res.json({ message: '重要決策頁面 - 領導層權限' });
-});
+router.get(
+  '/leadership/decisions',
+  authMiddleware,
+  leadershipOnly,
+  (req, res) => {
+    res.json({ message: '重要決策頁面 - 領導層權限' });
+  }
+);
 
 // 範例 7: 最低會員權限
 router.get('/members/directory', authMiddleware, membersOrAbove, (req, res) => {
@@ -58,18 +77,20 @@ router.get('/members/directory', authMiddleware, membersOrAbove, (req, res) => {
 });
 
 // 範例 8: 多角色權限（秘書或財務）
-router.get('/admin/documents', 
-  authMiddleware, 
-  requireAnyRole([Role.Secretary, Role.Treasurer, Role.Admin]), 
+router.get(
+  '/admin/documents',
+  authMiddleware,
+  requireAnyRole([Role.Secretary, Role.Treasurer, Role.Admin]),
   (req, res) => {
     res.json({ message: '文件管理 - 秘書或財務權限' });
   }
 );
 
 // 範例 9: 最低副會長權限
-router.get('/admin/policy', 
-  authMiddleware, 
-  requireMinRole(Role.VicePresident), 
+router.get(
+  '/admin/policy',
+  authMiddleware,
+  requireMinRole(Role.VicePresident),
   (req, res) => {
     res.json({ message: '政策管理 - 副會長或以上權限' });
   }
@@ -90,30 +111,30 @@ router.get('/test/role-system', authMiddleware, (req, res) => {
     user: {
       name: member.name,
       role: userRole,
-      roleDisplayName: roleDisplayNames[userRole]
+      roleDisplayName: roleDisplayNames[userRole],
     },
     permissions: {
       isOfficer: hasMinimumRole(userRole, Role.Officer),
       isPresident: hasMinimumRole(userRole, Role.President),
       isAdmin: userRole === Role.Admin,
       inLeadership: isInRoleGroup(userRole, 'leadership'),
-      inFinancial: isInRoleGroup(userRole, 'financial')
-    }
+      inFinancial: isInRoleGroup(userRole, 'financial'),
+    },
   });
 });
 
 // 範例 11: 可選認證（登入與未登入都可訪問，但有不同內容）
 router.get('/public/events', optionalAuthMiddleware, (req, res) => {
   if (req.member) {
-    res.json({ 
+    res.json({
       message: '活動列表 - 會員版',
       member: req.member.name,
-      events: ['會員專屬活動', '公開活動']
+      events: ['會員專屬活動', '公開活動'],
     });
   } else {
-    res.json({ 
+    res.json({
       message: '活動列表 - 公開版',
-      events: ['公開活動']
+      events: ['公開活動'],
     });
   }
 });

@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react';
 
 declare global {
@@ -75,7 +74,6 @@ const Checkin = () => {
 
         setLineUserId(userId);
         await checkMemberStatus(userId);
-
       } catch (error) {
         console.error('LIFF 初始化失敗:', error);
         setError(error instanceof Error ? error.message : '初始化失敗');
@@ -98,7 +96,7 @@ const Checkin = () => {
         const response = await fetch('/api/liff/check-member', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ line_user_id: userId })
+          body: JSON.stringify({ line_user_id: userId }),
         });
 
         const result: CheckinResponse = await response.json();
@@ -148,10 +146,10 @@ const Checkin = () => {
       const response = await fetch(`/api/checkin/${eventId}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           lineUserId: lineUserId,
-          deviceInfo: navigator.userAgent 
-        })
+          deviceInfo: navigator.userAgent,
+        }),
       });
 
       const result = await response.json();
@@ -162,11 +160,15 @@ const Checkin = () => {
           if (!prev) return prev;
           return {
             ...prev,
-            events: prev.events.map(event => 
-              event.id === eventId 
-                ? { ...event, checkin_status: 'checked_in' as const, checkin_time: new Date().toISOString() }
+            events: prev.events.map(event =>
+              event.id === eventId
+                ? {
+                    ...event,
+                    checkin_status: 'checked_in' as const,
+                    checkin_time: new Date().toISOString(),
+                  }
                 : event
-            )
+            ),
           };
         });
         alert('簽到成功！');
@@ -196,9 +198,11 @@ const Checkin = () => {
   };
 
   const canCheckin = (event: Event) => {
-    return event.registration_status === 'registered' && 
-           event.checkin_status === 'not_checked_in' && 
-           event.status !== 'completed';
+    return (
+      event.registration_status === 'registered' &&
+      event.checkin_status === 'not_checked_in' &&
+      event.status !== 'completed'
+    );
   };
 
   if (loading) {
@@ -219,8 +223,8 @@ const Checkin = () => {
           <div className="text-6xl mb-4">❌</div>
           <h2 className="text-xl font-bold text-gray-800 mb-2">發生錯誤</h2>
           <p className="text-gray-600 mb-4">{error}</p>
-          <button 
-            onClick={() => window.location.reload()} 
+          <button
+            onClick={() => window.location.reload()}
             className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
           >
             重新載入
@@ -277,33 +281,43 @@ const Checkin = () => {
                 <p>目前沒有活動資訊</p>
               </div>
             ) : (
-              member.events.map((event) => (
+              member.events.map(event => (
                 <div key={event.id} className="px-6 py-4">
                   <div className="flex items-center justify-between">
                     <div className="flex-1">
                       <div className="flex items-center space-x-3">
-                        <span className="text-2xl">{getEventStatusIcon(event)}</span>
+                        <span className="text-2xl">
+                          {getEventStatusIcon(event)}
+                        </span>
                         <div>
                           <h3 className="text-lg font-medium text-gray-800">
                             {event.title}
                           </h3>
                           <div className="flex items-center space-x-4 text-sm text-gray-600 mt-1">
-                            <span>📅 {new Date(event.date).toLocaleDateString('zh-TW')}</span>
+                            <span>
+                              📅{' '}
+                              {new Date(event.date).toLocaleDateString('zh-TW')}
+                            </span>
                             {event.location && <span>📍 {event.location}</span>}
                           </div>
                           <div className="mt-2">
-                            <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
-                              event.checkin_status === 'checked_in' 
-                                ? 'bg-green-100 text-green-800'
-                                : event.registration_status === 'registered'
-                                ? 'bg-blue-100 text-blue-800'
-                                : 'bg-gray-100 text-gray-800'
-                            }`}>
+                            <span
+                              className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
+                                event.checkin_status === 'checked_in'
+                                  ? 'bg-green-100 text-green-800'
+                                  : event.registration_status === 'registered'
+                                    ? 'bg-blue-100 text-blue-800'
+                                    : 'bg-gray-100 text-gray-800'
+                              }`}
+                            >
                               {getEventStatusText(event)}
                             </span>
                             {event.checkin_time && (
                               <span className="ml-2 text-xs text-gray-500">
-                                簽到時間: {new Date(event.checkin_time).toLocaleString('zh-TW')}
+                                簽到時間:{' '}
+                                {new Date(event.checkin_time).toLocaleString(
+                                  'zh-TW'
+                                )}
                               </span>
                             )}
                           </div>
@@ -320,9 +334,25 @@ const Checkin = () => {
                         >
                           {checkinLoading === event.id ? (
                             <span className="flex items-center">
-                              <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                              <svg
+                                className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                              >
+                                <circle
+                                  className="opacity-25"
+                                  cx="12"
+                                  cy="12"
+                                  r="10"
+                                  stroke="currentColor"
+                                  strokeWidth="4"
+                                ></circle>
+                                <path
+                                  className="opacity-75"
+                                  fill="currentColor"
+                                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                                ></path>
                               </svg>
                               簽到中...
                             </span>

@@ -13,11 +13,13 @@ router.post('/checkin/:eventId', async (req, res) => {
     const { lineUserId, deviceInfo } = req.body;
 
     if (!lineUserId) {
-      return res.status(400).json({ success: false, error: '缺少 LINE 用戶 ID' });
+      return res
+        .status(400)
+        .json({ success: false, error: '缺少 LINE 用戶 ID' });
     }
 
     const member = await prisma.member.findUnique({
-      where: { line_user_id: lineUserId }
+      where: { line_user_id: lineUserId },
     });
 
     if (!member) {
@@ -27,7 +29,7 @@ router.post('/checkin/:eventId', async (req, res) => {
     const checkin = await checkinService.performCheckin({
       member_id: member.id,
       event_id: eventId,
-      device_info: deviceInfo
+      device_info: deviceInfo,
     });
 
     res.json({
@@ -35,14 +37,13 @@ router.post('/checkin/:eventId', async (req, res) => {
       message: '簽到成功',
       checkin,
       member: { id: member.id, name: member.name },
-      event: checkin.event
+      event: checkin.event,
     });
-
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : '未知錯誤';
     res.status(errorMessage.includes('已經簽到') ? 409 : 500).json({
       success: false,
-      error: errorMessage
+      error: errorMessage,
     });
   }
 });
@@ -51,6 +52,9 @@ router.post('/checkin/:eventId', async (req, res) => {
 router.get('/checkin/:eventId', checkinController.getEventCheckins);
 
 // 會員簽到歷史
-router.get('/member/:lineUserId/checkins', checkinController.getMemberCheckinHistory);
+router.get(
+  '/member/:lineUserId/checkins',
+  checkinController.getMemberCheckinHistory
+);
 
 export default router;

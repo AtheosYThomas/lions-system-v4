@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 
 type EventData = {
@@ -18,26 +17,34 @@ interface Props {
   onSuccess: () => void;
 }
 
-const EventModal: React.FC<Props> = ({ isOpen, mode, eventData, onClose, onSuccess }) => {
+const EventModal: React.FC<Props> = ({
+  isOpen,
+  mode,
+  eventData,
+  onClose,
+  onSuccess,
+}) => {
   const [form, setForm] = useState<EventData>({
     title: '',
     description: '',
     date: '',
     location: '',
-    max_attendees: undefined
+    max_attendees: undefined,
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (eventData && mode === 'edit') {
-      const dateValue = eventData.date ? new Date(eventData.date).toISOString().slice(0, 16) : '';
+      const dateValue = eventData.date
+        ? new Date(eventData.date).toISOString().slice(0, 16)
+        : '';
       setForm({
         title: eventData.title || '',
         description: eventData.description || '',
         date: dateValue,
         location: eventData.location || '',
-        max_attendees: eventData.max_attendees || undefined
+        max_attendees: eventData.max_attendees || undefined,
       });
     } else {
       setForm({
@@ -45,17 +52,24 @@ const EventModal: React.FC<Props> = ({ isOpen, mode, eventData, onClose, onSucce
         description: '',
         date: '',
         location: '',
-        max_attendees: undefined
+        max_attendees: undefined,
       });
     }
     setError(null);
   }, [eventData, mode, isOpen]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
     setForm(prev => ({
       ...prev,
-      [name]: name === 'max_attendees' ? (value ? parseInt(value) : undefined) : value
+      [name]:
+        name === 'max_attendees'
+          ? value
+            ? parseInt(value)
+            : undefined
+          : value,
     }));
   };
 
@@ -70,12 +84,13 @@ const EventModal: React.FC<Props> = ({ isOpen, mode, eventData, onClose, onSucce
         description: form.description || undefined,
         date: form.date,
         location: form.location || undefined,
-        max_attendees: form.max_attendees || undefined
+        max_attendees: form.max_attendees || undefined,
       };
 
-      const url = mode === 'create' 
-        ? '/api/admin/event/create' 
-        : `/api/admin/event/${eventData?.id}/update`;
+      const url =
+        mode === 'create'
+          ? '/api/admin/event/create'
+          : `/api/admin/event/${eventData?.id}/update`;
 
       const method = mode === 'create' ? 'POST' : 'PATCH';
 
@@ -114,8 +129,18 @@ const EventModal: React.FC<Props> = ({ isOpen, mode, eventData, onClose, onSucce
               onClick={onClose}
               className="text-gray-400 hover:text-gray-600 transition-colors"
             >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M6 18L18 6M6 6l12 12"
+                />
               </svg>
             </button>
           </div>

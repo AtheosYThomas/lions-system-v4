@@ -43,13 +43,13 @@ const Home: React.FC = () => {
       <div className="quick-actions">
         <h2>快速操作</h2>
         <div className="action-buttons">
-          <button onClick={() => window.location.href = '/register'}>
+          <button onClick={() => (window.location.href = '/register')}>
             會員註冊
           </button>
-          <button onClick={() => window.location.href = '/checkin'}>
+          <button onClick={() => (window.location.href = '/checkin')}>
             活動簽到
           </button>
-          <button onClick={() => window.location.href = '/profile'}>
+          <button onClick={() => (window.location.href = '/profile')}>
             個人資料
           </button>
         </div>

@@ -35,7 +35,9 @@ export class TestSuite {
       console.log('\n📊 綜合測試報告');
       console.log('='.repeat(60));
       console.log('✅ 測試資料建立：成功');
-      console.log(`✅ 服務功能測試：${testReport.passed}/${testReport.total} 通過 (${testReport.passRate.toFixed(1)}%)`);
+      console.log(
+        `✅ 服務功能測試：${testReport.passed}/${testReport.total} 通過 (${testReport.passRate.toFixed(1)}%)`
+      );
 
       if (testReport.failed === 0) {
         console.log('\n🎉 完整測試套件執行成功！');
@@ -44,10 +46,10 @@ export class TestSuite {
         console.log('\n⚠️ 部分測試失敗，請檢查詳細報告');
         return { success: false, report: testReport };
       }
-
     } catch (error) {
       console.error('\n❌ 測試套件執行失敗:', error);
-      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
       return { success: false, error: errorMessage };
     }
   }
@@ -76,7 +78,8 @@ export class TestSuite {
 
 // 匯出便捷函數
 export const seedMockData = () => new MockDataSeeder().runFullSeed();
-export const testServiceFunctions = () => new ServiceFunctionTester().runAllTests();
+export const testServiceFunctions = () =>
+  new ServiceFunctionTester().runAllTests();
 export const runFullTestSuite = () => new TestSuite().runFullTestSuite();
 
 // 當直接執行此腳本時提供選項

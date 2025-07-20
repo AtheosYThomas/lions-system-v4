@@ -1,4 +1,3 @@
-
 # 測試模組說明
 
 本目錄包含北大獅子會系統的測試工具，僅用於開發環境測試。
@@ -26,6 +25,7 @@ npx tsx src/scripts/test/seedMockData.ts
 ```
 
 會建立以下測試資料：
+
 - 👥 5 位測試會員
 - 🎭 5 個測試活動
 - 📢 5 則測試公告
@@ -44,6 +44,7 @@ npx tsx src/scripts/test/testServiceFunctions.ts
 ```
 
 會測試以下服務功能：
+
 - 🗄️ 資料庫連線
 - 👥 會員服務
 - 🎭 活動服務
@@ -63,6 +64,7 @@ npx tsx src/scripts/test/index.ts full
 ```
 
 會依序執行：
+
 1. 建立測試資料
 2. 執行服務功能測試
 3. 產生綜合報告
@@ -80,6 +82,7 @@ npx tsx src/scripts/test/index.ts clear
 ## 📊 測試報告
 
 測試完成後會產生詳細報告，包含：
+
 - 總測試項目數
 - 通過/失敗測試數
 - 通過率
@@ -117,7 +120,7 @@ const mockMembers = [
 ```typescript
 async testNewService() {
   console.log('\n🆕 測試新服務功能...');
-  
+
   try {
     // 測試邏輯
     this.recordTest('newService.method', true);
@@ -136,34 +139,40 @@ await this.testNewService();
 ## 📝 測試資料詳細說明
 
 ### 會員資料
+
 - 包含 5 位測試會員
 - 涵蓋不同角色：officer、member
 - 包含 active 和 inactive 狀態
 - 每位會員都有 LINE UID
 
 ### 活動資料
+
 - 包含 5 個測試活動
 - 涵蓋不同狀態：active、cancelled
 - 包含過去和未來的活動
 - 設定不同的參與人數限制
 
 ### 公告資料
+
 - 包含 5 則測試公告
 - 涵蓋不同分類：event、system、personnel
 - 包含不同狀態：published、draft
 - 包含不同對象：all、officers、members
 
 ### 報名資料
+
 - 包含 6 筆測試報名
 - 涵蓋不同狀態：confirmed、pending、cancelled
 - 關聯到不同會員和活動
 
 ### 簽到資料
+
 - 包含 3 筆測試簽到
 - 包含裝置資訊
 - 關聯到已報名的活動
 
 ### 付款資料
+
 - 包含 3 筆測試付款
 - 涵蓋不同付款方式
 - 包含不同狀態：completed、pending

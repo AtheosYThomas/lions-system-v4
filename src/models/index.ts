@@ -23,34 +23,34 @@ import sequelize from '../config/database';
 
 // Event -> Registration (一對多)
 // 一個活動可以有多個報名記錄
-Event.hasMany(Registration, { 
-  foreignKey: 'event_id', 
+Event.hasMany(Registration, {
+  foreignKey: 'event_id',
   as: 'registrations',
-  onDelete: 'CASCADE' // 刪除活動時一併刪除相關報名記錄
+  onDelete: 'CASCADE', // 刪除活動時一併刪除相關報名記錄
 });
 
-// Event -> Checkin (一對多) 
+// Event -> Checkin (一對多)
 // 一個活動可以有多個簽到記錄
-Event.hasMany(Checkin, { 
-  foreignKey: 'event_id', 
+Event.hasMany(Checkin, {
+  foreignKey: 'event_id',
   as: 'checkins',
-  onDelete: 'CASCADE' // 刪除活動時一併刪除相關簽到記錄
+  onDelete: 'CASCADE', // 刪除活動時一併刪除相關簽到記錄
 });
 
 // Event -> Payment (一對多)
 // 一個活動可以有多個付款記錄
-Event.hasMany(Payment, { 
-  foreignKey: 'event_id', 
+Event.hasMany(Payment, {
+  foreignKey: 'event_id',
   as: 'payments',
-  onDelete: 'CASCADE' // 刪除活動時一併刪除相關付款記錄
+  onDelete: 'CASCADE', // 刪除活動時一併刪除相關付款記錄
 });
 
 // Event -> Announcement (一對多)
 // 一個活動可以有多個相關公告
-Event.hasMany(Announcement, { 
-  foreignKey: 'related_event_id', 
+Event.hasMany(Announcement, {
+  foreignKey: 'related_event_id',
   as: 'announcements',
-  onDelete: 'SET NULL' // 刪除活動時公告的相關活動設為 NULL
+  onDelete: 'SET NULL', // 刪除活動時公告的相關活動設為 NULL
 });
 
 // -----------------------------------
@@ -59,43 +59,43 @@ Event.hasMany(Announcement, {
 
 // Member -> Registration (一對多)
 // 一個會員可以有多個報名記錄
-Member.hasMany(Registration, { 
-  foreignKey: 'member_id', 
+Member.hasMany(Registration, {
+  foreignKey: 'member_id',
   as: 'registrations',
-  onDelete: 'CASCADE' // 刪除會員時一併刪除相關報名記錄
+  onDelete: 'CASCADE', // 刪除會員時一併刪除相關報名記錄
 });
 
 // Member -> Checkin (一對多)
 // 一個會員可以有多個簽到記錄
-Member.hasMany(Checkin, { 
-  foreignKey: 'member_id', 
+Member.hasMany(Checkin, {
+  foreignKey: 'member_id',
   as: 'checkins',
-  onDelete: 'CASCADE' // 刪除會員時一併刪除相關簽到記錄
+  onDelete: 'CASCADE', // 刪除會員時一併刪除相關簽到記錄
 });
 
 // Member -> Payment (一對多)
 // 一個會員可以有多個付款記錄
-Member.hasMany(Payment, { 
-  foreignKey: 'member_id', 
+Member.hasMany(Payment, {
+  foreignKey: 'member_id',
   as: 'payments',
-  onDelete: 'CASCADE' // 刪除會員時一併刪除相關付款記錄
+  onDelete: 'CASCADE', // 刪除會員時一併刪除相關付款記錄
 });
 
 // Member -> MessageLog (一對多)
 // 一個會員可以有多個訊息記錄 (使用 LINE UID 關聯)
-Member.hasMany(MessageLog, { 
-  foreignKey: 'user_id', 
+Member.hasMany(MessageLog, {
+  foreignKey: 'user_id',
   sourceKey: 'line_user_id',
   as: 'messageLogs',
-  onDelete: 'CASCADE'
+  onDelete: 'CASCADE',
 });
 
 // Member -> Announcement (一對多)
 // 一個會員可以創建多個公告
-Member.hasMany(Announcement, { 
-  foreignKey: 'created_by', 
+Member.hasMany(Announcement, {
+  foreignKey: 'created_by',
   as: 'createdAnnouncements',
-  onDelete: 'SET NULL' // 刪除會員時公告的創建者設為 NULL
+  onDelete: 'SET NULL', // 刪除會員時公告的創建者設為 NULL
 });
 
 // -----------------------------------
@@ -104,66 +104,66 @@ Member.hasMany(Announcement, {
 
 // Registration -> Event (多對一)
 // 每個報名記錄屬於一個活動
-Registration.belongsTo(Event, { 
-  foreignKey: 'event_id', 
-  as: 'event' 
+Registration.belongsTo(Event, {
+  foreignKey: 'event_id',
+  as: 'event',
 });
 
 // Registration -> Member (多對一)
 // 每個報名記錄屬於一個會員
-Registration.belongsTo(Member, { 
-  foreignKey: 'member_id', 
-  as: 'member' 
+Registration.belongsTo(Member, {
+  foreignKey: 'member_id',
+  as: 'member',
 });
 
 // Checkin -> Event (多對一)
 // 每個簽到記錄屬於一個活動
-Checkin.belongsTo(Event, { 
-  foreignKey: 'event_id', 
-  as: 'event' 
+Checkin.belongsTo(Event, {
+  foreignKey: 'event_id',
+  as: 'event',
 });
 
 // Checkin -> Member (多對一)
 // 每個簽到記錄屬於一個會員
-Checkin.belongsTo(Member, { 
-  foreignKey: 'member_id', 
-  as: 'member' 
+Checkin.belongsTo(Member, {
+  foreignKey: 'member_id',
+  as: 'member',
 });
 
 // Payment -> Event (多對一)
 // 每個付款記錄屬於一個活動
-Payment.belongsTo(Event, { 
-  foreignKey: 'event_id', 
-  as: 'event' 
+Payment.belongsTo(Event, {
+  foreignKey: 'event_id',
+  as: 'event',
 });
 
 // Payment -> Member (多對一)
 // 每個付款記錄屬於一個會員
-Payment.belongsTo(Member, { 
-  foreignKey: 'member_id', 
-  as: 'member' 
+Payment.belongsTo(Member, {
+  foreignKey: 'member_id',
+  as: 'member',
 });
 
 // MessageLog -> Member (多對一)
 // 每個訊息記錄屬於一個會員 (使用 LINE UID 關聯)
-MessageLog.belongsTo(Member, { 
-  foreignKey: 'user_id', 
+MessageLog.belongsTo(Member, {
+  foreignKey: 'user_id',
   targetKey: 'line_user_id',
-  as: 'member' 
+  as: 'member',
 });
 
 // Announcement -> Member (多對一)
 // 每個公告屬於一個創建者
-Announcement.belongsTo(Member, { 
-  foreignKey: 'created_by', 
-  as: 'creator' 
+Announcement.belongsTo(Member, {
+  foreignKey: 'created_by',
+  as: 'creator',
 });
 
 // Announcement -> Event (多對一)
 // 每個公告可能關聯到一個活動
-Announcement.belongsTo(Event, { 
-  foreignKey: 'related_event_id', 
-  as: 'relatedEvent' 
+Announcement.belongsTo(Event, {
+  foreignKey: 'related_event_id',
+  as: 'relatedEvent',
 });
 
 // -----------------------------------
@@ -172,52 +172,52 @@ Announcement.belongsTo(Event, {
 
 // File -> Member (多對一)
 // 每個檔案屬於一個上傳者
-File.belongsTo(Member, { 
-  foreignKey: 'uploaded_by', 
-  as: 'uploader' 
+File.belongsTo(Member, {
+  foreignKey: 'uploaded_by',
+  as: 'uploader',
 });
 
 // Member -> File (一對多)
 // 一個會員可以上傳多個檔案
-Member.hasMany(File, { 
-  foreignKey: 'uploaded_by', 
+Member.hasMany(File, {
+  foreignKey: 'uploaded_by',
   as: 'uploadedFiles',
-  onDelete: 'SET NULL'
+  onDelete: 'SET NULL',
 });
 
 // Event -> File (一對多)
 // 一個活動可以有多個相關檔案
-Event.hasMany(File, { 
-  foreignKey: 'related_id', 
+Event.hasMany(File, {
+  foreignKey: 'related_id',
   as: 'files',
   scope: { usage: ['event_cover'] },
-  onDelete: 'CASCADE'
+  onDelete: 'CASCADE',
 });
 
 // Announcement -> File (一對多)
 // 一個公告可以有多個相關檔案
-Announcement.hasMany(File, { 
-  foreignKey: 'related_id', 
+Announcement.hasMany(File, {
+  foreignKey: 'related_id',
   as: 'files',
   scope: { usage: ['announcement_image'] },
-  onDelete: 'CASCADE'
+  onDelete: 'CASCADE',
 });
 
 // ===================================
 // 匯出所有模型和資料庫連線
 // ===================================
-export { 
-  sequelize, 
-  Member, 
-  Event, 
-  Registration, 
-  Checkin, 
-  Payment, 
-  MessageLog, 
-  LiffSession, 
+export {
+  sequelize,
+  Member,
+  Event,
+  Registration,
+  Checkin,
+  Payment,
+  MessageLog,
+  LiffSession,
   Announcement,
   File,
-  PushRecord
+  PushRecord,
 };
 
 // ===================================

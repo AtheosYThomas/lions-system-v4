@@ -39,29 +39,47 @@ class ServiceFunctionTester {
     try {
       // 測試獲取會員統計
       const stats = await memberService.getMemberStats();
-      this.recordTest('memberService.getMemberStats', 
-        typeof stats === 'object' && Number(stats?.total) >= 0);
+      this.recordTest(
+        'memberService.getMemberStats',
+        typeof stats === 'object' && Number(stats?.total) >= 0
+      );
 
       // 測試搜尋會員
       const searchResult = await memberService.searchMembers({
         limit: 5,
-        offset: 0
+        offset: 0,
       });
-      this.recordTest('memberService.searchMembers', 
-        Array.isArray(searchResult.members) && typeof searchResult.total === 'number');
+      this.recordTest(
+        'memberService.searchMembers',
+        Array.isArray(searchResult.members) &&
+          typeof searchResult.total === 'number'
+      );
 
       // 測試根據 Email 獲取會員
-      const memberByEmail = await memberService.getMemberByEmail('zhang.san@example.com');
-      this.recordTest('memberService.getMemberByEmail', 
-        memberByEmail === null || (memberByEmail && memberByEmail.email === 'zhang.san@example.com'));
+      const memberByEmail = await memberService.getMemberByEmail(
+        'zhang.san@example.com'
+      );
+      this.recordTest(
+        'memberService.getMemberByEmail',
+        memberByEmail === null ||
+          (memberByEmail && memberByEmail.email === 'zhang.san@example.com')
+      );
 
       // 測試根據 LINE UID 獲取會員
-      const memberByLineUid = await memberService.getMemberByLineUid('U1234567890abcdef');
-      this.recordTest('memberService.getMemberByLineUid', 
-        memberByLineUid === null || (memberByLineUid && memberByLineUid.line_user_id === 'U1234567890abcdef'));
-
+      const memberByLineUid =
+        await memberService.getMemberByLineUid('U1234567890abcdef');
+      this.recordTest(
+        'memberService.getMemberByLineUid',
+        memberByLineUid === null ||
+          (memberByLineUid &&
+            memberByLineUid.line_user_id === 'U1234567890abcdef')
+      );
     } catch (error) {
-      this.recordTest('memberService', false, error instanceof Error ? error.message : String(error));
+      this.recordTest(
+        'memberService',
+        false,
+        error instanceof Error ? error.message : String(error)
+      );
     }
   }
 
@@ -74,35 +92,53 @@ class ServiceFunctionTester {
     try {
       // 測試獲取活動統計
       const stats = await eventService.getEventStats();
-      this.recordTest('eventService.getEventStats', 
-        typeof stats === 'object' && typeof stats?.totalEvents === 'number');
+      this.recordTest(
+        'eventService.getEventStats',
+        typeof stats === 'object' && typeof stats?.totalEvents === 'number'
+      );
 
       // 測試搜尋活動
       const searchResult = await eventService.searchEvents({
         limit: 5,
-        offset: 0
+        offset: 0,
       });
-      this.recordTest('eventService.searchEvents', 
-        Array.isArray(searchResult.events) && typeof searchResult.total === 'number');
+      this.recordTest(
+        'eventService.searchEvents',
+        Array.isArray(searchResult.events) &&
+          typeof searchResult.total === 'number'
+      );
 
       // 測試獲取即將到來的活動
       const upcomingEvents = await eventService.getUpcomingEvents(3);
-      this.recordTest('eventService.getUpcomingEvents', 
-        Array.isArray(upcomingEvents));
+      this.recordTest(
+        'eventService.getUpcomingEvents',
+        Array.isArray(upcomingEvents)
+      );
 
       // 測試檢查活動名額（使用第一個活動）
       const events = await eventService.searchEvents({ limit: 1 });
       if (events.events.length > 0) {
-        const capacityCheck = await eventService.checkEventCapacity(events.events[0].id);
-        this.recordTest('eventService.checkEventCapacity', 
-          typeof capacityCheck === 'object' && 
-          typeof capacityCheck.currentRegistrations === 'number');
+        const capacityCheck = await eventService.checkEventCapacity(
+          events.events[0].id
+        );
+        this.recordTest(
+          'eventService.checkEventCapacity',
+          typeof capacityCheck === 'object' &&
+            typeof capacityCheck.currentRegistrations === 'number'
+        );
       } else {
-        this.recordTest('eventService.checkEventCapacity', true, '沒有活動可測試');
+        this.recordTest(
+          'eventService.checkEventCapacity',
+          true,
+          '沒有活動可測試'
+        );
       }
-
     } catch (error) {
-      this.recordTest('eventService', false, error instanceof Error ? error.message : String(error));
+      this.recordTest(
+        'eventService',
+        false,
+        error instanceof Error ? error.message : String(error)
+      );
     }
   }
 
@@ -115,34 +151,51 @@ class ServiceFunctionTester {
     try {
       // 測試獲取公告統計
       const stats = await announcementService.getAnnouncementStats();
-      this.recordTest('announcementService.getAnnouncementStats', 
-        typeof stats === 'object' && Number(stats?.total) >= 0);
+      this.recordTest(
+        'announcementService.getAnnouncementStats',
+        typeof stats === 'object' && Number(stats?.total) >= 0
+      );
 
       // 測試搜尋公告
       const searchResult = await announcementService.searchAnnouncements({
         limit: 5,
-        offset: 0
+        offset: 0,
       });
-      this.recordTest('announcementService.searchAnnouncements', 
-        Array.isArray(searchResult.announcements) && typeof searchResult.total === 'number');
+      this.recordTest(
+        'announcementService.searchAnnouncements',
+        Array.isArray(searchResult.announcements) &&
+          typeof searchResult.total === 'number'
+      );
 
       // 測試獲取公開公告
-      const publicAnnouncements = await announcementService.getPublicAnnouncements('all', 5);
-      this.recordTest('announcementService.getPublicAnnouncements', 
-        Array.isArray(publicAnnouncements));
+      const publicAnnouncements =
+        await announcementService.getPublicAnnouncements('all', 5);
+      this.recordTest(
+        'announcementService.getPublicAnnouncements',
+        Array.isArray(publicAnnouncements)
+      );
 
       // 測試獲取最新公告
-      const latestAnnouncements = await announcementService.getLatestAnnouncements(3);
-      this.recordTest('announcementService.getLatestAnnouncements', 
-        Array.isArray(latestAnnouncements));
+      const latestAnnouncements =
+        await announcementService.getLatestAnnouncements(3);
+      this.recordTest(
+        'announcementService.getLatestAnnouncements',
+        Array.isArray(latestAnnouncements)
+      );
 
       // 測試處理排程公告
-      const processedCount = await announcementService.processScheduledAnnouncements();
-      this.recordTest('announcementService.processScheduledAnnouncements', 
-        typeof processedCount === 'number');
-
+      const processedCount =
+        await announcementService.processScheduledAnnouncements();
+      this.recordTest(
+        'announcementService.processScheduledAnnouncements',
+        typeof processedCount === 'number'
+      );
     } catch (error) {
-      this.recordTest('announcementService', false, error instanceof Error ? error.message : String(error));
+      this.recordTest(
+        'announcementService',
+        false,
+        error instanceof Error ? error.message : String(error)
+      );
     }
   }
 
@@ -155,16 +208,22 @@ class ServiceFunctionTester {
     try {
       // 測試獲取報名統計
       const stats = await registrationService.getRegistrationStats();
-      this.recordTest('registrationService.getRegistrationStats', 
-        typeof stats === 'object' && typeof stats?.totalRegistrations === 'number');
+      this.recordTest(
+        'registrationService.getRegistrationStats',
+        typeof stats === 'object' &&
+          typeof stats?.totalRegistrations === 'number'
+      );
 
       // 測試搜尋報名記錄
       const searchResult = await registrationService.searchRegistrations({
         limit: 5,
-        offset: 0
+        offset: 0,
       });
-      this.recordTest('registrationService.searchRegistrations', 
-        Array.isArray(searchResult.registrations) && typeof searchResult.total === 'number');
+      this.recordTest(
+        'registrationService.searchRegistrations',
+        Array.isArray(searchResult.registrations) &&
+          typeof searchResult.total === 'number'
+      );
 
       // 測試檢查報名狀態（使用第一個會員和第一個活動）
       const members = await memberService.searchMembers({ limit: 1 });
@@ -172,18 +231,27 @@ class ServiceFunctionTester {
 
       if (members.members.length > 0 && events.events.length > 0) {
         const registrationCheck = await registrationService.isRegistered(
-          members.members[0].id, 
+          members.members[0].id,
           events.events[0].id
         );
-        this.recordTest('registrationService.isRegistered', 
-          typeof registrationCheck === 'object' && 
-          typeof registrationCheck.registered === 'boolean');
+        this.recordTest(
+          'registrationService.isRegistered',
+          typeof registrationCheck === 'object' &&
+            typeof registrationCheck.registered === 'boolean'
+        );
       } else {
-        this.recordTest('registrationService.isRegistered', true, '沒有資料可測試');
+        this.recordTest(
+          'registrationService.isRegistered',
+          true,
+          '沒有資料可測試'
+        );
       }
-
     } catch (error) {
-      this.recordTest('registrationService', false, error instanceof Error ? error.message : String(error));
+      this.recordTest(
+        'registrationService',
+        false,
+        error instanceof Error ? error.message : String(error)
+      );
     }
   }
 
@@ -196,36 +264,50 @@ class ServiceFunctionTester {
     try {
       // 測試獲取簽到統計
       const stats = await checkinService.getCheckinStats();
-      this.recordTest('checkinService.getCheckinStats', 
-        typeof stats === 'object' && Number(stats?.totalCheckins) >= 0);
+      this.recordTest(
+        'checkinService.getCheckinStats',
+        typeof stats === 'object' && Number(stats?.totalCheckins) >= 0
+      );
 
       // 測試驗證簽到資格（使用第一個會員和第一個活動）
       const members = await memberService.searchMembers({ limit: 1 });
       const events = await eventService.searchEvents({ limit: 1 });
 
       if (members.members.length > 0 && events.events.length > 0) {
-        const eligibilityCheck = await checkinService.validateCheckinEligibility(
-          members.members[0].id, 
-          events.events[0].id
+        const eligibilityCheck =
+          await checkinService.validateCheckinEligibility(
+            members.members[0].id,
+            events.events[0].id
+          );
+        this.recordTest(
+          'checkinService.validateCheckinEligibility',
+          typeof eligibilityCheck === 'object' &&
+            typeof eligibilityCheck.eligible === 'boolean'
         );
-        this.recordTest('checkinService.validateCheckinEligibility', 
-          typeof eligibilityCheck === 'object' && 
-          typeof eligibilityCheck.eligible === 'boolean');
 
         // 測試檢查簽到狀態
         const checkinStatus = await checkinService.isCheckedIn(
-          members.members[0].id, 
+          members.members[0].id,
           events.events[0].id
         );
-        this.recordTest('checkinService.isCheckedIn', 
-          typeof checkinStatus === 'boolean');
+        this.recordTest(
+          'checkinService.isCheckedIn',
+          typeof checkinStatus === 'boolean'
+        );
       } else {
-        this.recordTest('checkinService.validateCheckinEligibility', true, '沒有資料可測試');
+        this.recordTest(
+          'checkinService.validateCheckinEligibility',
+          true,
+          '沒有資料可測試'
+        );
         this.recordTest('checkinService.isCheckedIn', true, '沒有資料可測試');
       }
-
     } catch (error) {
-      this.recordTest('checkinService', false, error instanceof Error ? error.message : String(error));
+      this.recordTest(
+        'checkinService',
+        false,
+        error instanceof Error ? error.message : String(error)
+      );
     }
   }
 
@@ -238,9 +320,11 @@ class ServiceFunctionTester {
     try {
       // 測試獲取儀表板統計
       const dashboardStats = await adminService.getDashboardStats();
-      this.recordTest('adminService.getDashboardStats', 
-        typeof dashboardStats === 'object' && 
-        typeof dashboardStats.totalMembers === 'number');
+      this.recordTest(
+        'adminService.getDashboardStats',
+        typeof dashboardStats === 'object' &&
+          typeof dashboardStats.totalMembers === 'number'
+      );
 
       // 測試 getSystemOverview (使用 getSystemSummary 替代)
       console.log('🧪 測試 getSystemSummary...');
@@ -254,55 +338,88 @@ class ServiceFunctionTester {
 
       // 測試獲取活動報告
       const eventReport2 = await adminService.exportMembersReport({});
-      this.recordTest('adminService.getEventReport', 
-        typeof eventReport2 === 'object');
+      this.recordTest(
+        'adminService.getEventReport',
+        typeof eventReport2 === 'object'
+      );
 
-       // 測試獲取活動報告
-       const eventReport3 = await adminService.exportRegistrationsReport({});
-       this.recordTest('adminService.getEventReport', 
-         typeof eventReport3 === 'object');
+      // 測試獲取活動報告
+      const eventReport3 = await adminService.exportRegistrationsReport({});
+      this.recordTest(
+        'adminService.getEventReport',
+        typeof eventReport3 === 'object'
+      );
 
-         const eventReport4 = await adminService.exportComprehensiveReport({});
-         this.recordTest('adminService.getEventReport', 
-           typeof eventReport4 === 'object');
-
+      const eventReport4 = await adminService.exportComprehensiveReport({});
+      this.recordTest(
+        'adminService.getEventReport',
+        typeof eventReport4 === 'object'
+      );
     } catch (error) {
-      console.error('❌ getSystemSummary 測試失敗:', error instanceof Error ? error.message : String(error));
+      console.error(
+        '❌ getSystemSummary 測試失敗:',
+        error instanceof Error ? error.message : String(error)
+      );
     }
-     try {
-          const stats = await adminService.getMemberStats();
-          console.log('🧪 測試 getMemberStats...');
-          console.log('✅ getMemberStats 測試成功:', stats);
-      } catch (error) {
-          console.error('❌ getMemberStats 測試失敗:', error instanceof Error ? error.message : String(error));
-      }
-      try {
-          console.log('🧪 測試 exportMembersReport...');
-          const membersReport = await adminService.exportMembersReport({});
-          console.log('✅ exportMembersReport 測試成功:', membersReport);
-      } catch (error) {
-          console.error('❌ exportMembersReport 測試失敗:', error instanceof Error ? error.message : String(error));
-      }
-      try {
-          console.log('🧪 測試 exportEventsReport...');
-          const eventsReport = await adminService.exportEventsReport({});
-          console.log('✅ exportEventsReport 測試成功:', eventsReport);
-      } catch (error) {
-          console.error('❌ exportEventsReport 測試失敗:', error instanceof Error ? error.message : String(error));
-      }
-      try {
-          console.log('🧪 測試 exportRegistrationsReport...');
-          const registrationsReport = await adminService.exportRegistrationsReport({});
-          console.log('✅ exportRegistrationsReport 測試成功:', registrationsReport);
-      } catch (error) {
-          console.error('❌ exportRegistrationsReport 測試失敗:', error instanceof Error ? error.message : String(error));
-      }
-      try {
-        console.log('🧪 測試 exportComprehensiveReport...');
-        const comprehensiveReport = await adminService.exportComprehensiveReport({});
-        console.log('✅ exportComprehensiveReport 測試成功:', comprehensiveReport);
+    try {
+      const stats = await adminService.getMemberStats();
+      console.log('🧪 測試 getMemberStats...');
+      console.log('✅ getMemberStats 測試成功:', stats);
     } catch (error) {
-        console.error('❌ exportComprehensiveReport 測試失敗:', error instanceof Error ? error.message : String(error));
+      console.error(
+        '❌ getMemberStats 測試失敗:',
+        error instanceof Error ? error.message : String(error)
+      );
+    }
+    try {
+      console.log('🧪 測試 exportMembersReport...');
+      const membersReport = await adminService.exportMembersReport({});
+      console.log('✅ exportMembersReport 測試成功:', membersReport);
+    } catch (error) {
+      console.error(
+        '❌ exportMembersReport 測試失敗:',
+        error instanceof Error ? error.message : String(error)
+      );
+    }
+    try {
+      console.log('🧪 測試 exportEventsReport...');
+      const eventsReport = await adminService.exportEventsReport({});
+      console.log('✅ exportEventsReport 測試成功:', eventsReport);
+    } catch (error) {
+      console.error(
+        '❌ exportEventsReport 測試失敗:',
+        error instanceof Error ? error.message : String(error)
+      );
+    }
+    try {
+      console.log('🧪 測試 exportRegistrationsReport...');
+      const registrationsReport = await adminService.exportRegistrationsReport(
+        {}
+      );
+      console.log(
+        '✅ exportRegistrationsReport 測試成功:',
+        registrationsReport
+      );
+    } catch (error) {
+      console.error(
+        '❌ exportRegistrationsReport 測試失敗:',
+        error instanceof Error ? error.message : String(error)
+      );
+    }
+    try {
+      console.log('🧪 測試 exportComprehensiveReport...');
+      const comprehensiveReport = await adminService.exportComprehensiveReport(
+        {}
+      );
+      console.log(
+        '✅ exportComprehensiveReport 測試成功:',
+        comprehensiveReport
+      );
+    } catch (error) {
+      console.error(
+        '❌ exportComprehensiveReport 測試失敗:',
+        error instanceof Error ? error.message : String(error)
+      );
     }
   }
 
@@ -318,11 +435,16 @@ class ServiceFunctionTester {
 
       // 測試查詢
       const result = await sequelize.query('SELECT 1 as test');
-      this.recordTest('database.query', 
-        Array.isArray(result) && result.length === 2);
-
+      this.recordTest(
+        'database.query',
+        Array.isArray(result) && result.length === 2
+      );
     } catch (error) {
-      this.recordTest('database.connection', false, error instanceof Error ? error.message : String(error));
+      this.recordTest(
+        'database.connection',
+        false,
+        error instanceof Error ? error.message : String(error)
+      );
     }
   }
 
@@ -340,13 +462,17 @@ class ServiceFunctionTester {
     console.log(`總測試項目: ${totalTests}`);
     console.log(`通過測試: ${passedTests}`);
     console.log(`失敗測試: ${failedTests}`);
-    console.log(`通過率: ${((Number(passedTests) / Number(totalTests)) * 100).toFixed(1)}%`);
+    console.log(
+      `通過率: ${((Number(passedTests) / Number(totalTests)) * 100).toFixed(1)}%`
+    );
 
     if (failedTests > 0) {
       console.log('\n❌ 失敗的測試項目:');
       Object.entries(this.testResults).forEach(([testName, passed]) => {
         if (!passed) {
-          console.log(`   - ${testName}: ${this.testErrors[testName] || '未知錯誤'}`);
+          console.log(
+            `   - ${testName}: ${this.testErrors[testName] || '未知錯誤'}`
+          );
         }
       });
     }
@@ -359,7 +485,7 @@ class ServiceFunctionTester {
       failed: failedTests,
       passRate: (Number(passedTests) / Number(totalTests)) * 100,
       results: this.testResults,
-      errors: this.testErrors
+      errors: this.testErrors,
     };
   }
 

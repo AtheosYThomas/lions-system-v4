@@ -1,4 +1,3 @@
-
 import File, { IFileModel } from '../models/file';
 import Member from '../models/member';
 import { Op } from 'sequelize';
@@ -8,7 +7,11 @@ interface FileUploadData {
   mime_type?: string;
   size?: number;
   url: string;
-  usage: 'event_cover' | 'registration_attachment' | 'announcement_image' | 'profile_avatar';
+  usage:
+    | 'event_cover'
+    | 'registration_attachment'
+    | 'announcement_image'
+    | 'profile_avatar';
   uploaded_by?: string;
   related_id?: string;
 }
@@ -29,7 +32,12 @@ class FileService {
   async uploadFile(fileData: FileUploadData): Promise<IFileModel> {
     try {
       // 驗證檔案用途
-      const validUsages = ['event_cover', 'registration_attachment', 'announcement_image', 'profile_avatar'];
+      const validUsages = [
+        'event_cover',
+        'registration_attachment',
+        'announcement_image',
+        'profile_avatar',
+      ];
       if (!validUsages.includes(fileData.usage)) {
         throw new Error(`無效的檔案用途：${fileData.usage}`);
       }
@@ -44,7 +52,7 @@ class FileService {
 
       const file = await File.create({
         ...fileData,
-        status: 'active'
+        status: 'active',
       });
 
       return file.getPublicData();
@@ -64,9 +72,9 @@ class FileService {
           {
             model: Member,
             as: 'uploader',
-            attributes: ['id', 'name', 'email']
-          }
-        ]
+            attributes: ['id', 'name', 'email'],
+          },
+        ],
       });
 
       return file ? file.getPublicData() : null;
@@ -109,16 +117,16 @@ class FileService {
             model: Member,
             as: 'uploader',
             attributes: ['id', 'name', 'email'],
-            required: false
-          }
-        ]
+            required: false,
+          },
+        ],
       });
 
       return {
         files: result.rows.map(file => file.getPublicData()),
         total: result.count,
         limit: options.limit || 20,
-        offset: options.offset || 0
+        offset: options.offset || 0,
       };
     } catch (error) {
       console.error('搜尋檔案失敗:', error);
@@ -147,11 +155,14 @@ class FileService {
   /**
    * 根據用途獲取檔案
    */
-  async getFilesByUsage(usage: string, relatedId?: string): Promise<IFileModel[]> {
+  async getFilesByUsage(
+    usage: string,
+    relatedId?: string
+  ): Promise<IFileModel[]> {
     try {
       const whereClause: any = {
         usage,
-        status: 'active'
+        status: 'active',
       };
 
       if (relatedId) {
@@ -166,9 +177,9 @@ class FileService {
             model: Member,
             as: 'uploader',
             attributes: ['id', 'name'],
-            required: false
-          }
-        ]
+            required: false,
+          },
+        ],
       });
 
       return files.map(file => file.getPublicData());
@@ -181,7 +192,10 @@ class FileService {
   /**
    * 更新檔案資訊
    */
-  async updateFile(id: string, updateData: Partial<FileUploadData>): Promise<IFileModel> {
+  async updateFile(
+    id: string,
+    updateData: Partial<FileUploadData>
+  ): Promise<IFileModel> {
     try {
       const file = await File.findByPk(id);
 
@@ -202,36 +216,44 @@ class FileService {
    */
   async getFileStats() {
     try {
-      const [totalFiles, imageFiles, documentFiles, videoFiles] = await Promise.all([
-        File.count({ where: { status: 'active' } }),
-        File.count({ 
-          where: { 
-            status: 'active',
-            mime_type: { [Op.like]: 'image/%' }
-          }
-        }),
-        File.count({ 
-          where: { 
-            status: 'active',
-            mime_type: { [Op.or]: ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'] }
-          }
-        }),
-        File.count({ 
-          where: { 
-            status: 'active',
-            mime_type: { [Op.like]: 'video/%' }
-          }
-        })
-      ]);
+      const [totalFiles, imageFiles, documentFiles, videoFiles] =
+        await Promise.all([
+          File.count({ where: { status: 'active' } }),
+          File.count({
+            where: {
+              status: 'active',
+              mime_type: { [Op.like]: 'image/%' },
+            },
+          }),
+          File.count({
+            where: {
+              status: 'active',
+              mime_type: {
+                [Op.or]: [
+                  'application/pdf',
+                  'application/msword',
+                  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                ],
+              },
+            },
+          }),
+          File.count({
+            where: {
+              status: 'active',
+              mime_type: { [Op.like]: 'video/%' },
+            },
+          }),
+        ]);
 
-      const totalSize = await File.sum('size', { where: { status: 'active' } }) || 0;
+      const totalSize =
+        (await File.sum('size', { where: { status: 'active' } })) || 0;
 
       return {
         totalFiles,
         imageFiles,
         documentFiles,
         videoFiles,
-        totalSize: Math.round(totalSize / 1024 / 1024 * 100) / 100 // MB
+        totalSize: Math.round((totalSize / 1024 / 1024) * 100) / 100, // MB
       };
     } catch (error) {
       console.error('獲取檔案統計失敗:', error);

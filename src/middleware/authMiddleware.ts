@@ -16,20 +16,25 @@ declare global {
  * 基礎認證中間件
  * 驗證用戶身份並設置 req.member
  */
-export const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
+export const authMiddleware = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     // 從多個來源取得 LINE UID
-    const lineUid = req.headers['x-line-uid'] || 
-                   (req as any).session?.line_uid || 
-                   req.body.line_uid;
+    const lineUid =
+      req.headers['x-line-uid'] ||
+      (req as any).session?.line_uid ||
+      req.body.line_uid;
 
     if (!lineUid || typeof lineUid !== 'string') {
       throw AuthError.unauthorized();
     }
 
     // 查詢會員資料
-    const member = await Member.findOne({ 
-      where: { line_user_id: lineUid } 
+    const member = await Member.findOne({
+      where: { line_user_id: lineUid },
     });
 
     if (!member) {
@@ -58,15 +63,20 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
  * 可選認證中間件
  * 如果有提供認證信息則驗證，但不強制要求登入
  */
-export const optionalAuthMiddleware = async (req: Request, res: Response, next: NextFunction) => {
+export const optionalAuthMiddleware = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    const lineUid = req.headers['x-line-uid'] || 
-                   (req as any).session?.line_uid || 
-                   req.body.line_uid;
+    const lineUid =
+      req.headers['x-line-uid'] ||
+      (req as any).session?.line_uid ||
+      req.body.line_uid;
 
     if (lineUid && typeof lineUid === 'string') {
-      const member = await Member.findOne({ 
-        where: { line_user_id: lineUid, status: 'active' } 
+      const member = await Member.findOne({
+        where: { line_user_id: lineUid, status: 'active' },
       });
 
       if (member) {
@@ -85,7 +95,11 @@ export const optionalAuthMiddleware = async (req: Request, res: Response, next: 
 /**
  * 檢查用戶是否已登入
  */
-export const requireAuth = (req: Request, res: Response, next: NextFunction) => {
+export const requireAuth = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   if (!req.member) {
     const error = AuthError.unauthorized();
     return res.status(error.statusCode).json(error.toJSON());

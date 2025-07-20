@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 
 // LIFF 類型定義
@@ -31,7 +30,7 @@ const Register: React.FC = () => {
     birthday: '',
     job_title: '',
     mobile: '',
-    address: ''
+    address: '',
   });
 
   useEffect(() => {
@@ -59,13 +58,13 @@ const Register: React.FC = () => {
         // 取得 LIFF 配置
         const configResponse = await fetch('/api/liff/config');
         const config = await configResponse.json();
-        
+
         if (!config.success || !config.liff_id) {
           throw new Error('無法取得 LIFF 配置');
         }
 
         await window.liff.init({ liffId: config.liff_id });
-        
+
         if (!window.liff.isLoggedIn()) {
           window.liff.login();
           return;
@@ -73,18 +72,17 @@ const Register: React.FC = () => {
 
         const profile = await window.liff.getProfile();
         const context = window.liff.getContext();
-        
+
         setLineUserId(context?.userId || profile?.userId || null);
         setLiffInitialized(true);
-        
+
         // 自動填入 LINE 用戶資料
         if (profile) {
           setFormData(prev => ({
             ...prev,
-            name: profile.displayName || prev.name
+            name: profile.displayName || prev.name,
           }));
         }
-        
       } catch (error) {
         console.error('LIFF 初始化錯誤:', error);
         alert('LIFF 初始化失敗，請重新整理頁面');
@@ -94,26 +92,37 @@ const Register: React.FC = () => {
     initLiff();
   }, []);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!lineUserId) {
       alert('尚未擷取 LINE 用戶資訊，請重新整理頁面');
       return;
     }
 
     // 驗證必填欄位
-    const requiredFields = ['name', 'email', 'birthday', 'job_title', 'mobile', 'address'];
-    const missingFields = requiredFields.filter(field => !formData[field as keyof FormData]);
-    
+    const requiredFields = [
+      'name',
+      'email',
+      'birthday',
+      'job_title',
+      'mobile',
+      'address',
+    ];
+    const missingFields = requiredFields.filter(
+      field => !formData[field as keyof FormData]
+    );
+
     if (missingFields.length > 0) {
       alert(`請填寫必填欄位: ${missingFields.join(', ')}`);
       return;
@@ -151,7 +160,10 @@ const Register: React.FC = () => {
 
   if (!liffInitialized) {
     return (
-      <div className="register-container" style={{ textAlign: 'center', padding: '2rem' }}>
+      <div
+        className="register-container"
+        style={{ textAlign: 'center', padding: '2rem' }}
+      >
         <h2>正在初始化 LIFF...</h2>
         <p>請稍候，系統正在載入中</p>
       </div>
@@ -159,26 +171,47 @@ const Register: React.FC = () => {
   }
 
   return (
-    <div className="register-container" style={{ maxWidth: '600px', margin: '0 auto', padding: '2rem' }}>
-      <h2 style={{ color: '#2563eb', marginBottom: '1.5rem', textAlign: 'center' }}>
+    <div
+      className="register-container"
+      style={{ maxWidth: '600px', margin: '0 auto', padding: '2rem' }}
+    >
+      <h2
+        style={{
+          color: '#2563eb',
+          marginBottom: '1.5rem',
+          textAlign: 'center',
+        }}
+      >
         🦁 北大獅子會會員註冊
       </h2>
-      
+
       {lineUserId && (
-        <div style={{ 
-          backgroundColor: '#f0f9ff', 
-          padding: '1rem', 
-          borderRadius: '8px', 
-          marginBottom: '1.5rem',
-          border: '1px solid #0ea5e9'
-        }}>
+        <div
+          style={{
+            backgroundColor: '#f0f9ff',
+            padding: '1rem',
+            borderRadius: '8px',
+            marginBottom: '1.5rem',
+            border: '1px solid #0ea5e9',
+          }}
+        >
           ✅ LINE 用戶驗證成功
         </div>
       )}
 
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+      <form
+        onSubmit={handleSubmit}
+        style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}
+      >
         <div className="form-group">
-          <label htmlFor="name" style={{ fontWeight: 'bold', marginBottom: '0.5rem', display: 'block' }}>
+          <label
+            htmlFor="name"
+            style={{
+              fontWeight: 'bold',
+              marginBottom: '0.5rem',
+              display: 'block',
+            }}
+          >
             姓名 <span style={{ color: '#dc2626' }}>*</span>
           </label>
           <input
@@ -193,13 +226,20 @@ const Register: React.FC = () => {
               padding: '0.75rem',
               border: '1px solid #d1d5db',
               borderRadius: '6px',
-              fontSize: '1rem'
+              fontSize: '1rem',
             }}
           />
         </div>
 
         <div className="form-group">
-          <label htmlFor="email" style={{ fontWeight: 'bold', marginBottom: '0.5rem', display: 'block' }}>
+          <label
+            htmlFor="email"
+            style={{
+              fontWeight: 'bold',
+              marginBottom: '0.5rem',
+              display: 'block',
+            }}
+          >
             Email <span style={{ color: '#dc2626' }}>*</span>
           </label>
           <input
@@ -214,13 +254,20 @@ const Register: React.FC = () => {
               padding: '0.75rem',
               border: '1px solid #d1d5db',
               borderRadius: '6px',
-              fontSize: '1rem'
+              fontSize: '1rem',
             }}
           />
         </div>
 
         <div className="form-group">
-          <label htmlFor="english_name" style={{ fontWeight: 'bold', marginBottom: '0.5rem', display: 'block' }}>
+          <label
+            htmlFor="english_name"
+            style={{
+              fontWeight: 'bold',
+              marginBottom: '0.5rem',
+              display: 'block',
+            }}
+          >
             英文姓名
           </label>
           <input
@@ -234,13 +281,20 @@ const Register: React.FC = () => {
               padding: '0.75rem',
               border: '1px solid #d1d5db',
               borderRadius: '6px',
-              fontSize: '1rem'
+              fontSize: '1rem',
             }}
           />
         </div>
 
         <div className="form-group">
-          <label htmlFor="birthday" style={{ fontWeight: 'bold', marginBottom: '0.5rem', display: 'block' }}>
+          <label
+            htmlFor="birthday"
+            style={{
+              fontWeight: 'bold',
+              marginBottom: '0.5rem',
+              display: 'block',
+            }}
+          >
             生日 <span style={{ color: '#dc2626' }}>*</span>
           </label>
           <input
@@ -255,13 +309,20 @@ const Register: React.FC = () => {
               padding: '0.75rem',
               border: '1px solid #d1d5db',
               borderRadius: '6px',
-              fontSize: '1rem'
+              fontSize: '1rem',
             }}
           />
         </div>
 
         <div className="form-group">
-          <label htmlFor="job_title" style={{ fontWeight: 'bold', marginBottom: '0.5rem', display: 'block' }}>
+          <label
+            htmlFor="job_title"
+            style={{
+              fontWeight: 'bold',
+              marginBottom: '0.5rem',
+              display: 'block',
+            }}
+          >
             職稱 <span style={{ color: '#dc2626' }}>*</span>
           </label>
           <input
@@ -276,13 +337,20 @@ const Register: React.FC = () => {
               padding: '0.75rem',
               border: '1px solid #d1d5db',
               borderRadius: '6px',
-              fontSize: '1rem'
+              fontSize: '1rem',
             }}
           />
         </div>
 
         <div className="form-group">
-          <label htmlFor="mobile" style={{ fontWeight: 'bold', marginBottom: '0.5rem', display: 'block' }}>
+          <label
+            htmlFor="mobile"
+            style={{
+              fontWeight: 'bold',
+              marginBottom: '0.5rem',
+              display: 'block',
+            }}
+          >
             手機 <span style={{ color: '#dc2626' }}>*</span>
           </label>
           <input
@@ -297,13 +365,20 @@ const Register: React.FC = () => {
               padding: '0.75rem',
               border: '1px solid #d1d5db',
               borderRadius: '6px',
-              fontSize: '1rem'
+              fontSize: '1rem',
             }}
           />
         </div>
 
         <div className="form-group">
-          <label htmlFor="phone" style={{ fontWeight: 'bold', marginBottom: '0.5rem', display: 'block' }}>
+          <label
+            htmlFor="phone"
+            style={{
+              fontWeight: 'bold',
+              marginBottom: '0.5rem',
+              display: 'block',
+            }}
+          >
             電話
           </label>
           <input
@@ -317,13 +392,20 @@ const Register: React.FC = () => {
               padding: '0.75rem',
               border: '1px solid #d1d5db',
               borderRadius: '6px',
-              fontSize: '1rem'
+              fontSize: '1rem',
             }}
           />
         </div>
 
         <div className="form-group">
-          <label htmlFor="address" style={{ fontWeight: 'bold', marginBottom: '0.5rem', display: 'block' }}>
+          <label
+            htmlFor="address"
+            style={{
+              fontWeight: 'bold',
+              marginBottom: '0.5rem',
+              display: 'block',
+            }}
+          >
             地址 <span style={{ color: '#dc2626' }}>*</span>
           </label>
           <textarea
@@ -340,7 +422,7 @@ const Register: React.FC = () => {
               borderRadius: '6px',
               fontSize: '1rem',
               fontFamily: 'inherit',
-              resize: 'vertical'
+              resize: 'vertical',
             }}
           />
         </div>
@@ -358,19 +440,21 @@ const Register: React.FC = () => {
             fontSize: '1.1rem',
             fontWeight: 'bold',
             cursor: loading || !lineUserId ? 'not-allowed' : 'pointer',
-            marginTop: '1rem'
+            marginTop: '1rem',
           }}
         >
           {loading ? '註冊中...' : '送出註冊'}
         </button>
       </form>
 
-      <div style={{ 
-        marginTop: '2rem', 
-        textAlign: 'center', 
-        fontSize: '0.875rem', 
-        color: '#6b7280' 
-      }}>
+      <div
+        style={{
+          marginTop: '2rem',
+          textAlign: 'center',
+          fontSize: '0.875rem',
+          color: '#6b7280',
+        }}
+      >
         <p>註冊完成後將自動導向報到頁面</p>
       </div>
     </div>

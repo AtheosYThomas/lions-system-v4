@@ -1,4 +1,3 @@
-
 import express from 'express';
 import { middleware } from '@line/bot-sdk';
 import { config } from '../../config/config';
@@ -8,7 +7,11 @@ import crypto from 'crypto';
 const router = express.Router();
 
 // 手動驗證簽名的中間件
-function validateLineSignature(req: express.Request, res: express.Response, next: express.NextFunction) {
+function validateLineSignature(
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction
+) {
   try {
     const channelSecret = config.line.channelSecret;
     const signature = req.headers['x-line-signature'] as string;
@@ -20,7 +23,7 @@ function validateLineSignature(req: express.Request, res: express.Response, next
       bodyLength: body.length,
       channelSecretLength: channelSecret ? channelSecret.length : 0,
       contentType: req.headers['content-type'],
-      userAgent: req.headers['user-agent']
+      userAgent: req.headers['user-agent'],
     });
 
     if (!signature) {
@@ -42,7 +45,7 @@ function validateLineSignature(req: express.Request, res: express.Response, next
     console.log('🔍 簽名比對:', {
       received: signature,
       expected: expectedSignature,
-      match: signature === expectedSignature
+      match: signature === expectedSignature,
     });
 
     if (signature !== expectedSignature) {
@@ -60,32 +63,33 @@ function validateLineSignature(req: express.Request, res: express.Response, next
 }
 
 // LINE webhook POST 事件處理（使用自定義簽名驗證）
-router.post('/', 
+router.post(
+  '/',
   express.json({ limit: '10mb' }), // 增加請求大小限制
   validateLineSignature,
   async (req, res) => {
     try {
       console.log('📨 Webhook 路由收到請求');
-      
+
       // 確保請求有正確的 Content-Type
       if (!req.is('application/json')) {
         console.log('⚠️ 非 JSON 請求格式');
-        return res.status(200).json({ 
-          status: 'warning', 
-          message: 'Expected JSON content-type' 
+        return res.status(200).json({
+          status: 'warning',
+          message: 'Expected JSON content-type',
         });
       }
 
       await lineController.handleWebhook(req, res);
     } catch (error) {
       console.error('❌ LINE webhook 路由處理錯誤:', error);
-      
+
       // 確保總是回傳正確的 JSON 格式
       if (!res.headersSent) {
-        return res.status(200).json({ 
-          status: 'error', 
+        return res.status(200).json({
+          status: 'error',
           message: 'Route processing failed',
-          error: error instanceof Error ? error.message : 'Unknown error'
+          error: error instanceof Error ? error.message : 'Unknown error',
         });
       }
     }

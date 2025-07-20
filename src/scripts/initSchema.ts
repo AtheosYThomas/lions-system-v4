@@ -25,7 +25,6 @@ const initSchema = async () => {
     console.log('📋 已建立的資料表:', tables.sort());
 
     console.log('🎉 資料庫結構初始化完成！');
-
   } catch (error) {
     console.error('❌ 資料庫初始化錯誤:', error);
     if (error instanceof Error) {

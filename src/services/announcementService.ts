@@ -1,4 +1,3 @@
-
 import { Announcement, AnnouncementAttributes } from '../models/announcement';
 import Member from '../models/member';
 import Event from '../models/event';
@@ -40,7 +39,9 @@ class AnnouncementService {
   /**
    * 創建公告
    */
-  async createAnnouncement(announcementData: AnnouncementCreationData): Promise<Announcement> {
+  async createAnnouncement(
+    announcementData: AnnouncementCreationData
+  ): Promise<Announcement> {
     try {
       // 驗證創建者是否存在（如果提供）
       if (announcementData.created_by) {
@@ -76,7 +77,7 @@ class AnnouncementService {
         audience: announcementData.audience || 'all',
         category: announcementData.category || 'event',
         status: announcementData.status || 'draft',
-        is_visible: announcementData.is_visible !== false
+        is_visible: announcementData.is_visible !== false,
       };
 
       if (announcementData.status === 'published') {
@@ -86,13 +87,16 @@ class AnnouncementService {
       const announcement = await Announcement.create(announcementPayload);
 
       // 回傳完整的公告資料
-      return await Announcement.findByPk(announcement.id, {
+      return (await Announcement.findByPk(announcement.id, {
         include: [
           { model: Member, as: 'creator', attributes: ['id', 'name', 'email'] },
-          { model: Event, as: 'relatedEvent', attributes: ['id', 'title', 'date', 'location'] }
-        ]
-      }) as Announcement;
-
+          {
+            model: Event,
+            as: 'relatedEvent',
+            attributes: ['id', 'title', 'date', 'location'],
+          },
+        ],
+      })) as Announcement;
     } catch (error) {
       console.error('創建公告失敗:', error);
       throw error;
@@ -107,8 +111,12 @@ class AnnouncementService {
       return await Announcement.findByPk(id, {
         include: [
           { model: Member, as: 'creator', attributes: ['id', 'name', 'email'] },
-          { model: Event, as: 'relatedEvent', attributes: ['id', 'title', 'date', 'location'] }
-        ]
+          {
+            model: Event,
+            as: 'relatedEvent',
+            attributes: ['id', 'title', 'date', 'location'],
+          },
+        ],
       });
     } catch (error) {
       console.error('獲取公告失敗:', error);
@@ -125,13 +133,13 @@ class AnnouncementService {
 
       if (options.title) {
         whereClause.title = {
-          [Op.iLike]: `%${options.title}%`
+          [Op.iLike]: `%${options.title}%`,
         };
       }
 
       if (options.content) {
         whereClause.content = {
-          [Op.iLike]: `%${options.content}%`
+          [Op.iLike]: `%${options.content}%`,
         };
       }
 
@@ -172,22 +180,32 @@ class AnnouncementService {
       const result = await Announcement.findAndCountAll({
         where: whereClause,
         include: [
-          { model: Member, as: 'creator', attributes: ['id', 'name', 'email'], required: false },
-          { model: Event, as: 'relatedEvent', attributes: ['id', 'title', 'date', 'location'], required: false }
+          {
+            model: Member,
+            as: 'creator',
+            attributes: ['id', 'name', 'email'],
+            required: false,
+          },
+          {
+            model: Event,
+            as: 'relatedEvent',
+            attributes: ['id', 'title', 'date', 'location'],
+            required: false,
+          },
         ],
         order: [
           ['published_at', 'DESC'],
-          ['created_at', 'DESC']
+          ['created_at', 'DESC'],
         ],
         limit: options.limit || 20,
-        offset: options.offset || 0
+        offset: options.offset || 0,
       });
 
       return {
         announcements: result.rows,
         total: result.count,
         limit: options.limit || 20,
-        offset: options.offset || 0
+        offset: options.offset || 0,
       };
     } catch (error) {
       console.error('搜尋公告失敗:', error);
@@ -198,10 +216,12 @@ class AnnouncementService {
   /**
    * 更新公告
    */
-  async updateAnnouncement(updateData: AnnouncementUpdateData): Promise<Announcement> {
+  async updateAnnouncement(
+    updateData: AnnouncementUpdateData
+  ): Promise<Announcement> {
     try {
       const announcement = await Announcement.findByPk(updateData.id);
-      
+
       if (!announcement) {
         throw new Error('公告不存在');
       }
@@ -227,20 +247,26 @@ class AnnouncementService {
       }
 
       // 如果從其他狀態變為發布狀態，設定發布時間
-      if (updateData.status === 'published' && announcement.status !== 'published') {
+      if (
+        updateData.status === 'published' &&
+        announcement.status !== 'published'
+      ) {
         updateData.published_at = new Date();
       }
 
       await announcement.update(updateData);
-      
+
       // 回傳更新後的完整資料
-      return await Announcement.findByPk(announcement.id, {
+      return (await Announcement.findByPk(announcement.id, {
         include: [
           { model: Member, as: 'creator', attributes: ['id', 'name', 'email'] },
-          { model: Event, as: 'relatedEvent', attributes: ['id', 'title', 'date', 'location'] }
-        ]
-      }) as Announcement;
-
+          {
+            model: Event,
+            as: 'relatedEvent',
+            attributes: ['id', 'title', 'date', 'location'],
+          },
+        ],
+      })) as Announcement;
     } catch (error) {
       console.error('更新公告失敗:', error);
       throw error;
@@ -253,7 +279,7 @@ class AnnouncementService {
   async deleteAnnouncement(id: string): Promise<void> {
     try {
       const announcement = await Announcement.findByPk(id);
-      
+
       if (!announcement) {
         throw new Error('公告不存在');
       }
@@ -271,7 +297,7 @@ class AnnouncementService {
   async publishAnnouncement(id: string): Promise<Announcement> {
     try {
       const announcement = await Announcement.findByPk(id);
-      
+
       if (!announcement) {
         throw new Error('公告不存在');
       }
@@ -282,7 +308,7 @@ class AnnouncementService {
 
       await announcement.update({
         status: 'published',
-        published_at: new Date()
+        published_at: new Date(),
       });
 
       return announcement;
@@ -298,7 +324,7 @@ class AnnouncementService {
   async hideAnnouncement(id: string): Promise<Announcement> {
     try {
       const announcement = await Announcement.findByPk(id);
-      
+
       if (!announcement) {
         throw new Error('公告不存在');
       }
@@ -317,7 +343,7 @@ class AnnouncementService {
   async showAnnouncement(id: string): Promise<Announcement> {
     try {
       const announcement = await Announcement.findByPk(id);
-      
+
       if (!announcement) {
         throw new Error('公告不存在');
       }
@@ -333,15 +359,15 @@ class AnnouncementService {
   /**
    * 獲取公開公告（給一般用戶看的）
    */
-  async getPublicAnnouncements(audience: 'all' | 'officers' | 'members' = 'all', limit: number = 10) {
+  async getPublicAnnouncements(
+    audience: 'all' | 'officers' | 'members' = 'all',
+    limit: number = 10
+  ) {
     try {
       const whereClause: any = {
         status: 'published',
         is_visible: true,
-        [Op.or]: [
-          { audience: 'all' },
-          { audience }
-        ]
+        [Op.or]: [{ audience: 'all' }, { audience }],
       };
 
       // 檢查是否有已排程但時間已到的公告需要發布
@@ -350,10 +376,15 @@ class AnnouncementService {
       const announcements = await Announcement.findAll({
         where: whereClause,
         include: [
-          { model: Event, as: 'relatedEvent', attributes: ['id', 'title', 'date', 'location'], required: false }
+          {
+            model: Event,
+            as: 'relatedEvent',
+            attributes: ['id', 'title', 'date', 'location'],
+            required: false,
+          },
         ],
         order: [['published_at', 'DESC']],
-        limit
+        limit,
       });
 
       return announcements;
@@ -373,13 +404,18 @@ class AnnouncementService {
       return await Announcement.findAll({
         where: {
           status: 'published',
-          is_visible: true
+          is_visible: true,
         },
         include: [
-          { model: Event, as: 'relatedEvent', attributes: ['id', 'title', 'date'], required: false }
+          {
+            model: Event,
+            as: 'relatedEvent',
+            attributes: ['id', 'title', 'date'],
+            required: false,
+          },
         ],
         order: [['published_at', 'DESC']],
-        limit
+        limit,
       });
     } catch (error) {
       console.error('獲取最新公告失敗:', error);
@@ -393,19 +429,19 @@ class AnnouncementService {
   async processScheduledAnnouncements(): Promise<number> {
     try {
       const now = new Date();
-      
+
       const [affectedCount] = await Announcement.update(
         {
           status: 'published',
-          published_at: now
+          published_at: now,
         },
         {
           where: {
             status: 'scheduled',
             scheduled_at: {
-              [Op.lte]: now
-            }
-          }
+              [Op.lte]: now,
+            },
+          },
         }
       );
 
@@ -430,22 +466,24 @@ class AnnouncementService {
         Announcement.count({ where: { status: 'published' } }),
         Announcement.count({ where: { status: 'draft' } }),
         Announcement.count({ where: { status: 'scheduled' } }),
-        Announcement.count({ where: { is_visible: false } })
+        Announcement.count({ where: { is_visible: false } }),
       ]);
 
       // 按分類統計
-      const [eventAnnouncements, systemAnnouncements, personnelAnnouncements] = await Promise.all([
-        Announcement.count({ where: { category: 'event' } }),
-        Announcement.count({ where: { category: 'system' } }),
-        Announcement.count({ where: { category: 'personnel' } })
-      ]);
+      const [eventAnnouncements, systemAnnouncements, personnelAnnouncements] =
+        await Promise.all([
+          Announcement.count({ where: { category: 'event' } }),
+          Announcement.count({ where: { category: 'system' } }),
+          Announcement.count({ where: { category: 'personnel' } }),
+        ]);
 
       // 按對象統計
-      const [allAudience, officersAudience, membersAudience] = await Promise.all([
-        Announcement.count({ where: { audience: 'all' } }),
-        Announcement.count({ where: { audience: 'officers' } }),
-        Announcement.count({ where: { audience: 'members' } })
-      ]);
+      const [allAudience, officersAudience, membersAudience] =
+        await Promise.all([
+          Announcement.count({ where: { audience: 'all' } }),
+          Announcement.count({ where: { audience: 'officers' } }),
+          Announcement.count({ where: { audience: 'members' } }),
+        ]);
 
       return {
         total,
@@ -453,18 +491,18 @@ class AnnouncementService {
           published,
           draft,
           scheduled,
-          hidden
+          hidden,
         },
         byCategory: {
           event: eventAnnouncements,
           system: systemAnnouncements,
-          personnel: personnelAnnouncements
+          personnel: personnelAnnouncements,
         },
         byAudience: {
           all: allAudience,
           officers: officersAudience,
-          members: membersAudience
-        }
+          members: membersAudience,
+        },
       };
     } catch (error) {
       console.error('獲取公告統計失敗:', error);
@@ -481,12 +519,10 @@ class AnnouncementService {
         where: {
           related_event_id: eventId,
           status: 'published',
-          is_visible: true
+          is_visible: true,
         },
-        include: [
-          { model: Member, as: 'creator', attributes: ['id', 'name'] }
-        ],
-        order: [['published_at', 'DESC']]
+        include: [{ model: Member, as: 'creator', attributes: ['id', 'name'] }],
+        order: [['published_at', 'DESC']],
       });
     } catch (error) {
       console.error('獲取活動相關公告失敗:', error);
@@ -502,13 +538,13 @@ class AnnouncementService {
       const [affectedCount] = await Announcement.update(
         {
           status: 'published',
-          published_at: new Date()
+          published_at: new Date(),
         },
         {
           where: {
             id: { [Op.in]: announcementIds },
-            status: { [Op.not]: 'published' }
-          }
+            status: { [Op.not]: 'published' },
+          },
         }
       );
 
@@ -529,8 +565,8 @@ class AnnouncementService {
         {
           where: {
             id: { [Op.in]: announcementIds },
-            is_visible: true
-          }
+            is_visible: true,
+          },
         }
       );
 

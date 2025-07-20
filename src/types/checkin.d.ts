@@ -21,7 +21,7 @@ export enum CheckinStatus {
   LATE = 'late',
   EARLY_DEPARTURE = 'early_departure',
   ABSENT = 'absent',
-  EXCUSED = 'excused'
+  EXCUSED = 'excused',
 }
 
 export interface CreateCheckinRequest {

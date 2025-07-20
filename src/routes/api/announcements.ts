@@ -1,4 +1,3 @@
-
 import express from 'express';
 import announcementController from '../../controllers/announcementController';
 

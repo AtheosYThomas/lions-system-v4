@@ -1,4 +1,3 @@
-
 export interface Event {
   id: number;
   title: string;
@@ -23,7 +22,7 @@ export enum EventStatus {
   PUBLISHED = 'published',
   ONGOING = 'ongoing',
   COMPLETED = 'completed',
-  CANCELLED = 'cancelled'
+  CANCELLED = 'cancelled',
 }
 
 export enum EventType {
@@ -32,7 +31,7 @@ export enum EventType {
   SERVICE = 'service',
   FUNDRAISING = 'fundraising',
   TRAINING = 'training',
-  OTHER = 'other'
+  OTHER = 'other',
 }
 
 export interface CreateEventRequest {

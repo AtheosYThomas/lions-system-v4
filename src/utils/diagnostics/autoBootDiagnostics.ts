@@ -29,13 +29,18 @@ class AutoBootDiagnostics {
     }
   }
 
-  private log(level: DiagnosticLog['level'], component: string, message: string, details?: any) {
+  private log(
+    level: DiagnosticLog['level'],
+    component: string,
+    message: string,
+    details?: any
+  ) {
     const logEntry: DiagnosticLog = {
       timestamp: new Date().toISOString(),
       level,
       component,
       message,
-      details
+      details,
     };
 
     this.logs.push(logEntry);
@@ -45,14 +50,14 @@ class AutoBootDiagnostics {
       INFO: '🔍',
       WARN: '⚠️',
       ERROR: '❌',
-      SUCCESS: '✅'
+      SUCCESS: '✅',
     }[level];
 
     const colorFn = {
       INFO: chalk.cyan,
       WARN: chalk.yellow,
       ERROR: chalk.red,
-      SUCCESS: chalk.green
+      SUCCESS: chalk.green,
     }[level];
 
     console.log(colorFn(`${icon} [${component}] ${message}`));
@@ -64,7 +69,7 @@ class AutoBootDiagnostics {
 
   async runBootDiagnostics(): Promise<boolean> {
     console.log(chalk.cyan('🦁 北大獅子會系統 V4.0 - 啟動診斷開始'));
-    console.log(chalk.cyan('=' .repeat(60)));
+    console.log(chalk.cyan('='.repeat(60)));
 
     let hasErrors = false;
 
@@ -92,7 +97,6 @@ class AutoBootDiagnostics {
 
       // 8. 生成診斷摘要
       this.generateSummary();
-
     } catch (error) {
       this.log('ERROR', 'Boot Diagnostics', '診斷過程中發生錯誤', error);
       hasErrors = true;
@@ -109,7 +113,7 @@ class AutoBootDiagnostics {
       { path: 'src/server.ts', name: '伺服器' },
       { path: 'src/app.ts', name: '應用程式' },
       { path: 'src/config/database.ts', name: '資料庫配置' },
-      { path: 'src/config/config.ts', name: '系統配置' }
+      { path: 'src/config/config.ts', name: '系統配置' },
     ];
 
     for (const file of coreFiles) {
@@ -129,7 +133,7 @@ class AutoBootDiagnostics {
       'LINE_CHANNEL_ACCESS_TOKEN',
       'LINE_CHANNEL_SECRET',
       'LIFF_ID',
-      'PORT'
+      'PORT',
     ];
 
     const missingVars: string[] = [];
@@ -146,9 +150,18 @@ class AutoBootDiagnostics {
     }
 
     if (missingVars.length === 0) {
-      this.log('SUCCESS', 'Environment', `所有 ${configuredVars.length} 個環境變數都已正確設定`);
+      this.log(
+        'SUCCESS',
+        'Environment',
+        `所有 ${configuredVars.length} 個環境變數都已正確設定`
+      );
     } else {
-      this.log('WARN', 'Environment', `缺少 ${missingVars.length} 個關鍵環境變數`, missingVars);
+      this.log(
+        'WARN',
+        'Environment',
+        `缺少 ${missingVars.length} 個關鍵環境變數`,
+        missingVars
+      );
     }
   }
 
@@ -162,9 +175,13 @@ class AutoBootDiagnostics {
       // 檢查資料表
       const tables = await sequelize.getQueryInterface().showAllTables();
       this.log('SUCCESS', 'Database', `發現 ${tables.length} 個資料表`, tables);
-
     } catch (error) {
-      this.log('ERROR', 'Database', '資料庫連線失敗', error instanceof Error ? error.message : error);
+      this.log(
+        'ERROR',
+        'Database',
+        '資料庫連線失敗',
+        error instanceof Error ? error.message : error
+      );
     }
   }
 
@@ -181,7 +198,7 @@ class AutoBootDiagnostics {
       'file.ts',
       'liffSession.ts',
       'messageLog.ts',
-      'payment.ts'
+      'payment.ts',
     ];
 
     if (!fs.existsSync(modelsDir)) {
@@ -211,7 +228,7 @@ class AutoBootDiagnostics {
       'api/checkin.ts',
       'api/liff.ts',
       'api/announcements.ts',
-      'line/webhook.ts'
+      'line/webhook.ts',
     ];
 
     for (const route of requiredRoutes) {
@@ -231,7 +248,7 @@ class AutoBootDiagnostics {
       { path: 'public/liff.html', name: 'LIFF 註冊頁面' },
       { path: 'public/register.html', name: '註冊頁面' },
       { path: 'client/src/App.tsx', name: 'React 主應用' },
-      { path: 'client/index.html', name: 'React 入口頁面' }
+      { path: 'client/index.html', name: 'React 入口頁面' },
     ];
 
     for (const check of frontendChecks) {
@@ -250,7 +267,7 @@ class AutoBootDiagnostics {
     const requiredMiddleware = [
       'authMiddleware.ts',
       'roleMiddleware.ts',
-      'errorHandler.ts'
+      'errorHandler.ts',
     ];
 
     for (const middleware of requiredMiddleware) {
@@ -269,7 +286,7 @@ class AutoBootDiagnostics {
       success: this.logs.filter(l => l.level === 'SUCCESS').length,
       warnings: this.logs.filter(l => l.level === 'WARN').length,
       errors: this.logs.filter(l => l.level === 'ERROR').length,
-      info: this.logs.filter(l => l.level === 'INFO').length
+      info: this.logs.filter(l => l.level === 'INFO').length,
     };
 
     console.log(chalk.cyan('\n📊 診斷摘要:'));
@@ -278,7 +295,11 @@ class AutoBootDiagnostics {
     console.log(chalk.red(`❌ 錯誤: ${summary.errors}`));
     console.log(chalk.cyan(`🔍 資訊: ${summary.info}`));
 
-    const healthScore = Math.round((summary.success / (summary.success + summary.warnings + summary.errors)) * 100);
+    const healthScore = Math.round(
+      (summary.success /
+        (summary.success + summary.warnings + summary.errors)) *
+        100
+    );
     console.log(chalk.cyan(`🏥 系統健康度: ${healthScore}%`));
 
     // 儲存 JSON 報告
@@ -287,13 +308,13 @@ class AutoBootDiagnostics {
       timestamp: new Date().toISOString(),
       summary,
       healthScore,
-      logs: this.logs
+      logs: this.logs,
     };
 
     fs.writeFileSync(reportPath, JSON.stringify(report, null, 2));
     this.log('SUCCESS', 'Report', `診斷報告已儲存: ${reportPath}`);
 
-    console.log(chalk.cyan('=' .repeat(60)));
+    console.log(chalk.cyan('='.repeat(60)));
     console.log(chalk.cyan('🦁 啟動診斷完成\n'));
   }
 }

@@ -19,13 +19,27 @@ interface IssueReport {
 class DetailedTroubleshootReport {
   private issues: IssueReport[] = [];
 
-  private addIssue(category: string, severity: 'high' | 'medium' | 'low', issue: string, details: string, suggestion: string, status: 'error' | 'warning' | 'info' = 'error') {
-    this.issues.push({ category, severity, issue, details, suggestion, status });
+  private addIssue(
+    category: string,
+    severity: 'high' | 'medium' | 'low',
+    issue: string,
+    details: string,
+    suggestion: string,
+    status: 'error' | 'warning' | 'info' = 'error'
+  ) {
+    this.issues.push({
+      category,
+      severity,
+      issue,
+      details,
+      suggestion,
+      status,
+    });
   }
 
   async generateCompleteReport() {
     console.log(chalk.cyan('🔍 北大獅子會系統完整問題排查報告'));
-    console.log(chalk.cyan('=' .repeat(80)));
+    console.log(chalk.cyan('='.repeat(80)));
 
     await this.step1_ScanSourceCode();
     await this.step2_CheckEnvironmentVariables();
@@ -41,7 +55,7 @@ class DetailedTroubleshootReport {
     const patterns = [
       { pattern: 'src/routes/**/*.ts', type: 'Routes' },
       { pattern: 'src/controllers/**/*.ts', type: 'Controllers' },
-      { pattern: 'src/middleware/**/*.ts', type: 'Middleware' }
+      { pattern: 'src/middleware/**/*.ts', type: 'Middleware' },
     ];
 
     // TypeScript 編譯檢查
@@ -50,7 +64,14 @@ class DetailedTroubleshootReport {
       console.log(chalk.green('✅ TypeScript 編譯成功'));
     } catch (error: any) {
       const errorOutput = error.stdout?.toString() || error.stderr?.toString();
-      this.addIssue('TypeScript編譯', 'high', 'TypeScript 編譯錯誤', errorOutput, '修正 TypeScript 語法錯誤', 'error');
+      this.addIssue(
+        'TypeScript編譯',
+        'high',
+        'TypeScript 編譯錯誤',
+        errorOutput,
+        '修正 TypeScript 語法錯誤',
+        'error'
+      );
       console.log(chalk.red('❌ TypeScript 編譯錯誤'));
     }
 
@@ -64,16 +85,40 @@ class DetailedTroubleshootReport {
           const content = fs.readFileSync(file, 'utf-8');
 
           // 檢查常見問題
-          if (content.includes('async') && !content.includes('try') && !content.includes('catch')) {
-            this.addIssue(type, 'medium', `${file} 缺少錯誤處理`, 'async 函數未包含 try-catch', '加入適當的錯誤處理', 'warning');
+          if (
+            content.includes('async') &&
+            !content.includes('try') &&
+            !content.includes('catch')
+          ) {
+            this.addIssue(
+              type,
+              'medium',
+              `${file} 缺少錯誤處理`,
+              'async 函數未包含 try-catch',
+              '加入適當的錯誤處理',
+              'warning'
+            );
           }
 
           if (content.includes('process.env.') && !content.includes('dotenv')) {
-            this.addIssue(type, 'low', `${file} 使用環境變數但未載入 dotenv`, '可能導致環境變數未正確載入', '確認 dotenv 已在主程式載入', 'info');
+            this.addIssue(
+              type,
+              'low',
+              `${file} 使用環境變數但未載入 dotenv`,
+              '可能導致環境變數未正確載入',
+              '確認 dotenv 已在主程式載入',
+              'info'
+            );
           }
-
         } catch (error: any) {
-          this.addIssue(type, 'high', `${file} 檔案讀取錯誤`, error.message, '檢查檔案權限和完整性', 'error');
+          this.addIssue(
+            type,
+            'high',
+            `${file} 檔案讀取錯誤`,
+            error.message,
+            '檢查檔案權限和完整性',
+            'error'
+          );
         }
       });
     });
@@ -85,16 +130,35 @@ class DetailedTroubleshootReport {
 
     const envPath = path.resolve('.env');
     if (!fs.existsSync(envPath)) {
-      this.addIssue('環境變數', 'high', '缺少 .env 檔案', '系統無法載入環境變數', '建立 .env 檔案並設定必要變數', 'error');
+      this.addIssue(
+        '環境變數',
+        'high',
+        '缺少 .env 檔案',
+        '系統無法載入環境變數',
+        '建立 .env 檔案並設定必要變數',
+        'error'
+      );
       return;
     }
 
     const envVars = dotenv.parse(fs.readFileSync(envPath));
-    const requiredVars = ['LINE_CHANNEL_ACCESS_TOKEN', 'LINE_CHANNEL_SECRET', 'DATABASE_URL', 'PORT'];
+    const requiredVars = [
+      'LINE_CHANNEL_ACCESS_TOKEN',
+      'LINE_CHANNEL_SECRET',
+      'DATABASE_URL',
+      'PORT',
+    ];
 
     const missingVars = requiredVars.filter(varName => !envVars[varName]);
     if (missingVars.length > 0) {
-      this.addIssue('環境變數', 'high', '缺少必要環境變數', missingVars.join(', '), '在 .env 檔案中設定這些變數', 'error');
+      this.addIssue(
+        '環境變數',
+        'high',
+        '缺少必要環境變數',
+        missingVars.join(', '),
+        '在 .env 檔案中設定這些變數',
+        'error'
+      );
     } else {
       console.log(chalk.green('✅ 所有必要環境變數已設定'));
     }
@@ -117,11 +181,20 @@ class DetailedTroubleshootReport {
           // 檢查 LIFF 相關檔案
           if (file.includes('liff.html')) {
             if (!content.includes('liff.init')) {
-              this.addIssue('前端LIFF', 'high', 'LIFF 初始化程式碼缺失', `${file} 缺少 liff.init()`, '加入正確的 LIFF 初始化程式碼', 'error');
+              this.addIssue(
+                '前端LIFF',
+                'high',
+                'LIFF 初始化程式碼缺失',
+                `${file} 缺少 liff.init()`,
+                '加入正確的 LIFF 初始化程式碼',
+                'error'
+              );
             }
 
             // 新的檢查邏輯：檢查是否有 liff.init 和動態配置 API
-            const liffIdMatch = content.match(/liff\.init\(\s*\{\s*liffId:\s*.*\}/);
+            const liffIdMatch = content.match(
+              /liff\.init\(\s*\{\s*liffId:\s*.*\}/
+            );
             const usesLiffApiConfig = content.includes('/api/liff/config');
 
             if (!liffIdMatch && !usesLiffApiConfig) {
@@ -138,9 +211,15 @@ class DetailedTroubleshootReport {
               console.log('✅ LIFF 使用動態配置 API，配置正常');
             }
           }
-
         } catch (error: any) {
-          this.addIssue('前端檔案', 'medium', `${file} 讀取錯誤`, error.message, '檢查檔案權限', 'error');
+          this.addIssue(
+            '前端檔案',
+            'medium',
+            `${file} 讀取錯誤`,
+            error.message,
+            '檢查檔案權限',
+            'error'
+          );
         }
       });
     }
@@ -153,11 +232,20 @@ class DetailedTroubleshootReport {
       try {
         const packageJsonPath = path.join(clientDir, 'package.json');
         if (fs.existsSync(packageJsonPath)) {
-          const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'));
+          const packageJson = JSON.parse(
+            fs.readFileSync(packageJsonPath, 'utf-8')
+          );
           console.log(chalk.green(`✅ 前端專案: ${packageJson.name}`));
         }
       } catch (error: any) {
-        this.addIssue('前端專案', 'medium', '前端 package.json 讀取錯誤', error.message, '檢查前端專案配置', 'warning');
+        this.addIssue(
+          '前端專案',
+          'medium',
+          '前端 package.json 讀取錯誤',
+          error.message,
+          '檢查前端專案配置',
+          'warning'
+        );
       }
     }
   }
@@ -176,10 +264,10 @@ class DetailedTroubleshootReport {
 
     const performHealthCheck = (): Promise<void> => {
       return new Promise((resolve, reject) => {
-        const req = http.get(`http://localhost:${PORT}/health`, (res) => {
+        const req = http.get(`http://localhost:${PORT}/health`, res => {
           let data = '';
 
-          res.on('data', (chunk) => {
+          res.on('data', chunk => {
             data += chunk;
           });
 
@@ -191,7 +279,11 @@ class DetailedTroubleshootReport {
                 console.log(chalk.green('✅ Health Check 成功'));
                 console.log(chalk.cyan(`📊 狀態: ${healthData.status}`));
                 console.log(chalk.cyan(`🔌 資料庫: ${healthData.database}`));
-                console.log(chalk.cyan(`🛣️ 路由: ${healthData.services?.routes?.join(', ')}`));
+                console.log(
+                  chalk.cyan(
+                    `🛣️ 路由: ${healthData.services?.routes?.join(', ')}`
+                  )
+                );
                 resolve();
               } else {
                 reject(new Error(`HTTP ${res.statusCode}: ${data}`));
@@ -202,7 +294,7 @@ class DetailedTroubleshootReport {
           });
         });
 
-        req.on('error', (error) => {
+        req.on('error', error => {
           reject(error);
         });
 
@@ -220,7 +312,7 @@ class DetailedTroubleshootReport {
         return; // 成功時直接返回
       } catch (error: any) {
         retryCount++;
-        
+
         if (retryCount >= maxRetries) {
           // 最後一次嘗試失敗
           if (error.code === 'ECONNREFUSED') {
@@ -247,7 +339,11 @@ class DetailedTroubleshootReport {
           break;
         } else {
           // 還有重試機會，等待後重試
-          console.log(chalk.yellow(`⏳ Health Check 失敗，${3}秒後重試... (${retryCount}/${maxRetries})`));
+          console.log(
+            chalk.yellow(
+              `⏳ Health Check 失敗，${3}秒後重試... (${retryCount}/${maxRetries})`
+            )
+          );
           await new Promise(resolve => setTimeout(resolve, 3000));
         }
       }
@@ -257,15 +353,19 @@ class DetailedTroubleshootReport {
   // 步驟 5: 生成報告
   private async step5_GenerateReport() {
     console.log(chalk.cyan('\n📋 步驟 5: 生成完整報告...'));
-    console.log(chalk.cyan('=' .repeat(80)));
+    console.log(chalk.cyan('='.repeat(80)));
 
     const errorIssues = this.issues.filter(issue => issue.status === 'error');
-    const warningIssues = this.issues.filter(issue => issue.status === 'warning');
+    const warningIssues = this.issues.filter(
+      issue => issue.status === 'warning'
+    );
     const infoIssues = this.issues.filter(issue => issue.status === 'info');
 
     console.log(chalk.red(`\n🚨 嚴重錯誤 (${errorIssues.length}個):`));
     errorIssues.forEach((issue, index) => {
-      console.log(chalk.red(`${index + 1}. [${issue.category}] ${issue.issue}`));
+      console.log(
+        chalk.red(`${index + 1}. [${issue.category}] ${issue.issue}`)
+      );
       console.log(chalk.gray(`   詳細: ${issue.details}`));
       console.log(chalk.yellow(`   建議: ${issue.suggestion}`));
       console.log('');
@@ -273,7 +373,9 @@ class DetailedTroubleshootReport {
 
     console.log(chalk.yellow(`\n⚠️ 警告事項 (${warningIssues.length}個):`));
     warningIssues.forEach((issue, index) => {
-      console.log(chalk.yellow(`${index + 1}. [${issue.category}] ${issue.issue}`));
+      console.log(
+        chalk.yellow(`${index + 1}. [${issue.category}] ${issue.issue}`)
+      );
       console.log(chalk.gray(`   詳細: ${issue.details}`));
       console.log(chalk.yellow(`   建議: ${issue.suggestion}`));
       console.log('');
@@ -281,7 +383,9 @@ class DetailedTroubleshootReport {
 
     console.log(chalk.cyan(`\n💡 資訊提示 (${infoIssues.length}個):`));
     infoIssues.forEach((issue, index) => {
-      console.log(chalk.cyan(`${index + 1}. [${issue.category}] ${issue.issue}`));
+      console.log(
+        chalk.cyan(`${index + 1}. [${issue.category}] ${issue.issue}`)
+      );
       console.log(chalk.gray(`   詳細: ${issue.details}`));
       console.log(chalk.yellow(`   建議: ${issue.suggestion}`));
       console.log('');
@@ -290,7 +394,13 @@ class DetailedTroubleshootReport {
     // 系統健康度評分
     const totalIssues = this.issues.length;
     const criticalIssues = errorIssues.length;
-    const healthScore = Math.max(0, 100 - (criticalIssues * 20) - (warningIssues.length * 10) - (infoIssues.length * 5));
+    const healthScore = Math.max(
+      0,
+      100 -
+        criticalIssues * 20 -
+        warningIssues.length * 10 -
+        infoIssues.length * 5
+    );
 
     console.log(chalk.cyan('\n📊 系統健康度評分:'));
     let scoreColor = chalk.red;
@@ -323,15 +433,20 @@ class DetailedTroubleshootReport {
         errors: errorIssues.length,
         warnings: warningIssues.length,
         info: infoIssues.length,
-        healthScore
+        healthScore,
       },
-      issues: this.issues
+      issues: this.issues,
     };
 
-    fs.writeFileSync('detailed_troubleshoot_report.json', JSON.stringify(reportData, null, 2));
-    console.log(chalk.green('\n✅ 報告已儲存至 detailed_troubleshoot_report.json'));
+    fs.writeFileSync(
+      'detailed_troubleshoot_report.json',
+      JSON.stringify(reportData, null, 2)
+    );
+    console.log(
+      chalk.green('\n✅ 報告已儲存至 detailed_troubleshoot_report.json')
+    );
 
-    console.log(chalk.cyan('=' .repeat(80)));
+    console.log(chalk.cyan('='.repeat(80)));
   }
 }
 
@@ -348,23 +463,30 @@ export function generateDetailedReport() {
       node_version: process.version,
       platform: process.platform,
       arch: process.arch,
-      memory: process.memoryUsage()
+      memory: process.memoryUsage(),
     },
     environment: {
       DATABASE_URL: process.env.DATABASE_URL ? '已設定' : '未設定',
-      LINE_CHANNEL_ACCESS_TOKEN: process.env.LINE_CHANNEL_ACCESS_TOKEN ? '已設定' : '未設定',
-      LINE_CHANNEL_SECRET: process.env.LINE_CHANNEL_SECRET ? '已設定' : '未設定',
-      LIFF_ID: process.env.LIFF_ID ? '已設定' : '未設定'
+      LINE_CHANNEL_ACCESS_TOKEN: process.env.LINE_CHANNEL_ACCESS_TOKEN
+        ? '已設定'
+        : '未設定',
+      LINE_CHANNEL_SECRET: process.env.LINE_CHANNEL_SECRET
+        ? '已設定'
+        : '未設定',
+      LIFF_ID: process.env.LIFF_ID ? '已設定' : '未設定',
     },
     files: {
       src_exists: fs.existsSync('src'),
       models_exists: fs.existsSync('src/models'),
       routes_exists: fs.existsSync('src/routes'),
-      controllers_exists: fs.existsSync('src/controllers')
-    }
+      controllers_exists: fs.existsSync('src/controllers'),
+    },
   };
 
-  const reportPath = path.join(process.cwd(), 'detailed_troubleshoot_report.json');
+  const reportPath = path.join(
+    process.cwd(),
+    'detailed_troubleshoot_report.json'
+  );
   fs.writeFileSync(reportPath, JSON.stringify(report, null, 2));
 
   console.log(chalk.green(`✅ 詳細診斷報告已生成: ${reportPath}`));

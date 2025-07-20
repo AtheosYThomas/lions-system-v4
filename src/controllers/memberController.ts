@@ -1,4 +1,3 @@
-
 import { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 
@@ -10,12 +9,12 @@ class MemberController {
    */
   async getMembers(req: Request, res: Response) {
     try {
-      const { 
-        page = '1', 
-        limit = '20', 
-        search = '', 
-        status = '', 
-        role = '' 
+      const {
+        page = '1',
+        limit = '20',
+        search = '',
+        status = '',
+        role = '',
       } = req.query;
 
       const pageNum = parseInt(page as string);
@@ -28,7 +27,7 @@ class MemberController {
       if (search) {
         whereClause.OR = [
           { name: { contains: search as string, mode: 'insensitive' } },
-          { email: { contains: search as string, mode: 'insensitive' } }
+          { email: { contains: search as string, mode: 'insensitive' } },
         ];
       }
 
@@ -60,10 +59,10 @@ class MemberController {
             fax: true,
             address: true,
             status: true,
-            created_at: true
-          }
+            created_at: true,
+          },
         }),
-        prisma.member.count({ where: whereClause })
+        prisma.member.count({ where: whereClause }),
       ]);
 
       res.json({
@@ -74,17 +73,16 @@ class MemberController {
             current: pageNum,
             pageSize: limitNum,
             total,
-            totalPages: Math.ceil(total / limitNum)
-          }
-        }
+            totalPages: Math.ceil(total / limitNum),
+          },
+        },
       });
-
     } catch (error) {
       console.error('獲取會員列表失敗:', error);
       res.status(500).json({
         success: false,
         error: '獲取會員列表失敗',
-        message: error instanceof Error ? error.message : '未知錯誤'
+        message: error instanceof Error ? error.message : '未知錯誤',
       });
     }
   }
@@ -97,27 +95,26 @@ class MemberController {
       const { id } = req.params;
 
       const member = await prisma.member.findUnique({
-        where: { id }
+        where: { id },
       });
 
       if (!member) {
         return res.status(404).json({
           success: false,
-          error: '會員不存在'
+          error: '會員不存在',
         });
       }
 
       res.json({
         success: true,
-        data: member
+        data: member,
       });
-
     } catch (error) {
       console.error('獲取會員失敗:', error);
       res.status(500).json({
         success: false,
         error: '獲取會員失敗',
-        message: error instanceof Error ? error.message : '未知錯誤'
+        message: error instanceof Error ? error.message : '未知錯誤',
       });
     }
   }
@@ -133,32 +130,32 @@ class MemberController {
       if (!memberData.name || !memberData.line_user_id || !memberData.role) {
         return res.status(400).json({
           success: false,
-          error: '缺少必要欄位：name, line_user_id, role'
+          error: '缺少必要欄位：name, line_user_id, role',
         });
       }
 
       // 檢查 LINE UID 是否已存在
       const existingMember = await prisma.member.findUnique({
-        where: { line_user_id: memberData.line_user_id }
+        where: { line_user_id: memberData.line_user_id },
       });
 
       if (existingMember) {
         return res.status(400).json({
           success: false,
-          error: '此 LINE 帳號已被註冊'
+          error: '此 LINE 帳號已被註冊',
         });
       }
 
       // 檢查 email 是否已存在（如果提供）
       if (memberData.email) {
         const existingEmail = await prisma.member.findFirst({
-          where: { email: memberData.email }
+          where: { email: memberData.email },
         });
 
         if (existingEmail) {
           return res.status(400).json({
             success: false,
-            error: '此 Email 已被註冊'
+            error: '此 Email 已被註冊',
           });
         }
       }
@@ -166,22 +163,21 @@ class MemberController {
       const member = await prisma.member.create({
         data: {
           ...memberData,
-          status: memberData.status || 'active'
-        }
+          status: memberData.status || 'active',
+        },
       });
 
       res.status(201).json({
         success: true,
         data: member,
-        message: '會員創建成功'
+        message: '會員創建成功',
       });
-
     } catch (error) {
       console.error('創建會員失敗:', error);
       res.status(500).json({
         success: false,
         error: '創建會員失敗',
-        message: error instanceof Error ? error.message : '未知錯誤'
+        message: error instanceof Error ? error.message : '未知錯誤',
       });
     }
   }
@@ -196,67 +192,69 @@ class MemberController {
 
       // 檢查會員是否存在
       const existingMember = await prisma.member.findUnique({
-        where: { id }
+        where: { id },
       });
 
       if (!existingMember) {
         return res.status(404).json({
           success: false,
-          error: '會員不存在'
+          error: '會員不存在',
         });
       }
 
       // 如果要更新 email，檢查是否與其他會員重複
       if (updateData.email && updateData.email !== existingMember.email) {
         const emailExists = await prisma.member.findFirst({
-          where: { 
+          where: {
             email: updateData.email,
-            id: { not: id }
-          }
+            id: { not: id },
+          },
         });
 
         if (emailExists) {
           return res.status(400).json({
             success: false,
-            error: '此 Email 已被其他會員使用'
+            error: '此 Email 已被其他會員使用',
           });
         }
       }
 
       // 如果要更新 LINE UID，檢查是否與其他會員重複
-      if (updateData.line_user_id && updateData.line_user_id !== existingMember.line_user_id) {
+      if (
+        updateData.line_user_id &&
+        updateData.line_user_id !== existingMember.line_user_id
+      ) {
         const lineExists = await prisma.member.findFirst({
-          where: { 
+          where: {
             line_user_id: updateData.line_user_id,
-            id: { not: id }
-          }
+            id: { not: id },
+          },
         });
 
         if (lineExists) {
           return res.status(400).json({
             success: false,
-            error: '此 LINE 帳號已被其他會員使用'
+            error: '此 LINE 帳號已被其他會員使用',
           });
         }
       }
 
       const member = await prisma.member.update({
         where: { id },
-        data: updateData
+        data: updateData,
       });
 
       res.json({
         success: true,
         data: member,
-        message: '會員資料更新成功'
+        message: '會員資料更新成功',
       });
-
     } catch (error) {
       console.error('更新會員失敗:', error);
       res.status(500).json({
         success: false,
         error: '更新會員失敗',
-        message: error instanceof Error ? error.message : '未知錯誤'
+        message: error instanceof Error ? error.message : '未知錯誤',
       });
     }
   }
@@ -269,32 +267,31 @@ class MemberController {
       const { id } = req.params;
 
       const existingMember = await prisma.member.findUnique({
-        where: { id }
+        where: { id },
       });
 
       if (!existingMember) {
         return res.status(404).json({
           success: false,
-          error: '會員不存在'
+          error: '會員不存在',
         });
       }
 
       await prisma.member.update({
         where: { id },
-        data: { status: 'inactive' }
+        data: { status: 'inactive' },
       });
 
       res.json({
         success: true,
-        message: '會員已停用'
+        message: '會員已停用',
       });
-
     } catch (error) {
       console.error('停用會員失敗:', error);
       res.status(500).json({
         success: false,
         error: '停用會員失敗',
-        message: error instanceof Error ? error.message : '未知錯誤'
+        message: error instanceof Error ? error.message : '未知錯誤',
       });
     }
   }
@@ -304,31 +301,32 @@ class MemberController {
    */
   async getMemberStats(req: Request, res: Response) {
     try {
-      const [total, active, inactive, officers, members, withLineAccount] = await Promise.all([
-        prisma.member.count(),
-        prisma.member.count({ where: { status: 'active' } }),
-        prisma.member.count({ where: { status: 'inactive' } }),
-        prisma.member.count({ 
-          where: { 
-            role: 'officer',
-            status: 'active'
-          }
-        }),
-        prisma.member.count({ 
-          where: { 
-            role: 'member',
-            status: 'active'
-          }
-        }),
-        prisma.member.count({
-          where: { 
-            line_user_id: { 
-              not: null as any
+      const [total, active, inactive, officers, members, withLineAccount] =
+        await Promise.all([
+          prisma.member.count(),
+          prisma.member.count({ where: { status: 'active' } }),
+          prisma.member.count({ where: { status: 'inactive' } }),
+          prisma.member.count({
+            where: {
+              role: 'officer',
+              status: 'active',
             },
-            status: 'active'
-          }
-        })
-      ]);
+          }),
+          prisma.member.count({
+            where: {
+              role: 'member',
+              status: 'active',
+            },
+          }),
+          prisma.member.count({
+            where: {
+              line_user_id: {
+                not: null as any,
+              },
+              status: 'active',
+            },
+          }),
+        ]);
 
       res.json({
         success: true,
@@ -338,16 +336,15 @@ class MemberController {
           inactive,
           officers,
           members,
-          withLineAccount
-        }
+          withLineAccount,
+        },
       });
-
     } catch (error) {
       console.error('獲取會員統計失敗:', error);
       res.status(500).json({
         success: false,
         error: '獲取會員統計失敗',
-        message: error instanceof Error ? error.message : '未知錯誤'
+        message: error instanceof Error ? error.message : '未知錯誤',
       });
     }
   }

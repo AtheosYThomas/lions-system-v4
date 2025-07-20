@@ -34,26 +34,34 @@ class RegistrationController {
         fax,
         address,
         mobile,
-        line_uid: lineUserId
+        line_uid: lineUserId,
       } = req.body;
 
       // 驗證必要欄位
-      if (!name || !email || !birthday || !job_title || !address || !mobile || !lineUserId) {
+      if (
+        !name ||
+        !email ||
+        !birthday ||
+        !job_title ||
+        !address ||
+        !mobile ||
+        !lineUserId
+      ) {
         return res.status(400).json({
           success: false,
-          error: '請填寫所有必要欄位'
+          error: '請填寫所有必要欄位',
         });
       }
 
       // 檢查 LINE UID 是否已經註冊
       const existingMember = await Member.findOne({
-        where: { line_user_id: lineUserId }
+        where: { line_user_id: lineUserId },
       });
 
       if (existingMember) {
         return res.status(400).json({
           success: false,
-          error: '此 LINE 帳號已經註冊過了'
+          error: '此 LINE 帳號已經註冊過了',
         });
       }
 
@@ -70,7 +78,7 @@ class RegistrationController {
         mobile,
         line_user_id: lineUserId,
         role: 'member',
-        status: 'active'
+        status: 'active',
       });
 
       console.log('✅ 新會員註冊成功:', member.id);
@@ -82,22 +90,21 @@ class RegistrationController {
           id: member.id,
           name: member.name,
           email: member.email,
-          status: member.status
-        }
+          status: member.status,
+        },
       });
-
     } catch (error) {
       console.error('❌ 會員註冊失敗:', error);
 
       if (error instanceof Error) {
         res.status(400).json({
           success: false,
-          error: error.message
+          error: error.message,
         });
       } else {
         res.status(500).json({
           success: false,
-          error: '註冊過程中發生未知錯誤'
+          error: '註冊過程中發生未知錯誤',
         });
       }
     }
@@ -113,20 +120,20 @@ class RegistrationController {
       if (!event_id || !line_user_id) {
         res.status(400).json({
           success: false,
-          message: '缺少必要參數：event_id 或 line_user_id'
+          message: '缺少必要參數：event_id 或 line_user_id',
         });
         return;
       }
 
       // 查找會員
       const member = await Member.findOne({
-        where: { line_user_id }
+        where: { line_user_id },
       });
 
       if (!member) {
         res.status(404).json({
           success: false,
-          message: '找不到對應的會員記錄'
+          message: '找不到對應的會員記錄',
         });
         return;
       }
@@ -135,14 +142,14 @@ class RegistrationController {
       const existingRegistration = await Registration.findOne({
         where: {
           event_id,
-          member_id: member.id
-        }
+          member_id: member.id,
+        },
       });
 
       if (existingRegistration) {
         res.status(409).json({
           success: false,
-          message: '您已經報名此活動'
+          message: '您已經報名此活動',
         });
         return;
       }
@@ -152,21 +159,20 @@ class RegistrationController {
         event_id,
         member_id: member.id,
         status: 'confirmed',
-        registration_date: new Date()
+        registration_date: new Date(),
       });
 
       res.status(201).json({
         success: true,
         message: '報名成功',
-        data: registration
+        data: registration,
       });
-
     } catch (error) {
       console.error('活動報名錯誤:', error);
       res.status(500).json({
         success: false,
         message: '活動報名失敗',
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : 'Unknown error',
       });
     }
   }
@@ -181,12 +187,12 @@ class RegistrationController {
       if (!lineUserId) {
         return res.status(400).json({
           success: false,
-          error: 'LINE UID 是必要參數'
+          error: 'LINE UID 是必要參數',
         });
       }
 
       const member = await Member.findOne({
-        where: { line_user_id: lineUserId }
+        where: { line_user_id: lineUserId },
       });
 
       if (member) {
@@ -197,22 +203,21 @@ class RegistrationController {
             id: member.id,
             name: member.name,
             email: member.email,
-            status: member.status
-          }
+            status: member.status,
+          },
         });
       } else {
         res.json({
           success: true,
           isRegistered: false,
-          message: '尚未註冊'
+          message: '尚未註冊',
         });
       }
-
     } catch (error) {
       console.error('❌ 檢查註冊狀態失敗:', error);
       res.status(500).json({
         success: false,
-        error: '檢查註冊狀態時發生錯誤'
+        error: '檢查註冊狀態時發生錯誤',
       });
     }
   }
