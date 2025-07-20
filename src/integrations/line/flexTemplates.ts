@@ -1,4 +1,3 @@
-
 /**
  * LINE Flex Message 樣板
  */
@@ -382,3 +381,140 @@ export const memberCenterCard = (member: any) => ({
     ]
   }
 });
+
+// 智慧回覆模板集合
+export const flexTemplates = {
+  checkinCard: (userName: string) => ({
+    type: 'bubble' as const,
+    hero: {
+      type: 'image' as const,
+      url: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&h=800&q=80',
+      size: 'full' as const,
+      aspectRatio: '20:13' as const,
+      aspectMode: 'cover' as const
+    },
+    body: {
+      type: 'box' as const,
+      layout: 'vertical' as const,
+      contents: [
+        { 
+          type: 'text' as const, 
+          text: `您好，${userName}！`, 
+          weight: 'bold' as const, 
+          size: 'xl' as const 
+        },
+        { 
+          type: 'text' as const, 
+          text: '歡迎使用簽到服務', 
+          size: 'md' as const, 
+          color: '#aaaaaa' 
+        }
+      ]
+    },
+    footer: {
+      type: 'box' as const,
+      layout: 'vertical' as const,
+      spacing: 'sm' as const,
+      contents: [
+        {
+          type: 'button' as const,
+          style: 'primary' as const,
+          action: {
+            type: 'uri' as const,
+            label: '立即簽到',
+            uri: 'https://service.peida.net/checkin'
+          }
+        }
+      ]
+    }
+  }),
+
+  memberCenterCard: (member: any) => ({
+    type: 'bubble' as const,
+    body: {
+      type: 'box' as const,
+      layout: 'vertical' as const,
+      contents: [
+        { 
+          type: 'text' as const, 
+          text: `👤 ${member?.name || '未知會員'}`, 
+          weight: 'bold' as const, 
+          size: 'lg' as const 
+        },
+        { 
+          type: 'text' as const, 
+          text: '點選下方按鈕查看會員資料', 
+          size: 'sm' as const, 
+          color: '#999999' 
+        }
+      ]
+    },
+    footer: {
+      type: 'box' as const,
+      layout: 'vertical' as const,
+      contents: [
+        {
+          type: 'button' as const,
+          style: 'link' as const,
+          action: {
+            type: 'uri' as const,
+            label: '會員中心',
+            uri: 'https://service.peida.net/profile'
+          }
+        }
+      ]
+    }
+  }),
+
+  eventOverviewCard: (events: any[]) => ({
+    type: 'bubble' as const,
+    header: {
+      type: 'box' as const,
+      layout: 'vertical' as const,
+      contents: [
+        { 
+          type: 'text' as const, 
+          text: '📅 最新活動', 
+          weight: 'bold' as const, 
+          size: 'lg' as const 
+        }
+      ]
+    },
+    body: {
+      type: 'box' as const,
+      layout: 'vertical' as const,
+      spacing: 'sm' as const,
+      contents: events.slice(0, 3).map(e => ({
+        type: 'box' as const,
+        layout: 'vertical' as const,
+        spacing: 'xs' as const,
+        contents: [
+          { 
+            type: 'text' as const, 
+            text: e.title || '活動標題', 
+            weight: 'bold' as const, 
+            size: 'md' as const 
+          },
+          { 
+            type: 'text' as const, 
+            text: e.date ? new Date(e.date).toLocaleDateString('zh-TW') : '活動時間', 
+            size: 'sm' as const, 
+            color: '#aaaaaa' 
+          },
+          {
+            type: 'button' as const,
+            style: 'primary' as const,
+            height: 'sm' as const,
+            action: {
+              type: 'uri' as const,
+              label: '查看活動',
+              uri: `https://service.peida.net/event/${e.id}`
+            }
+          }
+        ]
+      }))
+    }
+  })
+};
+
+export default flexTemplates;
