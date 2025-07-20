@@ -24,7 +24,10 @@
     "system-report": "tsx src/utils/diagnostics/systemReport.ts",
     "troubleshoot": "tsx src/utils/diagnostics/troubleshoot.ts",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
   },
   "keywords": [],
   "author": "",
