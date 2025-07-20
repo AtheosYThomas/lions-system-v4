@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-07-20T01:07:23.896Z",
+  "timestamp": "2025-07-20T01:10:37.905Z",
   "summary": {
     "totalIssues": 1,
     "errors": 1,
@@ -12,7 +12,7 @@
       "category": "TypeScript編譯",
       "severity": "high",
       "issue": "TypeScript 編譯錯誤",
-      "details": "src/controllers/memberController.ts(155,11): error TS2322: Type '{ email: any; }' is not assignable to type 'MemberWhereUniqueInput'.\n  Type '{ email: any; }' is not assignable to type '{ id: string; line_user_id: string; } & { id?: string | undefined; line_user_id?: string | undefined; AND?: MemberWhereInput | MemberWhereInput[] | undefined; ... 13 more ...; created_at?: string | ... 2 more ... | undefined; }'.\n    Type '{ email: any; }' is missing the following properties from type '{ id: string; line_user_id: string; }': id, line_user_id\nsrc/controllers/memberController.ts(325,29): error TS2322: Type 'null' is not assignable to type 'string | NestedStringFilter<\"Member\"> | undefined'.\nsrc/controllers/registrationController.ts(66,9): error TS2322: Type 'string' is not assignable to type 'Date'.\nsrc/services/memberService.ts(56,11): error TS2322: Type '{ email: string; }' is not assignable to type 'MemberWhereUniqueInput'.\n  Type '{ email: string; }' is not assignable to type '{ id: string; line_user_id: string; } & { id?: string | undefined; line_user_id?: string | undefined; AND?: MemberWhereInput | MemberWhereInput[] | undefined; ... 13 more ...; created_at?: string | ... 2 more ... | undefined; }'.\n    Type '{ email: string; }' is missing the following properties from type '{ id: string; line_user_id: string; }': id, line_user_id\nsrc/services/memberService.ts(119,9): error TS2322: Type '{ email: string; }' is not assignable to type 'MemberWhereUniqueInput'.\n  Type '{ email: string; }' is not assignable to type '{ id: string; line_user_id: string; } & { id?: string | undefined; line_user_id?: string | undefined; AND?: MemberWhereInput | MemberWhereInput[] | undefined; ... 13 more ...; created_at?: string | ... 2 more ... | undefined; }'.\n    Type '{ email: string; }' is missing the following properties from type '{ id: string; line_user_id: string; }': id, line_user_id\nsrc/services/memberService.ts(284,29): error TS2322: Type 'null' is not assignable to type 'string | NestedStringFilter<\"Member\"> | undefined'.\n",
+      "details": "src/controllers/memberController.ts(325,29): error TS2322: Type 'null' is not assignable to type 'string | NestedStringFilter<\"Member\"> | undefined'.\nsrc/controllers/registrationController.ts(66,9): error TS2322: Type 'Date | null' is not assignable to type 'Date | undefined'.\n  Type 'null' is not assignable to type 'Date | undefined'.\nsrc/routes/api/push-retry.ts(31,32): error TS2339: Property 'event' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.\nsrc/services/memberService.ts(284,29): error TS2322: Type 'null' is not assignable to type 'string | NestedStringFilter<\"Member\"> | undefined'.\n",
       "suggestion": "修正 TypeScript 語法錯誤",
       "status": "error"
     }
