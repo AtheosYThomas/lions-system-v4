@@ -52,7 +52,7 @@ class MemberService {
     try {
       // 檢查 email 是否已存在
       if (memberData.email) {
-        const existingMember = await prisma.member.findUnique({
+        const existingMember = await prisma.member.findFirst({
           where: { email: memberData.email }
         });
 
@@ -115,7 +115,7 @@ class MemberService {
    */
   async getMemberByEmail(email: string) {
     try {
-      return await prisma.member.findUnique({
+      return await prisma.member.findFirst({
         where: { email }
       });
     } catch (error) {

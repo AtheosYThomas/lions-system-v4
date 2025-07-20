@@ -63,7 +63,7 @@ class RegistrationController {
         email,
         phone,
         english_name,
-        birthday,
+        birthday: birthday ? new Date(birthday) : null,
         job_title,
         fax,
         address,

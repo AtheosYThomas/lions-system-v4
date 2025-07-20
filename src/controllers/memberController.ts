@@ -151,7 +151,7 @@ class MemberController {
 
       // 檢查 email 是否已存在（如果提供）
       if (memberData.email) {
-        const existingEmail = await prisma.member.findUnique({
+        const existingEmail = await prisma.member.findFirst({
           where: { email: memberData.email }
         });
 

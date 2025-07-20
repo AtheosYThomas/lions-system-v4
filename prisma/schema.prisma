@@ -14,7 +14,7 @@ datasource db {
 model Member {
   id           String   @id @default(cuid())
   name         String
-  email        String?
+  email        String?  @unique
   line_user_id String   @unique
   role         String
   phone        String?

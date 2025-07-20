@@ -5,8 +5,9 @@ import { requireAnyRole } from '../../middleware/roleMiddleware';
 import { Role } from '../../types/role';
 import pushService from '../../services/pushService';
 import lineService from '../../integrations/line/lineService';
-import Member from '../../models/member';
-import Event from '../../models/event';
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
 
 const router = express.Router();
 
@@ -27,7 +28,9 @@ router.post('/', authMiddleware, requireAnyRole([Role.Admin, Role.President]), a
     }
 
     // 檢查活動是否存在
-    const event = await Event.findByPk(eventId);
+    const event = await prisma.event.findUnique({
+      where: { id: eventId }
+    });
     if (!event) {
       return res.status(404).json({
         error: '找不到指定活動',
@@ -36,9 +39,9 @@ router.post('/', authMiddleware, requireAnyRole([Role.Admin, Role.President]), a
     }
 
     // 獲取要重推的會員資料
-    const members = await Member.findAll({
+    const members = await prisma.member.findMany({
       where: {
-        id: memberIds
+        id: { in: memberIds }
       }
     });
 
