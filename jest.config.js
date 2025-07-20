@@ -7,5 +7,16 @@ module.exports = {
   moduleFileExtensions: ['ts', 'js', 'json'],
   verbose: true,
   setupFilesAfterEnv: ['<rootDir>/tests/setup.ts'],
-  testTimeout: 10000,
+  testTimeout: 30000,
+  collectCoverageFrom: [
+    'src/**/*.{ts,js}',
+    '!src/**/*.d.ts',
+    '!src/scripts/**',
+    '!src/utils/diagnostics/**',
+    '!src/index.ts',
+  ],
+  coverageDirectory: 'coverage',
+  coverageReporters: ['text', 'lcov', 'html'],
+  forceExit: true,
+  detectOpenHandles: true,
 };

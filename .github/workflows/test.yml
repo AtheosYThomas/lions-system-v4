@@ -1,0 +1,60 @@
+
+name: CI - Auto Test on Push/PR
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+    branches: [main, dev]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: test_db
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    env:
+      NODE_ENV: test
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test_db
+      LINE_CHANNEL_ACCESS_TOKEN: test_token
+      LINE_CHANNEL_SECRET: test_secret
+      LIFF_ID: test_liff_id
+
+    steps:
+      - name: ⬇️ Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: 📦 Install dependencies
+        run: npm install
+
+      - name: 🔧 Setup test database
+        run: |
+          npm run init-schema
+
+      - name: 🧪 Run Jest test suite
+        run: npm test
+
+      - name: ⚙️ Run legacy test suite
+        run: npm run test:full
+
+      - name: 📊 Generate test coverage
+        run: npm run test:coverage
