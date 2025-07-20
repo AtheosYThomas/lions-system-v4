@@ -296,24 +296,34 @@ export async function getCheckinStats(eventId?: string) {
  */
 export async function getEventRegistrations(eventId: string) {
   try {
-    return await prisma.eventRegistration.findMany({
+    const registrationList = await prisma.eventRegistration.findMany({
       where: { event_id: eventId },
       include: {
         member: true,
         event: true,
       },
-      orderBy: { created_at: 'desc' }
+      orderBy: { registration_date: 'desc' }
     });
+
+    return {
+      registrations: registrationList,
+      total: registrationList.length
+    };
   } catch (error) {
     console.error('獲取活動報名記錄失敗:', error);
     throw error;
   }
 }
 
+type CheckinEligibilityResult = {
+  eligible: boolean;
+  reason: string | null;
+};
+
 /**
  * 驗證簽到資格
  */
-export async function validateCheckinEligibility(memberId: string, eventId: string): Promise<boolean> {
+export async function validateCheckinEligibility(memberId: string, eventId: string): Promise<CheckinEligibilityResult> {
   try {
     // 檢查會員是否已註冊該活動
     const registration = await prisma.eventRegistration.findFirst({
@@ -324,10 +334,23 @@ export async function validateCheckinEligibility(memberId: string, eventId: stri
       }
     });
 
-    return Boolean(registration);
+    if (registration) {
+      return {
+        eligible: true,
+        reason: null
+      };
+    } else {
+      return {
+        eligible: false,
+        reason: '尚未報名該活動或報名未確認'
+      };
+    }
   } catch (error) {
     console.error('驗證簽到資格失敗:', error);
-    throw error;
+    return {
+      eligible: false,
+      reason: '驗證簽到資格時發生錯誤'
+    };
   }
 }
 

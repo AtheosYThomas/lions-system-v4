@@ -39,9 +39,10 @@ router.post('/checkin/:eventId', async (req, res) => {
     });
 
   } catch (error) {
-    res.status(error.message.includes('已經簽到') ? 409 : 500).json({
+    const errorMessage = error instanceof Error ? error.message : '未知錯誤';
+    res.status(errorMessage.includes('已經簽到') ? 409 : 500).json({
       success: false,
-      error: error instanceof Error ? error.message : '未知錯誤'
+      error: errorMessage
     });
   }
 });

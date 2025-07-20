@@ -54,7 +54,7 @@ router.get('/event/:eventId/checkin', async (req, res) => {
         name: reg.member?.name || '未知會員',
         email: reg.member?.email || '',
         phone: reg.member?.phone || '',
-        registeredAt: reg.created_at
+        registeredAt: reg.registration_date
       }));
 
     // 按小時統計報到分布
@@ -65,7 +65,7 @@ router.get('/event/:eventId/checkin', async (req, res) => {
     });
 
     // 計算報到率
-    const totalRegistrations = registrationData.total;
+    const totalRegistrations = registrationData.registrations.length;
     const attendanceRate = totalRegistrations > 0 
       ? Math.round((checkinData.total / totalRegistrations) * 100 * 100) / 100
       : 0;
@@ -139,7 +139,7 @@ router.get('/event/:eventId/checkin/export', async (req, res) => {
           '姓名': reg.member?.name || '',
           '手機': reg.member?.phone || '',
           'Email': reg.member?.email || '',
-          '報名時間': new Date(reg.created_at).toLocaleString('zh-TW'),
+          '報名時間': new Date(reg.registration_date).toLocaleString('zh-TW'),
           '狀態': '未報到'
         }));
       filename = `${event.title}_未報到名單.csv`;
