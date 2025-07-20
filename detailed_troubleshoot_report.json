@@ -1,11 +1,20 @@
 {
-  "timestamp": "2025-07-20T06:12:35.573Z",
+  "timestamp": "2025-07-20T06:14:30.415Z",
   "summary": {
-    "totalIssues": 0,
-    "errors": 0,
+    "totalIssues": 1,
+    "errors": 1,
     "warnings": 0,
     "info": 0,
-    "healthScore": 100
+    "healthScore": 80
   },
-  "issues": []
+  "issues": [
+    {
+      "category": "Health Check",
+      "severity": "high",
+      "issue": "Health Check 連線失敗",
+      "details": "connect ECONNREFUSED 127.0.0.1:5000",
+      "suggestion": "確認伺服器是否運行",
+      "status": "error"
+    }
+  ]
 }
