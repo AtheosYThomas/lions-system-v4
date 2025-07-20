@@ -215,7 +215,7 @@ class LineService {
                 action: {
                   type: 'uri' as const,
                   label: '🚀 進入會員系統',
-                  uri: 'https://service.peida.net/client',
+                  uri: `https://liff.line.me/2007739371-aKePV20l`,
                 },
                 style: 'primary' as const,
                 color: '#1DB446',
