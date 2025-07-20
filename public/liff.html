@@ -172,7 +172,7 @@
             } else {
               updateStatus('🚀 導向至註冊頁面...');
               // 導向到註冊頁面，並帶入 LINE 用戶資料
-              window.location.href = `/register.html?line_user_id=${encodeURIComponent(profile.userId)}&display_name=${encodeURIComponent(profile.displayName)}&picture_url=${encodeURIComponent(profile.pictureUrl || '')}`;
+              window.location.href = `/register?line_user_id=${encodeURIComponent(profile.userId)}&display_name=${encodeURIComponent(profile.displayName)}&picture_url=${encodeURIComponent(profile.pictureUrl || '')}`;
               return;
             }
           } else {

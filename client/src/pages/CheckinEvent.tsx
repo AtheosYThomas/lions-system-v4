@@ -98,7 +98,7 @@ const CheckinEvent = () => {
 
           // 導向註冊頁面
           setTimeout(() => {
-            window.location.href = `/register.html?line_user_id=${encodeURIComponent(lineUserId)}&display_name=${encodeURIComponent(profile.displayName)}&picture_url=${encodeURIComponent(profile.pictureUrl || '')}`;
+            window.location.href = `/register?line_user_id=${encodeURIComponent(lineUserId)}&display_name=${encodeURIComponent(profile.displayName)}&picture_url=${encodeURIComponent(profile.pictureUrl || '')}`;
           }, 2000);
           return;
         }

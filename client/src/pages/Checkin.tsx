@@ -106,7 +106,7 @@ const Checkin = () => {
           await fetchMemberEvents(result.member.id);
         } else {
           // 不是會員，導向註冊頁面
-          window.location.href = `/register.html?line_user_id=${encodeURIComponent(userId)}`;
+          window.location.href = `/register?line_user_id=${encodeURIComponent(userId)}`;
         }
       } catch (error) {
         console.error('檢查會員身份失敗:', error);

@@ -107,7 +107,7 @@ class LiffTester {
   private async testLiffPages() {
     console.log(chalk.yellow('📄 測試 LIFF 頁面...'));
 
-    const pages = ['/liff.html', '/register.html'];
+    const pages = ['/liff.html', '/register'];
 
     for (const page of pages) {
       try {

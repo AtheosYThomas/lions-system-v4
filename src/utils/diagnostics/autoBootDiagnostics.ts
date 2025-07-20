@@ -246,7 +246,7 @@ class AutoBootDiagnostics {
 
     const frontendChecks = [
       { path: 'public/liff.html', name: 'LIFF 註冊頁面' },
-      { path: 'public/register.html', name: '註冊頁面' },
+      { path: 'public/legacy/register.html', name: '舊版註冊頁面' },
       { path: 'client/src/App.tsx', name: 'React 主應用' },
       { path: 'client/index.html', name: 'React 入口頁面' },
     ];
