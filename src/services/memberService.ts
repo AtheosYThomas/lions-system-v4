@@ -1,6 +1,7 @@
 
-import { Member, MemberAttributes, MemberCreationAttributes } from '../models/member';
-import { Op } from 'sequelize';
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
 
 interface MemberSearchOptions {
   name?: string;
@@ -12,28 +13,57 @@ interface MemberSearchOptions {
   offset?: number;
 }
 
-interface MemberUpdateData extends Partial<MemberAttributes> {
+interface MemberUpdateData {
   id: string;
+  name?: string;
+  email?: string;
+  line_user_id?: string;
+  role?: string;
+  phone?: string;
+  english_name?: string;
+  birthday?: Date;
+  job_title?: string;
+  mobile?: string;
+  fax?: string;
+  address?: string;
+  status?: string;
+}
+
+interface MemberCreationData {
+  name: string;
+  email?: string;
+  line_user_id: string;
+  role: string;
+  phone?: string;
+  english_name?: string;
+  birthday?: Date;
+  job_title?: string;
+  mobile?: string;
+  fax?: string;
+  address?: string;
+  status?: string;
 }
 
 class MemberService {
   /**
    * 創建新會員
    */
-  async createMember(memberData: MemberCreationAttributes): Promise<Member> {
+  async createMember(memberData: MemberCreationData) {
     try {
       // 檢查 email 是否已存在
-      const existingMember = await Member.findOne({
-        where: { email: memberData.email }
-      });
+      if (memberData.email) {
+        const existingMember = await prisma.member.findUnique({
+          where: { email: memberData.email }
+        });
 
-      if (existingMember) {
-        throw new Error('此 Email 已被註冊');
+        if (existingMember) {
+          throw new Error('此 Email 已被註冊');
+        }
       }
 
       // 如果有 LINE UID，檢查是否已存在
       if (memberData.line_user_id) {
-        const existingLineUser = await Member.findOne({
+        const existingLineUser = await prisma.member.findUnique({
           where: { line_user_id: memberData.line_user_id }
         });
 
@@ -42,7 +72,9 @@ class MemberService {
         }
       }
 
-      const member = await Member.create(memberData);
+      const member = await prisma.member.create({
+        data: memberData
+      });
       return member;
     } catch (error) {
       console.error('創建會員失敗:', error);
@@ -53,9 +85,11 @@ class MemberService {
   /**
    * 根據 ID 獲取會員
    */
-  async getMemberById(id: string): Promise<Member | null> {
+  async getMemberById(id: string) {
     try {
-      return await Member.findByPk(id);
+      return await prisma.member.findUnique({
+        where: { id }
+      });
     } catch (error) {
       console.error('獲取會員失敗:', error);
       throw error;
@@ -65,9 +99,9 @@ class MemberService {
   /**
    * 根據 LINE UID 獲取會員
    */
-  async getMemberByLineUid(lineUid: string): Promise<Member | null> {
+  async getMemberByLineUid(lineUid: string) {
     try {
-      return await Member.findOne({
+      return await prisma.member.findUnique({
         where: { line_user_id: lineUid }
       });
     } catch (error) {
@@ -79,9 +113,9 @@ class MemberService {
   /**
    * 根據 Email 獲取會員
    */
-  async getMemberByEmail(email: string): Promise<Member | null> {
+  async getMemberByEmail(email: string) {
     try {
-      return await Member.findOne({
+      return await prisma.member.findUnique({
         where: { email }
       });
     } catch (error) {
@@ -99,13 +133,15 @@ class MemberService {
 
       if (options.name) {
         whereClause.name = {
-          [Op.iLike]: `%${options.name}%`
+          contains: options.name,
+          mode: 'insensitive'
         };
       }
 
       if (options.email) {
         whereClause.email = {
-          [Op.iLike]: `%${options.email}%`
+          contains: options.email,
+          mode: 'insensitive'
         };
       }
 
@@ -121,16 +157,19 @@ class MemberService {
         whereClause.line_user_id = options.line_user_id;
       }
 
-      const result = await Member.findAndCountAll({
-        where: whereClause,
-        limit: options.limit || 20,
-        offset: options.offset || 0,
-        order: [['name', 'ASC']]
-      });
+      const [members, total] = await Promise.all([
+        prisma.member.findMany({
+          where: whereClause,
+          take: options.limit || 20,
+          skip: options.offset || 0,
+          orderBy: { name: 'asc' }
+        }),
+        prisma.member.count({ where: whereClause })
+      ]);
 
       return {
-        members: result.rows,
-        total: result.count,
+        members,
+        total,
         limit: options.limit || 20,
         offset: options.offset || 0
       };
@@ -143,9 +182,11 @@ class MemberService {
   /**
    * 更新會員資料
    */
-  async updateMember(updateData: MemberUpdateData): Promise<Member> {
+  async updateMember(updateData: MemberUpdateData) {
     try {
-      const member = await Member.findByPk(updateData.id);
+      const member = await prisma.member.findUnique({
+        where: { id: updateData.id }
+      });
       
       if (!member) {
         throw new Error('會員不存在');
@@ -153,10 +194,10 @@ class MemberService {
 
       // 如果要更新 email，檢查是否與其他會員重複
       if (updateData.email && updateData.email !== member.email) {
-        const existingMember = await Member.findOne({
+        const existingMember = await prisma.member.findFirst({
           where: { 
             email: updateData.email,
-            id: { [Op.not]: updateData.id }
+            id: { not: updateData.id }
           }
         });
 
@@ -167,10 +208,10 @@ class MemberService {
 
       // 如果要更新 LINE UID，檢查是否與其他會員重複
       if (updateData.line_user_id && updateData.line_user_id !== member.line_user_id) {
-        const existingLineUser = await Member.findOne({
+        const existingLineUser = await prisma.member.findFirst({
           where: { 
             line_user_id: updateData.line_user_id,
-            id: { [Op.not]: updateData.id }
+            id: { not: updateData.id }
           }
         });
 
@@ -179,8 +220,13 @@ class MemberService {
         }
       }
 
-      await member.update(updateData);
-      return member;
+      const { id, ...updateFields } = updateData;
+      const updatedMember = await prisma.member.update({
+        where: { id },
+        data: updateFields
+      });
+
+      return updatedMember;
     } catch (error) {
       console.error('更新會員失敗:', error);
       throw error;
@@ -192,13 +238,18 @@ class MemberService {
    */
   async deactivateMember(id: string): Promise<void> {
     try {
-      const member = await Member.findByPk(id);
+      const member = await prisma.member.findUnique({
+        where: { id }
+      });
       
       if (!member) {
         throw new Error('會員不存在');
       }
 
-      await member.update({ status: 'inactive' });
+      await prisma.member.update({
+        where: { id },
+        data: { status: 'inactive' }
+      });
     } catch (error) {
       console.error('停用會員失敗:', error);
       throw error;
@@ -213,14 +264,24 @@ class MemberService {
       console.log('📊 memberService: 開始計算會員統計...');
       
       const [total, active, inactive, officers, members, withLineAccount] = await Promise.all([
-        Member.count(),
-        Member.count({ where: { status: 'active' } }),
-        Member.count({ where: { status: 'inactive' } }),
-        Member.count({ where: { role: 'officer', status: 'active' } }),
-        Member.count({ where: { role: 'member', status: 'active' } }),
-        Member.count({
+        prisma.member.count(),
+        prisma.member.count({ where: { status: 'active' } }),
+        prisma.member.count({ where: { status: 'inactive' } }),
+        prisma.member.count({ 
           where: { 
-            line_user_id: { [Op.ne]: null as any },
+            role: 'officer',
+            status: 'active'
+          }
+        }),
+        prisma.member.count({ 
+          where: { 
+            role: 'member',
+            status: 'active'
+          }
+        }),
+        prisma.member.count({
+          where: { 
+            line_user_id: { not: null },
             status: 'active'
           }
         })
@@ -246,13 +307,13 @@ class MemberService {
   /**
    * 綁定 LINE 帳號
    */
-  async bindLineAccount(memberId: string, lineUid: string): Promise<Member> {
+  async bindLineAccount(memberId: string, lineUid: string) {
     try {
       // 檢查 LINE UID 是否已被使用
-      const existingLineUser = await Member.findOne({
+      const existingLineUser = await prisma.member.findFirst({
         where: { 
           line_user_id: lineUid,
-          id: { [Op.not]: memberId }
+          id: { not: memberId }
         }
       });
 
@@ -260,13 +321,20 @@ class MemberService {
         throw new Error('此 LINE 帳號已被其他會員綁定');
       }
 
-      const member = await Member.findByPk(memberId);
+      const member = await prisma.member.findUnique({
+        where: { id: memberId }
+      });
+
       if (!member) {
         throw new Error('會員不存在');
       }
 
-      await member.update({ line_user_id: lineUid });
-      return member;
+      const updatedMember = await prisma.member.update({
+        where: { id: memberId },
+        data: { line_user_id: lineUid }
+      });
+
+      return updatedMember;
     } catch (error) {
       console.error('綁定 LINE 帳號失敗:', error);
       throw error;
