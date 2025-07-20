@@ -1,20 +1,11 @@
 {
-  "timestamp": "2025-07-20T05:47:50.639Z",
+  "timestamp": "2025-07-20T06:02:18.615Z",
   "summary": {
-    "totalIssues": 1,
-    "errors": 1,
+    "totalIssues": 0,
+    "errors": 0,
     "warnings": 0,
     "info": 0,
-    "healthScore": 80
+    "healthScore": 100
   },
-  "issues": [
-    {
-      "category": "TypeScript編譯",
-      "severity": "high",
-      "issue": "TypeScript 編譯錯誤",
-      "details": "src/services/liffService.ts(11,11): error TS2353: Object literal may only specify known properties, and 'checkins' does not exist in type 'EventRegistrationInclude<DefaultArgs>'.\nsrc/services/liffService.ts(19,25): error TS2339: Property 'registrations' does not exist on type '{ id: string; created_at: Date; status: string | null; name: string; email: string | null; line_user_id: string | null; role: string; phone: string | null; english_name: string | null; ... 4 more ...; mobile: string | null; }'.\nsrc/services/liffService.ts(19,43): error TS7006: Parameter 'reg' implicitly has an 'any' type.\n",
-      "suggestion": "修正 TypeScript 語法錯誤",
-      "status": "error"
-    }
-  ]
+  "issues": []
 }
