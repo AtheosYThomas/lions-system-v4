@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-07-20T02:18:36.440Z",
+  "timestamp": "2025-07-20T02:23:35.808Z",
   "summary": {
     "totalIssues": 1,
     "errors": 1,
@@ -12,7 +12,7 @@
       "category": "TypeScript編譯",
       "severity": "high",
       "issue": "TypeScript 編譯錯誤",
-      "details": "src/routes/api/checkin.ts(32,26): error TS2304: Cannot find name 'prisma'.\nsrc/routes/api/checkin.ts(44,33): error TS2304: Cannot find name 'checkinService'.\nsrc/routes/api/members.ts(41,7): error TS2322: Type '{ registrations: { where: { member_id: string; }; select: { id: true; status: true; registration_date: true; }; }; checkins: { where: { member_id: string; }; select: { id: true; checkin_time: true; }; }; }' is not assignable to type 'never'.\nsrc/routes/api/members.ts(77,32): error TS2339: Property 'checkin_time' does not exist on type 'never'.\n",
+      "details": "src/routes/api/checkin.ts(62,28): error TS2339: Property 'event' does not exist on type 'Checkin'.\nsrc/routes/api/members.ts(45,14): error TS2339: Property 'eventRegistration' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.\nsrc/routes/api/members.ts(49,14): error TS2339: Property 'checkin' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'.\nsrc/routes/api/members.ts(57,47): error TS7006: Parameter 'r' implicitly has an 'any' type.\nsrc/routes/api/members.ts(58,37): error TS7006: Parameter 'c' implicitly has an 'any' type.\n",
       "suggestion": "修正 TypeScript 語法錯誤",
       "status": "error"
     }
