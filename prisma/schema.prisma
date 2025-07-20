@@ -30,3 +30,14 @@ model Member {
 
   @@map("members")
 }
+
+model PushTemplate {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  json        Json
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  @@map("push_templates")
+}

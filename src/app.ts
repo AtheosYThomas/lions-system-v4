@@ -98,6 +98,7 @@ app.use('/api/admin/push-records/export', pushRecordsExportRoutes);
 app.use('/api/push/retry', pushRetryRoutes);
 app.use('/api/push/resend', pushResendRoutes);
 app.use('/api/admin/push-dashboard-summary', require('./routes/api/push-dashboard-summary').default);
+app.use('/api/push-template', require('./routes/api/push-template').default);
 
 // 前端路由（提供 React 應用）
 app.get('/', (req, res) => {

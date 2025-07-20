@@ -306,6 +306,11 @@ const PushTemplatePage = () => {
   const [parsed, setParsed] = useState<any>(defaultTemplate);
   const [error, setError] = useState("");
   const [isTestLoading, setIsTestLoading] = useState(false);
+  const [templateName, setTemplateName] = useState("");
+  const [templateDesc, setTemplateDesc] = useState("");
+  const [testUserId, setTestUserId] = useState("");
+  const [testType, setTestType] = useState<'user_id' | 'member_search'>('user_id');
+  const [isSaving, setIsSaving] = useState(false);
 
   const handleChange = (value: string) => {
     setJsonText(value);
@@ -342,15 +347,79 @@ const PushTemplatePage = () => {
       return;
     }
 
+    if (!testUserId.trim()) {
+      alert("請輸入測試對象");
+      return;
+    }
+
     setIsTestLoading(true);
     try {
-      // 這裡可以接入測試推播 API
-      console.log("測試推播樣板:", parsed);
-      alert("測試推播已發送！（目前為模擬功能）");
+      const response = await fetch('/api/push-template/test', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer admin-token'
+        },
+        body: JSON.stringify({
+          userId: testUserId.trim(),
+          messageJson: parsed,
+          testType
+        })
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        alert("✅ 測試推播發送成功！");
+      } else {
+        alert("❌ 測試推播失敗：" + (result.error || "未知錯誤"));
+      }
     } catch (error) {
-      alert("測試推播失敗：" + (error instanceof Error ? error.message : "未知錯誤"));
+      alert("❌ 測試推播失敗：" + (error instanceof Error ? error.message : "未知錯誤"));
     } finally {
       setIsTestLoading(false);
+    }
+  };
+
+  const saveTemplate = async () => {
+    if (error || !parsed) {
+      alert("請先修正 JSON 格式錯誤");
+      return;
+    }
+
+    if (!templateName.trim()) {
+      alert("請輸入樣板名稱");
+      return;
+    }
+
+    setIsSaving(true);
+    try {
+      const response = await fetch('/api/push-template/save', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer admin-token'
+        },
+        body: JSON.stringify({
+          name: templateName.trim(),
+          description: templateDesc.trim() || null,
+          json: parsed
+        })
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        alert("✅ 樣板儲存成功！");
+        setTemplateName("");
+        setTemplateDesc("");
+      } else {
+        alert("❌ 樣板儲存失敗：" + (result.error || "未知錯誤"));
+      }
+    } catch (error) {
+      alert("❌ 樣板儲存失敗：" + (error instanceof Error ? error.message : "未知錯誤"));
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -376,6 +445,13 @@ const PushTemplatePage = () => {
               className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 disabled:bg-gray-400"
             >
               {isTestLoading ? "⏳ 測試中..." : "🚀 測試推播"}
+            </button>
+            <button
+              onClick={saveTemplate}
+              disabled={isSaving || !!error}
+              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:bg-gray-400"
+            >
+              {isSaving ? "⏳ 儲存中..." : "💾 儲存樣板"}
             </button>
           </div>
         </div>
@@ -439,6 +515,85 @@ const PushTemplatePage = () => {
               <div className="text-xs text-gray-600 mb-3 text-center">LINE 聊天室預覽</div>
               <FlexPreview data={parsed} />
             </div>
+          </div>
+        </div>
+      </div>
+
+      {/* 底部功能區域 */}
+      <div className="bg-white border-t p-6">
+        <div className="max-w-6xl mx-auto space-y-6">
+          {/* 儲存樣板 */}
+          <div className="bg-gray-50 p-4 rounded-lg">
+            <h3 className="text-lg font-semibold text-gray-800 mb-3">💾 儲存樣板</h3>
+            <div className="flex flex-wrap gap-3 items-end">
+              <div className="flex-1 min-w-60">
+                <label className="block text-sm font-medium text-gray-700 mb-1">樣板名稱 *</label>
+                <input
+                  type="text"
+                  placeholder="例：活動報到通知樣板"
+                  value={templateName}
+                  onChange={(e) => setTemplateName(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+              <div className="flex-1 min-w-80">
+                <label className="block text-sm font-medium text-gray-700 mb-1">描述 (可選)</label>
+                <input
+                  type="text"
+                  placeholder="樣板用途說明..."
+                  value={templateDesc}
+                  onChange={(e) => setTemplateDesc(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+              <button
+                onClick={saveTemplate}
+                disabled={isSaving || !!error || !templateName.trim()}
+                className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+              >
+                {isSaving ? "⏳ 儲存中..." : "💾 儲存樣板"}
+              </button>
+            </div>
+          </div>
+
+          {/* 測試推播 */}
+          <div className="bg-gray-50 p-4 rounded-lg">
+            <h3 className="text-lg font-semibold text-gray-800 mb-3">🧪 測試推播</h3>
+            <div className="flex flex-wrap gap-3 items-end">
+              <div className="flex-1 min-w-60">
+                <label className="block text-sm font-medium text-gray-700 mb-1">測試方式</label>
+                <select
+                  value={testType}
+                  onChange={(e) => setTestType(e.target.value as 'user_id' | 'member_search')}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                >
+                  <option value="user_id">使用 LINE User ID</option>
+                  <option value="member_search">搜尋會員姓名</option>
+                </select>
+              </div>
+              <div className="flex-1 min-w-80">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  {testType === 'user_id' ? 'LINE User ID *' : '會員姓名 *'}
+                </label>
+                <input
+                  type="text"
+                  placeholder={testType === 'user_id' ? 'U1234567890abcdef...' : '王小明'}
+                  value={testUserId}
+                  onChange={(e) => setTestUserId(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                />
+              </div>
+              <button
+                onClick={testPush}
+                disabled={isTestLoading || !!error || !testUserId.trim()}
+                className="bg-green-600 text-white px-6 py-2 rounded-md hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+              >
+                {isTestLoading ? "⏳ 推播中..." : "🚀 發送測試"}
+              </button>
+            </div>
+            <p className="text-xs text-gray-600 mt-2">
+              💡 提示：{testType === 'user_id' ? '請輸入完整的 LINE User ID' : '請輸入已註冊會員的姓名'}
+            </p>
           </div>
         </div>
       </div>
