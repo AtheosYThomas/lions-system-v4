@@ -1,9 +1,9 @@
 {
-  "timestamp": "2025-07-20T00:36:55.865Z",
+  "timestamp": "2025-07-20T00:51:40.013Z",
   "summary": {
-    "total": 133,
+    "total": 132,
     "pass": 102,
-    "warning": 30,
+    "warning": 29,
     "error": 1
   },
   "results": [
@@ -70,15 +70,6 @@
       "category": "Source Files",
       "status": "pass",
       "message": "src/routes/api/push-records-export.ts: 語法檢查通過"
-    },
-    {
-      "category": "Source Files",
-      "status": "warning",
-      "message": "src/routes/api/push-dashboard-summary.ts: 可能有未使用的 import: col",
-      "suggestions": [
-        "移除未使用的 import",
-        "檢查程式碼使用情況"
-      ]
     },
     {
       "category": "Source Files",
