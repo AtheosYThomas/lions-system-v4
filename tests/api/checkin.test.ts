@@ -1,6 +1,6 @@
-
 import request from 'supertest';
 import app from '../../src/app';
+import { db } from '../utils/testDatabase';
 
 describe('Checkin API', () => {
   let testEventId: string;

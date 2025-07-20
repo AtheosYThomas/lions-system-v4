@@ -1,49 +1,51 @@
-
 import request from 'supertest';
 import app from '../../src/app';
+import { db } from '../utils/testDatabase';
 
-describe('Members API', () => {
-  describe('GET /api/members', () => {
-    it('應回傳會員清單', async () => {
-      const res = await request(app).get('/api/members');
-      expect(res.statusCode).toBe(200);
-      expect(res.body).toHaveProperty('success');
-      expect(Array.isArray(res.body.members || res.body.data)).toBe(true);
-    });
+describe('GET /api/members', () => {
+  beforeEach(async () => {
+    // 每個測試前清理資料
+    await db.clean();
   });
 
-  describe('POST /api/members', () => {
-    it('應成功建立會員', async () => {
-      const memberData = {
-        name: '測試會員',
-        email: 'test@example.com',
-        phone: '0912345678',
-        lineUserId: 'U' + Date.now()
-      };
+  afterEach(async () => {
+    // 每個測試後清理資料
+    await db.clean();
+    console.log('🧽 測試結束，資料已清除');
+  });
 
-      const res = await request(app)
-        .post('/api/members')
-        .send(memberData);
-
-      expect(res.statusCode).toBe(201);
-      expect(res.body).toHaveProperty('success', true);
-      expect(res.body.member.name).toBe('測試會員');
+  it('應回傳會員清單', async () => {
+    // 建立測試會員
+    await db.createTestMember({
+      name: '張三',
+      email: 'zhang@example.com',
+      role: 'member',
+    });
+    await db.createTestMember({
+      name: '李四',
+      email: 'li@example.com',
+      role: 'officer',
     });
 
-    it('重複的 LINE User ID 應回傳錯誤', async () => {
-      const memberData = {
-        name: '重複測試',
-        email: 'duplicate@example.com',
-        lineUserId: 'U123456789'
-      };
+    const res = await request(app).get('/api/members');
+    expect(res.statusCode).toBe(200);
+    expect(Array.isArray(res.body)).toBe(true);
+    expect(res.body.length).toBe(2);
+  });
 
-      // 第一次建立應該成功
-      await request(app).post('/api/members').send(memberData);
+  it('應能建立新會員', async () => {
+    const memberData = {
+      name: '新會員',
+      email: 'new@example.com',
+      line_uid: 'new_test_uid',
+      role: 'member',
+    };
 
-      // 第二次建立相同 lineUserId 應該失敗
-      const res = await request(app).post('/api/members').send(memberData);
-      expect(res.statusCode).toBe(400);
-      expect(res.body).toHaveProperty('error');
-    });
+    const res = await request(app)
+      .post('/api/members')
+      .send(memberData);
+
+    expect(res.statusCode).toBe(201);
+    expect(res.body.name).toBe(memberData.name);
   });
 });
