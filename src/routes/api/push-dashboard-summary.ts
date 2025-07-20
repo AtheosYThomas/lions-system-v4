@@ -115,12 +115,13 @@ router.get('/', authMiddleware, requireAnyRole([Role.Admin, Role.President]), as
       _count: parseInt(item._count) || 0
     }));
 
-    const topEvents = topEventsResult
+    const topEvents = topEventsWithIds
       .filter((item: any) => item.event_id) // 過濾空的 event_id
       .map((item: any) => ({
         eventId: item.event_id,
         status: item.status,
-        _count: parseInt(item._count) || 0
+        _count: parseInt(item._count) || 0,
+        pushRecordIds: item.pushRecordIds || []
       }));
 
     res.json({
@@ -128,7 +129,7 @@ router.get('/', authMiddleware, requireAnyRole([Role.Admin, Role.President]), as
       data: {
         trend,
         summary,
-        topEvents: topEventsWithIds
+        topEvents
       },
       filters: {
         startDate: startDate || null,
