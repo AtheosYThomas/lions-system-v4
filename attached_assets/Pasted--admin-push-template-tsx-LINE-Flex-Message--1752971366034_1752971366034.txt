@@ -1,0 +1,136 @@
+我們來建立 /admin/push-template.tsx 頁面，支援自訂 LINE Flex Message 樣板設計與即時預覽。
+
+✅ 頁面結構設計
+畫面分左右兩欄：
+
+區塊	功能說明
+📋 左側	Flex Message JSON 編輯器（語法高亮、即時更新）
+👁️ 右側	Flex Message 預覽模擬區（自製或套用 LINE Web 渲染器）
+
+✅ 套件安裝（Replit 可用）
+bash
+複製
+編輯
+npm install react-ace ace-builds
+或 yarn：
+
+bash
+複製
+編輯
+yarn add react-ace ace-builds
+✅ Flex Message 樣板範例（活動報到通知）
+ts
+複製
+編輯
+const defaultTemplate = {
+  type: "bubble",
+  hero: {
+    type: "image",
+    url: "https://example.com/banner.jpg",
+    size: "full",
+    aspectRatio: "20:13",
+    aspectMode: "cover"
+  },
+  body: {
+    type: "box",
+    layout: "vertical",
+    contents: [
+      { type: "text", text: "活動報到提醒", weight: "bold", size: "lg" },
+      { type: "text", text: "請於今天 18:00 前完成報到", wrap: true, size: "sm", color: "#888888" },
+    ]
+  },
+  footer: {
+    type: "box",
+    layout: "horizontal",
+    contents: [
+      {
+        type: "button",
+        style: "primary",
+        action: {
+          type: "uri",
+          label: "立即報到",
+          uri: "https://liff.line.me/12345678"
+        }
+      }
+    ]
+  }
+};
+✅ 完整頁面 /admin/push-template.tsx
+tsx
+複製
+編輯
+import { useState } from "react";
+import AceEditor from "react-ace";
+import "ace-builds/src-noconflict/mode-json";
+import "ace-builds/src-noconflict/theme-github";
+
+// 👇 Mock Flex Render
+const FlexPreview = ({ data }: { data: any }) => {
+  if (!data) return <div className="text-sm text-gray-500">無資料</div>;
+
+  return (
+    <div className="p-4 bg-white border rounded shadow w-[280px] text-sm">
+      <div className="font-bold mb-2">{data.body?.contents?.[0]?.text || "Flex 預覽"}</div>
+      <div className="text-gray-700 mb-4">{data.body?.contents?.[1]?.text || "內容..."}</div>
+      <a
+        href={data.footer?.contents?.[0]?.action?.uri}
+        target="_blank"
+        className="bg-blue-600 text-white px-4 py-1 rounded text-center block"
+      >
+        {data.footer?.contents?.[0]?.action?.label || "前往"}
+      </a>
+    </div>
+  );
+};
+
+const PushTemplatePage = () => {
+  const [jsonText, setJsonText] = useState(JSON.stringify(defaultTemplate, null, 2));
+  const [parsed, setParsed] = useState<any>(defaultTemplate);
+  const [error, setError] = useState("");
+
+  const handleChange = (value: string) => {
+    setJsonText(value);
+    try {
+      const obj = JSON.parse(value);
+      setParsed(obj);
+      setError("");
+    } catch (e: any) {
+      setError(e.message);
+    }
+  };
+
+  return (
+    <div className="flex h-screen">
+      {/* JSON 編輯器 */}
+      <div className="w-1/2 p-4 border-r">
+        <h1 className="text-lg font-bold mb-2">✍️ Flex Message 樣板編輯</h1>
+        <AceEditor
+          mode="json"
+          theme="github"
+          width="100%"
+          height="calc(100vh - 100px)"
+          value={jsonText}
+          onChange={handleChange}
+          fontSize={14}
+          setOptions={{ useWorker: false }}
+        />
+        {error && <div className="text-red-600 mt-2 text-sm">❌ JSON 錯誤：{error}</div>}
+      </div>
+
+      {/* 預覽區 */}
+      <div className="w-1/2 p-4 bg-gray-50">
+        <h1 className="text-lg font-bold mb-2">👁️ 即時預覽</h1>
+        <FlexPreview data={parsed} />
+      </div>
+    </div>
+  );
+};
+
+export default PushTemplatePage;
+✅ 已完成功能：
+✍️ 支援編輯 Flex Message 樣板（即時 JSON 驗證）
+
+👁️ 模擬預覽右側即時更新（可後續強化樣式）
+
+✅ 支援存為 活動預設樣板 或測試推播（待下階段）
+
