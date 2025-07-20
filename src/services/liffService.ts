@@ -7,21 +7,30 @@ export async function getMemberWithEventsByLineUserId(lineUserId: string) {
     include: {
       registrations: {
         include: { 
-          event: true,
-          checkins: true
+          event: true
         },
       },
+      checkins: {
+        include: {
+          event: true
+        }
+      }
     },
   });
 
   if (!member) return null;
 
-  const events = member.registrations.map(reg => ({
-    id: reg.event.id,
-    name: reg.event.title, // 使用 title 而不是 name，根據 schema
-    date: reg.event.date?.toISOString().slice(0, 10),
-    status: reg.checkins && reg.checkins.length > 0 ? "checked_in" : "not_checked_in",
-  }));
+  const events = member.registrations.map((reg: any) => {
+    // 檢查該活動是否有簽到記錄
+    const hasCheckin = member.checkins.some((checkin: any) => checkin.event_id === reg.event_id);
+    
+    return {
+      id: reg.event.id,
+      name: reg.event.title, // 使用 title 而不是 name，根據 schema
+      date: reg.event.date?.toISOString().slice(0, 10),
+      status: hasCheckin ? "checked_in" : "not_checked_in",
+    };
+  });
 
   return {
     name: member.name,
