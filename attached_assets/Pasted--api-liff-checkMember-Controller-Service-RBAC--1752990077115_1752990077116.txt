@@ -1,0 +1,123 @@
+好的，以下是 /api/liff/checkMember 的完整後端實作範例，包括：
+
+✅ 路由設定
+
+✅ Controller 處理邏輯
+
+✅ Service 查詢邏輯
+
+✅ RBAC 權限可擴充（如需）
+
+📁 路由：/src/routes/liffRoute.ts
+ts
+複製
+編輯
+import { Router } from "express";
+import { checkMember } from "../controllers/liffController";
+
+const router = Router();
+
+router.post("/checkMember", checkMember);
+
+export default router;
+📂 總路由整合：/src/app.ts
+請確認你有掛載：
+
+ts
+複製
+編輯
+import liffRoute from "./routes/liffRoute";
+
+app.use("/api/liff", liffRoute);
+🧠 Controller：/src/controllers/liffController.ts
+ts
+複製
+編輯
+import { Request, Response } from "express";
+import { getMemberWithEventsByLineId } from "../services/liffService";
+
+export async function checkMember(req: Request, res: Response) {
+  const { lineUserId } = req.body;
+  if (!lineUserId) {
+    return res.status(400).json({ error: "lineUserId is required" });
+  }
+
+  try {
+    const member = await getMemberWithEventsByLineId(lineUserId);
+    if (!member) {
+      return res.status(200).json({ member: null }); // not registered
+    }
+
+    res.json({ member });
+  } catch (err) {
+    console.error("checkMember error:", err);
+    res.status(500).json({ error: "Server error" });
+  }
+}
+🔍 Service：/src/services/liffService.ts
+ts
+複製
+編輯
+import prisma from "../config/prisma";
+
+export async function getMemberWithEventsByLineId(lineUserId: string) {
+  return await prisma.member.findUnique({
+    where: { line_user_id: lineUserId },
+    include: {
+      registrations: {
+        include: { event: true },
+      },
+    },
+  }).then(member => {
+    if (!member) return null;
+
+    const events = member.registrations.map(reg => ({
+      id: reg.event.id,
+      name: reg.event.name,
+      date: reg.event.date?.toISOString().slice(0, 10),
+      status: reg.checked_in ? "checked_in" : "not_checked_in",
+    }));
+
+    return {
+      name: member.name,
+      email: member.email,
+      events,
+    };
+  });
+}
+✅ 需要檢查你的 prisma/schema.prisma 是否符合下列欄位：
+prisma
+複製
+編輯
+model Member {
+  id           String   @id @default(cuid())
+  name         String
+  email        String
+  line_user_id String   @unique
+  registrations Registration[]
+}
+
+model Event {
+  id            String   @id @default(cuid())
+  name          String
+  date          DateTime
+  registrations Registration[]
+}
+
+model Registration {
+  id          String   @id @default(cuid())
+  member      Member   @relation(fields: [memberId], references: [id])
+  memberId    String
+  event       Event    @relation(fields: [eventId], references: [id])
+  eventId     String
+  checked_in  Boolean  @default(false)
+}
+✅ 測試建議
+你可用以下方式測試 API：
+
+bash
+複製
+編輯
+curl -X POST http://localhost:3000/api/liff/checkMember \
+  -H "Content-Type: application/json" \
+  -d '{"lineUserId": "Uxxxxxxxxxxxx"}'

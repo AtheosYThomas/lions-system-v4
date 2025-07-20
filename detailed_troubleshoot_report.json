@@ -1,20 +1,11 @@
 {
-  "timestamp": "2025-07-20T05:33:10.875Z",
+  "timestamp": "2025-07-20T05:39:47.252Z",
   "summary": {
-    "totalIssues": 1,
-    "errors": 1,
+    "totalIssues": 0,
+    "errors": 0,
     "warnings": 0,
     "info": 0,
-    "healthScore": 80
+    "healthScore": 100
   },
-  "issues": [
-    {
-      "category": "TypeScript編譯",
-      "severity": "high",
-      "issue": "TypeScript 編譯錯誤",
-      "details": "src/routes/api/admin.ts(50,43): error TS2339: Property 'registrations' does not exist on type '{ id: string; status: string; registration_date: Date; event_id: string; member_id: string; }[]'.\nsrc/routes/api/admin.ts(68,49): error TS2339: Property 'total' does not exist on type '{ id: string; status: string; registration_date: Date; event_id: string; member_id: string; }[]'.\nsrc/routes/api/admin.ts(136,34): error TS2339: Property 'registrations' does not exist on type '{ id: string; status: string; registration_date: Date; event_id: string; member_id: string; }[]'.\nsrc/routes/api/admin.ts(340,37): error TS2339: Property 'registrations' does not exist on type '{ id: string; status: string; registration_date: Date; event_id: string; member_id: string; }[]'.\nsrc/routes/api/checkin.ts(42,16): error TS18046: 'error' is of type 'unknown'.\nsrc/scripts/test/testServiceFunctions.ts(213,35): error TS2339: Property 'eligible' does not exist on type 'never'.\nsrc/services/checkinService.ts(305,18): error TS2353: Object literal may only specify known properties, and 'created_at' does not exist in type 'EventRegistrationOrderByWithRelationInput | EventRegistrationOrderByWithRelationInput[]'.\n",
-      "suggestion": "修正 TypeScript 語法錯誤",
-      "status": "error"
-    }
-  ]
+  "issues": []
 }
