@@ -1,0 +1,156 @@
+一、建立 PushTemplate 資料表（Prisma schema）
+prisma
+複製
+編輯
+model PushTemplate {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  json        Json
+  createdAt   DateTime @default(now())
+}
+👉 然後執行：
+
+bash
+複製
+編輯
+npx prisma migrate dev --name create_push_template
+✅ 二、建立 API 路由
+1. /api/admin/push-template/save.ts
+ts
+複製
+編輯
+import { prisma } from "@/lib/prisma";
+import { NextApiRequest, NextApiResponse } from "next";
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  if (req.method !== "POST") return res.status(405).end();
+
+  const { name, description, json } = req.body;
+
+  if (!name || !json) {
+    return res.status(400).json({ message: "缺少必要欄位" });
+  }
+
+  const template = await prisma.pushTemplate.create({
+    data: {
+      name,
+      description,
+      json,
+    },
+  });
+
+  return res.status(200).json({ success: true, template });
+}
+2. /api/admin/push/test.ts
+ts
+複製
+編輯
+import { client } from "@/lib/lineClient"; // 已初始化 LINE Bot Client
+import { NextApiRequest, NextApiResponse } from "next";
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  if (req.method !== "POST") return res.status(405).end();
+
+  const { userId, messageJson } = req.body;
+
+  if (!userId || !messageJson) {
+    return res.status(400).json({ message: "缺少 userId 或 messageJson" });
+  }
+
+  try {
+    await client.pushMessage(userId, {
+      type: "flex",
+      altText: "Flex 推播預覽",
+      contents: messageJson,
+    });
+
+    return res.status(200).json({ success: true });
+  } catch (error) {
+    console.error("推播錯誤", error);
+    return res.status(500).json({ success: false, error });
+  }
+}
+✅ 三、前端整合：在 /admin/push-template.tsx 加入底部功能區
+tsx
+複製
+編輯
+const [templateName, setTemplateName] = useState("");
+const [templateDesc, setTemplateDesc] = useState("");
+const [testUserId, setTestUserId] = useState("");
+
+...
+
+<div className="mt-6 space-y-4">
+  <div>
+    <h2 className="text-md font-semibold">💾 儲存樣板</h2>
+    <input
+      placeholder="樣板名稱"
+      value={templateName}
+      onChange={(e) => setTemplateName(e.target.value)}
+      className="border px-2 py-1 mr-2 rounded w-60"
+    />
+    <input
+      placeholder="描述（可選）"
+      value={templateDesc}
+      onChange={(e) => setTemplateDesc(e.target.value)}
+      className="border px-2 py-1 mr-2 rounded w-80"
+    />
+    <button
+      className="bg-green-600 text-white px-4 py-1 rounded"
+      onClick={async () => {
+        const res = await fetch("/api/admin/push-template/save", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: templateName,
+            description: templateDesc,
+            json: parsed,
+          }),
+        });
+
+        if (res.ok) {
+          alert("✅ 樣板已儲存");
+        } else {
+          alert("❌ 儲存失敗");
+        }
+      }}
+    >
+      儲存樣板
+    </button>
+  </div>
+
+  <div>
+    <h2 className="text-md font-semibold">🧪 測試推播</h2>
+    <input
+      placeholder="LINE UserId"
+      value={testUserId}
+      onChange={(e) => setTestUserId(e.target.value)}
+      className="border px-2 py-1 mr-2 rounded w-[360px]"
+    />
+    <button
+      className="bg-blue-600 text-white px-4 py-1 rounded"
+      onClick={async () => {
+        const res = await fetch("/api/admin/push/test", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ userId: testUserId, messageJson: parsed }),
+        });
+
+        if (res.ok) {
+          alert("✅ 推播成功！");
+        } else {
+          alert("❌ 推播失敗");
+        }
+      }}
+    >
+      發送測試訊息
+    </button>
+  </div>
+</div>
+✅ 成果整理
+功能	狀態
+📄 Prisma 資料表建立	✅ PushTemplate
+💾 儲存樣板 API	✅ /api/admin/push-template/save
+🧪 測試推播 API	✅ /api/admin/push/test
+前端整合	✅ 表單 + 即時發送按鈕
