@@ -1,5 +1,9 @@
 import express from 'express';
+import { PrismaClient } from '@prisma/client';
 import checkinController from '../../controllers/checkinController';
+import checkinService from '../../services/checkinService';
+
+const prisma = new PrismaClient();
 
 const router = express.Router();
 

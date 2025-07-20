@@ -37,23 +37,25 @@ router.get('/:id/events', async (req, res) => {
     // 獲取所有活動
     const events = await prisma.event.findMany({
       where: { status: 'active' },
-      orderBy: { date: 'desc' },
-      include: {
-        registrations: {
-          where: { member_id: memberId },
-          select: { id: true, status: true, registration_date: true }
-        },
-        checkins: {
-          where: { member_id: memberId },
-          select: { id: true, checkin_time: true }
-        }
-      }
+      orderBy: { date: 'desc' }
     });
+
+    // 分別獲取該會員的報名和簽到記錄
+    const [registrations, checkins] = await Promise.all([
+      prisma.eventRegistration.findMany({
+        where: { member_id: memberId },
+        select: { id: true, event_id: true, status: true, registration_date: true }
+      }),
+      prisma.checkin.findMany({
+        where: { member_id: memberId },
+        select: { id: true, event_id: true, checkin_time: true }
+      })
+    ]);
 
     // 格式化活動資料
     const formattedEvents = events.map(event => {
-      const registration = event.registrations[0];
-      const checkin = event.checkins[0];
+      const registration = registrations.find(r => r.event_id === event.id);
+      const checkin = checkins.find(c => c.event_id === event.id);
       const now = new Date();
       const eventDate = new Date(event.date);
 
