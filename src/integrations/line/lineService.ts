@@ -215,7 +215,7 @@ class LineService {
                 action: {
                   type: 'uri' as const,
                   label: '🚀 進入會員系統',
-                  uri: `https://liff.line.me/2007739371-aKePV20l`,
+                  uri: 'https://service.peida.net/client',
                 },
                 style: 'primary' as const,
                 color: '#1DB446',
@@ -312,7 +312,7 @@ class LineService {
                 action: {
                   type: 'uri' as const,
                   label: '🚀 立即註冊會員',
-                  uri: 'https://service.peida.net/register.html',
+                  uri: 'https://service.peida.net/client/register',
                 },
                 style: 'primary' as const,
                 color: '#1DB446' as const,
@@ -330,7 +330,7 @@ class LineService {
         // 如果 Flex Message 失敗，發送簡單文字訊息
         const fallbackMessage = {
           type: 'text' as const,
-          text: `🦁 北大獅子會\n\n歡迎您！請點擊連結完成註冊：\nhttps://service.peida.net/register.html`,
+          text: `🦁 北大獅子會\n\n歡迎您！請點擊連結完成註冊：\nhttps://service.peida.net/client/register`,
         };
         await this.client.replyMessage(replyToken, fallbackMessage);
         console.log('✅ 已發送備用註冊回應');
@@ -409,7 +409,7 @@ class LineService {
                 action: {
                   type: 'uri' as const,
                   label: '🚀 完成註冊',
-                  uri: 'https://service.peida.net/register.html',
+                  uri: 'https://service.peida.net/client/register',
                 },
                 style: 'primary' as const,
                 color: '#1DB446' as const,
