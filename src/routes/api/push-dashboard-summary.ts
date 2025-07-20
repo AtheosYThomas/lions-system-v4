@@ -4,7 +4,8 @@ import { authMiddleware } from '../../middleware/authMiddleware';
 import { requireAnyRole } from '../../middleware/roleMiddleware';
 import { Role } from '../../types/role';
 import PushRecord from '../../models/pushRecord';
-import { Op } from 'sequelize';
+import { Op, QueryTypes, fn, col } from 'sequelize';
+import sequelize from '../../config/database';
 
 const router = express.Router();
 
@@ -49,8 +50,8 @@ router.get('/', authMiddleware, requireAnyRole([Role.Admin, Role.President]), as
       LIMIT 30
     `;
 
-    const trendResult = await PushRecord.sequelize?.query(trendQuery, {
-      type: PushRecord.sequelize.QueryTypes.SELECT
+    const trendResult = await sequelize.query(trendQuery, {
+      type: QueryTypes.SELECT
     }) as any[];
 
     // 2. 總覽統計 - 成功/失敗數量
@@ -58,7 +59,7 @@ router.get('/', authMiddleware, requireAnyRole([Role.Admin, Role.President]), as
       where,
       attributes: [
         'status',
-        [PushRecord.sequelize?.fn('COUNT', '*'), '_count']
+        [fn('COUNT', '*'), '_count']
       ],
       group: ['status'],
       raw: true
@@ -70,10 +71,10 @@ router.get('/', authMiddleware, requireAnyRole([Role.Admin, Role.President]), as
       attributes: [
         'event_id',
         'status',
-        [PushRecord.sequelize?.fn('COUNT', '*'), '_count']
+        [fn('COUNT', '*'), '_count']
       ],
       group: ['event_id', 'status'],
-      order: [[PushRecord.sequelize?.fn('COUNT', '*'), 'DESC']],
+      order: [[fn('COUNT', '*'), 'DESC']],
       limit: 20,
       raw: true
     }) as any[];
