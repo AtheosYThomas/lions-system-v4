@@ -1,20 +1,11 @@
 {
-  "timestamp": "2025-07-20T00:14:23.151Z",
+  "timestamp": "2025-07-20T00:20:36.748Z",
   "summary": {
-    "totalIssues": 1,
-    "errors": 1,
+    "totalIssues": 0,
+    "errors": 0,
     "warnings": 0,
     "info": 0,
-    "healthScore": 80
+    "healthScore": 100
   },
-  "issues": [
-    {
-      "category": "TypeScript編譯",
-      "severity": "high",
-      "issue": "TypeScript 編譯錯誤",
-      "details": "src/routes/api/push-dashboard-summary.ts(53,34): error TS2339: Property 'QueryTypes' does not exist on type 'Sequelize'.\nsrc/routes/api/push-dashboard-summary.ts(61,10): error TS2322: Type 'Fn | undefined' is not assignable to type 'string | Fn | Col | Literal'.\n  Type 'undefined' is not assignable to type 'string | Fn | Col | Literal'.\nsrc/routes/api/push-dashboard-summary.ts(73,10): error TS2322: Type 'Fn | undefined' is not assignable to type 'string | Fn | Col | Literal'.\n  Type 'undefined' is not assignable to type 'string | Fn | Col | Literal'.\nsrc/routes/api/push-dashboard-summary.ts(76,16): error TS2322: Type 'Fn | undefined' is not assignable to type 'string | Fn | Col | Literal | Association<Model<any, any>, Model<any, any>> | ModelStatic<Model<any, any>> | { ...; }'.\n  Type 'undefined' is not assignable to type 'string | Fn | Col | Literal | Association<Model<any, any>, Model<any, any>> | ModelStatic<Model<any, any>> | { ...; }'.\n",
-      "suggestion": "修正 TypeScript 語法錯誤",
-      "status": "error"
-    }
-  ]
+  "issues": []
 }
