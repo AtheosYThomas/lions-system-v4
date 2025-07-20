@@ -1,9 +1,9 @@
 {
-  "timestamp": "2025-07-20T00:32:31.221Z",
+  "timestamp": "2025-07-20T00:36:55.865Z",
   "summary": {
-    "total": 130,
-    "pass": 100,
-    "warning": 29,
+    "total": 133,
+    "pass": 102,
+    "warning": 30,
     "error": 1
   },
   "results": [
@@ -40,6 +40,11 @@
       "category": "Source Files",
       "status": "pass",
       "message": "src/routes/api/registration.ts: 語法檢查通過"
+    },
+    {
+      "category": "Source Files",
+      "status": "pass",
+      "message": "src/routes/api/push-template.ts: 語法檢查通過"
     },
     {
       "category": "Source Files",
@@ -231,6 +236,20 @@
       "category": "Source Files",
       "status": "pass",
       "message": "src/models/registration.ts: 語法檢查通過"
+    },
+    {
+      "category": "Source Files",
+      "status": "warning",
+      "message": "src/models/pushTemplate.ts: 使用 any 型別可能導致型別安全問題",
+      "suggestions": [
+        "明確定義型別",
+        "使用具體的介面"
+      ]
+    },
+    {
+      "category": "Source Files",
+      "status": "pass",
+      "message": "src/models/pushTemplate.ts: 語法檢查通過"
     },
     {
       "category": "Source Files",
