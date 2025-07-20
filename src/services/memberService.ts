@@ -281,7 +281,7 @@ class MemberService {
         }),
         prisma.member.count({
           where: { 
-            NOT: { line_user_id: null },
+            line_user_id: { not: null },
             status: 'active'
           }
         })
