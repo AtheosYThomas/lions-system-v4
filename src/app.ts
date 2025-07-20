@@ -138,20 +138,6 @@ app.get('/home', (req, res) => {
   res.sendFile(path.join(__dirname, '../client/dist/index.html'));
 });
 
-// 支援 /client/* 路由（React Router）
-app.get('/client/*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../client/dist/index.html'));
-});
-
-// SPA fallback 路由 - 必須在錯誤處理之前
-app.get('*', (req, res) => {
-  // 如果是 API 請求，不要 fallback 到前端
-  if (req.path.startsWith('/api') || req.path.startsWith('/webhook')) {
-    return res.status(404).json({ error: 'API endpoint not found' });
-  }
-  res.sendFile(path.join(__dirname, '../client/dist/index.html'));
-});
-
 // 錯誤處理
 app.use(
   (
