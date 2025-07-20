@@ -12,21 +12,20 @@ datasource db {
 }
 
 model Member {
-  id            String   @id @default(cuid())
-  name          String?
-  email         String?  @unique
-  phone         String?
-  line_user_id  String   @unique
-  english_name  String?
-  birthday      String?
-  job_title     String?
-  fax           String?
-  address       String?
-  mobile        String?
-  role          String?  @default("member")
-  status        String?  @default("active")
-  created_at    DateTime @default(now())
-  updated_at    DateTime @updatedAt
+  id           String   @id @default(cuid())
+  name         String
+  email        String?
+  line_user_id String   @unique
+  role         String
+  phone        String?
+  english_name String?
+  birthday     DateTime?
+  job_title    String?
+  mobile       String?
+  fax          String?
+  address      String?
+  status       String?  @default("active")
+  created_at   DateTime @default(now())
 
   @@map("members")
 }
