@@ -4,7 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "node dist/index.js",
     "dev": "tsx src/index.ts",
+    "build": "tsc",
+    "build:client": "cd client && npm run build",
+    "test": "tsx src/scripts/test/index.ts",
+    "test:webhook": "npx tsx src/scripts/testLineWebhook.ts",
     "init-schema": "tsx src/scripts/initSchema.ts",
     "quick-start": "tsx src/scripts/quickStart.ts",
     "build": "tsc",
@@ -17,7 +22,11 @@
     "test:seed": "tsx src/scripts/test/seedMockData.ts",
     "test:functions": "tsx src/scripts/test/testServiceFunctions.ts",
     "test:full": "tsx src/scripts/test/index.ts full",
-    "test:clear": "tsx src/scripts/test/index.ts clear"
+    "test:clear": "tsx src/scripts/test/index.ts clear",
+    "diagnostic": "tsx src/utils/diagnostics/diagnostics.ts",
+    "full-diagnostic": "tsx src/utils/diagnostics/fullSystemDiagnostics.ts",
+    "system-report": "tsx src/utils/diagnostics/systemReport.ts",
+    "troubleshoot": "tsx src/utils/diagnostics/troubleshoot.ts"
   },
   "keywords": [],
   "author": "",
