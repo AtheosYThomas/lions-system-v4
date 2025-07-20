@@ -79,15 +79,58 @@ class LineService {
 
     console.log('💬 收到訊息:', { lineUserId, userMessage });
 
-    // 🔍 核心邏輯：檢查用戶是否為會員
-    const member = await Member.findOne({ 
-      where: { line_user_id: lineUserId } 
-    });
+    // 新增智慧回覆邏輯
+    const text = event.message.text.toLowerCase();
+    const replyToken = event.replyToken;
 
+    // 查詢會員狀態
+    const member = await Member.findOne({ where: { line_user_id: lineUserId } });
+
+    // 智慧回覆：簽到功能
+    if (text.includes('簽到')) {
+      const { checkinCard } = await import('./flexTemplates');
+      const message = {
+        type: 'flex' as const,
+        altText: '簽到入口',
+        contents: checkinCard(member?.name || '會員'),
+      };
+      await this.client.replyMessage(replyToken, message);
+      console.log('✅ 已回應簽到請求');
+      return;
+    }
+
+    // 智慧回覆：活動查詢
+    if (text.includes('報名') || text.includes('活動')) {
+      const events = await this.getUpcomingEvents();
+      const { eventOverviewCard } = await import('./flexTemplates');
+      const message = {
+        type: 'flex' as const,
+        altText: '近期活動',
+        contents: eventOverviewCard(events),
+      };
+      await this.client.replyMessage(replyToken, message);
+      console.log('✅ 已回應活動查詢');
+      return;
+    }
+
+    // 智慧回覆：會員資訊
+    if (text.includes('會員')) {
+      const { memberCenterCard } = await import('./flexTemplates');
+      const message = {
+        type: 'flex' as const,
+        altText: '會員中心',
+        contents: memberCenterCard(member),
+      };
+      await this.client.replyMessage(replyToken, message);
+      console.log('✅ 已回應會員查詢');
+      return;
+    }
+
+    // 原有邏輯：根據會員狀態回應
     if (member) {
-      // ✅ 已註冊會員
+      // ✅ 已註冊會員 - 使用 fallback 回應
       console.log('👤 已註冊會員:', member.name);
-      await this.replyToRegisteredMember(textEvent.replyToken, member.name, userMessage);
+      await this.replyText(replyToken, "請輸入「活動」、「簽到」、「會員」等關鍵字以獲得幫助。");
 
       // 記錄已註冊會員的訊息
       await this.saveMessageLog(textEvent, member.id);
@@ -599,6 +642,51 @@ class LineService {
   async pushMemberInfo(userId: string, memberName: string, memberLevel: string, joinDate: string): Promise<LineServiceResponse> {
     const flexMessage = this.createFlexMemberCard(memberName, memberLevel, joinDate);
     return await this.pushFlexMessage(userId, flexMessage);
+  }
+
+  /**
+   * 獲取即將到來的活動
+   */
+  private async getUpcomingEvents(): Promise<Array<{id: string, title: string, date: Date}>> {
+    try {
+      const Event = (await import('../../models/event')).default;
+      const { Op } = await import('sequelize');
+      
+      const events = await Event.findAll({
+        where: {
+          status: 'active',
+          date: { [Op.gte]: new Date() }
+        },
+        order: [['date', 'ASC']],
+        limit: 5,
+        attributes: ['id', 'title', 'date']
+      });
+
+      return events.map((event: any) => ({
+        id: event.id,
+        title: event.title,
+        date: event.date
+      }));
+    } catch (error) {
+      console.error('❌ 獲取活動失敗:', error);
+      return [];
+    }
+  }
+
+  /**
+   * 回覆文字訊息
+   */
+  private async replyText(replyToken: string, text: string): Promise<void> {
+    try {
+      const message = {
+        type: 'text' as const,
+        text: text
+      };
+      await this.client.replyMessage(replyToken, message);
+      console.log('✅ 已回覆文字訊息');
+    } catch (error) {
+      console.error('❌ 回覆文字訊息失敗:', error);
+    }
   }
 
   /**
