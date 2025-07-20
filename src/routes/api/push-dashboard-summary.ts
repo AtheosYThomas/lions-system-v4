@@ -3,7 +3,8 @@ import { authMiddleware } from '../../middleware/authMiddleware';
 import { requireAnyRole } from '../../middleware/roleMiddleware';
 import { Role } from '../../types/role';
 import PushRecord from '../../models/pushRecord';
-import { Op, QueryTypes, fn, col } from 'sequelize';
+import { Op, fn, col } from 'sequelize';
+import { QueryTypes } from 'sequelize';
 import sequelize from '../../config/database';
 
 const router = express.Router();
@@ -58,7 +59,7 @@ router.get('/', authMiddleware, requireAnyRole([Role.Admin, Role.President]), as
       where,
       attributes: [
         'status',
-        [fn('COUNT', '*'), '_count']
+        [fn('COUNT', col('*')), '_count']
       ],
       group: ['status'],
       raw: true
@@ -70,10 +71,10 @@ router.get('/', authMiddleware, requireAnyRole([Role.Admin, Role.President]), as
       attributes: [
         'event_id',
         'status',
-        [fn('COUNT', '*'), '_count']
+        [fn('COUNT', col('*')), '_count']
       ],
       group: ['event_id', 'status'],
-      order: [[fn('COUNT', '*'), 'DESC']],
+      order: [[fn('COUNT', col('*')), 'DESC']],
       limit: 20,
       raw: true
     }) as any[];
