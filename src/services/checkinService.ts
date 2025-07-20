@@ -291,10 +291,52 @@ export async function getCheckinStats(eventId?: string) {
   }
 }
 
+/**
+ * 獲取活動的報名記錄
+ */
+export async function getEventRegistrations(eventId: string) {
+  try {
+    return await prisma.eventRegistration.findMany({
+      where: { event_id: eventId },
+      include: {
+        member: true,
+        event: true,
+      },
+      orderBy: { created_at: 'desc' }
+    });
+  } catch (error) {
+    console.error('獲取活動報名記錄失敗:', error);
+    throw error;
+  }
+}
+
+/**
+ * 驗證簽到資格
+ */
+export async function validateCheckinEligibility(memberId: string, eventId: string): Promise<boolean> {
+  try {
+    // 檢查會員是否已註冊該活動
+    const registration = await prisma.eventRegistration.findFirst({
+      where: {
+        member_id: memberId,
+        event_id: eventId,
+        status: 'confirmed' // 只有確認的報名才能簽到
+      }
+    });
+
+    return Boolean(registration);
+  } catch (error) {
+    console.error('驗證簽到資格失敗:', error);
+    throw error;
+  }
+}
+
 export default {
   performCheckin,
   isCheckedIn,
   getMemberCheckins,
   getEventCheckins,
-  getCheckinStats
+  getCheckinStats,
+  getEventRegistrations,
+  validateCheckinEligibility
 };
