@@ -1,11 +1,20 @@
 {
-  "timestamp": "2025-07-20T01:46:45.061Z",
+  "timestamp": "2025-07-20T02:08:46.535Z",
   "summary": {
-    "totalIssues": 0,
-    "errors": 0,
+    "totalIssues": 1,
+    "errors": 1,
     "warnings": 0,
     "info": 0,
-    "healthScore": 100
+    "healthScore": 80
   },
-  "issues": []
+  "issues": [
+    {
+      "category": "TypeScript編譯",
+      "severity": "high",
+      "issue": "TypeScript 編譯錯誤",
+      "details": "src/controllers/memberController.ts(326,15): error TS2322: Type 'null' is not assignable to type 'string | NestedStringFilter<\"Member\"> | undefined'.\nsrc/routes/api/checkin.ts(32,26): error TS2304: Cannot find name 'prisma'.\nsrc/routes/api/checkin.ts(44,33): error TS2304: Cannot find name 'checkinService'.\nsrc/routes/api/members.ts(41,7): error TS2322: Type '{ registrations: { where: { member_id: string; }; select: { id: true; status: true; registration_date: true; }; }; checkins: { where: { member_id: string; }; select: { id: true; checkin_time: true; }; }; }' is not assignable to type 'never'.\nsrc/routes/api/members.ts(77,32): error TS2339: Property 'checkin_time' does not exist on type 'never'.\nsrc/services/memberService.ts(285,15): error TS2322: Type 'null' is not assignable to type 'string | NestedStringFilter<\"Member\"> | undefined'.\n",
+      "suggestion": "修正 TypeScript 語法錯誤",
+      "status": "error"
+    }
+  ]
 }
