@@ -15,7 +15,7 @@ model Member {
   id           String   @id @default(cuid())
   name         String
   email        String?  @unique
-  line_user_id String   @unique
+  line_user_id String?  @unique
   role         String
   phone        String?
   english_name String?
@@ -27,21 +27,53 @@ model Member {
   status       String?  @default("active")
   created_at   DateTime @default(now())
 
+  registrations EventRegistration[]
+  checkins      Checkin[]
+
   @@map("members")
 }
 
 model Event {
-  id          String   @id @default(cuid())
-  title       String
-  description String?
-  date        DateTime
-  location    String?
+  id            String   @id @default(cuid())
+  title         String
+  description   String?
+  date          DateTime
+  location      String?
   max_attendees Int?
-  status      String?  @default("active")
-  created_at  DateTime @default(now())
-  updated_at  DateTime @updatedAt
+  status        String?  @default("active")
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+
+  registrations EventRegistration[]
+  checkins      Checkin[]
 
   @@map("events")
+}
+
+model EventRegistration {
+  id                String   @id @default(cuid())
+  member_id         String
+  event_id          String
+  status            String
+  registration_date DateTime @default(now())
+
+  member Member @relation(fields: [member_id], references: [id])
+  event  Event  @relation(fields: [event_id], references: [id])
+
+  @@map("event_registrations")
+}
+
+model Checkin {
+  id           String   @id @default(cuid())
+  member_id    String
+  event_id     String
+  checkin_time DateTime @default(now())
+  device_info  String?
+
+  member Member @relation(fields: [member_id], references: [id])
+  event  Event  @relation(fields: [event_id], references: [id])
+
+  @@map("checkins")
 }
 
 model PushTemplate {
