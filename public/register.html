@@ -272,9 +272,15 @@
             throw new Error('無法載入 LIFF 配置');
           }
 
-          // 即使是預設 LIFF ID 也嘗試初始化
+          console.log('📱 LIFF 配置:', {
+            liffId: config.liffId,
+            isDefault: config.isDefault,
+            fromEnv: config.fromEnv !== false
+          });
+
+          // 如果使用預設 LIFF ID，顯示警告
           if (config.isDefault) {
-            console.log('⚠️ 使用預設 LIFF ID');
+            console.warn('⚠️ 使用預設 LIFF ID，請設定環境變數 LIFF_ID');
           }
 
           // 初始化 LIFF

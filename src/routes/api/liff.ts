@@ -64,17 +64,27 @@ router.post('/register', async (req, res) => {
  */
 router.get('/config', (req, res) => {
   try {
-    // 統一使用 LIFF_ID 環境變數
-    const liffId = process.env.LIFF_ID || '2007739371-aKePV20l';
+    // 從環境變數讀取 LIFF_ID
+    const liffId = process.env.LIFF_ID;
+    const defaultLiffId = '2007739371-aKePV20l';
+    
+    if (!liffId) {
+      console.warn('⚠️ LIFF_ID 環境變數未設定，使用預設值');
+    }
+
+    const finalLiffId = liffId || defaultLiffId;
+    const isDefault = finalLiffId === defaultLiffId;
+
     console.log('📱 LIFF 配置請求:', {
-      liffId,
-      isDefault: liffId === '2007739371-aKePV20l',
+      liffId: finalLiffId,
+      isDefault,
+      fromEnv: !!liffId,
     });
 
     res.json({
       success: true,
-      liffId: liffId,
-      isDefault: liffId === '2007739371-aKePV20l',
+      liffId: finalLiffId,
+      isDefault,
     });
   } catch (error) {
     console.error('❌ LIFF config 錯誤:', error);

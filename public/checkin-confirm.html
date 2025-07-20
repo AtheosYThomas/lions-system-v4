@@ -142,6 +142,15 @@
           if (configResponse.ok) {
             const config = await configResponse.json();
             LIFF_ID = config.liffId;
+            
+            console.log('📱 LIFF 配置載入:', {
+              liffId: LIFF_ID,
+              isDefault: config.isDefault
+            });
+            
+            if (config.isDefault) {
+              console.warn('⚠️ 使用預設 LIFF ID，請設定環境變數 LIFF_ID');
+            }
           } else {
             throw new Error('無法取得 LIFF 配置');
           }
