@@ -1,11 +1,36 @@
 {
-  "timestamp": "2025-07-19T23:53:17.419Z",
+  "timestamp": "2025-07-19T23:31:52.665Z",
   "summary": {
-    "totalIssues": 0,
+    "totalIssues": 3,
     "errors": 0,
     "warnings": 0,
-    "info": 0,
-    "healthScore": 100
+    "info": 3,
+    "healthScore": 85
   },
-  "issues": []
+  "issues": [
+    {
+      "category": "Routes",
+      "severity": "low",
+      "issue": "src/routes/api/push-scheduler.ts 使用環境變數但未載入 dotenv",
+      "details": "可能導致環境變數未正確載入",
+      "suggestion": "確認 dotenv 已在主程式載入",
+      "status": "info"
+    },
+    {
+      "category": "Routes",
+      "severity": "low",
+      "issue": "src/routes/api/events.ts 使用環境變數但未載入 dotenv",
+      "details": "可能導致環境變數未正確載入",
+      "suggestion": "確認 dotenv 已在主程式載入",
+      "status": "info"
+    },
+    {
+      "category": "Controllers",
+      "severity": "low",
+      "issue": "src/controllers/lineController.ts 使用環境變數但未載入 dotenv",
+      "details": "可能導致環境變數未正確載入",
+      "suggestion": "確認 dotenv 已在主程式載入",
+      "status": "info"
+    }
+  ]
 }

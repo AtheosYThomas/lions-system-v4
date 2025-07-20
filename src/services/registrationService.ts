@@ -1,4 +1,4 @@
-import { Registration } from '../models/registration';
+import { Registration, RegistrationCreationAttributes } from '../models/registration';
 import Event from '../models/event';
 import { Member } from '../models/member';
 import { Op } from 'sequelize';
@@ -164,7 +164,7 @@ class RegistrationService {
    */
   async searchRegistrations(options: RegistrationSearchOptions) {
     try {
-      const whereClause: Record<string, any> = {};
+      const whereClause: any = {};
 
       if (options.event_id) {
         whereClause.event_id = options.event_id;

@@ -1,14 +1,8 @@
-import { Announcement } from '../models/announcement';
-import { Member } from '../models/member';
-import { Op } from 'sequelize';
 
-interface AnnouncementInput {
-  title: string;
-  content: string;
-  type: 'general' | 'urgent' | 'event';
-  author_id: string;
-  published_at?: Date;
-}
+import { Announcement, AnnouncementAttributes } from '../models/announcement';
+import Member from '../models/member';
+import Event from '../models/event';
+import { Op } from 'sequelize';
 
 interface AnnouncementCreationData {
   title: string;
@@ -207,7 +201,7 @@ class AnnouncementService {
   async updateAnnouncement(updateData: AnnouncementUpdateData): Promise<Announcement> {
     try {
       const announcement = await Announcement.findByPk(updateData.id);
-
+      
       if (!announcement) {
         throw new Error('公告不存在');
       }
@@ -238,7 +232,7 @@ class AnnouncementService {
       }
 
       await announcement.update(updateData);
-
+      
       // 回傳更新後的完整資料
       return await Announcement.findByPk(announcement.id, {
         include: [
@@ -259,7 +253,7 @@ class AnnouncementService {
   async deleteAnnouncement(id: string): Promise<void> {
     try {
       const announcement = await Announcement.findByPk(id);
-
+      
       if (!announcement) {
         throw new Error('公告不存在');
       }
@@ -277,7 +271,7 @@ class AnnouncementService {
   async publishAnnouncement(id: string): Promise<Announcement> {
     try {
       const announcement = await Announcement.findByPk(id);
-
+      
       if (!announcement) {
         throw new Error('公告不存在');
       }
@@ -304,7 +298,7 @@ class AnnouncementService {
   async hideAnnouncement(id: string): Promise<Announcement> {
     try {
       const announcement = await Announcement.findByPk(id);
-
+      
       if (!announcement) {
         throw new Error('公告不存在');
       }
@@ -323,7 +317,7 @@ class AnnouncementService {
   async showAnnouncement(id: string): Promise<Announcement> {
     try {
       const announcement = await Announcement.findByPk(id);
-
+      
       if (!announcement) {
         throw new Error('公告不存在');
       }
@@ -399,7 +393,7 @@ class AnnouncementService {
   async processScheduledAnnouncements(): Promise<number> {
     try {
       const now = new Date();
-
+      
       const [affectedCount] = await Announcement.update(
         {
           status: 'published',

@@ -1,15 +1,9 @@
-import Checkin from '../models/checkin';
-import { Member } from '../models/member';
-import Event from '../models/event';
-import { Op } from 'sequelize';
 
-interface CheckinRecord {
-  id: number;
-  member_id: string;
-  event_id: string;
-  checked_in_at: Date;
-  qr_code?: string;
-}
+import Checkin from '../models/checkin';
+import Event from '../models/event';
+import { Member } from '../models/member';
+import { Registration } from '../models/registration';
+import { Op } from 'sequelize';
 
 interface CheckinData {
   member_id: string;
@@ -419,16 +413,6 @@ class CheckinService {
       };
     } catch (error) {
       console.error('獲取活動報名記錄失敗:', error);
-      throw error;
-    }
-  }
-
-  async searchCheckins(options: CheckinSearchOptions) {
-    try {
-      const whereClause: Record<string, any> = {};
-
-    } catch (error) {
-      console.error('搜索簽到記錄失敗:', error);
       throw error;
     }
   }

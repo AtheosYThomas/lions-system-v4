@@ -1,7 +1,4 @@
 
-import dotenv from 'dotenv';
-dotenv.config();
-
 import express from 'express';
 import { authMiddleware } from '../../middleware/authMiddleware';
 import { requireAnyRole } from '../../middleware/roleMiddleware';
