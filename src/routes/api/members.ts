@@ -1,17 +1,18 @@
 
 import express from 'express';
+import { PrismaClient } from '@prisma/client';
 import memberController from '../../controllers/memberController';
 
 const router = express.Router();
-
-router.get('/members', memberController.getMembers);
-
-export default router;
-import express from 'express';
-import { PrismaClient } from '@prisma/client';
-
-const router = express.Router();
 const prisma = new PrismaClient();
+
+// 會員管理路由
+router.get('/members', memberController.getMembers);
+router.get('/members/:id', memberController.getMemberById);
+router.post('/members', memberController.createMember);
+router.put('/members/:id', memberController.updateMember);
+router.delete('/members/:id', memberController.deactivateMember);
+router.get('/members/stats', memberController.getMemberStats);
 
 /**
  * GET /api/members/:id/events
