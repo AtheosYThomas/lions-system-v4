@@ -1,8 +1,8 @@
 {
-  "timestamp": "2025-07-20T05:39:41.027Z",
+  "timestamp": "2025-07-20T05:47:44.437Z",
   "summary": {
-    "total": 132,
-    "pass": 102,
+    "total": 133,
+    "pass": 103,
     "warning": 29,
     "error": 1
   },
@@ -360,6 +360,11 @@
       "category": "Source Files",
       "status": "pass",
       "message": "src/services/memberService.ts: 語法檢查通過"
+    },
+    {
+      "category": "Source Files",
+      "status": "pass",
+      "message": "src/services/liffService.ts: 語法檢查通過"
     },
     {
       "category": "Source Files",
